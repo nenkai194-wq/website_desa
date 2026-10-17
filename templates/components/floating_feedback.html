@@ -12,7 +12,7 @@
   <div class="flex items-center justify-between p-5 pb-3 border-b border-slate-100">
     <div>
       <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
-        <i class="fa-solid fa-comments text-emerald-600"></i> Feedback
+        <i class="fa-solid fa-comments text-emerald-600"></i> {{ profil_global.feedback_judul or 'Feedback' }}
       </h3>
       <p class="text-[11px] text-slate-500 mt-0.5">Bantu kami meningkatkan kualitas layanan portal website desa.</p>
     </div>
@@ -27,7 +27,7 @@
     <!-- 1. Pertanyaan Kepuasan Emotikon -->
     <div>
       <label class="block text-xs font-bold text-slate-800 mb-2">
-        Seberapa puas Anda dengan website kami? <span class="text-rose-500">*</span>
+        {{ profil_global.feedback_pertanyaan or 'Seberapa puas Anda dengan website kami?' }} <span class="text-rose-500">*</span>
       </label>
       <input type="hidden" name="rating" id="input-feedback-rating" required value="">
       
@@ -72,16 +72,24 @@
       </label>
       <select name="pekerjaan" id="input-feedback-pekerjaan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
         <option value="">Pilih Pekerjaan</option>
-        <option value="Pelajar / Mahasiswa">Pelajar / Mahasiswa</option>
-        <option value="Aparatur Sipil Negara (ASN / PNS)">Aparatur Sipil Negara (ASN / PNS)</option>
-        <option value="TNI / POLRI">TNI / POLRI</option>
-        <option value="Karyawan Swasta / BUMN">Karyawan Swasta / BUMN</option>
-        <option value="Wiraswasta / Pengusaha / UMKM">Wiraswasta / Pengusaha / UMKM</option>
-        <option value="Petani / Nelayan / Peternak">Petani / Nelayan / Peternak</option>
-        <option value="Tenaga Pengajar / Dosen / Guru">Tenaga Pengajar / Dosen / Guru</option>
-        <option value="Peneliti / Praktisi">Peneliti / Praktisi</option>
-        <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
-        <option value="Lainnya">Lainnya</option>
+        {% if profil_global and profil_global.feedback_opsi_pekerjaan %}
+          {% for job in profil_global.feedback_opsi_pekerjaan.split(',') %}
+            {% if job.strip() %}
+            <option value="{{ job.strip() }}">{{ job.strip() }}</option>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <option value="Pelajar / Mahasiswa">Pelajar / Mahasiswa</option>
+          <option value="Aparatur Sipil Negara (ASN / PNS)">Aparatur Sipil Negara (ASN / PNS)</option>
+          <option value="TNI / POLRI">TNI / POLRI</option>
+          <option value="Karyawan Swasta / BUMN">Karyawan Swasta / BUMN</option>
+          <option value="Wiraswasta / Pengusaha / UMKM">Wiraswasta / Pengusaha / UMKM</option>
+          <option value="Petani / Nelayan / Peternak">Petani / Nelayan / Peternak</option>
+          <option value="Tenaga Pengajar / Dosen / Guru">Tenaga Pengajar / Dosen / Guru</option>
+          <option value="Peneliti / Praktisi">Peneliti / Praktisi</option>
+          <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+          <option value="Lainnya">Lainnya</option>
+        {% endif %}
       </select>
     </div>
 
@@ -91,47 +99,55 @@
         Apa yang dapat kami tingkatkan?
       </label>
       <div class="flex flex-wrap gap-1.5" id="pills-aspek-container">
-        <label class="cursor-pointer select-none">
-          <input type="checkbox" name="aspek_peningkatan" value="Tampilan" class="hidden peer">
-          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
-            Tampilan
-          </span>
-        </label>
-
-        <label class="cursor-pointer select-none">
-          <input type="checkbox" name="aspek_peningkatan" value="Pencarian Data" class="hidden peer">
-          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
-            Pencarian Data
-          </span>
-        </label>
-
-        <label class="cursor-pointer select-none">
-          <input type="checkbox" name="aspek_peningkatan" value="Kelengkapan Data" class="hidden peer">
-          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
-            Kelengkapan Data
-          </span>
-        </label>
-
-        <label class="cursor-pointer select-none">
-          <input type="checkbox" name="aspek_peningkatan" value="Metadata" class="hidden peer">
-          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
-            Metadata
-          </span>
-        </label>
-
-        <label class="cursor-pointer select-none">
-          <input type="checkbox" name="aspek_peningkatan" value="Fitur" class="hidden peer">
-          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
-            Fitur
-          </span>
-        </label>
-
-        <label class="cursor-pointer select-none">
-          <input type="checkbox" name="aspek_peningkatan" value="Performa Akses" class="hidden peer">
-          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
-            Performa Akses
-          </span>
-        </label>
+        {% if profil_global and profil_global.feedback_opsi_aspek %}
+          {% for asp in profil_global.feedback_opsi_aspek.split(',') %}
+            {% if asp.strip() %}
+            <label class="cursor-pointer select-none">
+              <input type="checkbox" name="aspek_peningkatan" value="{{ asp.strip() }}" class="hidden peer">
+              <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+                {{ asp.strip() }}
+              </span>
+            </label>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <label class="cursor-pointer select-none">
+            <input type="checkbox" name="aspek_peningkatan" value="Tampilan" class="hidden peer">
+            <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+              Tampilan
+            </span>
+          </label>
+          <label class="cursor-pointer select-none">
+            <input type="checkbox" name="aspek_peningkatan" value="Pencarian Data" class="hidden peer">
+            <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+              Pencarian Data
+            </span>
+          </label>
+          <label class="cursor-pointer select-none">
+            <input type="checkbox" name="aspek_peningkatan" value="Kelengkapan Data" class="hidden peer">
+            <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+              Kelengkapan Data
+            </span>
+          </label>
+          <label class="cursor-pointer select-none">
+            <input type="checkbox" name="aspek_peningkatan" value="Metadata" class="hidden peer">
+            <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+              Metadata
+            </span>
+          </label>
+          <label class="cursor-pointer select-none">
+            <input type="checkbox" name="aspek_peningkatan" value="Fitur" class="hidden peer">
+            <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+              Fitur
+            </span>
+          </label>
+          <label class="cursor-pointer select-none">
+            <input type="checkbox" name="aspek_peningkatan" value="Performa Akses" class="hidden peer">
+            <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+              Performa Akses
+            </span>
+          </label>
+        {% endif %}
       </div>
     </div>
 
@@ -140,7 +156,7 @@
       <label class="block text-xs font-bold text-slate-800 mb-1">
         Saran dan Masukkan
       </label>
-      <textarea name="saran" id="input-feedback-saran" rows="3" placeholder="Tuliskan saran atau kritik membangun Anda di sini..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium placeholder-slate-400 resize-none"></textarea>
+      <textarea name="saran" id="input-feedback-saran" rows="3" placeholder="{{ profil_global.feedback_placeholder_saran or 'Tuliskan saran atau kritik membangun Anda di sini...' }}" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium placeholder-slate-400 resize-none"></textarea>
     </div>
 
     <!-- Tombol Submit -->
@@ -160,7 +176,7 @@
           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold shadow-xl hover:shadow-2xl transition-all duration-200 border-2 border-white/80 backdrop-blur-md group hover:-translate-y-0.5 active:translate-y-0 focus:outline-none"
           title="Beri Masukan & Penilaian Kepuasan untuk Website Kami">
     <i class="fa-solid fa-comment-dots text-white text-sm group-hover:scale-110 transition duration-200"></i>
-    <span>Beri Feedback</span>
+    <span>{{ profil_global.feedback_judul or 'Beri Feedback' }}</span>
   </button>
 </div>
 

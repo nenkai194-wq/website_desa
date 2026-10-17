@@ -160,6 +160,16 @@ def init_db():
         cursor.execute("ALTER TABLE profil_desa ADD COLUMN batas_timur TEXT DEFAULT 'Berbatasan dengan Desa Neglasari / Desa Setiawangi'")
     if 'batas_barat' not in cols_profil:
         cursor.execute("ALTER TABLE profil_desa ADD COLUMN batas_barat TEXT DEFAULT 'Berbatasan dengan Desa Sukaraja / Sungai Ciwulan'")
+    if 'feedback_judul' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN feedback_judul TEXT DEFAULT 'Feedback'")
+    if 'feedback_pertanyaan' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN feedback_pertanyaan TEXT DEFAULT 'Seberapa puas Anda dengan website kami?'")
+    if 'feedback_opsi_pekerjaan' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN feedback_opsi_pekerjaan TEXT DEFAULT 'Pelajar / Mahasiswa, Aparatur Sipil Negara (ASN / PNS), TNI / POLRI, Karyawan Swasta / BUMN, Wiraswasta / Pengusaha / UMKM, Petani / Nelayan / Peternak, Tenaga Pengajar / Dosen / Guru, Peneliti / Praktisi, Ibu Rumah Tangga, Lainnya'")
+    if 'feedback_opsi_aspek' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN feedback_opsi_aspek TEXT DEFAULT 'Tampilan, Pencarian Data, Kelengkapan Data, Metadata, Fitur, Performa Akses'")
+    if 'feedback_placeholder_saran' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN feedback_placeholder_saran TEXT DEFAULT 'Tuliskan saran atau kritik membangun Anda di sini...'")
     conn.commit()
 
     # 3. Perangkat Desa (SOTK)

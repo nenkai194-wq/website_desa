@@ -1203,6 +1203,29 @@ def admin_pengaduan():
     total_feedback = fb_row[0] or 0
     avg_rating = round(fb_row[1] or 0.0, 1)
 
+    # Distribusi Rating Feedback
+    cursor.execute("SELECT rating, COUNT(*) FROM feedback_kepuasan GROUP BY rating")
+    rating_counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+    for r_val, count_val in cursor.fetchall():
+        if r_val in rating_counts:
+            rating_counts[r_val] = count_val
+
+    rating_pct = {}
+    for r_k in range(1, 6):
+        rating_pct[r_k] = round((rating_counts[r_k] / total_feedback * 100), 1) if total_feedback > 0 else 0
+
+    # Rekap Aspek Paling Sering Dipilih
+    cursor.execute("SELECT aspek_peningkatan FROM feedback_kepuasan WHERE aspek_peningkatan IS NOT NULL AND aspek_peningkatan != ''")
+    aspek_counter = {}
+    for r_asp in cursor.fetchall():
+        for item_asp in r_asp[0].split(','):
+            c_item = item_asp.strip()
+            if c_item:
+                aspek_counter[c_item] = aspek_counter.get(c_item, 0) + 1
+    top_aspek = sorted(aspek_counter.items(), key=lambda x: x[1], reverse=True)
+
+    active_tab = request.args.get('tab', 'aduan').strip()
+
     conn.close()
 
     summary = {
@@ -1211,7 +1234,10 @@ def admin_pengaduan():
         'perlu_khusus': total_khusus,
         'sudah_selesai': total_selesai,
         'total_feedback': total_feedback,
-        'avg_rating': avg_rating
+        'avg_rating': avg_rating,
+        'rating_counts': rating_counts,
+        'rating_pct': rating_pct,
+        'top_aspek': top_aspek
     }
 
     return render_template(
@@ -1222,7 +1248,8 @@ def admin_pengaduan():
         summary=summary,
         status_filter=status_filter,
         kategori_filter=kategori_filter,
-        search_query=search_query
+        search_query=search_query,
+        active_tab=active_tab
     )
 
 @app.route('/admin/pengaduan/<int:id>/tanggapi', methods=['POST'])
@@ -1333,6 +1360,44 @@ def admin_hapus_kategori_pengaduan(id):
         flash(f'Kategori "{nama}" berhasil dihapus dari daftar.', 'info')
     conn.close()
     return redirect(url_for('admin_pengaduan'))
+
+# --- PENGATURAN & KELOLA FEEDBACK KEPUASAN PENGUNJUNG ---
+@app.route('/admin/pengaduan/feedback/settings', methods=['POST'])
+@login_required
+def admin_update_feedback_settings():
+    feedback_judul = request.form.get('feedback_judul', 'Feedback').strip()
+    feedback_pertanyaan = request.form.get('feedback_pertanyaan', 'Seberapa puas Anda dengan website kami?').strip()
+    feedback_opsi_pekerjaan = request.form.get('feedback_opsi_pekerjaan', '').strip()
+    feedback_opsi_aspek = request.form.get('feedback_opsi_aspek', '').strip()
+    feedback_placeholder_saran = request.form.get('feedback_placeholder_saran', '').strip()
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+    UPDATE profil_desa SET
+        feedback_judul = ?,
+        feedback_pertanyaan = ?,
+        feedback_opsi_pekerjaan = ?,
+        feedback_opsi_aspek = ?,
+        feedback_placeholder_saran = ?
+    WHERE id = 1
+    ''', (feedback_judul, feedback_pertanyaan, feedback_opsi_pekerjaan, feedback_opsi_aspek, feedback_placeholder_saran))
+    conn.commit()
+    conn.close()
+
+    flash('Pengaturan variabel formulir feedback kepuasan berhasil disimpan.', 'success')
+    return redirect(url_for('admin_pengaduan', tab='feedback'))
+
+@app.route('/admin/pengaduan/feedback/<int:id>/hapus', methods=['POST'])
+@login_required
+def admin_hapus_feedback(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM feedback_kepuasan WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    flash('Data masukan feedback berhasil dihapus.', 'info')
+    return redirect(url_for('admin_pengaduan', tab='feedback'))
 
 # --- 3. MANAJEMEN BERITA ---
 @app.route('/admin/berita')
