@@ -1,0 +1,257 @@
+<!-- ========================================================================= -->
+<!-- FLOATING WIDGET PENGADUAN & ASPIRASI MASYARAKAT (SUDUT KIRI BAWAH)        -->
+<!-- ========================================================================= -->
+
+<!-- BACKDROP CLICKEABLE (Untuk menutup popup saat klik di luar) -->
+<div id="floating-pengaduan-backdrop" class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-[2px] hidden transition-opacity" onclick="toggleFloatingPengaduan(false)"></div>
+
+<!-- FLOATING POPUP DIALOG FORM (Mengambang di Atas Tombol Pemicu) -->
+<div id="floating-pengaduan-popup" class="hidden fixed bottom-28 sm:bottom-20 left-3 sm:left-6 z-50 w-[93vw] sm:w-[360px] max-w-[360px] bg-white rounded-3xl shadow-2xl border border-slate-200/90 overflow-hidden transition-all duration-300 transform scale-95 opacity-0">
+  
+  <!-- Header Bar -->
+  <div class="px-5 pt-3.5 pb-2.5 flex items-center justify-between border-b border-slate-100 bg-slate-50/70">
+    <div class="flex items-center gap-2">
+      <span class="w-7 h-7 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-xs shadow-2xs">
+        <i class="fa-solid fa-headset"></i>
+      </span>
+      <div>
+        <h4 class="font-bold text-xs sm:text-sm text-slate-800 leading-tight">Form Pengaduan Warga</h4>
+        <p class="text-[10px] text-slate-500">Tersambung ke Humas Desa Papayan</p>
+      </div>
+    </div>
+    <button type="button" onclick="toggleFloatingPengaduan(false)" class="w-7 h-7 rounded-full bg-slate-200/70 hover:bg-slate-300 text-slate-500 hover:text-slate-800 flex items-center justify-center text-xs transition" title="Tutup Form">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- Form Body -->
+  <form id="form-floating-pengaduan" onsubmit="submitFloatingPengaduan(event)" enctype="multipart/form-data" class="p-4 sm:p-5 space-y-3 text-xs max-h-[75vh] overflow-y-auto">
+    
+    <!-- Nama -->
+    <div>
+      <label class="block font-bold text-slate-800 mb-1">
+        Nama <span class="text-rose-500 font-black">*</span>
+      </label>
+      <input type="text" name="nama" id="float_nama" required 
+             placeholder="Masukkan nama Anda" 
+             class="w-full bg-white border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl px-3.5 py-2 text-xs text-slate-800 font-medium placeholder-slate-400 focus:outline-none transition shadow-2xs" />
+    </div>
+
+    <!-- Nomor Telepon/WA -->
+    <div>
+      <label class="block font-bold text-slate-800 mb-1">
+        Nomor Telepon/WA <span class="text-rose-500 font-black">*</span>
+      </label>
+      <input type="tel" name="kontak" id="float_kontak" required 
+             placeholder="Masukkan nomor HP/WhatsApp" 
+             class="w-full bg-slate-50/70 border border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl px-3.5 py-2 text-xs text-slate-800 font-medium placeholder-slate-400 focus:outline-none transition shadow-2xs" />
+    </div>
+
+    <!-- Kategori Pengaduan -->
+    <div>
+      <label class="block font-bold text-slate-800 mb-1">
+        Kategori Pengaduan <span class="text-rose-500 font-black">*</span>
+      </label>
+      <div class="relative">
+        <select name="kategori" id="float_kategori" required 
+                class="w-full appearance-none bg-slate-50/70 border border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl px-3.5 py-2 text-xs text-slate-700 font-medium focus:outline-none transition cursor-pointer pr-8 shadow-2xs">
+          <option value="" disabled selected>Pilih kategori pengaduan</option>
+          {% set kat_list = kategori_pengaduan_global or kategori_pengaduan_list %}
+          {% if kat_list %}
+            {% for kat in kat_list %}
+              <option value="{{ kat.nama }}">{{ kat.nama }}</option>
+            {% endfor %}
+          {% else %}
+            <option value="Umum">Umum</option>
+            <option value="Infrastruktur & Jalan">Infrastruktur & Jalan</option>
+            <option value="Pelayanan & Administrasi">Pelayanan & Administrasi</option>
+            <option value="Kebersihan & Lingkungan">Kebersihan & Lingkungan</option>
+            <option value="Keamanan & Ketertiban">Keamanan & Ketertiban</option>
+            <option value="Bantuan Sosial">Bantuan Sosial</option>
+          {% endif %}
+        </select>
+        <div class="absolute right-3 top-2.5 pointer-events-none text-slate-400 text-[10px]">
+          <i class="fa-solid fa-up-down"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pengaduan -->
+    <div>
+      <label class="block font-bold text-slate-800 mb-1">
+        Pengaduan <span class="text-rose-500 font-black">*</span>
+      </label>
+      <textarea name="pesan" id="float_pesan" rows="3" required 
+                placeholder="Masukkan kesan, informasi, atau detail aduan Anda" 
+                class="w-full bg-slate-50/70 border border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl px-3.5 py-2 text-xs text-slate-800 font-medium placeholder-slate-400 focus:outline-none transition resize-none shadow-2xs"></textarea>
+    </div>
+
+    <!-- Lampiran -->
+    <div>
+      <label class="block font-bold text-slate-800 mb-1">
+        Lampiran
+      </label>
+      <label for="float_lampiran" class="flex items-center gap-2.5 w-full bg-slate-50/70 hover:bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-500 font-medium cursor-pointer transition shadow-2xs">
+        <i class="fa-regular fa-file-lines text-slate-400 text-sm"></i>
+        <span id="float_lampiran_text" class="truncate">Unggah foto/PDF jika ada</span>
+      </label>
+      <input type="file" id="float_lampiran" name="lampiran" accept=".jpg,.jpeg,.png,.pdf,.webp" class="hidden" onchange="updateFloatLampiranText(this)">
+    </div>
+
+    <!-- Cloudflare Turnstile / Verification Badge -->
+    <div class="bg-white border border-slate-200 rounded-xl p-2.5 flex items-center justify-between shadow-2xs">
+      <div class="flex items-center gap-2">
+        <div class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px]">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <span class="font-bold text-slate-800 text-xs">Berhasil!</span>
+      </div>
+      <div class="flex flex-col items-end text-right">
+        <div class="flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+          </svg>
+          <span class="font-extrabold text-[9px] tracking-wider text-slate-800">CLOUDFLARE</span>
+        </div>
+        <div class="text-[8px] text-slate-400">
+          <span class="hover:underline cursor-pointer">Privasi</span> • <span class="hover:underline cursor-pointer">Bantuan</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tombol Kirim -->
+    <div class="pt-1 flex items-center justify-end">
+      <button type="submit" id="btn-submit-float-aduan" class="px-5 py-2 rounded-xl bg-[#7cd343] hover:bg-[#6ebd37] text-white font-extrabold text-xs transition flex items-center gap-1.5 shadow-md shadow-lime-500/20 hover:scale-105 active:scale-95">
+        <i class="fa-solid fa-paper-plane text-[10px]"></i>
+        <span>Kirim</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Sukses Feedback Box -->
+  <div id="float-aduan-sukses-box" class="hidden p-6 text-center space-y-3">
+    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-sm">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <h4 class="font-black text-base text-slate-900">Pengaduan Berhasil Dikirim!</h4>
+    <p class="text-xs text-slate-600 leading-relaxed">
+      Aspirasi Anda telah masuk ke sistem kami dan akan segera ditindaklanjuti oleh aparat desa terkait.
+    </p>
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs">
+      <span class="text-slate-500 block text-[11px] mb-0.5">Nomor Tiket Anda:</span>
+      <span id="float-aduan-no-tiket" class="font-mono font-black text-sm text-brand-700 tracking-wider">ADUAN-00000</span>
+    </div>
+    <div class="pt-2 flex items-center justify-center gap-2">
+      <button type="button" onclick="resetFloatingAduanForm()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+        Kirim Lainnya
+      </button>
+      <button type="button" onclick="toggleFloatingPengaduan(false)" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition">
+        Tutup
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOMBOL MENGAMBANG DI SUDUT KIRI BAWAH (Floating Trigger Button) -->
+<div class="fixed bottom-16 sm:bottom-6 left-4 sm:left-6 z-40">
+  <button type="button" id="btn-toggle-floating-pengaduan" onclick="toggleFloatingPengaduan()" 
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#fca5a5] hover:bg-[#f87171] text-white font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none border border-white/30"
+          title="Sampaikan Pengaduan atau Aspirasi Warga">
+    <i class="fa-solid fa-headset text-sm sm:text-base"></i>
+    <span>Pengaduan</span>
+  </button>
+</div>
+
+<!-- JAVASCRIPT LOGIKA FLOATING PENGADUAN -->
+<script>
+  let isFloatingPengaduanOpen = false;
+
+  function toggleFloatingPengaduan(forceState) {
+    const popup = document.getElementById('floating-pengaduan-popup');
+    const backdrop = document.getElementById('floating-pengaduan-backdrop');
+    const btn = document.getElementById('btn-toggle-floating-pengaduan');
+
+    if (typeof forceState === 'boolean') {
+      isFloatingPengaduanOpen = forceState;
+    } else {
+      isFloatingPengaduanOpen = !isFloatingPengaduanOpen;
+    }
+
+    if (isFloatingPengaduanOpen) {
+      popup.classList.remove('hidden');
+      backdrop.classList.remove('hidden');
+      setTimeout(() => {
+        popup.classList.remove('scale-95', 'opacity-0');
+        popup.classList.add('scale-100', 'opacity-100');
+      }, 10);
+      const inputNama = document.getElementById('float_nama');
+      if (inputNama) inputNama.focus();
+    } else {
+      popup.classList.remove('scale-100', 'opacity-100');
+      popup.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        popup.classList.add('hidden');
+        backdrop.classList.add('hidden');
+      }, 200);
+    }
+  }
+
+  function updateFloatLampiranText(input) {
+    const textLabel = document.getElementById('float_lampiran_text');
+    if (input.files && input.files.length > 0) {
+      textLabel.innerText = input.files[0].name;
+      textLabel.classList.add('text-slate-800', 'font-semibold');
+    } else {
+      textLabel.innerText = 'Unggah foto/PDF jika ada';
+      textLabel.classList.remove('text-slate-800', 'font-semibold');
+    }
+  }
+
+  async function submitFloatingPengaduan(e) {
+    e.preventDefault();
+    const btnSubmit = document.getElementById('btn-submit-float-aduan');
+    const originalText = btnSubmit.innerHTML;
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[10px]"></i> Mengirim...';
+
+    const form = document.getElementById('form-floating-pengaduan');
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/api/pengaduan/kirim', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        form.classList.add('hidden');
+        const suksesBox = document.getElementById('float-aduan-sukses-box');
+        suksesBox.classList.remove('hidden');
+        document.getElementById('float-aduan-no-tiket').innerText = result.no_tiket || 'ADUAN-OK';
+        form.reset();
+        document.getElementById('float_lampiran_text').innerText = 'Unggah foto/PDF jika ada';
+      } else {
+        alert(result.message || 'Gagal mengirim pengaduan. Mohon lengkapi seluruh isian.');
+      }
+    } catch (err) {
+      alert('Terjadi kesalahan jaringan saat mengirimkan pengaduan. Silakan coba kembali.');
+    } finally {
+      btnSubmit.disabled = false;
+      btnSubmit.innerHTML = originalText;
+    }
+  }
+
+  function resetFloatingAduanForm() {
+    const form = document.getElementById('form-floating-pengaduan');
+    const suksesBox = document.getElementById('float-aduan-sukses-box');
+    suksesBox.classList.add('hidden');
+    form.classList.remove('hidden');
+    form.reset();
+    document.getElementById('float_lampiran_text').innerText = 'Unggah foto/PDF jika ada';
+    document.getElementById('float_nama').focus();
+  }
+</script>

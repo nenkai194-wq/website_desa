@@ -120,10 +120,14 @@ def inject_global_data():
 
         cursor.execute("SELECT * FROM running_texts WHERE is_active = 1 ORDER BY urutan ASC, id ASC")
         data['running_texts_global'] = [dict(r) for r in cursor.fetchall()]
+
+        cursor.execute("SELECT * FROM kategori_pengaduan ORDER BY urutan ASC, id ASC")
+        data['kategori_pengaduan_global'] = [dict(r) for r in cursor.fetchall()]
         conn.close()
     except Exception:
         data['profil_global'] = {}
         data['running_texts_global'] = []
+        data['kategori_pengaduan_global'] = []
     return data
 
 # Decorator Hak Akses 1: Login Required (Admin & Super Admin)
