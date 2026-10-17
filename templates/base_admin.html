@@ -53,7 +53,7 @@
       <img src="{{ url_for('static', filename=profil_global.logo_website.replace('static/', '')) if profil_global.logo_website and profil_global.logo_website.startswith('static/') else (profil_global.logo_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" class="w-9 h-9 object-contain" alt="Logo" onerror="this.src='{{ url_for('static', filename='images/logo_tasikmalaya.png') }}'" />
       <div>
         <h2 class="text-white font-bold text-sm leading-tight">Admin Desa {{ profil_global.nama_desa or 'Papayan' }}</h2>
-        <span class="text-[11px] text-brand-400 font-medium">Kab. {{ profil_global.kabupaten or 'Kutai Kartanegara' }}</span>
+        <span class="text-[11px] text-brand-400 font-medium">Kabupaten {{ profil_global.kabupaten or 'Kutai Kartanegara' }}</span>
       </div>
     </div>
 

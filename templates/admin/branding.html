@@ -17,7 +17,7 @@
       </div>
       <div>
         <h3 id="preview-nama-desa" class="text-xl font-black text-white leading-tight">Admin Desa {{ profil.nama_desa }}</h3>
-        <p id="preview-kabupaten" class="text-xs text-brand-400 font-semibold mt-0.5">Kab. {{ profil.kabupaten }}</p>
+        <p id="preview-kabupaten" class="text-xs text-brand-400 font-semibold mt-0.5">Kabupaten {{ profil.kabupaten }}</p>
         <p id="preview-judul" class="text-[11px] text-slate-400 mt-1 italic">{{ profil.judul_website }}</p>
       </div>
     </div>
@@ -217,7 +217,7 @@
   });
 
   kabupatenInput.addEventListener('input', (e) => {
-    document.getElementById('preview-kabupaten').innerText = 'Kab. ' + e.target.value;
+    document.getElementById('preview-kabupaten').innerText = 'Kabupaten ' + e.target.value;
   });
 
   logoFileInput.addEventListener('change', function(e) {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ profil.judul_website or 'Website Resmi Desa ' ~ profil.nama_desa }} - Kab. {{ profil.kabupaten }}</title>
+  <title>{{ profil.judul_website or 'Website Resmi Desa ' ~ profil.nama_desa }} - Kabupaten {{ profil.kabupaten }}</title>
   <meta name="description" content="{{ profil.judul_website or 'Website Resmi Desa' }}, Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}, Kalimantan Timur. {{ profil.tagline_website }}." />
   <meta property="og:title" content="{{ profil.judul_website or 'Website Resmi Desa ' ~ profil.nama_desa }}" />
   <meta property="og:description" content="{{ profil.tagline_website or 'Portal Resmi Desa' }}." />
@@ -72,7 +72,7 @@
               PEMDES {{ (profil.nama_desa or 'PAPAYAN')|upper }}
             </h1>
             <span class="text-[11px] sm:text-xs text-emerald-100/90 font-semibold block leading-tight mt-1.5">
-              Kec. {{ profil.kecamatan }}, Kab. {{ profil.kabupaten }}
+              Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}
             </span>
           </div>
         </a>
@@ -140,7 +140,7 @@
               {% else %}
                 <span>🕒 <strong>Jam Pelayanan:</strong> {{ profil.jam_pelayanan or "Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00) WIB" }}</span>
                 <span class="mx-5 text-emerald-400 font-bold">•</span>
-                <span>🏛️ Selamat Datang di Portal Resmi Informasi & Layanan Mandiri Pemerintah Desa {{ profil.nama_desa }}, Kec. {{ profil.kecamatan }}, Kab. {{ profil.kabupaten }}</span>
+                <span>🏛️ Selamat Datang di Portal Resmi Informasi & Layanan Mandiri Pemerintah Desa {{ profil.nama_desa }}, Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}</span>
               {% endif %}
             </marquee>
           </div>
@@ -2101,7 +2101,7 @@
             {% endfor %}
           {% else %}
             <div class="flex justify-between"><span>Dana Desa (APBN)</span><span class="font-bold">44,1%</span></div>
-            <div class="flex justify-between"><span>ADD Kab. Kukar</span><span class="font-bold">38,6%</span></div>
+            <div class="flex justify-between"><span>ADD Kabupaten Kukar</span><span class="font-bold">38,6%</span></div>
             <div class="flex justify-between"><span>PADes & Bagi Hasil</span><span class="font-bold">17,3%</span></div>
           {% endif %}
         </div>
