@@ -2471,6 +2471,12 @@
           <div>
             <span class="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">{{ prod.produsen }}</span>
             <h3 class="font-bold text-gray-900 text-base mt-1 line-clamp-1 group-hover:text-emerald-700 transition">{{ prod.nama }}</h3>
+            {% if prod.latitude and prod.longitude %}
+            <div class="mt-1 flex items-center gap-1 text-[11px] text-sky-700 font-medium">
+              <i class="fa-solid fa-location-dot text-sky-600 text-[10px]"></i>
+              <span class="font-mono">{{ "%.4f"|format(prod.latitude) }}, {{ "%.4f"|format(prod.longitude) }}</span>
+            </div>
+            {% endif %}
             <p class="text-xs text-gray-500 mt-2 line-clamp-2 leading-relaxed">{{ prod.deskripsi }}</p>
           </div>
           
@@ -3539,7 +3545,7 @@
       <div class="p-5 sm:p-8 overflow-y-auto space-y-6 flex-1">
         
         <!-- Grid Harga & Spesifikasi -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div class="bg-emerald-50/80 rounded-2xl p-4 border border-emerald-200 flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg shrink-0 shadow-xs">
               <i class="fa-solid fa-tag"></i>
@@ -3557,6 +3563,16 @@
             <div>
               <span class="text-[10px] font-bold uppercase tracking-wider text-blue-800 block">Penjual / Perajin</span>
               <span id="modal-umkm-penjual" class="text-xs sm:text-sm font-extrabold text-slate-900">Warga Desa Papayan</span>
+            </div>
+          </div>
+
+          <div class="bg-amber-50/80 rounded-2xl p-4 border border-amber-200 flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-amber-600 text-white flex items-center justify-center text-lg shrink-0 shadow-xs">
+              <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 block">Titik Koordinat</span>
+              <span id="modal-umkm-koordinat" class="text-xs sm:text-sm font-extrabold text-slate-900">Desa Papayan</span>
             </div>
           </div>
 
@@ -3587,9 +3603,17 @@
 
       <!-- Footer Modal & Tombol Aksi -->
       <div class="px-5 sm:px-8 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
-        <a id="modal-umkm-wa-btn" href="#" target="_blank" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-md hover:shadow-lg">
-          <i class="fa-brands fa-whatsapp text-lg"></i> Pesan / Beli Langsung via WhatsApp
-        </a>
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <a id="modal-umkm-wa-btn" href="#" target="_blank" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-md hover:shadow-lg">
+            <i class="fa-brands fa-whatsapp text-lg"></i> Pesan via WhatsApp
+          </a>
+          <a id="modal-umkm-maps-btn" href="#" target="_blank" class="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-diamond-turn-right text-emerald-300"></i> Rute di Google Maps
+          </a>
+          <button type="button" id="modal-umkm-peta-btn" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:border-emerald-600 text-slate-700 hover:text-emerald-700 font-bold text-xs transition flex items-center gap-2 shadow-xs">
+            <i class="fa-solid fa-map-pin text-emerald-600"></i> Lihat di Peta Desa
+          </button>
+        </div>
         <button type="button" onclick="tutupModalDetailUmkm()" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition">
           Tutup
         </button>
@@ -5013,6 +5037,8 @@
         satuan: {{ (prod.satuan or 'pcs')|tojson }},
         deskripsi: {{ (prod.deskripsi or '')|tojson }},
         kontak_wa: {{ (prod.kontak_wa or '')|tojson }},
+        latitude: {{ prod.latitude if prod.latitude is not none else 'null' }},
+        longitude: {{ prod.longitude if prod.longitude is not none else 'null' }},
         rating: {{ (prod.rating or '5.0')|tojson }},
         terjual: {{ prod.terjual if prod.terjual is not none else 0 }},
         gambar: {{ (url_for('static', filename=prod.gambar.replace('static/', '')) if prod.gambar and prod.gambar.startswith('static/') else (prod.gambar or url_for('static', filename='images/produk_terasi.jpg')))|tojson }},
@@ -5033,8 +5059,11 @@
       const rating = document.getElementById('modal-umkm-rating');
       const harga = document.getElementById('modal-umkm-harga');
       const penjual = document.getElementById('modal-umkm-penjual');
+      const koordinat = document.getElementById('modal-umkm-koordinat');
       const deskripsi = document.getElementById('modal-umkm-deskripsi');
       const waBtn = document.getElementById('modal-umkm-wa-btn');
+      const mapsBtn = document.getElementById('modal-umkm-maps-btn');
+      const petaBtn = document.getElementById('modal-umkm-peta-btn');
       const gallery = document.getElementById('modal-umkm-gallery');
 
       if (img) {
@@ -5046,6 +5075,15 @@
       if (rating) rating.innerHTML = `<i class="fa-solid fa-star text-amber-400"></i> ${item.rating || '5.0'} (${item.terjual || 0} terjual)`;
       if (harga) harga.innerText = `Rp ${Number(item.harga).toLocaleString('id-ID')} / ${item.satuan || 'pcs'}`;
       if (penjual) penjual.innerText = item.produsen || 'Warga Desa Papayan';
+      
+      if (koordinat) {
+        if (item.latitude && item.longitude) {
+          koordinat.innerHTML = `<span class="font-mono text-emerald-800">${item.latitude.toFixed(4)}, ${item.longitude.toFixed(4)}</span>`;
+        } else {
+          koordinat.innerText = 'Desa Papayan, Kab. Tasikmalaya';
+        }
+      }
+
       if (deskripsi) deskripsi.innerText = item.deskripsi || 'Belum ada deskripsi lengkap mengenai produk ini.';
 
       if (gallery) {
@@ -5075,10 +5113,46 @@
         waBtn.href = `https://wa.me/${cleanWa}?text=${textMsg}`;
       }
 
+      if (mapsBtn) {
+        if (item.latitude && item.longitude) {
+          mapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}`;
+          mapsBtn.classList.remove('hidden');
+        } else {
+          mapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((item.produsen || item.nama) + ' Desa Papayan Kabupaten Tasikmalaya')}`;
+          mapsBtn.classList.remove('hidden');
+        }
+      }
+
+      if (petaBtn) {
+        if (item.latitude && item.longitude) {
+          petaBtn.onclick = function() {
+            tutupModalDetailUmkm();
+            fokusKePetaUMKM(item.latitude, item.longitude, item.nama, item.produsen);
+          };
+          petaBtn.classList.remove('hidden');
+        } else {
+          petaBtn.classList.add('hidden');
+        }
+      }
+
       if (modal) {
         modal.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
       }
+    };
+
+    window.fokusKePetaUMKM = function(lat, lng, nama, produsen) {
+      if (typeof navigateToView === 'function') {
+        navigateToView('peta');
+      }
+      setTimeout(() => {
+        if (window.mainMap && lat && lng) {
+          window.mainMap.setView([lat, lng], 16);
+          if (typeof L !== 'undefined') {
+            L.popup().setLatLng([lat, lng]).setContent(`<b>${nama}</b><br><span style="font-size:11px;color:#0284c7;">Lapak UMKM: ${produsen || 'Warga Papayan'}</span>`).openOn(window.mainMap);
+          }
+        }
+      }, 350);
     };
 
     window.tutupModalDetailUmkm = function() {

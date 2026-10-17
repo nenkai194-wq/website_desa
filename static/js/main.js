@@ -450,11 +450,38 @@ window.desaMap = null;
 window.desaMapMarkers = {};
 
 window.fokusKePetaWisata = function(lat, lng, nama) {
+  if (typeof navigateToView === 'function') {
+    navigateToView('peta');
+  }
   if (window.desaMap && lat && lng) {
     window.desaMap.flyTo([lat, lng], 16, { animate: true, duration: 1.2 });
     if (window.desaMapMarkers[nama]) {
       setTimeout(() => {
         window.desaMapMarkers[nama].openPopup();
+      }, 1200);
+    }
+  }
+};
+
+window.fokusKePetaUMKM = function(lat, lng, nama, produsen) {
+  if (typeof navigateToView === 'function') {
+    navigateToView('peta');
+  }
+  if (window.desaMap && lat && lng) {
+    window.desaMap.flyTo([lat, lng], 16, { animate: true, duration: 1.2 });
+    if (window.desaMapMarkers['umkm_' + nama]) {
+      setTimeout(() => {
+        window.desaMapMarkers['umkm_' + nama].openPopup();
+      }, 1200);
+    } else {
+      setTimeout(() => {
+        L.popup().setLatLng([lat, lng]).setContent(`
+          <div style="font-family:'Outfit',sans-serif;min-width:200px;padding:4px;">
+            <span style="font-size:10px;text-transform:uppercase;color:#0284c7;font-weight:800;letter-spacing:0.5px;">Sentra UMKM Desa</span>
+            <h4 style="margin:2px 0 4px;font-size:14px;font-weight:800;color:#0f172a;">${nama}</h4>
+            <p style="margin:0 0 4px;font-size:11px;color:#0284c7;font-weight:700;">${produsen || 'Warga Papayan'}</p>
+          </div>
+        `).openOn(window.desaMap);
       }, 1200);
     }
   }
@@ -495,6 +522,7 @@ function initLeafletMap() {
   const kantorIcon = createMapPin('#1e40af', 'fa-solid fa-landmark-flag');
   const wisataIcon = createMapPin('#3d920c', 'fa-solid fa-umbrella-beach');
   const mangroveIcon = createMapPin('#047857', 'fa-solid fa-tree');
+  const umkmIcon = createMapPin('#0284c7', 'fa-solid fa-store');
 
   const allLatLngs = [];
 
@@ -570,6 +598,47 @@ function initLeafletMap() {
         </div>
       `);
       allLatLngs.push([pt.lat, pt.lng]);
+    });
+  }
+
+  // 2.1 Plot UMKM with coordinates from window.SERVER_DATA.umkm
+  const umkmList = (window.SERVER_DATA && window.SERVER_DATA.umkm && window.SERVER_DATA.umkm.length > 0)
+    ? window.SERVER_DATA.umkm
+    : [];
+
+  if (umkmList.length > 0) {
+    umkmList.forEach(u => {
+      if (u.latitude && u.longitude) {
+        const uLat = parseFloat(u.latitude);
+        const uLng = parseFloat(u.longitude);
+        if (!isNaN(uLat) && !isNaN(uLng)) {
+          const marker = L.marker([uLat, uLng], { icon: umkmIcon }).addTo(map);
+
+          let fotoUrl = u.gambar || '/static/images/produk_terasi.jpg';
+          if (fotoUrl.startsWith('static/')) fotoUrl = '/' + fotoUrl;
+
+          marker.bindPopup(`
+            <div style="font-family:'Outfit',sans-serif;min-width:220px;max-width:270px;padding:4px;">
+              <div style="width:100%;height:100px;border-radius:8px;overflow:hidden;margin-bottom:8px;background:#f1f5f9;">
+                <img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='/static/images/produk_terasi.jpg'">
+              </div>
+              <span style="font-size:10px;text-transform:uppercase;color:#0284c7;font-weight:800;letter-spacing:0.5px;">Sentra UMKM Desa</span>
+              <h4 style="margin:2px 0 2px;font-size:14px;font-weight:800;color:#0f172a;">${u.nama}</h4>
+              <p style="margin:0 0 6px;font-size:11px;color:#0284c7;font-weight:700;">${u.produsen || 'Warga Papayan'}</p>
+              
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid #e2e8f0;">
+                <span style="font-size:11px;background:#e0f2fe;color:#0369a1;font-weight:700;padding:2px 8px;border-radius:6px;">Rp ${(u.harga || 0).toLocaleString('id-ID')}</span>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${uLat},${uLng}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:white;background:#0284c7;padding:5px 8px;border-radius:6px;text-decoration:none;">
+                  <i class="fa-solid fa-diamond-turn-right"></i> Petunjuk Arah
+                </a>
+              </div>
+            </div>
+          `);
+
+          window.desaMapMarkers['umkm_' + u.nama] = marker;
+          allLatLngs.push([uLat, uLng]);
+        }
+      }
     });
   }
 
