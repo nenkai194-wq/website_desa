@@ -1,0 +1,968 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Kelola Berita & Informasi{% endblock %}
+{% block header_title %}Manajemen Warta & Berita Desa{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- TOP HEADER & ACTION BANNER -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+    <div>
+      <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+        <i class="fa-solid fa-newspaper text-brand-600"></i> Publikasi Warta & Redaksi Berita Desa
+      </h3>
+      <p class="text-xs text-slate-500 mt-0.5">Pantau kelayakan artikel berita: yang <strong>sudah approve & tayang</strong>, <strong>sudah approve belum tayang</strong>, <strong>masih draf</strong>, dan <strong>batal tayang</strong> karena masalah redaksi.</p>
+    </div>
+    <div class="flex items-center gap-2 flex-shrink-0">
+      <button onclick="bukaModalKelolaKategori()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition border border-slate-200">
+        <i class="fa-solid fa-tags text-brand-700"></i> Kelola Kategori
+      </button>
+      <button onclick="bukaModalTambahBerita()" class="px-4 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs flex items-center gap-2 shadow-md transition">
+        <i class="fa-solid fa-plus"></i> Tambah Berita Baru
+      </button>
+    </div>
+  </div>
+
+  <!-- NAVIGATION TABS KELAYAKAN STATUS TAYANG -->
+  <div class="flex border-b border-slate-200 gap-1 overflow-x-auto pb-px">
+    <!-- Tab 1: Sudah Tayang (Frontend) -->
+    <button onclick="gantiTabBerita('tayang')" id="tab-berita-btn-tayang" class="px-4 py-3 font-bold text-xs border-b-2 border-emerald-600 text-emerald-800 flex items-center gap-2 transition whitespace-nowrap">
+      <i class="fa-solid fa-circle-check text-emerald-600"></i>
+      <span>Sudah Tayang di Web</span>
+      <span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-bold">{{ tayang_list|length }}</span>
+    </button>
+
+    <!-- Tab 2: Disetujui (Belum Tayang) -->
+    <button onclick="gantiTabBerita('disetujui')" id="tab-berita-btn-disetujui" class="px-4 py-3 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition whitespace-nowrap">
+      <i class="fa-solid fa-clock-rotate-left text-blue-500"></i>
+      <span>Disetujui (Belum Tayang)</span>
+      <span class="bg-blue-100 text-blue-800 text-[10px] px-2 py-0.5 rounded-full font-bold">{{ disetujui_list|length }}</span>
+    </button>
+
+    <!-- Tab 3: Masih Draft -->
+    <button onclick="gantiTabBerita('draft')" id="tab-berita-btn-draft" class="px-4 py-3 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition whitespace-nowrap">
+      <i class="fa-solid fa-pen-ruler text-amber-500"></i>
+      <span>Masih Draf (Konsep)</span>
+      <span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-bold">{{ draft_list|length }}</span>
+    </button>
+
+    <!-- Tab 4: Batal Tayang (Masalah Redaksi) -->
+    <button onclick="gantiTabBerita('batal')" id="tab-berita-btn-batal" class="px-4 py-3 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition whitespace-nowrap">
+      <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
+      <span>Batal Tayang (Masalah Redaksi)</span>
+      {% if batal_list|length > 0 %}
+      <span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">{{ batal_list|length }}</span>
+      {% else %}
+      <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
+      {% endif %}
+    </button>
+
+    <!-- Tab 5: Semua Artikel -->
+    <button onclick="gantiTabBerita('semua')" id="tab-berita-btn-semua" class="px-4 py-3 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition whitespace-nowrap">
+      <i class="fa-solid fa-list-ul text-slate-400"></i>
+      <span>Semua Berita</span>
+      <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-bold">{{ semua_list|length }}</span>
+    </button>
+  </div>
+
+  <!-- ================= TAB 1: SUDAH APPROVE & TAYANG DI FRONTEND ================= -->
+  <div id="tab-berita-content-tayang" class="space-y-4">
+    <div class="bg-emerald-50/80 border border-emerald-200 p-3.5 rounded-2xl text-xs text-emerald-900 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <i class="fa-solid fa-circle-check text-emerald-600 text-base flex-shrink-0"></i>
+        <span>Artikel dalam tabel ini <strong>telah disetujui (Approved)</strong> dan <strong>sedang aktif tampil di halaman depan website desa</strong>.</span>
+      </div>
+      <span class="font-bold text-emerald-800">{{ tayang_list|length }} Artikel Aktif</span>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left border-collapse">
+          <thead class="text-[11px] uppercase text-slate-400 bg-slate-50 border-b border-slate-100 font-bold">
+            <tr>
+              <th class="py-3.5 px-4 w-20">Foto</th>
+              <th class="py-3.5 px-4">Judul Artikel & Ringkasan</th>
+              <th class="py-3.5 px-4">Kategori</th>
+              <th class="py-3.5 px-4">Penulis & Tanggal</th>
+              <th class="py-3.5 px-4 text-center">Status Frontend</th>
+              <th class="py-3.5 px-4 text-center">Tindakan Redaksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for b in tayang_list %}
+            <tr class="hover:bg-slate-50/70 transition">
+              <td class="py-3.5 px-4">
+                <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 relative">
+                  <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar.startswith('static/') else b.gambar }}" class="w-full h-full object-cover" alt="{{ b.judul }}" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'" />
+                </div>
+              </td>
+              <td class="py-3.5 px-4 max-w-sm">
+                <h4 class="font-bold text-slate-900 text-sm leading-snug">{{ b.judul }}</h4>
+                <p class="text-slate-500 text-[11px] line-clamp-1 mt-0.5 leading-relaxed">{{ b.ringkasan }}</p>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                <span class="px-2.5 py-1 rounded-full bg-brand-50 text-brand-800 font-bold text-[10px] border border-brand-200">
+                  {{ b.kategori }}
+                </span>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap text-slate-600">
+                <span class="block font-medium">{{ b.penulis }}</span>
+                <span class="text-[10px] text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>{{ b.tanggal }}</span>
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] border border-emerald-300">
+                  <i class="fa-solid fa-circle-check text-emerald-600"></i> Tayang di Web
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <div class="flex items-center justify-center gap-1.5">
+                  <button onclick="bukaModalEditBerita({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}', '{{ b.kategori|replace("'", "\\'") }}', '{{ b.penulis|replace("'", "\\'") }}', '{{ b.tanggal }}', '{{ b.gambar }}', '{{ b.ringkasan|replace("'", "\\'") }}', '{{ b.isi|replace("'", "\\'")|replace('\n', ' ') }}', '{{ b.status or 'Tayang' }}', '{{ b.catatan_redaksi|replace("'", "\\'") if b.catatan_redaksi else '' }}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition" title="Edit Berita">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                  </button>
+
+                  <!-- Batal Tayang karena Masalah Redaksi -->
+                  <button onclick="bukaModalBatalTayang({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs transition" title="Tarik dari web karena masalah redaksi">
+                    <i class="fa-solid fa-ban"></i> Batal Tayang
+                  </button>
+
+                  <!-- Jadikan Draft -->
+                  <form method="POST" action="{{ url_for('admin_ubah_status_berita', id=b.id) }}" class="inline">
+                    <input type="hidden" name="status" value="Draft">
+                    <button type="submit" class="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition" title="Kembalikan ke Draf">
+                      <i class="fa-solid fa-pen-ruler"></i>
+                    </button>
+                  </form>
+
+                  <form method="POST" action="{{ url_for('admin_hapus_berita', id=b.id) }}" onsubmit="return confirm('Hapus artikel berita {{ b.judul }}?');" class="inline">
+                    <button type="submit" class="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition" title="Hapus Berita">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="py-12 text-center text-slate-400">
+                <i class="fa-solid fa-circle-check text-3xl mb-2 text-slate-300 block"></i>
+                Tidak ada artikel berita yang sedang tayang di website.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAB 2: SUDAH APPROVE TAPI BELUM TAYANG ================= -->
+  <div id="tab-berita-content-disetujui" class="space-y-4 hidden">
+    <div class="bg-blue-50/80 border border-blue-200 p-3.5 rounded-2xl text-xs text-blue-900 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <i class="fa-solid fa-clock-rotate-left text-blue-600 text-base flex-shrink-0"></i>
+        <span>Artikel ini <strong>sudah disetujui (Approved)</strong> redaksi, namun <strong>belum ditayangkan ke publik</strong> (antrian rilis atau terjadwal).</span>
+      </div>
+      <span class="font-bold text-blue-800">{{ disetujui_list|length }} Antrian</span>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left border-collapse">
+          <thead class="text-[11px] uppercase text-slate-400 bg-slate-50 border-b border-slate-100 font-bold">
+            <tr>
+              <th class="py-3.5 px-4 w-20">Foto</th>
+              <th class="py-3.5 px-4">Judul Artikel & Ringkasan</th>
+              <th class="py-3.5 px-4">Kategori</th>
+              <th class="py-3.5 px-4">Penulis & Tanggal</th>
+              <th class="py-3.5 px-4 text-center">Status</th>
+              <th class="py-3.5 px-4 text-center">Tindakan Publikasi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for b in disetujui_list %}
+            <tr class="hover:bg-slate-50/70 transition">
+              <td class="py-3.5 px-4">
+                <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 relative">
+                  <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar.startswith('static/') else b.gambar }}" class="w-full h-full object-cover" />
+                </div>
+              </td>
+              <td class="py-3.5 px-4 max-w-sm">
+                <h4 class="font-bold text-slate-900 text-sm leading-snug">{{ b.judul }}</h4>
+                <p class="text-slate-500 text-[11px] line-clamp-1 mt-0.5 leading-relaxed">{{ b.ringkasan }}</p>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                <span class="px-2.5 py-1 rounded-full bg-brand-50 text-brand-800 font-bold text-[10px] border border-brand-200">
+                  {{ b.kategori }}
+                </span>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap text-slate-600">
+                <span class="block font-medium">{{ b.penulis }}</span>
+                <span class="text-[10px] text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>{{ b.tanggal }}</span>
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 font-bold text-[10px] border border-blue-300">
+                  <i class="fa-solid fa-clock text-blue-600"></i> Disetujui (Belum Tayang)
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <div class="flex items-center justify-center gap-1.5">
+                  <!-- Tayangkan Sekarang -->
+                  <form method="POST" action="{{ url_for('admin_ubah_status_berita', id=b.id) }}" class="inline">
+                    <input type="hidden" name="status" value="Tayang">
+                    <button type="submit" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition">
+                      <i class="fa-solid fa-globe"></i> Tayangkan Sekarang
+                    </button>
+                  </form>
+
+                  <button onclick="bukaModalEditBerita({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}', '{{ b.kategori|replace("'", "\\'") }}', '{{ b.penulis|replace("'", "\\'") }}', '{{ b.tanggal }}', '{{ b.gambar }}', '{{ b.ringkasan|replace("'", "\\'") }}', '{{ b.isi|replace("'", "\\'")|replace('\n', ' ') }}', '{{ b.status }}', '{{ b.catatan_redaksi|replace("'", "\\'") if b.catatan_redaksi else '' }}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                  </button>
+
+                  <button onclick="bukaModalBatalTayang({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition" title="Batal Tayangkan">
+                    <i class="fa-solid fa-ban"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="py-12 text-center text-slate-400">
+                <i class="fa-solid fa-clock text-3xl mb-2 text-slate-300 block"></i>
+                Tidak ada artikel yang berstatus disetujui tapi belum tayang.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAB 3: MASIH DRAFT (KONSEP) ================= -->
+  <div id="tab-berita-content-draft" class="space-y-4 hidden">
+    <div class="bg-amber-50/80 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-900 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <i class="fa-solid fa-pen-ruler text-amber-600 text-base flex-shrink-0"></i>
+        <span>Artikel ini <strong>masih berupa Draf (Konsep)</strong> yang belum disetujui dan <strong>tidak tampil</strong> di website publik.</span>
+      </div>
+      <span class="font-bold text-amber-800">{{ draft_list|length }} Draf</span>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left border-collapse">
+          <thead class="text-[11px] uppercase text-slate-400 bg-slate-50 border-b border-slate-100 font-bold">
+            <tr>
+              <th class="py-3.5 px-4 w-20">Foto</th>
+              <th class="py-3.5 px-4">Judul Draf & Ringkasan</th>
+              <th class="py-3.5 px-4">Kategori</th>
+              <th class="py-3.5 px-4">Penulis & Tanggal</th>
+              <th class="py-3.5 px-4 text-center">Status</th>
+              <th class="py-3.5 px-4 text-center">Tindakan Kelayakan</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for b in draft_list %}
+            <tr class="hover:bg-slate-50/70 transition">
+              <td class="py-3.5 px-4">
+                <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 relative">
+                  <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar.startswith('static/') else b.gambar }}" class="w-full h-full object-cover" />
+                </div>
+              </td>
+              <td class="py-3.5 px-4 max-w-sm">
+                <h4 class="font-bold text-slate-900 text-sm leading-snug">{{ b.judul }}</h4>
+                <p class="text-slate-500 text-[11px] line-clamp-1 mt-0.5 leading-relaxed">{{ b.ringkasan }}</p>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                <span class="px-2.5 py-1 rounded-full bg-brand-50 text-brand-800 font-bold text-[10px] border border-brand-200">
+                  {{ b.kategori }}
+                </span>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap text-slate-600">
+                <span class="block font-medium">{{ b.penulis }}</span>
+                <span class="text-[10px] text-slate-400">{{ b.tanggal }}</span>
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px] border border-amber-300">
+                  <i class="fa-solid fa-pen-nib text-amber-600"></i> Masih Draf
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <div class="flex items-center justify-center gap-1.5">
+                  <!-- Approve & Tayangkan -->
+                  <form method="POST" action="{{ url_for('admin_ubah_status_berita', id=b.id) }}" class="inline">
+                    <input type="hidden" name="status" value="Tayang">
+                    <button type="submit" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition" title="Setujui dan langsung tayangkan di website">
+                      <i class="fa-solid fa-check"></i> Setujui & Tayangkan
+                    </button>
+                  </form>
+
+                  <!-- Setujui Saja (Belum Tayang) -->
+                  <form method="POST" action="{{ url_for('admin_ubah_status_berita', id=b.id) }}" class="inline">
+                    <input type="hidden" name="status" value="Disetujui">
+                    <button type="submit" class="px-2.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold text-xs transition" title="Setujui dulu tanpa tayang">
+                      <i class="fa-solid fa-clock"></i> Setujui Dulu
+                    </button>
+                  </form>
+
+                  <button onclick="bukaModalEditBerita({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}', '{{ b.kategori|replace("'", "\\'") }}', '{{ b.penulis|replace("'", "\\'") }}', '{{ b.tanggal }}', '{{ b.gambar }}', '{{ b.ringkasan|replace("'", "\\'") }}', '{{ b.isi|replace("'", "\\'")|replace('\n', ' ') }}', '{{ b.status }}', '{{ b.catatan_redaksi|replace("'", "\\'") if b.catatan_redaksi else '' }}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs transition">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="py-12 text-center text-slate-400">
+                <i class="fa-solid fa-pen-ruler text-3xl mb-2 text-slate-300 block"></i>
+                Tidak ada draf konsep artikel yang tersimpan.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAB 4: BATAL TAYANG KARENA MASALAH REDAKSI ================= -->
+  <div id="tab-berita-content-batal" class="space-y-4 hidden">
+    <div class="bg-rose-50/80 border border-rose-200 p-3.5 rounded-2xl text-xs text-rose-900 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <i class="fa-solid fa-triangle-exclamation text-rose-600 text-base flex-shrink-0"></i>
+        <span>Artikel ini <strong>dibatalkan tayang / ditolak publikasi</strong> karena ada kendala redaksi, butuh verifikasi fakta, atau revisi naskah.</span>
+      </div>
+      <span class="font-bold text-rose-800">{{ batal_list|length }} Masalah Redaksi</span>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left border-collapse">
+          <thead class="text-[11px] uppercase text-slate-400 bg-slate-50 border-b border-slate-100 font-bold">
+            <tr>
+              <th class="py-3.5 px-4 w-20">Foto</th>
+              <th class="py-3.5 px-4">Judul Artikel</th>
+              <th class="py-3.5 px-4">Kategori & Penulis</th>
+              <th class="py-3.5 px-4">Catatan Masalah Redaksi</th>
+              <th class="py-3.5 px-4 text-center">Status</th>
+              <th class="py-3.5 px-4 text-center">Tindakan Perbaikan</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for b in batal_list %}
+            <tr class="hover:bg-slate-50/70 transition">
+              <td class="py-3.5 px-4">
+                <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 relative">
+                  <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar.startswith('static/') else b.gambar }}" class="w-full h-full object-cover" />
+                </div>
+              </td>
+              <td class="py-3.5 px-4 max-w-xs">
+                <h4 class="font-bold text-slate-900 text-sm leading-snug">{{ b.judul }}</h4>
+                <span class="text-[10px] text-slate-400 mt-0.5 block"><i class="fa-regular fa-calendar mr-1"></i>{{ b.tanggal }}</span>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                <span class="block font-bold text-slate-700">{{ b.kategori }}</span>
+                <span class="text-[11px] text-slate-500">{{ b.penulis }}</span>
+              </td>
+              <td class="py-3.5 px-4 max-w-sm">
+                <div class="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-xl text-[11px] font-medium leading-relaxed">
+                  <i class="fa-solid fa-circle-exclamation text-rose-600 mr-1"></i>
+                  {{ b.catatan_redaksi or 'Belum ada catatan kendala redaksi yang ditulis.' }}
+                </div>
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-100 text-red-800 font-bold text-[10px] border border-red-300">
+                  <i class="fa-solid fa-ban text-red-600"></i> Batal Tayang
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <div class="flex items-center justify-center gap-1.5">
+                  <!-- Pulihkan ke Draf untuk Diperbaiki -->
+                  <form method="POST" action="{{ url_for('admin_ubah_status_berita', id=b.id) }}" class="inline">
+                    <input type="hidden" name="status" value="Draft">
+                    <button type="submit" class="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-xs flex items-center gap-1 transition" title="Kembalikan ke draf untuk direvisi">
+                      <i class="fa-solid fa-rotate-left"></i> Revisi ke Draf
+                    </button>
+                  </form>
+
+                  <!-- Setujui & Tayangkan Ulang -->
+                  <form method="POST" action="{{ url_for('admin_ubah_status_berita', id=b.id) }}" onsubmit="return confirm('Apakah masalah redaksi artikel ini sudah tuntas dan layak ditayangkan?');" class="inline">
+                    <input type="hidden" name="status" value="Tayang">
+                    <button type="submit" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition" title="Tayangkan ke web">
+                      <i class="fa-solid fa-check"></i> Setujui Ulang
+                    </button>
+                  </form>
+
+                  <button onclick="bukaModalEditBerita({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}', '{{ b.kategori|replace("'", "\\'") }}', '{{ b.penulis|replace("'", "\\'") }}', '{{ b.tanggal }}', '{{ b.gambar }}', '{{ b.ringkasan|replace("'", "\\'") }}', '{{ b.isi|replace("'", "\\'")|replace('\n', ' ') }}', '{{ b.status }}', '{{ b.catatan_redaksi|replace("'", "\\'") if b.catatan_redaksi else '' }}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs transition">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+
+                  <form method="POST" action="{{ url_for('admin_hapus_berita', id=b.id) }}" onsubmit="return confirm('Hapus permanen artikel {{ b.judul }}?');" class="inline">
+                    <button type="submit" class="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition" title="Hapus Permanen">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="py-12 text-center text-slate-400">
+                <i class="fa-solid fa-shield-halved text-3xl mb-2 text-slate-300 block"></i>
+                Tidak ada artikel yang dibatalkan tayang karena masalah redaksi.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAB 5: SEMUA ARTIKEL ================= -->
+  <div id="tab-berita-content-semua" class="space-y-4 hidden">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left border-collapse">
+          <thead class="text-[11px] uppercase text-slate-400 bg-slate-50 border-b border-slate-100 font-bold">
+            <tr>
+              <th class="py-3.5 px-4 w-20">Foto</th>
+              <th class="py-3.5 px-4">Judul Artikel</th>
+              <th class="py-3.5 px-4">Kategori</th>
+              <th class="py-3.5 px-4">Penulis & Tanggal</th>
+              <th class="py-3.5 px-4 text-center">Status Kelayakan</th>
+              <th class="py-3.5 px-4 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for b in semua_list %}
+            <tr class="hover:bg-slate-50/70 transition">
+              <td class="py-3.5 px-4">
+                <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 relative">
+                  <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar.startswith('static/') else b.gambar }}" class="w-full h-full object-cover" />
+                </div>
+              </td>
+              <td class="py-3.5 px-4 max-w-sm">
+                <h4 class="font-bold text-slate-900 text-sm leading-snug">{{ b.judul }}</h4>
+                <p class="text-slate-500 text-[11px] line-clamp-1 mt-0.5 leading-relaxed">{{ b.ringkasan }}</p>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                <span class="px-2.5 py-1 rounded-full bg-brand-50 text-brand-800 font-bold text-[10px] border border-brand-200">
+                  {{ b.kategori }}
+                </span>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap text-slate-600">
+                <span class="block font-medium">{{ b.penulis }}</span>
+                <span class="text-[10px] text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>{{ b.tanggal }}</span>
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                {% if b.status == 'Tayang' or b.status is none %}
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] border border-emerald-300">
+                  <i class="fa-solid fa-circle-check text-emerald-600"></i> Tayang
+                </span>
+                {% elif b.status == 'Disetujui' %}
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold text-[10px] border border-blue-300">
+                  <i class="fa-solid fa-clock text-blue-600"></i> Disetujui
+                </span>
+                {% elif b.status == 'Draft' %}
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px] border border-amber-300">
+                  <i class="fa-solid fa-pen-nib text-amber-600"></i> Draf
+                </span>
+                {% elif b.status == 'Batal Tayang' %}
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-bold text-[10px] border border-rose-300" title="{{ b.catatan_redaksi }}">
+                  <i class="fa-solid fa-ban text-rose-600"></i> Batal Tayang
+                </span>
+                {% endif %}
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <div class="flex items-center justify-center gap-1.5">
+                  <button onclick="bukaModalEditBerita({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}', '{{ b.kategori|replace("'", "\\'") }}', '{{ b.penulis|replace("'", "\\'") }}', '{{ b.tanggal }}', '{{ b.gambar }}', '{{ b.ringkasan|replace("'", "\\'") }}', '{{ b.isi|replace("'", "\\'")|replace('\n', ' ') }}', '{{ b.status or 'Tayang' }}', '{{ b.catatan_redaksi|replace("'", "\\'") if b.catatan_redaksi else '' }}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                  </button>
+                  <form method="POST" action="{{ url_for('admin_hapus_berita', id=b.id) }}" onsubmit="return confirm('Hapus artikel {{ b.judul }}?');" class="inline">
+                    <button type="submit" class="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition" title="Hapus">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= MODAL TAMBAH / EDIT BERITA ================= -->
+<div id="modal-berita" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 max-h-[92vh] overflow-y-auto shadow-2xl">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div>
+        <h3 id="modal-berita-title" class="font-bold text-base text-slate-900">Tambah Berita Baru</h3>
+        <p class="text-[11px] text-slate-400">Tulis warta kegiatan, pengumuman, atau informasi publik desa.</p>
+      </div>
+      <button onclick="tutupModalBerita()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+    </div>
+
+    <form id="form-berita" method="POST" action="{{ url_for('admin_tambah_berita') }}" enctype="multipart/form-data" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Artikel <span class="text-red-500">*</span></label>
+        <input type="text" name="judul" id="input-berita-judul" required placeholder="Judul berita desa..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+      </div>
+
+      <!-- Kategori Dropdown & Tanggal Terbit Date Picker -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-bold text-slate-700">Kategori <span class="text-red-500">*</span></label>
+            <button type="button" onclick="tambahKategoriCepatPrompt()" class="text-[10px] font-bold text-brand-700 hover:text-brand-900 flex items-center gap-1" title="Tambah kategori baru langsung ke daftar">
+              <i class="fa-solid fa-plus-circle"></i> + Kategori Baru
+            </button>
+          </div>
+          <select name="kategori" id="input-berita-kategori" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium cursor-pointer">
+            <option value="" disabled selected>-- Pilih Kategori Berita --</option>
+            {% for kat in kategori_list %}
+            <option value="{{ kat.nama }}">{{ kat.nama }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-bold text-slate-700">Tanggal Terbit <span class="text-red-500">*</span></label>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="setTanggalCepat(0)" class="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 transition" title="Pilih Hari Ini">
+                Hari Ini
+              </button>
+              <button type="button" onclick="setTanggalCepat(-1)" class="text-[10px] font-bold text-slate-600 hover:text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 transition" title="Pilih Kemarin">
+                Kemarin
+              </button>
+            </div>
+          </div>
+          <div class="relative">
+            <input type="date" name="tanggal" id="input-berita-tanggal" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium cursor-pointer" onchange="updateLabelTanggalIndo()" />
+          </div>
+          <p id="label-tanggal-indo" class="text-[11px] text-brand-700 font-semibold mt-1 flex items-center gap-1">
+            <i class="fa-regular fa-calendar-check text-emerald-600"></i> <span id="text-tanggal-indo"></span>
+          </p>
+        </div>
+      </div>
+
+      <!-- STATUS KELAYAKAN PUBLIKASI & CATATAN REDAKSI -->
+      <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2">
+        <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+          <span><i class="fa-solid fa-shield-halved text-brand-600 mr-1"></i> Status Kelayakan & Publikasi Berita</span>
+          <span class="text-[10px] text-slate-400 font-normal">Pilih status tayang</span>
+        </label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <select name="status" id="input-berita-status" onchange="cekStatusBatalTayang()" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer">
+              <option value="Tayang" class="text-emerald-700 font-bold">🟢 Sudah Approve & Tayang di Web</option>
+              <option value="Disetujui" class="text-blue-700 font-bold">🔵 Sudah Approve (Belum Tayang)</option>
+              <option value="Draft" class="text-amber-700 font-bold">🟡 Masih Draf (Konsep)</option>
+              <option value="Batal Tayang" class="text-rose-700 font-bold">🔴 Batal Tayang (Ada Masalah Redaksi)</option>
+            </select>
+          </div>
+          <div>
+            <input type="text" name="catatan_redaksi" id="input-berita-catatan-redaksi" placeholder="Catatan redaksi (jika ada kendala / revisi)..." class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload Foto Sampul dengan Pratinjau & Opsi Ganti Mudah -->
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+        <div class="flex items-center justify-between mb-2">
+          <label class="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-camera text-brand-600"></i> Upload Foto Sampul Berita
+          </label>
+          <span class="text-[10px] text-slate-400 font-medium">JPG, PNG, WEBP (Maks 5MB)</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="w-24 h-20 rounded-xl overflow-hidden bg-white border border-slate-200 flex-shrink-0 relative shadow-inner">
+            <img id="preview-berita-gambar" src="{{ url_for('static', filename='images/pantai_kersik.jpg') }}" class="w-full h-full object-cover" />
+          </div>
+          <div class="flex-1 space-y-1.5">
+            <input type="file" name="gambar_file" id="input-berita-file" accept="image/*" onchange="previewFotoBerita(event)" class="text-xs text-slate-500 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-100 file:text-brand-800 hover:file:bg-brand-200 cursor-pointer w-full" />
+            <p class="text-[10px] text-slate-400">Pilih file untuk mengganti foto sampul berita ini secara instan.</p>
+            <input type="hidden" name="gambar_lama" id="input-berita-gambar-lama" />
+            <input type="text" name="gambar" id="input-berita-gambar" placeholder="Atau path / URL foto..." class="w-full text-[11px] bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-slate-600 focus:outline-none focus:ring-1 focus:ring-brand-500" />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Penulis / Sumber Berita</label>
+        <input type="text" name="penulis" id="input-berita-penulis" placeholder="Contoh: Humas Pemdes Kersik" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Ringkasan Singkat (Lead Berita) <span class="text-red-500">*</span></label>
+        <textarea name="ringkasan" id="input-berita-ringkasan" required rows="2" placeholder="1-2 kalimat pengantar artikel untuk pratinjau kartu berita..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Isi Artikel Lengkap <span class="text-red-500">*</span></label>
+        <textarea name="isi" id="input-berita-isi" required rows="6" placeholder="Tuliskan berita secara lengkap dan jelas..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium"></textarea>
+      </div>
+
+      <div class="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+        <button type="button" onclick="tutupModalBerita()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+          Batal
+        </button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow-md">
+          Simpan Berita
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL CEPAT BATAL TAYANG (MASALAH REDAKSI) ================= -->
+<div id="modal-batal-tayang" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+      <h3 class="font-bold text-sm text-rose-600 flex items-center gap-1.5">
+        <i class="fa-solid fa-triangle-exclamation"></i> Batal Tayangkan Berita
+      </h3>
+      <button onclick="tutupModalBatalTayang()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+    </div>
+
+    <form id="form-batal-tayang" method="POST">
+      <input type="hidden" name="status" value="Batal Tayang">
+      <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+        Artikel <strong id="batal-tayang-judul" class="text-slate-900"></strong> akan ditarik dari website publik. Tuliskan <strong>catatan kendala redaksi</strong> agar penulis dapat merevisi:
+      </p>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Masalah Redaksi <span class="text-rose-500">*</span></label>
+        <textarea name="catatan_redaksi" id="input-batal-catatan" required rows="3" placeholder="Contoh: Perlu klarifikasi angka anggaran, izin foto narasumber belum lengkap..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-rose-500 font-medium"></textarea>
+      </div>
+      <div class="mt-4 flex items-center justify-end gap-2 border-t border-slate-100 pt-3">
+        <button type="button" onclick="tutupModalBatalTayang()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+          Batal
+        </button>
+        <button type="submit" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow transition">
+          Konfirmasi Batal Tayang
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL KELOLA KATEGORI BERITA ================= -->
+<div id="modal-kategori-berita" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div>
+        <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-tags text-brand-600"></i> Kelola Kategori Berita
+        </h3>
+        <p class="text-[11px] text-slate-400">Tambah, ubah, atau hapus kategori pilihan berita desa.</p>
+      </div>
+      <button onclick="tutupModalKelolaKategori()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+    </div>
+
+    <!-- Form Tambah Kategori Baru -->
+    <form method="POST" action="{{ url_for('admin_tambah_kategori_berita') }}" class="mb-5 bg-brand-50/70 p-3.5 rounded-2xl border border-brand-100">
+      <label class="block text-xs font-bold text-brand-900 mb-1.5">+ Tambah Kategori Baru</label>
+      <div class="flex items-center gap-2">
+        <input type="text" name="nama" required placeholder="Nama kategori baru..." class="flex-1 text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        <button type="submit" class="px-3.5 py-2 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow transition whitespace-nowrap">
+          Tambah
+        </button>
+      </div>
+    </form>
+
+    <!-- Daftar Kategori yang Tersedia -->
+    <div>
+      <h4 class="text-xs font-bold text-slate-700 mb-2 flex items-center justify-between">
+        <span>Daftar Kategori Aktif</span>
+        <span class="text-[10px] text-slate-400 font-normal">{{ kategori_list|length }} Kategori</span>
+      </h4>
+
+      <div class="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50">
+        {% for kat in kategori_list %}
+        <div class="p-3 bg-white flex items-center justify-between hover:bg-slate-50 transition">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+            <span class="text-xs font-bold text-slate-800" id="kat-label-{{ kat.id }}">{{ kat.nama }}</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="editKategoriPrompt({{ kat.id }}, '{{ kat.nama|replace("'", "\\'") }}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-brand-50 text-slate-600 hover:text-brand-800 font-bold text-[11px] transition" title="Edit Kategori">
+              <i class="fa-solid fa-pen-to-square"></i> Edit
+            </button>
+            <form method="POST" action="{{ url_for('admin_hapus_kategori_berita', id=kat.id) }}" onsubmit="return confirm('Hapus kategori {{ kat.nama }}?');" class="inline">
+              <button type="submit" class="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition" title="Hapus Kategori">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% else %}
+        <div class="p-4 text-center text-xs text-slate-400 bg-white">
+          Belum ada kategori berita yang dibuat.
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="mt-5 pt-3 border-t border-slate-100 text-right">
+      <button type="button" onclick="tutupModalKelolaKategori()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+        Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const defaultFotoBerita = "{{ url_for('static', filename='images/pantai_kersik.jpg') }}";
+
+  function previewFotoBerita(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('preview-berita-gambar').src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  const namaBulanIndo = [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  ];
+
+  function formatTanggalIndoFromISO(isoDateStr) {
+    if (!isoDateStr) return '';
+    const parts = isoDateStr.split('-');
+    if (parts.length === 3) {
+      const day = parseInt(parts[2], 10);
+      const monthIdx = parseInt(parts[1], 10) - 1;
+      const year = parts[0];
+      return `${day} ${namaBulanIndo[monthIdx] || ''} ${year}`;
+    }
+    return isoDateStr;
+  }
+
+  function convertIndoDateToISO(indoDateStr) {
+    if (!indoDateStr) return new Date().toISOString().split('T')[0];
+    if (/^\d{4}-\d{2}-\d{2}$/.test(indoDateStr.trim())) return indoDateStr.trim();
+
+    const bulanMap = {
+      'januari': '01', 'februari': '02', 'maret': '03', 'april': '04',
+      'mei': '05', 'juni': '06', 'juli': '07', 'agustus': '08',
+      'september': '09', 'oktober': '10', 'november': '11', 'desember': '12'
+    };
+
+    const parts = indoDateStr.trim().split(/\s+/);
+    if (parts.length === 3) {
+      const day = parts[0].padStart(2, '0');
+      const month = bulanMap[parts[1].toLowerCase()] || '01';
+      const year = parts[2];
+      return `${year}-${month}-${day}`;
+    }
+    return new Date().toISOString().split('T')[0];
+  }
+
+  function updateLabelTanggalIndo() {
+    const val = document.getElementById('input-berita-tanggal').value;
+    const labelSpan = document.getElementById('text-tanggal-indo');
+    if (labelSpan) {
+      labelSpan.textContent = val ? formatTanggalIndoFromISO(val) : 'Silakan klik untuk memilih tanggal';
+    }
+  }
+
+  function setTanggalCepat(offsetHari = 0) {
+    const d = new Date();
+    d.setDate(d.getDate() + offsetHari);
+    const iso = d.toISOString().split('T')[0];
+    const input = document.getElementById('input-berita-tanggal');
+    if (input) {
+      input.value = iso;
+      updateLabelTanggalIndo();
+    }
+  }
+
+  function gantiTabBerita(tab) {
+    const tabs = ['tayang', 'disetujui', 'draft', 'batal', 'semua'];
+    tabs.forEach(t => {
+      const btn = document.getElementById(`tab-berita-btn-${t}`);
+      const content = document.getElementById(`tab-berita-content-${t}`);
+      if (t === tab) {
+        btn.classList.remove('border-transparent', 'text-slate-500');
+        if (t === 'tayang') {
+          btn.classList.add('border-emerald-600', 'text-emerald-800');
+        } else if (t === 'disetujui') {
+          btn.classList.add('border-blue-600', 'text-blue-800');
+        } else if (t === 'draft') {
+          btn.classList.add('border-amber-600', 'text-amber-800');
+        } else if (t === 'batal') {
+          btn.classList.add('border-rose-600', 'text-rose-800');
+        } else {
+          btn.classList.add('border-brand-700', 'text-brand-800');
+        }
+        content.classList.remove('hidden');
+      } else {
+        btn.classList.add('border-transparent', 'text-slate-500');
+        btn.classList.remove('border-emerald-600', 'text-emerald-800', 'border-blue-600', 'text-blue-800', 'border-amber-600', 'text-amber-800', 'border-rose-600', 'text-rose-800', 'border-brand-700', 'text-brand-800');
+        content.classList.add('hidden');
+      }
+    });
+  }
+
+  function bukaModalTambahBerita() {
+    document.getElementById('modal-berita-title').innerText = 'Tambah Berita Baru';
+    const form = document.getElementById('form-berita');
+    form.action = "{{ url_for('admin_tambah_berita') }}";
+    form.reset();
+    document.getElementById('input-berita-gambar-lama').value = '';
+    document.getElementById('input-berita-gambar').value = '';
+    document.getElementById('input-berita-catatan-redaksi').value = '';
+    document.getElementById('input-berita-status').value = 'Tayang';
+    document.getElementById('preview-berita-gambar').src = defaultFotoBerita;
+    
+    // Set tanggal hari ini secara otomatis
+    const todayISO = new Date().toISOString().split('T')[0];
+    document.getElementById('input-berita-tanggal').value = todayISO;
+    updateLabelTanggalIndo();
+
+    document.getElementById('modal-berita').classList.remove('hidden');
+  }
+
+  function bukaModalEditBerita(id, judul, kategori, penulis, tanggal, gambar, ringkasan, isi, status, catatan) {
+    document.getElementById('modal-berita-title').innerText = 'Edit Berita & Status Kelayakan';
+    const form = document.getElementById('form-berita');
+    form.action = `/admin/berita/${id}/edit`;
+    document.getElementById('input-berita-judul').value = judul;
+    document.getElementById('input-berita-penulis').value = penulis;
+
+    // Set tanggal dari data berita (konversi ke YYYY-MM-DD agar muncul di datepicker)
+    const isoDate = convertIndoDateToISO(tanggal);
+    document.getElementById('input-berita-tanggal').value = isoDate;
+    updateLabelTanggalIndo();
+
+    document.getElementById('input-berita-gambar').value = gambar || '';
+    document.getElementById('input-berita-gambar-lama').value = gambar || '';
+    document.getElementById('input-berita-ringkasan').value = ringkasan;
+    document.getElementById('input-berita-isi').value = isi;
+    document.getElementById('input-berita-status').value = status || 'Tayang';
+    document.getElementById('input-berita-catatan-redaksi').value = catatan || '';
+
+    // Set dropdown kategori
+    const selectKat = document.getElementById('input-berita-kategori');
+    let optionFound = false;
+    for (let i = 0; i < selectKat.options.length; i++) {
+      if (selectKat.options[i].value === kategori) {
+        selectKat.selectedIndex = i;
+        optionFound = true;
+        break;
+      }
+    }
+    if (!optionFound && kategori) {
+      const opt = document.createElement('option');
+      opt.value = kategori;
+      opt.textContent = kategori;
+      opt.selected = true;
+      selectKat.appendChild(opt);
+    }
+
+    // Set foto preview
+    let previewSrc = defaultFotoBerita;
+    if (gambar) {
+      if (gambar.startsWith('static/')) {
+        previewSrc = '/' + gambar;
+      } else if (gambar.startsWith('http://') || gambar.startsWith('https://') || gambar.startsWith('/')) {
+        previewSrc = gambar;
+      } else {
+        previewSrc = '/' + gambar;
+      }
+    }
+    document.getElementById('preview-berita-gambar').src = previewSrc;
+    document.getElementById('modal-berita').classList.remove('hidden');
+  }
+
+  function tutupModalBerita() {
+    document.getElementById('modal-berita').classList.add('hidden');
+  }
+
+  function cekStatusBatalTayang() {
+    const st = document.getElementById('input-berita-status').value;
+    const catatanInput = document.getElementById('input-berita-catatan-redaksi');
+    if (st === 'Batal Tayang' && !catatanInput.value) {
+      catatanInput.placeholder = 'Wajib cantumkan kendala/masalah redaksi...';
+      catatanInput.focus();
+    }
+  }
+
+  // --- Modal Batal Tayang Cepat ---
+  function bukaModalBatalTayang(id, judul) {
+    document.getElementById('batal-tayang-judul').innerText = `"${judul}"`;
+    const form = document.getElementById('form-batal-tayang');
+    form.action = `/admin/berita/${id}/status`;
+    document.getElementById('input-batal-catatan').value = '';
+    document.getElementById('modal-batal-tayang').classList.remove('hidden');
+  }
+
+  function tutupModalBatalTayang() {
+    document.getElementById('modal-batal-tayang').classList.add('hidden');
+  }
+
+  // --- Kelola Kategori Modal & Actions ---
+  function bukaModalKelolaKategori() {
+    document.getElementById('modal-kategori-berita').classList.remove('hidden');
+  }
+
+  function tutupModalKelolaKategori() {
+    document.getElementById('modal-kategori-berita').classList.add('hidden');
+  }
+
+  function editKategoriPrompt(id, namaLama) {
+    const namaBaru = prompt(`Ubah nama kategori "${namaLama}" menjadi:`, namaLama);
+    if (namaBaru && namaBaru.trim() !== '' && namaBaru.trim() !== namaLama) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `/admin/berita/kategori/${id}/edit`;
+
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'nama';
+      input.value = namaBaru.trim();
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+    }
+  }
+
+  async function tambahKategoriCepatPrompt() {
+    const namaBaru = prompt('Masukkan nama kategori berita baru:');
+    if (namaBaru && namaBaru.trim() !== '') {
+      try {
+        const resp = await fetch('/api/admin/berita/kategori/tambah', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nama: namaBaru.trim() })
+        });
+        const res = await resp.json();
+        if (res.success) {
+          const selectKat = document.getElementById('input-berita-kategori');
+          const opt = document.createElement('option');
+          opt.value = res.nama;
+          opt.textContent = res.nama;
+          opt.selected = true;
+          selectKat.appendChild(opt);
+          alert(res.message);
+        } else {
+          alert(res.message || 'Gagal menambahkan kategori.');
+        }
+      } catch (err) {
+        alert('Gagal menghubungi server.');
+      }
+    }
+  }
+</script>
+{% endblock %}

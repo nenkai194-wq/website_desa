@@ -1,0 +1,824 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Buku Publikasi Desa{% endblock %}
+{% block header_title %}Buku & Dokumen Publikasi Desa{% endblock %}
+
+{% block content %}
+
+<!-- MACRO TABEL REUSABLE -->
+{% macro render_table(buku_data, tab_type) %}
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-xs text-left border-collapse">
+      <thead class="text-[11px] uppercase text-slate-400 bg-slate-50 border-b border-slate-100 font-bold">
+        <tr>
+          <th class="py-3.5 px-4 w-20">Sampul</th>
+          <th class="py-3.5 px-4 min-w-[280px]">Judul & Informasi Dokumen</th>
+          <th class="py-3.5 px-4">Kategori & Edisi</th>
+          <th class="py-3.5 px-4 text-center">Spesifikasi File</th>
+          <th class="py-3.5 px-4 text-center min-w-[150px]">Statistik Akses</th>
+          <th class="py-3.5 px-4 text-center">Status</th>
+          <th class="py-3.5 px-4 text-center">Tindakan</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for b in buku_data %}
+        <tr class="hover:bg-slate-50/70 transition">
+          <!-- Sampul 3D Preview -->
+          <td class="py-3.5 px-4">
+            <div class="relative w-14 h-20 rounded-md overflow-hidden bg-slate-100 border border-slate-300 shadow-sm flex-shrink-0 group">
+              <img src="{{ url_for('static', filename=b.cover_buku.replace('static/', '')) if b.cover_buku.startswith('static/') else b.cover_buku }}" 
+                   class="w-full h-full object-cover transition group-hover:scale-105" 
+                   alt="{{ b.judul }}" 
+                   onerror="this.src='{{ url_for('static', filename='images/kantor_desa.jpg') }}'" />
+              <span class="absolute bottom-1 right-1 bg-red-600 text-white font-extrabold text-[8px] px-1 py-0.5 rounded shadow">PDF</span>
+              {% if b.is_featured == 1 %}
+              <span class="absolute top-1 left-1 bg-amber-400 text-amber-950 font-black text-[8px] px-1 py-0.5 rounded shadow flex items-center gap-0.5" title="Buku Unggulan Utama">
+                <i class="fa-solid fa-star text-[7px]"></i>
+              </span>
+              {% endif %}
+            </div>
+          </td>
+
+          <!-- Judul & Info -->
+          <td class="py-3.5 px-4">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              {% if b.is_featured == 1 %}
+              <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-300 inline-flex items-center gap-1">
+                <i class="fa-solid fa-crown text-amber-600 text-[9px]"></i> Unggulan Utama
+              </span>
+              {% endif %}
+              <span class="text-slate-400 text-[11px]"><i class="fa-solid fa-user-pen mr-1"></i>{{ b.penulis }}</span>
+              <span class="text-slate-300">•</span>
+              <span class="text-slate-500 font-semibold text-[11px]"><i class="fa-solid fa-calendar mr-1"></i>Tahun {{ b.tahun }}</span>
+            </div>
+            <h4 class="font-bold text-slate-800 text-sm leading-snug hover:text-brand-700 transition">{{ b.judul }}</h4>
+            <p class="text-slate-500 text-[11px] mt-1 line-clamp-2">{{ b.sinopsis or 'Tidak ada deskripsi sinopsis.' }}</p>
+          </td>
+
+          <!-- Kategori & Edisi -->
+          <td class="py-3.5 px-4 whitespace-nowrap">
+            <span class="inline-block bg-slate-100 text-slate-700 font-bold text-[10px] px-2.5 py-1 rounded-lg border border-slate-200">
+              <i class="fa-solid fa-bookmark text-brand-600 mr-1"></i>{{ b.kategori }}
+            </span>
+            <span class="block text-[11px] text-slate-400 mt-1 font-medium">{{ b.edisi or 'Edisi Tahunan' }}</span>
+          </td>
+
+          <!-- Spesifikasi File -->
+          <td class="py-3.5 px-4 text-center whitespace-nowrap">
+            <span class="inline-flex items-center gap-1 bg-red-50 text-red-700 font-bold text-[10px] px-2 py-0.5 rounded-md border border-red-200">
+              <i class="fa-solid fa-file-pdf"></i> {{ b.ukuran_file or 'PDF' }}
+            </span>
+            <span class="block text-[11px] text-slate-400 mt-1">{{ b.jumlah_halaman }} Halaman</span>
+          </td>
+
+          <!-- Statistik Unduhan & Baca Online -->
+          <td class="py-3 px-4 whitespace-nowrap">
+            <div class="flex flex-col gap-1.5 min-w-[145px]">
+              <!-- Unduh PDF -->
+              <div class="flex items-center justify-between gap-2 bg-blue-50 text-blue-800 px-2.5 py-1 rounded-lg border border-blue-200 text-[11px] font-semibold" title="Total diunduh format PDF">
+                <span class="flex items-center gap-1.5 text-blue-600">
+                  <i class="fa-solid fa-cloud-arrow-down text-xs"></i> Diunduh:
+                </span>
+                <strong class="font-black text-blue-900">{{ b.jumlah_unduh or 0 }}x</strong>
+              </div>
+
+              <!-- Baca Online -->
+              <div class="flex items-center justify-between gap-2 bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-lg border border-emerald-200 text-[11px] font-semibold" title="Total dibaca langsung secara online">
+                <span class="flex items-center gap-1.5 text-emerald-600">
+                  <i class="fa-solid fa-book-open-reader text-xs"></i> Dibaca:
+                </span>
+                <strong class="font-black text-emerald-900">{{ b.jumlah_baca or 0 }}x</strong>
+              </div>
+
+              <!-- Total Interaksi & Popularitas -->
+              <div class="flex items-center justify-between text-[10px] px-1 pt-0.5">
+                <span class="text-slate-400">Total Akses:</span>
+                <span class="font-extrabold text-slate-700 flex items-center gap-1">
+                  {% if buku_terpopuler and b.id == buku_terpopuler.id and (b.jumlah_unduh + b.jumlah_baca) > 0 %}
+                  <span class="bg-amber-400 text-amber-950 font-black text-[9px] px-1.5 py-0.2 rounded-full shadow-sm flex items-center gap-0.5" title="Buku Paling Populer">
+                    <i class="fa-solid fa-fire text-[8px] text-red-600"></i> Top #1
+                  </span>
+                  {% endif %}
+                  {{ (b.jumlah_unduh or 0) + (b.jumlah_baca or 0) }}x
+                </span>
+              </div>
+            </div>
+          </td>
+
+          <!-- Status -->
+          <td class="py-3.5 px-4 text-center whitespace-nowrap">
+            {% if b.status == 'Tayang' %}
+            <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 font-bold text-[10px] px-2.5 py-1 rounded-full border border-emerald-200">
+              <i class="fa-solid fa-circle-check"></i> Tayang di Web
+            </span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-800 font-bold text-[10px] px-2.5 py-1 rounded-full border border-amber-200">
+              <i class="fa-solid fa-pen-ruler"></i> Masih Draf
+            </span>
+            {% endif %}
+          </td>
+
+          <!-- Tindakan -->
+          <td class="py-3.5 px-4 text-center whitespace-nowrap">
+            <div class="flex items-center justify-center gap-1.5">
+              <!-- Pratinjau PDF -->
+              <a href="{{ url_for('static', filename=b.file_pdf.replace('static/', '')) if b.file_pdf.startswith('static/') else b.file_pdf }}" 
+                 target="_blank" 
+                 class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition" 
+                 title="Buka / Baca PDF Online">
+                <i class="fa-solid fa-eye text-xs"></i>
+              </a>
+
+              <!-- Unduh Langsung -->
+              <a href="{{ url_for('unduh_publikasi', id=b.id) }}" 
+                 class="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition" 
+                 title="Unduh PDF Resmi">
+                <i class="fa-solid fa-download text-xs"></i>
+              </a>
+
+              <!-- Toggle Unggulan -->
+              <form action="{{ url_for('admin_toggle_featured_publikasi', id=b.id) }}" method="POST" class="inline">
+                <button type="submit" 
+                        class="p-2 rounded-xl {% if b.is_featured == 1 %}bg-amber-100 text-amber-700 hover:bg-amber-200{% else %}bg-slate-100 text-slate-400 hover:text-amber-500 hover:bg-slate-200{% endif %} transition" 
+                        title="{% if b.is_featured == 1 %}Nonaktifkan Unggulan{% else %}Jadikan Buku Unggulan Utama{% endif %}">
+                  <i class="fa-solid fa-star text-xs"></i>
+                </button>
+              </form>
+
+              <!-- Ubah Status (Tayang / Draft) -->
+              <form action="{{ url_for('admin_ubah_status_publikasi', id=b.id) }}" method="POST" class="inline">
+                <input type="hidden" name="status" value="{% if b.status == 'Tayang' %}Draft{% else %}Tayang{% endif %}">
+                <button type="submit" 
+                        class="p-2 rounded-xl {% if b.status == 'Tayang' %}bg-amber-50 hover:bg-amber-100 text-amber-700{% else %}bg-emerald-50 hover:bg-emerald-100 text-emerald-700{% endif %} transition" 
+                        title="{% if b.status == 'Tayang' %}Tarik ke Draf{% else %}Tayangkan ke Web{% endif %}">
+                  <i class="fa-solid {% if b.status == 'Tayang' %}fa-eye-slash{% else %}fa-circle-check{% endif %} text-xs"></i>
+                </button>
+              </form>
+
+              <!-- Edit Modal -->
+              <button type="button" onclick="bukaModalEditPublikasi({{ b.id }})" 
+                      class="p-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 transition" 
+                      title="Edit Informasi Buku">
+                <i class="fa-solid fa-pen-to-square text-xs"></i>
+              </button>
+
+              <!-- Hapus -->
+              <form action="{{ url_for('admin_hapus_publikasi', id=b.id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku publikasi ini?');" class="inline">
+                <button type="submit" class="p-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 transition" title="Hapus Buku">
+                  <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="py-12 text-center text-slate-400">
+            <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-300 flex items-center justify-center mx-auto mb-3 text-2xl">
+              <i class="fa-solid fa-book-open"></i>
+            </div>
+            <p class="font-semibold text-slate-600 text-sm">Belum ada buku publikasi dalam kategori ini.</p>
+            <p class="text-xs text-slate-400 mt-1">Klik tombol <strong>"Tambah Buku Baru"</strong> untuk mengunggah PDF profil desa atau publikasi lainnya.</p>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endmacro %}
+
+<div class="space-y-6">
+
+  <!-- TOP HEADER & ACTION BANNER -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+    <div>
+      <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+        <i class="fa-solid fa-book-bookmark text-brand-600"></i> Perpustakaan Digital & Buku Publikasi Desa
+      </h3>
+      <p class="text-xs text-slate-500 mt-0.5">Kelola dokumen resmi dan buku publikasi desa dalam format PDF seperti <strong>Profil Desa</strong>, <strong>Desa Dalam Angka</strong>, <strong>Laporan Transparansi APBDes</strong>, dan lainnya.</p>
+    </div>
+    <div class="flex items-center gap-2 flex-shrink-0">
+      <button onclick="bukaModalKelolaKategoriPublikasi()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition border border-slate-200">
+        <i class="fa-solid fa-tags text-brand-700"></i> Kelola Kategori
+      </button>
+      <a href="{{ url_for('publikasi') }}" target="_blank" class="px-3.5 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center gap-1.5 transition border border-emerald-200">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> Lihat Tampilan Frontend
+      </a>
+      <button onclick="bukaModalTambahPublikasi()" class="px-4 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs flex items-center gap-2 shadow-md transition">
+        <i class="fa-solid fa-plus"></i> Tambah Buku Baru
+      </button>
+    </div>
+  </div>
+
+  <!-- STATISTIK KARTU IKHTISAR -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Card 1: Total Koleksi Buku -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center text-lg flex-shrink-0">
+        <i class="fa-solid fa-book"></i>
+      </div>
+      <div>
+        <p class="text-[11px] text-slate-400 font-semibold uppercase">Total Koleksi Buku</p>
+        <h4 class="text-lg font-black text-slate-800">{{ semua_list|length }} <span class="text-xs font-normal text-slate-400">Judul</span></h4>
+        <span class="text-[10px] text-emerald-600 font-bold block">{{ tayang_list|length }} Tayang di Web Publik</span>
+      </div>
+    </div>
+
+    <!-- Card 2: Total Diunduh PDF -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-lg flex-shrink-0">
+        <i class="fa-solid fa-cloud-arrow-down"></i>
+      </div>
+      <div>
+        <p class="text-[11px] text-slate-400 font-semibold uppercase">Total Diunduh (PDF)</p>
+        <h4 class="text-lg font-black text-blue-700">{{ total_unduh }} <span class="text-xs font-normal text-slate-400">Kali diunduh</span></h4>
+        <span class="text-[10px] text-slate-400 block">File PDF disimpan warga</span>
+      </div>
+    </div>
+
+    <!-- Card 3: Total Dibaca Online -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg flex-shrink-0">
+        <i class="fa-solid fa-book-open-reader"></i>
+      </div>
+      <div>
+        <p class="text-[11px] text-slate-400 font-semibold uppercase">Total Dibaca Online</p>
+        <h4 class="text-lg font-black text-emerald-700">{{ total_baca }} <span class="text-xs font-normal text-slate-400">Kali dibaca</span></h4>
+        <span class="text-[10px] text-slate-400 block">Pratinjau pembaca web</span>
+      </div>
+    </div>
+
+    <!-- Card 4: Buku Terpopuler -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-lg flex-shrink-0">
+        <i class="fa-solid fa-fire text-amber-600"></i>
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="text-[11px] text-slate-400 font-semibold uppercase">Buku Terpopuler</p>
+        <h4 class="text-xs font-black text-slate-800 truncate" title="{{ buku_terpopuler.judul if buku_terpopuler else '-' }}">
+          {{ buku_terpopuler.judul if buku_terpopuler else '-' }}
+        </h4>
+        <span class="text-[10px] text-amber-700 font-bold block mt-0.5">
+          {{ buku_terpopuler.total_akses if buku_terpopuler else 0 }}x Total ({{ buku_terpopuler.jumlah_unduh or 0 }} Unduh + {{ buku_terpopuler.jumlah_baca or 0 }} Baca)
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR PENGURUTAN POPULARITAS & MINAT WARGA -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/90 text-xs">
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="font-bold text-slate-600 flex items-center gap-1.5 flex-shrink-0">
+        <i class="fa-solid fa-arrow-down-wide-short text-brand-600"></i> Urutkan Buku:
+      </span>
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+        <a href="{{ url_for('admin_publikasi', sort='default') }}" 
+           class="px-3 py-1.5 rounded-xl font-bold transition whitespace-nowrap {% if sort_by == 'default' or not sort_by %}bg-brand-700 text-white shadow-sm{% else %}bg-white text-slate-600 hover:bg-slate-200 border border-slate-200{% endif %}">
+          Default (Unggulan & Terbaru)
+        </a>
+        <a href="{{ url_for('admin_publikasi', sort='terpopuler') }}" 
+           class="px-3 py-1.5 rounded-xl font-bold transition whitespace-nowrap flex items-center gap-1 {% if sort_by == 'terpopuler' %}bg-amber-500 text-white shadow-sm{% else %}bg-white text-slate-600 hover:bg-slate-200 border border-slate-200{% endif %}">
+          <i class="fa-solid fa-fire text-xs"></i> Paling Populer (Total Akses)
+        </a>
+        <a href="{{ url_for('admin_publikasi', sort='unduh') }}" 
+           class="px-3 py-1.5 rounded-xl font-bold transition whitespace-nowrap flex items-center gap-1 {% if sort_by == 'unduh' %}bg-blue-600 text-white shadow-sm{% else %}bg-white text-slate-600 hover:bg-slate-200 border border-slate-200{% endif %}">
+          <i class="fa-solid fa-cloud-arrow-down text-xs"></i> Paling Sering Diunduh
+        </a>
+        <a href="{{ url_for('admin_publikasi', sort='baca') }}" 
+           class="px-3 py-1.5 rounded-xl font-bold transition whitespace-nowrap flex items-center gap-1 {% if sort_by == 'baca' %}bg-emerald-600 text-white shadow-sm{% else %}bg-white text-slate-600 hover:bg-slate-200 border border-slate-200{% endif %}">
+          <i class="fa-solid fa-book-open-reader text-xs"></i> Paling Sering Dibaca Online
+        </a>
+      </div>
+    </div>
+
+    <div class="text-[11px] text-slate-500 font-medium flex-shrink-0">
+      Total Interaksi Warga: <strong class="text-slate-900 font-extrabold">{{ total_interaksi }} kali</strong> (Unduh + Baca)
+    </div>
+  </div>
+
+  <!-- NAVIGATION TABS -->
+  <div class="flex border-b border-slate-200 gap-1 overflow-x-auto pb-px">
+    <!-- Tab 1: Tayang -->
+    <button onclick="gantiTabPublikasi('tayang')" id="tab-pub-btn-tayang" class="px-4 py-3 font-bold text-xs border-b-2 border-emerald-600 text-emerald-800 flex items-center gap-2 transition whitespace-nowrap">
+      <i class="fa-solid fa-circle-check text-emerald-600"></i>
+      <span>Sudah Tayang di Web</span>
+      <span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-bold">{{ tayang_list|length }}</span>
+    </button>
+
+    <!-- Tab 2: Draft -->
+    <button onclick="gantiTabPublikasi('draft')" id="tab-pub-btn-draft" class="px-4 py-3 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition whitespace-nowrap">
+      <i class="fa-solid fa-pen-ruler text-amber-500"></i>
+      <span>Draf (Belum Tayang)</span>
+      <span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-bold">{{ draft_list|length }}</span>
+    </button>
+
+    <!-- Tab 3: Semua -->
+    <button onclick="gantiTabPublikasi('semua')" id="tab-pub-btn-semua" class="px-4 py-3 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition whitespace-nowrap">
+      <i class="fa-solid fa-list-ul text-slate-400"></i>
+      <span>Semua Dokumen</span>
+      <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-bold">{{ semua_list|length }}</span>
+    </button>
+  </div>
+
+  <!-- ================= TAB 1: TAYANG ================= -->
+  <div id="tab-pub-content-tayang" class="space-y-4">
+    <div class="bg-emerald-50/80 border border-emerald-200 p-3.5 rounded-2xl text-xs text-emerald-900 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <i class="fa-solid fa-circle-check text-emerald-600 text-base flex-shrink-0"></i>
+        <span>Buku publikasi di bawah ini <strong>aktif tayang</strong> dan dapat dibaca / diunduh langsung oleh masyarakat umum di halaman frontend website desa.</span>
+      </div>
+      <span class="font-bold text-emerald-800">{{ tayang_list|length }} Buku Tayang</span>
+    </div>
+
+    {{ render_table(tayang_list, 'tayang') }}
+  </div>
+
+  <!-- ================= TAB 2: DRAFT ================= -->
+  <div id="tab-pub-content-draft" class="hidden space-y-4">
+    <div class="bg-amber-50/80 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-900 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <i class="fa-solid fa-pen-ruler text-amber-500 text-base flex-shrink-0"></i>
+        <span>Buku publikasi di bawah ini berstatus <strong>Draf</strong> dan <strong>tidak tampil</strong> di website publik warga. Klik tombol "Tayangkan" untuk merilisnya.</span>
+      </div>
+      <span class="font-bold text-amber-800">{{ draft_list|length }} Draf</span>
+    </div>
+
+    {{ render_table(draft_list, 'draft') }}
+  </div>
+
+  <!-- ================= TAB 3: SEMUA ================= -->
+  <div id="tab-pub-content-semua" class="hidden space-y-4">
+    {{ render_table(semua_list, 'semua') }}
+  </div>
+
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL: TAMBAH BUKU PUBLIKASI BARU                                         -->
+<!-- ========================================================================= -->
+<div id="modal-tambah-publikasi" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all my-8">
+    
+    <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-sm">
+          <i class="fa-solid fa-book-medical"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-800 text-sm leading-tight">Tambah Buku Publikasi Desa</h3>
+          <p class="text-[11px] text-slate-400">Unggah file dokumen PDF resmi dan lengkapi deskripsinya</p>
+        </div>
+      </div>
+      <button onclick="tutupModalTambahPublikasi()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <form action="{{ url_for('admin_tambah_publikasi') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+      
+      <!-- Judul Buku -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Buku Publikasi <span class="text-red-500">*</span></label>
+        <input type="text" name="judul" required placeholder="Contoh: Buku Profil Desa Kersik 2026 atau Desa Dalam Angka 2026" 
+               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+      </div>
+
+      <!-- Kategori & Edisi -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Dokumen <span class="text-red-500">*</span></label>
+          <div class="flex gap-2">
+            <select name="kategori" required class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+              {% for k in kategori_list %}
+              <option value="{{ k.nama }}">{{ k.nama }}</option>
+              {% endfor %}
+            </select>
+            <button type="button" onclick="bukaModalKelolaKategoriPublikasi()" class="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition" title="Kelola Kategori">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Edisi / Seri Publikasi</label>
+          <input type="text" name="edisi" placeholder="Contoh: Edisi Tahunan / Cetakan I" value="Edisi Tahunan" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        </div>
+      </div>
+
+      <!-- Penulis & Tahun -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Penulis / Tim Penyusun</label>
+          <input type="text" name="penulis" value="Pemerintah Desa" placeholder="Contoh: Tim Penyusun Profil Desa" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tahun Terbit</label>
+          <input type="number" name="tahun" value="2026" min="2000" max="2099" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        </div>
+      </div>
+
+      <!-- Upload PDF & Cover -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-file-pdf text-red-500"></i> File Dokumen PDF <span class="text-red-500">*</span>
+          </label>
+          <input type="file" name="pdf_file" accept=".pdf" 
+                 class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer" />
+          <p class="text-[10px] text-slate-400 mt-1">Ukuran file dihitung otomatis. Format: .pdf</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-image text-brand-600"></i> Gambar Sampul / Cover Buku
+          </label>
+          <input type="file" name="cover_file" accept="image/*" 
+                 class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 cursor-pointer" />
+          <p class="text-[10px] text-slate-400 mt-1">Format: JPG, PNG, WEBP (Rasio 3:4 disarankan)</p>
+        </div>
+      </div>
+
+      <!-- Halaman & Ukuran File Manual (Opsional) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Jumlah Halaman</label>
+          <input type="number" name="jumlah_halaman" value="50" min="1" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Ukuran File (Opsional)</label>
+          <input type="text" name="ukuran_file" placeholder="Otomatis dihitung saat upload (contoh: 2.5 MB)" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        </div>
+      </div>
+
+      <!-- Sinopsis / Ringkasan -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Sinopsis & Ringkasan Dokumen</label>
+        <textarea name="sinopsis" rows="3" placeholder="Tuliskan gambaran ringkas isi buku publikasi ini agar menarik minat warga untuk membaca dan mengunduh..." 
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Status & Pilihan Unggulan -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" name="is_featured" value="1" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500 w-4 h-4">
+          <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-crown text-amber-500"></i> Jadikan Buku Publikasi Unggulan Utama di Frontend
+          </span>
+        </label>
+
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-bold text-slate-700">Status:</label>
+          <select name="status" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+            <option value="Tayang">Langsung Tayang di Web</option>
+            <option value="Draft">Simpan Sebagai Draf</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+        <button type="button" onclick="tutupModalTambahPublikasi()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+          Batal
+        </button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow-md transition flex items-center gap-2">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Simpan & Terbitkan Buku
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL: EDIT BUKU PUBLIKASI                                                -->
+<!-- ========================================================================= -->
+<div id="modal-edit-publikasi" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all my-8">
+    
+    <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-800 text-sm leading-tight">Edit Buku Publikasi Desa</h3>
+          <p class="text-[11px] text-slate-400">Perbarui informasi naskah, file dokumen PDF, atau sampul</p>
+        </div>
+      </div>
+      <button onclick="tutupModalEditPublikasi()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <form id="form-edit-publikasi" action="" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+      
+      <!-- Judul Buku -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Buku Publikasi <span class="text-red-500">*</span></label>
+        <input type="text" id="edit-pub-judul" name="judul" required 
+               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+      </div>
+
+      <!-- Kategori & Edisi -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Dokumen <span class="text-red-500">*</span></label>
+          <select id="edit-pub-kategori" name="kategori" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+            {% for k in kategori_list %}
+            <option value="{{ k.nama }}">{{ k.nama }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Edisi / Seri Publikasi</label>
+          <input type="text" id="edit-pub-edisi" name="edisi" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        </div>
+      </div>
+
+      <!-- Penulis & Tahun -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Penulis / Tim Penyusun</label>
+          <input type="text" id="edit-pub-penulis" name="penulis" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tahun Terbit</label>
+          <input type="number" id="edit-pub-tahun" name="tahun" min="2000" max="2099" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        </div>
+      </div>
+
+      <!-- Ganti PDF & Cover -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-file-pdf text-red-500"></i> Ganti File PDF (Opsional)
+          </label>
+          <input type="file" name="pdf_file" accept=".pdf" 
+                 class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer" />
+          <p id="edit-pub-current-pdf" class="text-[10px] text-slate-500 mt-1 truncate"></p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-image text-brand-600"></i> Ganti Sampul Buku (Opsional)
+          </label>
+          <input type="file" name="cover_file" accept="image/*" 
+                 class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 cursor-pointer" />
+          <p class="text-[10px] text-slate-400 mt-1">Kosongkan jika tidak ingin mengubah cover</p>
+        </div>
+      </div>
+
+      <!-- Halaman & Ukuran File -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Jumlah Halaman</label>
+          <input type="number" id="edit-pub-halaman" name="jumlah_halaman" min="1" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Ukuran File</label>
+          <input type="text" id="edit-pub-ukuran" name="ukuran_file" placeholder="Contoh: 2.4 MB" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        </div>
+      </div>
+
+      <!-- Sinopsis / Ringkasan -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Sinopsis & Ringkasan Dokumen</label>
+        <textarea id="edit-pub-sinopsis" name="sinopsis" rows="3" 
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Statistik Counter (Unduh & Baca Online) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+        <div>
+          <label class="block text-xs font-bold text-blue-900 mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-cloud-arrow-down text-blue-600"></i> Counter Diunduh (PDF)
+          </label>
+          <input type="number" id="edit-pub-unduh" name="jumlah_unduh" min="0" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-blue-200 text-xs font-bold text-blue-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          <p class="text-[10px] text-slate-400 mt-1">Total unduhan dokumen PDF ini oleh warga.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-emerald-900 mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-book-open-reader text-emerald-600"></i> Counter Dibaca Online
+          </label>
+          <input type="number" id="edit-pub-baca" name="jumlah_baca" min="0" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 text-xs font-bold text-emerald-900 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          <p class="text-[10px] text-slate-400 mt-1">Total dokumen ini dibuka/dibaca secara online.</p>
+        </div>
+      </div>
+
+      <!-- Status & Pilihan Unggulan -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" id="edit-pub-featured" name="is_featured" value="1" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500 w-4 h-4">
+          <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-crown text-amber-500"></i> Jadikan Buku Publikasi Unggulan Utama di Frontend
+          </span>
+        </label>
+
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-bold text-slate-700">Status:</label>
+          <select id="edit-pub-status" name="status" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+            <option value="Tayang">Tayang di Web</option>
+            <option value="Draft">Draf (Belum Tayang)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+        <button type="button" onclick="tutupModalEditPublikasi()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+          Batal
+        </button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs shadow-md transition flex items-center gap-2">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL: KELOLA KATEGORI PUBLIKASI                                          -->
+<!-- ========================================================================= -->
+<div id="modal-kelola-kategori-pub" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all">
+    
+    <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm">
+          <i class="fa-solid fa-tags"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-800 text-sm leading-tight">Kelola Kategori Buku Publikasi</h3>
+          <p class="text-[11px] text-slate-400">Tambah, ubah nama, atau hapus kategori publikasi desa</p>
+        </div>
+      </div>
+      <button onclick="tutupModalKelolaKategoriPublikasi()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <div class="p-6 space-y-4">
+      <!-- Form Tambah Kategori -->
+      <form action="{{ url_for('admin_tambah_kategori_publikasi') }}" method="POST" class="flex gap-2">
+        <input type="text" name="nama" required placeholder="Nama kategori baru (contoh: Buletin Desa)" 
+               class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" />
+        <button type="submit" class="px-4 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow transition flex items-center gap-1.5 flex-shrink-0">
+          <i class="fa-solid fa-plus"></i> Tambah
+        </button>
+      </form>
+
+      <!-- Daftar Kategori yang Ada -->
+      <div class="border border-slate-200 rounded-2xl overflow-hidden max-h-72 overflow-y-auto">
+        <table class="w-full text-xs text-left">
+          <thead class="bg-slate-50 text-[11px] font-bold text-slate-500 border-b border-slate-100 uppercase">
+            <tr>
+              <th class="py-2.5 px-3">Nama Kategori</th>
+              <th class="py-2.5 px-3 text-right">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for k in kategori_list %}
+            <tr class="hover:bg-slate-50 transition">
+              <td class="py-2.5 px-3 font-semibold text-slate-700 flex items-center gap-2">
+                <i class="fa-solid fa-folder-open text-brand-600 text-[10px]"></i> {{ k.nama }}
+              </td>
+              <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                <!-- Edit Nama -->
+                <button type="button" onclick="editNamaKategoriPublikasi({{ k.id }}, '{{ k.nama }}')" 
+                        class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit Nama">
+                  <i class="fa-solid fa-pencil"></i>
+                </button>
+                <!-- Hapus Kategori -->
+                <form action="{{ url_for('admin_hapus_kategori_publikasi', id=k.id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus kategori {{ k.nama }}?');">
+                  <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="2" class="py-6 text-center text-slate-400">Belum ada kategori publikasi.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="px-6 py-3 bg-slate-50 border-t border-slate-100 text-right">
+      <button type="button" onclick="tutupModalKelolaKategoriPublikasi()" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition">
+        Tutup
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- SCRIPT PENGATUR TAB & MODAL -->
+<script>
+  function gantiTabPublikasi(tab) {
+    const tabs = ['tayang', 'draft', 'semua'];
+    tabs.forEach(t => {
+      const btn = document.getElementById('tab-pub-btn-' + t);
+      const content = document.getElementById('tab-pub-content-' + t);
+      if (t === tab) {
+        btn.className = "px-4 py-3 font-bold text-xs border-b-2 border-emerald-600 text-emerald-800 flex items-center gap-2 transition whitespace-nowrap";
+        content.classList.remove('hidden');
+      } else {
+        btn.className = "px-4 py-3 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition whitespace-nowrap";
+        content.classList.add('hidden');
+      }
+    });
+  }
+
+  function bukaModalTambahPublikasi() {
+    document.getElementById('modal-tambah-publikasi').classList.remove('hidden');
+  }
+
+  function tutupModalTambahPublikasi() {
+    document.getElementById('modal-tambah-publikasi').classList.add('hidden');
+  }
+
+  const publikasiDataMap = {
+    {% for b in buku_data %}
+    {{ b.id }}: {{ b|tojson }},
+    {% endfor %}
+  };
+
+  function bukaModalEditPublikasi(bukuOrId) {
+    const buku = (typeof bukuOrId === 'object' && bukuOrId !== null) ? bukuOrId : publikasiDataMap[bukuOrId];
+    if (!buku) {
+      console.error('Data buku tidak ditemukan untuk diedit:', bukuOrId);
+      return;
+    }
+    document.getElementById('form-edit-publikasi').action = `/admin/publikasi/${buku.id}/edit`;
+    document.getElementById('edit-pub-judul').value = buku.judul || '';
+    document.getElementById('edit-pub-kategori').value = buku.kategori || '';
+    document.getElementById('edit-pub-edisi').value = buku.edisi || '';
+    document.getElementById('edit-pub-penulis').value = buku.penulis || '';
+    document.getElementById('edit-pub-tahun').value = buku.tahun || '2026';
+    document.getElementById('edit-pub-halaman').value = buku.jumlah_halaman || 0;
+    document.getElementById('edit-pub-ukuran').value = buku.ukuran_file || '';
+    document.getElementById('edit-pub-sinopsis').value = buku.sinopsis || '';
+    document.getElementById('edit-pub-status').value = buku.status || 'Tayang';
+    document.getElementById('edit-pub-featured').checked = (buku.is_featured === 1);
+    document.getElementById('edit-pub-unduh').value = buku.jumlah_unduh || 0;
+    document.getElementById('edit-pub-baca').value = buku.jumlah_baca || 0;
+    document.getElementById('edit-pub-current-pdf').textContent = 'File saat ini: ' + (buku.file_pdf || '-');
+
+    document.getElementById('modal-edit-publikasi').classList.remove('hidden');
+  }
+
+  function tutupModalEditPublikasi() {
+    document.getElementById('modal-edit-publikasi').classList.add('hidden');
+  }
+
+  function bukaModalKelolaKategoriPublikasi() {
+    document.getElementById('modal-kelola-kategori-pub').classList.remove('hidden');
+  }
+
+  function tutupModalKelolaKategoriPublikasi() {
+    document.getElementById('modal-kelola-kategori-pub').classList.add('hidden');
+  }
+
+  function editNamaKategoriPublikasi(id, namaLama) {
+    const namaBaru = prompt("Ubah nama kategori publikasi:", namaLama);
+    if (namaBaru && namaBaru.trim() !== "" && namaBaru.trim() !== namaLama) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `/admin/publikasi/kategori/${id}/edit`;
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'nama';
+      input.value = namaBaru.trim();
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+    }
+  }
+</script>
+
+{% endblock %}

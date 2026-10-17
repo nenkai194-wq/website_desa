@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Panel Admin{% endblock %} - Website Resmi Desa Kersik</title>
+  
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#effee7',
+              100: '#e0f8d4',
+              200: '#c2efab',
+              300: '#a2e67e',
+              400: '#87de57',
+              500: '#6bd731',
+              600: '#59be23',
+              700: '#4da91b',
+              800: '#3d920c',
+              900: '#1c4e09',
+            }
+          },
+          fontFamily: {
+            outfit: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Outfit', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased flex h-screen overflow-hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 border-r border-slate-800 transition-all duration-300">
+    <!-- Header Sidebar -->
+    <div class="h-20 flex items-center gap-3 px-6 bg-slate-950 border-b border-slate-800">
+      <img src="{{ url_for('static', filename=profil_global.logo_website.replace('static/', '')) if profil_global.logo_website and profil_global.logo_website.startswith('static/') else (profil_global.logo_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" class="w-9 h-9 object-contain" alt="Logo" onerror="this.src='{{ url_for('static', filename='images/logo_tasikmalaya.png') }}'" />
+      <div>
+        <h2 class="text-white font-bold text-sm leading-tight">Admin Desa {{ profil_global.nama_desa or 'Kersik' }}</h2>
+        <span class="text-[11px] text-brand-400 font-medium">Kab. {{ profil_global.kabupaten or 'Kutai Kartanegara' }}</span>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="flex-1 overflow-y-auto px-4 py-5 space-y-1 text-xs font-semibold">
+      <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider px-3 mb-2">Utama</div>
+      <a href="{{ url_for('admin_dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_dashboard' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-gauge-high w-4 text-center"></i> Dashboard
+      </a>
+      
+      <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider px-3 mt-6 mb-2">Pelayanan Warga</div>
+      <a href="{{ url_for('admin_surat') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_surat' %}bg-brand-700 text-white{% endif %}">
+        <span class="flex items-center gap-3"><i class="fa-solid fa-file-signature w-4 text-center"></i> Permohonan Surat</span>
+      </a>
+      <a href="{{ url_for('admin_pengaduan') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_pengaduan' %}bg-brand-700 text-white{% endif %}">
+        <span class="flex items-center gap-3"><i class="fa-solid fa-comments w-4 text-center"></i> Aspirasi & Aduan</span>
+      </a>
+
+      <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider px-3 mt-6 mb-2">Konten & Publikasi</div>
+      <a href="{{ url_for('admin_berita') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_berita' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-newspaper w-4 text-center"></i> Berita & Kabar Desa
+      </a>
+      <a href="{{ url_for('admin_umkm') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_umkm' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-basket-shopping w-4 text-center"></i> Produk UMKM Warga
+      </a>
+      <a href="{{ url_for('admin_wisata') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_wisata' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-umbrella-beach w-4 text-center"></i> Wisata & Potensi
+      </a>
+      <a href="{{ url_for('admin_publikasi') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_publikasi' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-book-bookmark w-4 text-center"></i> Buku Publikasi
+      </a>
+
+      <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider px-3 mt-6 mb-2">Pemerintahan & Data</div>
+      <a href="{{ url_for('admin_aparatur') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_aparatur' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-sitemap w-4 text-center"></i> SOTK Aparatur Desa
+      </a>
+      <a href="{{ url_for('admin_peta') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_peta' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-map-location-dot w-4 text-center text-amber-400"></i> Peta Wilayah & SLS
+      </a>
+      <a href="{{ url_for('admin_statistik') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_statistik' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-chart-pie w-4 text-center"></i> Statistik & APBDes
+      </a>
+
+      <!-- MENU KHUSUS SUPER ADMIN -->
+      {% if session.get('role') == 'superadmin' %}
+      <div class="text-[10px] uppercase font-extrabold text-amber-400 tracking-wider px-3 mt-6 mb-2 flex items-center gap-1.5">
+        <i class="fa-solid fa-crown text-[10px]"></i>
+        <span>Sistem & Keamanan (Super Admin)</span>
+      </div>
+      <a href="{{ url_for('admin_users') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_users' %}bg-amber-600 text-slate-950 font-black{% endif %}">
+        <i class="fa-solid fa-users-gear w-4 text-center text-sky-400"></i> Manajemen Akun Admin
+      </a>
+      <a href="{{ url_for('admin_backup') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_backup' %}bg-amber-600 text-slate-950 font-black{% endif %}">
+        <i class="fa-solid fa-database w-4 text-center text-amber-400"></i> Backup & Pemulihan Data
+      </a>
+      <a href="{{ url_for('admin_keamanan') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_keamanan' %}bg-amber-600 text-slate-950 font-black{% endif %}">
+        <i class="fa-solid fa-shield-halved w-4 text-center text-rose-400"></i> Log Audit & Keamanan
+      </a>
+      <a href="{{ url_for('admin_branding') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_branding' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-palette w-4 text-center text-amber-400"></i> Logo & Branding Web
+      </a>
+      <a href="{{ url_for('admin_profil') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_profil' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-sliders w-4 text-center"></i> Identitas & Profil Desa
+      </a>
+      {% endif %}
+    </nav>
+
+    <!-- Footer Sidebar -->
+    <div class="p-4 bg-slate-950 border-t border-slate-800 text-xs">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-slate-400">Role Anda:</span>
+        {% if session.get('role') == 'superadmin' %}
+          <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold text-[10px] border border-amber-500/30">Super Admin</span>
+        {% else %}
+          <span class="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-bold text-[10px] border border-blue-500/30">Admin Operator</span>
+        {% endif %}
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="{{ url_for('index') }}" target="_blank" class="flex-1 text-center py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] transition">
+          <i class="fa-solid fa-globe mr-1"></i> Lihat Web
+        </a>
+        <a href="{{ url_for('admin_logout') }}" class="px-3 py-1.5 rounded-lg bg-red-900/60 hover:bg-red-800 text-red-200 font-semibold text-[11px] transition" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <div class="flex-1 flex flex-col h-screen overflow-hidden">
+    
+    <!-- Topbar -->
+    <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0">
+      <div>
+        <h1 class="text-xl font-bold text-slate-900 leading-tight">{% block header_title %}Dashboard Pengelolaan Desa{% endblock %}</h1>
+        <p class="text-xs text-slate-500">Kelola informasi publik, surat mandiri, dan UMKM Desa.</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="{{ url_for('index') }}" target="_blank" class="hidden sm:inline-flex items-center gap-2 text-xs font-bold bg-brand-50 text-brand-800 border border-brand-200 px-3.5 py-2 rounded-xl hover:bg-brand-100 transition">
+          <i class="fa-solid fa-external-link"></i> Buka Website Publik
+        </a>
+        <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+          <div class="w-9 h-9 rounded-full {% if session.get('role') == 'superadmin' %}bg-amber-600{% else %}bg-brand-700{% endif %} text-white flex items-center justify-center font-bold text-sm shadow-sm">
+            {{ session.get('username', 'A')[0].upper() }}
+          </div>
+          <div class="hidden sm:block text-left text-xs">
+            <span class="font-bold text-slate-800 block">{{ session.get('nama', 'Administrator') }}</span>
+            <span class="{% if session.get('role') == 'superadmin' %}text-amber-700 font-bold{% else %}text-slate-400{% endif %} text-[10px]">
+              {% if session.get('role') == 'superadmin' %}Super Admin (Full Access){% else %}Admin Operator Pelayanan{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Flash Messages -->
+    <div class="px-8 pt-4">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="p-3.5 rounded-xl text-xs font-semibold mb-3 flex items-center justify-between {% if category == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200{% elif category == 'danger' %}bg-red-50 text-red-800 border border-red-200{% elif category == 'warning' %}bg-amber-50 text-amber-800 border border-amber-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+              <span>{{ message }}</span>
+              <button onclick="this.parentElement.remove()" class="text-sm font-bold opacity-60 hover:opacity-100">&times;</button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <!-- Body Scrollable Content -->
+    <main class="flex-1 overflow-y-auto px-8 py-6">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div>
+
+</body>
+</html>

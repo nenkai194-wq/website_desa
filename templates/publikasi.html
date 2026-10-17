@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perpustakaan Digital & Buku Publikasi Desa {{ profil.nama_desa }}</title>
+  <meta name="description" content="Koleksi buku publikasi resmi Pemerintah Desa {{ profil.nama_desa }}, seperti Profil Desa, Desa Dalam Angka, Laporan Transparansi APBDes, dan panduan warga dalam format PDF gratis." />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename=profil.favicon_website.replace('static/', '')) if profil.favicon_website and profil.favicon_website.startswith('static/') else (profil.favicon_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" />
+
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#2b6d08',
+              800: '#1f5306',
+              900: '#174004',
+              950: '#0b2401',
+            }
+          },
+          fontFamily: {
+            outfit: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 3D Realistic Book Styling */
+    .book-3d-wrapper {
+      perspective: 1000px;
+    }
+    .book-3d-cover {
+      transform-style: preserve-3d;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      box-shadow: -6px 8px 18px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.08);
+      border-radius: 4px 10px 10px 4px;
+      position: relative;
+    }
+    .book-3d-cover::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 14px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.3) 100%);
+      z-index: 10;
+      border-radius: 4px 0 0 4px;
+      box-shadow: inset 1px 0 2px rgba(255,255,255,0.6);
+    }
+    .book-3d-cover:hover {
+      transform: rotateY(-8deg) translateY(-6px);
+      box-shadow: -12px 16px 28px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 font-outfit antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- TOP ANNOUNCEMENT BAR -->
+  <div class="bg-brand-900 text-emerald-100 text-xs py-2 px-4 border-b border-brand-800">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2 text-center sm:text-left">
+        <span class="bg-brand-500 text-white font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider">Perpustakaan Desa</span>
+        <span>Koleksi Buku & Dokumen Publikasi Resmi Desa {{ profil.nama_desa }}</span>
+      </div>
+      <div class="flex items-center gap-4 text-[11px]">
+        <a href="tel:{{ profil.telepon or '0821-xxxx-xxxx' }}" class="hover:text-white flex items-center gap-1.5"><i class="fa-solid fa-phone text-brand-400"></i> {{ profil.telepon or '0821-xxxx-xxxx' }}</a>
+        <span class="text-brand-700 hidden sm:inline">|</span>
+        <span class="hidden sm:inline"><i class="fa-solid fa-file-pdf text-brand-400"></i> Format PDF Siap Unduh</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN HEADER / NAVBAR -->
+  <header class="sticky top-0 z-50 bg-[#2b6d08] text-white shadow-md transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo & Village Identity (Proporsional & Tulisan Besar) -->
+        <a href="{{ url_for('index') }}" class="flex items-center gap-3.5 group shrink-0">
+          <div class="shrink-0 flex items-center justify-center">
+            <img src="{{ url_for('static', filename=profil.logo_website.replace('static/', '')) if profil.logo_website and profil.logo_website.startswith('static/') else (profil.logo_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" 
+                 alt="Logo {{ profil.nama_desa }}" 
+                 class="h-14 sm:h-16 w-auto max-w-[62px] object-contain drop-shadow-md transition-transform duration-200 group-hover:scale-105" 
+                 onerror="this.src='{{ url_for('static', filename='images/logo_tasikmalaya.png') }}'" />
+          </div>
+          <div class="flex flex-col justify-center">
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-black uppercase tracking-tight text-white block leading-none">
+              PEMDES {{ (profil.nama_desa or 'PAPAYAN')|upper }}
+            </h1>
+            <span class="text-[11px] sm:text-xs text-emerald-100/90 font-semibold block leading-tight mt-1.5">
+              Kec. {{ profil.kecamatan }}, Kab. {{ profil.kabupaten }}
+            </span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-white/90">
+          <a href="{{ url_for('index') }}" class="hover:text-brand-300 transition py-2">Beranda</a>
+          <a href="{{ url_for('index') }}#profil" class="hover:text-brand-300 transition py-2">Profil Desa</a>
+          <a href="{{ url_for('index') }}#wisata" class="hover:text-brand-300 transition py-2">Wisata & Potensi</a>
+          <a href="{{ url_for('index') }}#umkm" class="hover:text-brand-300 transition py-2">Belanja UMKM</a>
+          <a href="{{ url_for('index') }}#berita" class="hover:text-brand-300 transition py-2">Berita</a>
+          <a href="{{ url_for('publikasi') }}" class="hover:text-brand-300 transition py-2 text-brand-300 border-b-2 border-brand-300">Buku Publikasi</a>
+        </nav>
+
+        <!-- CTA & Back button -->
+        <div class="flex items-center gap-3">
+          <a href="{{ url_for('index') }}" class="inline-flex items-center gap-2 bg-white text-brand-900 font-bold px-4 py-2.5 rounded-xl text-xs hover:bg-brand-100 transition shadow-sm">
+            <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION: PERPUSTAKAAN DIGITAL -->
+  <section class="relative bg-gradient-to-b from-[#1b4e05] via-[#245e07] to-[#2b6d08] text-white py-16 sm:py-20 overflow-hidden">
+    <!-- Decorative Glow Circles -->
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-400/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+      
+      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 text-xs font-semibold text-brand-200 mb-6 shadow-inner">
+        <i class="fa-solid fa-book-open-reader text-brand-300"></i>
+        <span>Pusat Literasi & Dokumen Transparansi Publik</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl font-black tracking-tight max-w-4xl mx-auto leading-tight text-white drop-shadow-sm">
+        Perpustakaan Digital & Buku Publikasi Desa
+      </h1>
+      <p class="text-emerald-100 text-sm sm:text-base max-w-2xl mx-auto mt-4 font-light leading-relaxed">
+        Jelajahi, baca secara online, dan unduh gratis seluruh terbitan resmi Pemerintah Desa {{ profil.nama_desa }}, mulai dari <strong>Buku Profil Desa</strong>, <strong>Desa Dalam Angka</strong>, laporan akuntabilitas, hingga regulasi desa.
+      </p>
+
+      <!-- Search Bar Publikasi -->
+      <form action="{{ url_for('publikasi') }}" method="GET" class="max-w-xl mx-auto mt-8 relative">
+        <div class="relative flex items-center">
+          <input type="text" name="q" value="{{ search_query }}" placeholder="Cari judul buku, topik, kategori, atau tahun..." 
+                 class="w-full bg-white/95 backdrop-blur text-slate-800 text-xs sm:text-sm pl-11 pr-28 py-3.5 rounded-2xl shadow-xl focus:outline-none focus:ring-4 focus:ring-brand-400 font-medium" />
+          <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 text-sm"></i>
+          {% if selected_kategori %}
+          <input type="hidden" name="kategori" value="{{ selected_kategori }}">
+          {% endif %}
+          <button type="submit" class="absolute right-2 px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs transition shadow flex items-center gap-1.5">
+            <span>Cari Buku</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto mt-10">
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 text-center">
+          <span class="block text-2xl font-black text-white">{{ buku_list|length }}</span>
+          <span class="text-[11px] text-brand-200">Judul Tersedia</span>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 text-center">
+          <span class="block text-2xl font-black text-blue-300">{{ total_unduh }}</span>
+          <span class="text-[11px] text-brand-200">Total Diunduh</span>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 text-center">
+          <span class="block text-2xl font-black text-emerald-300">{{ total_baca }}</span>
+          <span class="text-[11px] text-brand-200">Total Dibaca Online</span>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 text-center">
+          <span class="block text-2xl font-black text-amber-300">100%</span>
+          <span class="text-[11px] text-brand-200">Gratis & Terbuka</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- FEATURED SHOWCASE: BUKU PUBLIKASI UNGGULAN TERBARU                         -->
+  <!-- ========================================================================= -->
+  {% if featured_buku %}
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
+    <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden relative">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Left: 3D Book Display -->
+        <div class="lg:col-span-4 flex justify-center">
+          <div class="book-3d-wrapper w-52 sm:w-60">
+            <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border-2 border-white/80">
+              <img src="{{ url_for('static', filename=featured_buku.cover_buku.replace('static/', '')) if featured_buku.cover_buku.startswith('static/') else featured_buku.cover_buku }}" 
+                   alt="{{ featured_buku.judul }}" 
+                   class="w-full h-full object-cover" 
+                   onerror="this.src='{{ url_for('static', filename='images/kantor_desa.jpg') }}'" />
+              
+              <!-- Subtle gold badge on book -->
+              <div class="absolute top-3 right-3 bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 font-black text-[9px] px-2 py-0.5 rounded shadow flex items-center gap-1">
+                <i class="fa-solid fa-crown text-[8px]"></i> UNGGULAN
+              </div>
+              <div class="absolute bottom-3 left-3 bg-red-600 text-white font-black text-[10px] px-2 py-0.5 rounded shadow">
+                PDF DOKUMEN
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Book Synopsis & Actions -->
+        <div class="lg:col-span-8 space-y-4">
+          
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="bg-amber-100 text-amber-900 font-extrabold text-xs px-3 py-1 rounded-full border border-amber-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-star text-amber-500"></i> Terbitan Utama {{ featured_buku.tahun }}
+            </span>
+            <span class="bg-brand-50 text-brand-800 font-bold text-xs px-3 py-1 rounded-full border border-brand-200">
+              <i class="fa-solid fa-bookmark text-brand-600 mr-1"></i> {{ featured_buku.kategori }}
+            </span>
+            <span class="text-xs text-slate-400 font-medium">
+              {{ featured_buku.edisi or 'Edisi Tahunan' }}
+            </span>
+          </div>
+
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
+            {{ featured_buku.judul }}
+          </h2>
+
+          <div class="flex items-center gap-4 text-xs text-slate-500 font-medium pb-2 border-b border-slate-100 flex-wrap">
+            <span><i class="fa-solid fa-pen-nib text-brand-600 mr-1.5"></i>{{ featured_buku.penulis }}</span>
+            <span><i class="fa-solid fa-calendar-check text-brand-600 mr-1.5"></i>Tahun {{ featured_buku.tahun }}</span>
+            <span><i class="fa-solid fa-file-lines text-brand-600 mr-1.5"></i>{{ featured_buku.jumlah_halaman }} Halaman</span>
+            <span><i class="fa-solid fa-hard-drive text-brand-600 mr-1.5"></i>{{ featured_buku.ukuran_file or 'PDF' }}</span>
+            <span class="text-blue-700 font-bold"><i class="fa-solid fa-cloud-arrow-down mr-1"></i>{{ featured_buku.jumlah_unduh or 0 }} Diunduh</span>
+            <span class="text-emerald-700 font-bold"><i class="fa-solid fa-book-open-reader mr-1"></i>{{ featured_buku.jumlah_baca or 0 }} Dibaca Online</span>
+          </div>
+
+          <p class="text-slate-600 text-sm leading-relaxed">
+            {{ featured_buku.sinopsis or 'Dokumen publikasi resmi ini menyajikan kajian menyeluruh dan data akurat mengenai capaian, potensi unggulan kemaritiman, dan arah pembangunan berkelanjutan di Desa Kersik.' }}
+          </p>
+
+          <!-- Action Buttons -->
+          <div class="pt-4 flex flex-col sm:flex-row items-center gap-3">
+            <a href="{{ url_for('unduh_publikasi', id=featured_buku.id) }}" 
+               class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-brand-700 to-emerald-600 hover:from-brand-800 hover:to-emerald-700 text-white font-extrabold text-sm shadow-lg shadow-brand-700/25 flex items-center justify-center gap-2.5 transition transform hover:-translate-y-0.5">
+              <i class="fa-solid fa-circle-down text-base"></i>
+              <span>Unduh Dokumen PDF Gratis ({{ featured_buku.ukuran_file or 'PDF' }})</span>
+            </a>
+
+            <button onclick="bukaModalBacaPDF('{{ url_for('static', filename=featured_buku.file_pdf.replace('static/', '')) if featured_buku.file_pdf.startswith('static/') else featured_buku.file_pdf }}', '{{ featured_buku.judul }}', {{ featured_buku.id }})" 
+                    class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm transition flex items-center justify-center gap-2 border border-slate-200">
+              <i class="fa-solid fa-book-open text-brand-700"></i>
+              <span>Baca Online (Pratinjau)</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ========================================================================= -->
+  <!-- MAIN CATALOG & DIGITAL BOOKSHELF                                          -->
+  <!-- ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div>
+        <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 uppercase tracking-wider mb-1">
+          <i class="fa-solid fa-shapes"></i>
+          <span>Katalog Dokumen Desa</span>
+        </div>
+        <h3 class="text-2xl font-black text-slate-900 tracking-tight">Koleksi Buku Publikasi Resmi</h3>
+        <p class="text-xs text-slate-500 mt-1">Gunakan filter kategori di bawah untuk menemukan dokumen yang Anda butuhkan.</p>
+      </div>
+
+      <!-- Total count -->
+      <div class="text-xs text-slate-500">
+        Menampilkan <strong class="text-slate-800">{{ buku_list|length }}</strong> dokumen publikasi
+      </div>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+      <a href="{{ url_for('publikasi', q=search_query) }}" 
+         class="px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 border {% if not selected_kategori %}bg-brand-700 text-white border-brand-700 shadow-sm{% else %}bg-white text-slate-600 border-slate-200 hover:bg-slate-100{% endif %}">
+        <i class="fa-solid fa-layer-group text-[11px]"></i>
+        <span>Semua Kategori</span>
+      </a>
+
+      {% for k in kategori_list %}
+      <a href="{{ url_for('publikasi', kategori=k.nama, q=search_query) }}" 
+         class="px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 border {% if selected_kategori == k.nama %}bg-brand-700 text-white border-brand-700 shadow-sm{% else %}bg-white text-slate-600 border-slate-200 hover:bg-slate-100{% endif %}">
+        <i class="fa-solid fa-bookmark text-[11px] opacity-70"></i>
+        <span>{{ k.nama }}</span>
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- Book Grid Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {% for b in buku_list %}
+      <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1">
+        
+        <div>
+          <!-- Book Cover Container -->
+          <div class="relative bg-gradient-to-b from-slate-100 to-slate-200 p-5 flex items-center justify-center overflow-hidden">
+            
+            <div class="book-3d-wrapper w-36 sm:w-40 py-2">
+              <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border border-slate-300">
+                <img src="{{ url_for('static', filename=b.cover_buku.replace('static/', '')) if b.cover_buku.startswith('static/') else b.cover_buku }}" 
+                     alt="{{ b.judul }}" 
+                     class="w-full h-full object-cover" 
+                     onerror="this.src='{{ url_for('static', filename='images/kantor_desa.jpg') }}'" />
+              </div>
+            </div>
+
+            <!-- Badges overlay -->
+            <span class="absolute top-3 left-3 bg-red-600 text-white font-black text-[9px] px-2 py-0.5 rounded shadow">
+              <i class="fa-solid fa-file-pdf mr-1"></i>PDF
+            </span>
+
+            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-slate-700 font-bold text-[10px] px-2 py-0.5 rounded shadow border border-slate-200">
+              {{ b.tahun }}
+            </span>
+          </div>
+
+          <!-- Book Info -->
+          <div class="p-5 space-y-2.5">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 font-medium">
+              <span class="bg-brand-50 text-brand-800 font-bold px-2 py-0.5 rounded-md border border-brand-200 truncate max-w-[170px]">
+                {{ b.kategori }}
+              </span>
+              <span><i class="fa-solid fa-file-lines mr-1"></i>{{ b.jumlah_halaman }} Hal</span>
+            </div>
+
+            <h4 class="font-bold text-slate-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-700 transition" title="{{ b.judul }}">
+              {{ b.judul }}
+            </h4>
+
+            <p class="text-[11px] text-slate-500 font-normal">
+              Penyusun: <strong class="text-slate-700">{{ b.penulis }}</strong>
+            </p>
+
+            <p class="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+              {{ b.sinopsis or 'Tidak ada ringkasan sinopsis.' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer Card: Download & Read Buttons -->
+        <div class="p-5 pt-0">
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] mb-3">
+            <span class="text-blue-700 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-cloud-arrow-down text-blue-500"></i> {{ b.jumlah_unduh or 0 }} unduh
+            </span>
+            <span class="text-emerald-700 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-book-open-reader text-emerald-500"></i> {{ b.jumlah_baca or 0 }} dibaca
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="bukaModalBacaPDF('{{ url_for('static', filename=b.file_pdf.replace('static/', '')) if b.file_pdf.startswith('static/') else b.file_pdf }}', '{{ b.judul }}', {{ b.id }})" 
+                    class="py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-1.5 border border-slate-200" title="Baca Online">
+              <i class="fa-solid fa-eye"></i>
+              <span>Pratinjau</span>
+            </button>
+
+            <a href="{{ url_for('unduh_publikasi', id=b.id) }}" 
+               class="py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm" title="Unduh File PDF">
+              <i class="fa-solid fa-download"></i>
+              <span>Unduh PDF</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+      {% else %}
+      <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200 p-8">
+        <div class="w-20 h-20 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-4 text-3xl">
+          <i class="fa-solid fa-book-open"></i>
+        </div>
+        <h4 class="text-base font-bold text-slate-800">Tidak ada buku publikasi ditemukan</h4>
+        <p class="text-xs text-slate-500 max-w-md mx-auto mt-1">Coba gunakan kata kunci lain atau pilih kategori publikasi yang berbeda.</p>
+        <a href="{{ url_for('publikasi') }}" class="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-xl bg-brand-700 text-white text-xs font-bold hover:bg-brand-800 transition">
+          <i class="fa-solid fa-arrow-rotate-left"></i> Reset Pencarian
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL BACA ONLINE / PRATINJAU PDF                                          -->
+  <!-- ========================================================================= -->
+  <div id="modal-baca-pdf" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-md hidden flex flex-col items-center justify-center p-2 sm:p-6">
+    <div class="bg-white rounded-3xl w-full max-w-5xl h-[92vh] flex flex-col shadow-2xl overflow-hidden border border-slate-700">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-3 truncate pr-4">
+          <div class="w-8 h-8 rounded-lg bg-red-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+            PDF
+          </div>
+          <div class="truncate">
+            <h4 id="pdf-modal-title" class="font-bold text-sm truncate">Pratinjau Dokumen</h4>
+            <p class="text-[10px] text-slate-400">Perpustakaan Digital Desa {{ profil.nama_desa }}</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <a id="pdf-modal-download-btn" href="#" 
+             class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-download"></i>
+            <span class="hidden sm:inline">Unduh PDF</span>
+          </a>
+          <button onclick="tutupModalBacaPDF()" class="p-2 text-slate-400 hover:text-white rounded-xl transition">
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Iframe Viewer Container -->
+      <div class="flex-1 bg-slate-100 relative">
+        <iframe id="pdf-modal-frame" src="" class="w-full h-full border-0"></iframe>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 text-slate-300 pt-16 pb-8 border-t border-slate-800 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <img src="{{ url_for('static', filename=profil.logo_website.replace('static/', '')) if profil.logo_website and profil.logo_website.startswith('static/') else (profil.logo_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" alt="Logo {{ profil.nama_desa }}" class="w-10 h-10 object-contain brightness-110" />
+            <div>
+              <h3 class="text-white font-bold text-sm">Pemerintah Desa {{ profil.nama_desa }}</h3>
+              <p class="text-[11px] text-brand-400">{{ profil.kabupaten }}, {{ profil.provinsi }}</p>
+            </div>
+          </div>
+          <p class="text-slate-400 leading-relaxed text-xs">
+            Desa {{ profil.nama_desa }} terletak di Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}, {{ profil.provinsi }}. {{ profil.tagline_website }}.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-building-columns text-brand-500"></i> Kontak Kantor Desa
+          </h4>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-location-dot text-brand-500 mt-1"></i>
+              <span>{{ profil.alamat }}</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i class="fa-solid fa-phone text-brand-500"></i>
+              <a href="tel:{{ profil.telepon }}" class="hover:text-white">{{ profil.telepon }}</a>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i class="fa-solid fa-envelope text-brand-500"></i>
+              <a href="mailto:{{ profil.email }}" class="hover:text-white">{{ profil.email }}</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-link text-brand-500"></i> Navigasi Portal
+          </h4>
+          <ul class="space-y-2">
+            <li><a href="{{ url_for('index') }}" class="hover:text-brand-300 transition">Beranda Utama</a></li>
+            <li><a href="{{ url_for('publikasi') }}" class="text-emerald-400 font-bold hover:underline">Perpustakaan Digital Desa</a></li>
+            <li><a href="{{ url_for('index') }}#wisata" class="hover:text-brand-300 transition">Wisata & Potensi Desa</a></li>
+            <li><a href="{{ url_for('index') }}#umkm" class="hover:text-brand-300 transition">Produk UMKM Warga</a></li>
+            <li><a href="{{ url_for('admin_login') }}" class="text-slate-400 hover:underline">Masuk Panel Admin</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-brand-500"></i> Komitmen Keterbukaan
+          </h4>
+          <p class="text-slate-400 leading-relaxed text-xs">
+            Seluruh publikasi dalam perpustakaan digital ini dipublikasikan untuk keterbukaan informasi publik dan akuntabilitas penyelenggaraan pemerintahan desa.
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px]">
+        <p>© 2026 Pemerintah Desa {{ profil.nama_desa }}, Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}.</p>
+        <p class="text-slate-500">Dokumen dan buku publikasi dilindungi untuk edukasi masyarakat.</p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- SCRIPT MODAL PRATINJAU PDF -->
+  <script>
+    function bukaModalBacaPDF(pdfUrl, title, bookId) {
+      document.getElementById('pdf-modal-title').textContent = title;
+      document.getElementById('pdf-modal-frame').src = pdfUrl;
+      document.getElementById('pdf-modal-download-btn').href = `/publikasi/unduh/${bookId}`;
+      document.getElementById('modal-baca-pdf').classList.remove('hidden');
+
+      // Async update online reading counter
+      try {
+        fetch(`/api/publikasi/${bookId}/baca`, { method: 'POST' });
+      } catch (err) {}
+    }
+
+    function tutupModalBacaPDF() {
+      document.getElementById('modal-baca-pdf').classList.add('hidden');
+      document.getElementById('pdf-modal-frame').src = '';
+    }
+
+    // Close modal on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        tutupModalBacaPDF();
+      }
+    });
+  </script>
+
+</body>
+</html>
