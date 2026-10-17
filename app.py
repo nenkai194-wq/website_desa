@@ -1881,6 +1881,7 @@ def admin_publikasi():
         tayang_list=tayang_list,
         draft_list=draft_list,
         semua_list=semua_list,
+        buku_data=semua_list,
         kategori_list=kategori_list,
         total_unduh=total_unduh,
         total_baca=total_baca,

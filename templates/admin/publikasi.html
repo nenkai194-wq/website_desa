@@ -763,15 +763,17 @@
   }
 
   const publikasiDataMap = {
-    {% for b in buku_data %}
+    {% for b in (semua_list or buku_data or []) %}
     {{ b.id }}: {{ b|tojson }},
     {% endfor %}
   };
 
   function bukaModalEditPublikasi(bukuOrId) {
-    const buku = (typeof bukuOrId === 'object' && bukuOrId !== null) ? bukuOrId : publikasiDataMap[bukuOrId];
+    const id = (typeof bukuOrId === 'object' && bukuOrId !== null) ? bukuOrId.id : bukuOrId;
+    const buku = (typeof bukuOrId === 'object' && bukuOrId !== null) ? bukuOrId : (publikasiDataMap[id] || publikasiDataMap[Number(id)]);
     if (!buku) {
       console.error('Data buku tidak ditemukan untuk diedit:', bukuOrId);
+      alert('Data buku publikasi tidak ditemukan.');
       return;
     }
     document.getElementById('form-edit-publikasi').action = `/admin/publikasi/${buku.id}/edit`;
