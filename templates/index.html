@@ -88,7 +88,7 @@
           <button type="button" onclick="navigateToView('infografis')" data-nav-view="infografis" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
             <i class="fa-solid fa-chart-pie text-[11px]"></i> Infografis
           </button>
-          <button type="button" onclick="navigateToView('peta')" data-nav-view="peta" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-emerald-200 hover:text-white">
+          <button type="button" onclick="navigateToView('peta')" data-nav-view="peta" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
             <i class="fa-solid fa-map-location-dot text-[11px]"></i> Peta Desa
           </button>
           <button type="button" onclick="navigateToView('wisata')" data-nav-view="wisata" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
@@ -100,7 +100,7 @@
           <button type="button" onclick="navigateToView('berita')" data-nav-view="berita" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
             <i class="fa-solid fa-newspaper text-[11px]"></i> Berita
           </button>
-          <button type="button" onclick="navigateToView('publikasi')" data-nav-view="publikasi" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-amber-200 hover:text-white">
+          <button type="button" onclick="navigateToView('publikasi')" data-nav-view="publikasi" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
             <i class="fa-solid fa-book-bookmark text-[11px]"></i> Publikasi
           </button>
           </nav>
@@ -168,8 +168,8 @@
       <button type="button" onclick="navigateToView('infografis')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
         <i class="fa-solid fa-chart-pie w-4 text-emerald-300"></i> Infografis & APBDes
       </button>
-      <button type="button" onclick="navigateToView('peta')" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-emerald-700/30 text-emerald-300 font-bold hover:bg-emerald-700/50 flex items-center gap-2.5">
-        <i class="fa-solid fa-map-location-dot w-4"></i> Peta Wilayah SLS (26 RT)
+      <button type="button" onclick="navigateToView('peta')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-map-location-dot w-4 text-emerald-300"></i> Peta Wilayah SLS (26 RT)
       </button>
       <button type="button" onclick="navigateToView('wisata')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
         <i class="fa-solid fa-umbrella-beach w-4 text-emerald-300"></i> Wisata & Potensi Desa
@@ -180,8 +180,8 @@
       <button type="button" onclick="navigateToView('berita')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
         <i class="fa-solid fa-newspaper w-4 text-emerald-300"></i> Berita & Kabar Desa
       </button>
-      <button type="button" onclick="navigateToView('publikasi')" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-amber-500/20 text-amber-300 font-bold hover:bg-amber-500/30 flex items-center gap-2.5">
-        <i class="fa-solid fa-book-bookmark w-4"></i> Buku Publikasi Desa (PDF)
+      <button type="button" onclick="navigateToView('publikasi')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-book-bookmark w-4 text-emerald-300"></i> Buku Publikasi Desa (PDF)
       </button>
       <button type="button" onclick="handleKlikLayananSurat()" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white text-black font-black hover:bg-emerald-100 flex items-center gap-2.5 shadow-sm" style="color: #000000 !important;">
         <i class="fa-solid fa-file-pen w-4 text-black" style="color: #000000 !important;"></i>
@@ -3162,7 +3162,7 @@
           <ul class="space-y-2">
             <li><a href="{{ url_for('admin_login') }}" class="text-emerald-400 font-bold hover:underline">Masuk Panel Admin CMS</a></li>
             <li><a href="{{ url_for('peta_desa') }}" class="hover:text-brand-300 transition text-emerald-300 font-semibold"><i class="fa-solid fa-map-location-dot mr-1"></i> Peta Desa & SLS Poligon (26 RT)</a></li>
-            <li><a href="{{ url_for('publikasi') }}" class="hover:text-brand-300 transition text-amber-200 font-semibold">Buku & Publikasi Desa (PDF)</a></li>
+            <li><a href="{{ url_for('publikasi') }}" class="hover:text-brand-300 transition">Buku & Publikasi Desa (PDF)</a></li>
             <li><a href="javascript:void(0)" onclick="navigateToView('layanan-surat')" class="hover:text-brand-300 transition">Pengajuan Surat Mandiri</a></li>
             <li><a href="javascript:void(0)" onclick="navigateToView('wisata')" class="hover:text-brand-300 transition">Destinasi Wisata Desa</a></li>
             <li><a href="#umkm" class="hover:text-brand-300 transition">Katalog Produk UMKM</a></li>
@@ -4368,6 +4368,7 @@
 
       // 3. Highlight desktop navigation item
       document.querySelectorAll('[data-nav-view]').forEach(btn => {
+        btn.classList.remove('text-amber-200', 'text-amber-300', 'text-emerald-200', 'text-amber-100');
         if (btn.getAttribute('data-nav-view') === viewName) {
           btn.classList.add('bg-white/20', 'text-white', 'font-bold');
           btn.classList.remove('text-white/85');
