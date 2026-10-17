@@ -663,6 +663,37 @@ def admin_peta_sync_kml():
 
     return redirect(url_for('admin_peta'))
 
+@app.route('/admin/peta/simpan-batas', methods=['POST'])
+@login_required
+def admin_peta_simpan_batas():
+    """Menyimpan batas wilayah sebelah utara, selatan, timur, dan barat"""
+    batas_utara = request.form.get('batas_utara', '').strip()
+    batas_selatan = request.form.get('batas_selatan', '').strip()
+    batas_timur = request.form.get('batas_timur', '').strip()
+    batas_barat = request.form.get('batas_barat', '').strip()
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE profil_desa 
+            SET batas_utara = ?, batas_selatan = ?, batas_timur = ?, batas_barat = ?
+            WHERE id = 1
+        """, (batas_utara, batas_selatan, batas_timur, batas_barat))
+        conn.commit()
+        conn.close()
+
+        record_activity_log(
+            'UPDATE_BATAS_WILAYAH',
+            f"Memperbarui batas wilayah desa: Utara ({batas_utara}), Selatan ({batas_selatan}), Barat ({batas_barat}), Timur ({batas_timur})",
+            username=session.get('username')
+        )
+        flash('Data batas wilayah desa (Utara, Selatan, Barat, Timur) berhasil disimpan dan diperbarui di halaman peta!', 'success')
+    except Exception as e:
+        flash(f'Gagal menyimpan batas wilayah: {str(e)}', 'danger')
+
+    return redirect(url_for('admin_peta'))
+
 # ==========================================
 # ADMIN AUTHENTICATION
 # ==========================================

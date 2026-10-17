@@ -80,6 +80,119 @@
     </div>
   </div>
 
+  <!-- BATAS WILAYAH EMPAT PENJURU MATA ANGIN -->
+  <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-5">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
+      <div class="flex items-center gap-3">
+        <span class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-lg border border-amber-200/60 shadow-sm">
+          <i class="fa-solid fa-compass"></i>
+        </span>
+        <div>
+          <h3 class="font-extrabold text-base text-slate-900">Batas Wilayah Geografis Desa {{ profil_global.nama_desa or 'Papayan' }}</h3>
+          <p class="text-xs text-slate-500">Kelola batas wilayah di 4 penjuru mata angin untuk ditampilkan pada peta dan profil desa di frontend.</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <i class="fa-solid fa-globe text-[10px]"></i>
+          <span>Sinkron ke Frontend</span>
+        </span>
+      </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('admin_peta_simpan_batas') }}" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Batas Utara -->
+        <div class="bg-blue-50/40 rounded-2xl p-4 border border-blue-100 hover:border-blue-300 transition focus-within:ring-2 focus-within:ring-blue-500/20">
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-black text-blue-900 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-[11px]">
+                <i class="fa-solid fa-arrow-up"></i>
+              </span>
+              <span>Sebelah Utara</span>
+            </label>
+            <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider">North</span>
+          </div>
+          <input type="text" name="batas_utara" 
+                 value="{{ profil.batas_utara if profil and profil.batas_utara else (profil_global.batas_utara or '') }}" 
+                 placeholder="Contoh: Berbatasan dengan Desa Sukakerta / Desa Janggala" 
+                 required
+                 class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition shadow-sm" />
+          <p class="text-[10px] text-slate-500 mt-1.5">Wilayah perbatasan di bagian sisi utara desa</p>
+        </div>
+
+        <!-- Sebelah Selatan -->
+        <div class="bg-amber-50/40 rounded-2xl p-4 border border-amber-100 hover:border-amber-300 transition focus-within:ring-2 focus-within:ring-amber-500/20">
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-black text-amber-900 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-amber-600 text-white flex items-center justify-center text-[11px]">
+                <i class="fa-solid fa-arrow-down"></i>
+              </span>
+              <span>Sebelah Selatan</span>
+            </label>
+            <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">South</span>
+          </div>
+          <input type="text" name="batas_selatan" 
+                 value="{{ profil.batas_selatan if profil and profil.batas_selatan else (profil_global.batas_selatan or '') }}" 
+                 placeholder="Contoh: Berbatasan dengan Desa Kertarahayu / Desa Jatiwaras" 
+                 required
+                 class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-amber-500 transition shadow-sm" />
+          <p class="text-[10px] text-slate-500 mt-1.5">Wilayah perbatasan di bagian sisi selatan desa</p>
+        </div>
+
+        <!-- Sebelah Barat -->
+        <div class="bg-purple-50/40 rounded-2xl p-4 border border-purple-100 hover:border-purple-300 transition focus-within:ring-2 focus-within:ring-purple-500/20">
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-black text-purple-900 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-purple-600 text-white flex items-center justify-center text-[11px]">
+                <i class="fa-solid fa-arrow-left"></i>
+              </span>
+              <span>Sebelah Barat</span>
+            </label>
+            <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider">West</span>
+          </div>
+          <input type="text" name="batas_barat" 
+                 value="{{ profil.batas_barat if profil and profil.batas_barat else (profil_global.batas_barat or '') }}" 
+                 placeholder="Contoh: Berbatasan dengan Desa Sukaraja / Sungai Ciwulan" 
+                 required
+                 class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-purple-500 transition shadow-sm" />
+          <p class="text-[10px] text-slate-500 mt-1.5">Wilayah perbatasan di bagian sisi barat desa</p>
+        </div>
+
+        <!-- Sebelah Timur -->
+        <div class="bg-emerald-50/40 rounded-2xl p-4 border border-emerald-100 hover:border-emerald-300 transition focus-within:ring-2 focus-within:ring-emerald-500/20">
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-black text-emerald-900 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[11px]">
+                <i class="fa-solid fa-arrow-right"></i>
+              </span>
+              <span>Sebelah Timur</span>
+            </label>
+            <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">East</span>
+          </div>
+          <input type="text" name="batas_timur" 
+                 value="{{ profil.batas_timur if profil and profil.batas_timur else (profil_global.batas_timur or '') }}" 
+                 placeholder="Contoh: Berbatasan dengan Desa Neglasari / Desa Setiawangi" 
+                 required
+                 class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition shadow-sm" />
+          <p class="text-[10px] text-slate-500 mt-1.5">Wilayah perbatasan di bagian sisi timur desa</p>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="flex flex-col sm:flex-row items-center justify-between pt-3 border-t border-slate-100 gap-3">
+        <span class="text-[11px] text-slate-400 flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-amber-500"></i>
+          <span>Perubahan batas wilayah akan otomatis tersimpan ke basis data profil dan langsung muncul di menu peta frontend.</span>
+        </span>
+        <button type="submit" class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-600/20 transition flex items-center gap-2 flex-shrink-0">
+          <i class="fa-solid fa-floppy-disk"></i>
+          <span>Simpan Perubahan Batas Wilayah</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
   <!-- LEAFLET MAP PREVIEW -->
   <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">

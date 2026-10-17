@@ -102,7 +102,11 @@ def init_db():
         banner_desc_2 TEXT DEFAULT 'Komitmen nyata masyarakat Desa Papayan dalam menjaga kelestarian lingkungan pesisir.',
         banner_hero_3 TEXT DEFAULT 'static/images/pantai_kersik.jpg',
         banner_title_3 TEXT DEFAULT 'Pelayanan Publik Cepat, Transparan dan Akuntabel',
-        banner_desc_3 TEXT DEFAULT 'Nikmati kemudahan layanan pengajuan surat online mandiri dan keterbukaan informasi.'
+        banner_desc_3 TEXT DEFAULT 'Nikmati kemudahan layanan pengajuan surat online mandiri dan keterbukaan informasi.',
+        batas_utara TEXT DEFAULT 'Berbatasan dengan Desa Sukakerta / Desa Janggala',
+        batas_selatan TEXT DEFAULT 'Berbatasan dengan Desa Kertarahayu / Desa Jatiwaras',
+        batas_timur TEXT DEFAULT 'Berbatasan dengan Desa Neglasari / Desa Setiawangi',
+        batas_barat TEXT DEFAULT 'Berbatasan dengan Desa Sukaraja / Sungai Ciwulan'
     )
     ''')
 
@@ -127,6 +131,14 @@ def init_db():
         cursor.execute("ALTER TABLE profil_desa ADD COLUMN status_maintenance_surat INTEGER DEFAULT 1")
     if 'pesan_maintenance_surat' not in cols_profil:
         cursor.execute("ALTER TABLE profil_desa ADD COLUMN pesan_maintenance_surat TEXT DEFAULT 'Layanan Sedang Maintenace. Mohon maaf atas ketidaknyamananya !!!'")
+    if 'batas_utara' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN batas_utara TEXT DEFAULT 'Berbatasan dengan Desa Sukakerta / Desa Janggala'")
+    if 'batas_selatan' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN batas_selatan TEXT DEFAULT 'Berbatasan dengan Desa Kertarahayu / Desa Jatiwaras'")
+    if 'batas_timur' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN batas_timur TEXT DEFAULT 'Berbatasan dengan Desa Neglasari / Desa Setiawangi'")
+    if 'batas_barat' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN batas_barat TEXT DEFAULT 'Berbatasan dengan Desa Sukaraja / Sungai Ciwulan'")
     conn.commit()
 
     # 3. Perangkat Desa (SOTK)

@@ -2293,20 +2293,40 @@
       <!-- Batas Wilayah -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
-          <span class="font-bold text-slate-800 block mb-1">Sebelah Utara</span>
-          <span class="text-slate-600">Berbatasan dengan Desa Sebuntal</span>
+          <div class="flex items-center gap-1.5 font-bold text-slate-800 mb-1">
+            <span class="w-5 h-5 rounded-md bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-bold">
+              <i class="fa-solid fa-arrow-up"></i>
+            </span>
+            <span>Sebelah Utara</span>
+          </div>
+          <span class="text-slate-600 leading-relaxed block">{{ profil.batas_utara or 'Berbatasan dengan Desa Sukakerta / Desa Janggala' }}</span>
         </div>
         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
-          <span class="font-bold text-slate-800 block mb-1">Sebelah Selatan</span>
-          <span class="text-slate-600">Selat Makassar / Desa Santan Ulu</span>
+          <div class="flex items-center gap-1.5 font-bold text-slate-800 mb-1">
+            <span class="w-5 h-5 rounded-md bg-amber-100 text-amber-700 flex items-center justify-center text-[10px] font-bold">
+              <i class="fa-solid fa-arrow-down"></i>
+            </span>
+            <span>Sebelah Selatan</span>
+          </div>
+          <span class="text-slate-600 leading-relaxed block">{{ profil.batas_selatan or 'Berbatasan dengan Desa Kertarahayu / Desa Jatiwaras' }}</span>
         </div>
         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
-          <span class="font-bold text-slate-800 block mb-1">Sebelah Barat</span>
-          <span class="text-slate-600">Berbatasan dengan Desa Semangko</span>
+          <div class="flex items-center gap-1.5 font-bold text-slate-800 mb-1">
+            <span class="w-5 h-5 rounded-md bg-purple-100 text-purple-700 flex items-center justify-center text-[10px] font-bold">
+              <i class="fa-solid fa-arrow-left"></i>
+            </span>
+            <span>Sebelah Barat</span>
+          </div>
+          <span class="text-slate-600 leading-relaxed block">{{ profil.batas_barat or 'Berbatasan dengan Desa Sukaraja / Sungai Ciwulan' }}</span>
         </div>
         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
-          <span class="font-bold text-slate-800 block mb-1">Sebelah Timur</span>
-          <span class="text-slate-600">Bentang Pantai Selat Makassar</span>
+          <div class="flex items-center gap-1.5 font-bold text-slate-800 mb-1">
+            <span class="w-5 h-5 rounded-md bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">
+              <i class="fa-solid fa-arrow-right"></i>
+            </span>
+            <span>Sebelah Timur</span>
+          </div>
+          <span class="text-slate-600 leading-relaxed block">{{ profil.batas_timur or 'Berbatasan dengan Desa Neglasari / Desa Setiawangi' }}</span>
         </div>
       </div>
 
