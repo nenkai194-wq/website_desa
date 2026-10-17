@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Administrator - Desa {{ profil.nama_desa or profil_global.nama_desa or 'Desa' }}</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              700: '#4da91b',
+              800: '#3d920c',
+              900: '#1c4e09',
+            }
+          },
+          fontFamily: { outfit: ['Outfit', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-950 font-outfit min-h-screen flex items-center justify-center p-4 sm:p-6 relative overflow-x-hidden selection:bg-brand-700 selection:text-white">
+  
+  <!-- Ambient background glow -->
+  <div class="fixed -top-40 -right-40 w-96 h-96 bg-brand-800/25 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="fixed -bottom-40 -left-40 w-96 h-96 bg-emerald-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10 border border-slate-100">
+    
+    <!-- HEADER LOGO & NAMA PEMERINTAH DESA (DINAMIS DARI PROFIL DESA) -->
+    <div class="text-center mb-6">
+      {% set current_logo = profil.logo_website or profil_global.logo_website or '' %}
+      {% if current_logo.startswith('static/') %}
+        {% set logo_src = url_for('static', filename=current_logo.replace('static/', '')) %}
+      {% elif current_logo %}
+        {% set logo_src = current_logo %}
+      {% else %}
+        {% set logo_src = url_for('static', filename='images/kutaikartanegara.png') %}
+      {% endif %}
+
+      <div class="w-16 h-16 bg-slate-50 rounded-2xl p-2 mx-auto mb-3 border border-slate-200/80 flex items-center justify-center shadow-sm">
+        <img src="{{ logo_src }}" class="w-full h-full object-contain" alt="Logo Desa {{ profil.nama_desa or profil_global.nama_desa or 'Desa' }}" onerror="this.src='{{ url_for('static', filename='images/kutaikartanegara.png') }}'" />
+      </div>
+      <h2 class="text-2xl font-black text-slate-900 tracking-tight">Portal Masuk Administrator</h2>
+      <p class="text-xs text-slate-500 mt-1 font-semibold">
+        Pemerintah Desa {{ profil.nama_desa or profil_global.nama_desa or 'Kersik' }}{% if profil.kecamatan or profil_global.kecamatan %}, Kec. {{ profil.kecamatan or profil_global.kecamatan }}{% endif %}{% if profil.kabupaten or profil_global.kabupaten %}, Kab. {{ profil.kabupaten or profil_global.kabupaten }}{% endif %}
+      </p>
+    </div>
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-2 mb-5">
+          {% for category, message in messages %}
+            <div class="p-3.5 rounded-2xl text-xs font-semibold text-center flex flex-col items-center justify-center gap-1.5 {% if category == 'danger' %}bg-rose-50 text-rose-800 border border-rose-200{% elif category == 'warning' %}bg-amber-50 text-amber-800 border border-amber-200{% else %}bg-emerald-50 text-emerald-800 border border-emerald-200{% endif %}">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid {% if category == 'danger' %}fa-triangle-exclamation text-rose-600{% elif category == 'warning' %}fa-circle-exclamation text-amber-600{% else %}fa-circle-check text-emerald-600{% endif %}"></i>
+                <span>{{ message }}</span>
+              </div>
+              {% if 'dikunci' in message or is_locked %}
+                <a href="{{ url_for('admin_buka_kunci') }}" class="mt-1 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-sm">
+                  <i class="fa-solid fa-unlock-keyhole"></i> Klik di Sini untuk Buka Kunci Akses
+                </a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- FORM LOGIN -->
+    <form method="POST" action="{{ url_for('admin_login') }}" class="space-y-4">
+      
+      <!-- 1. NAMA PENGGUNA (USERNAME) -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Pengguna (Username)</label>
+        <div class="relative">
+          <i class="fa-solid fa-user absolute left-4 top-3.5 text-slate-400 text-xs"></i>
+          <input type="text" id="input-username" name="username" required value="admin" placeholder="Masukkan username" class="w-full text-xs pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700 font-bold text-slate-800 transition" />
+        </div>
+      </div>
+
+      <!-- 2. KATA SANDI (PASSWORD) -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Kata Sandi (Password)</label>
+          <button type="button" onclick="togglePasswordVisibility()" class="text-[11px] font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 transition">
+            <i id="toggle-pw-icon" class="fa-solid fa-eye"></i>
+            <span id="toggle-pw-text">Lihat Sandi</span>
+          </button>
+        </div>
+        <div class="relative">
+          <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400 text-xs"></i>
+          <input type="password" id="input-password" name="password" required value="admin123" placeholder="Masukkan kata sandi" class="w-full text-xs pl-10 pr-10 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700 font-bold text-slate-800 transition" />
+        </div>
+      </div>
+
+      <!-- 3. PILIHAN LEVEL AKSES (DROPDOWN DI BAWAH KATA SANDI) -->
+      <div class="pt-1 pb-1">
+        <label for="select-level" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Pilih Level Akses Login</label>
+        
+        <div class="relative">
+          <i class="fa-solid fa-user-shield absolute left-4 top-3.5 text-slate-400 text-xs pointer-events-none"></i>
+          <select id="select-level" name="level" onchange="onRoleChange(this.value)" class="w-full text-xs pl-10 pr-10 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700 font-bold text-slate-800 transition appearance-none cursor-pointer">
+            <option value="superadmin" selected>🛡️ Super Admin (Kepala Desa / Akses Penuh Sistem)</option>
+            <option value="operator">📋 Operator Desa (Staf Pelayanan & Konten)</option>
+          </select>
+          <i class="fa-solid fa-chevron-down absolute right-4 top-3.5 text-slate-400 text-xs pointer-events-none"></i>
+        </div>
+
+        <!-- Uraian Hak Akses Terpilih -->
+        <div id="role-info-box" class="mt-2.5 p-3 rounded-xl bg-amber-50/70 border border-amber-200/80 text-[11px] text-amber-900 flex items-start gap-2">
+          <i class="fa-solid fa-shield-halved text-amber-600 mt-0.5 shrink-0"></i>
+          <span id="role-info-text">
+            <strong>Super Admin:</strong> Hak akses penuh mencakup Manajemen Staf, Backup Database, Audit Keamanan Siber, & Pengaturan Profil Desa.
+          </span>
+        </div>
+      </div>
+
+      <!-- 4. TOMBOL MASUK KE PANEL ADMIN -->
+      <div class="pt-2">
+        <button type="submit" id="btn-submit" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span id="btn-submit-text">Masuk sebagai Super Admin</span>
+        </button>
+      </div>
+
+    </form>
+
+    <!-- FOOTER NAVIGASI -->
+    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+      <a href="{{ url_for('index') }}" class="text-brand-800 font-semibold hover:underline flex items-center gap-1.5">
+        <i class="fa-solid fa-arrow-left text-[10px]"></i> Kembali ke Website
+      </a>
+      <a href="{{ url_for('admin_buka_kunci') }}" title="Reset blokir sementara percobaan login" class="text-slate-400 hover:text-slate-600 text-[11px] font-medium flex items-center gap-1">
+        <i class="fa-solid fa-rotate-right text-[10px]"></i> Reset Kunci
+      </a>
+    </div>
+
+  </div>
+
+  <!-- JAVASCRIPT LOGIC LEVEL SELECTION & PASSWORD TOGGLE -->
+  <script>
+    function onRoleChange(role) {
+      const infoBox = document.getElementById('role-info-box');
+      const infoText = document.getElementById('role-info-text');
+      const usernameInput = document.getElementById('input-username');
+      const passwordInput = document.getElementById('input-password');
+      const submitBtn = document.getElementById('btn-submit');
+      const submitText = document.getElementById('btn-submit-text');
+
+      if (role === 'superadmin') {
+        infoBox.className = "mt-2.5 p-3 rounded-xl bg-amber-50/70 border border-amber-200/80 text-[11px] text-amber-900 flex items-start gap-2";
+        infoText.innerHTML = "<strong>Super Admin:</strong> Hak akses penuh mencakup Manajemen Staf, Backup Database, Audit Keamanan Siber, & Pengaturan Profil Desa.";
+        
+        usernameInput.value = "admin";
+        passwordInput.value = "admin123";
+        
+        submitBtn.className = "w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2";
+        submitText.innerText = "Masuk sebagai Super Admin";
+      } else {
+        infoBox.className = "mt-2.5 p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-[11px] text-emerald-900 flex items-start gap-2";
+        infoText.innerHTML = "<strong>Operator Desa:</strong> Hak akses operasional mencakup Pelayanan Surat Online, Pengaduan Warga, Berita, UMKM, Wisata, & Penduduk.";
+        
+        usernameInput.value = "operator";
+        passwordInput.value = "operator123";
+        
+        submitBtn.className = "w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-700/20 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2";
+        submitText.innerText = "Masuk sebagai Operator Desa";
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const pwInput = document.getElementById('input-password');
+      const icon = document.getElementById('toggle-pw-icon');
+      const text = document.getElementById('toggle-pw-text');
+
+      if (pwInput.type === 'password') {
+        pwInput.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash';
+        text.innerText = 'Sembunyikan';
+      } else {
+        pwInput.type = 'password';
+        icon.className = 'fa-solid fa-eye';
+        text.innerText = 'Lihat Sandi';
+      }
+    }
+  </script>
+
+</body>
+</html>

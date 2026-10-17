@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cetak Surat {{ surat.no_reg }} - Desa Kersik</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Times+New+Roman&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background-color: #f1f5f9;
+      color: #000;
+    }
+    @media print {
+      body {
+        background-color: #fff;
+        padding: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .page-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body class="py-8 px-4 flex flex-col items-center">
+
+  <!-- TOP BAR BUTTONS (NO PRINT) -->
+  <div class="max-w-3xl w-full flex items-center justify-between mb-4 no-print font-sans">
+    <a href="javascript:window.history.back()" class="px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition flex items-center gap-1.5 shadow-sm">
+      <i class="fa-solid fa-arrow-left"></i> Kembali
+    </a>
+    <div class="flex items-center gap-2">
+      <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-md transition flex items-center gap-2">
+        <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- OFFICIAL LETTER SHEET (A4 Simulation) -->
+  <div class="page-sheet max-w-3xl w-full bg-white p-10 sm:p-14 shadow-xl border border-slate-300 rounded-sm">
+    
+    <!-- KOP SURAT RESMI -->
+    <div class="flex items-center justify-between border-b-4 border-double border-black pb-4 mb-6">
+      <div class="w-24 h-24 flex-shrink-0 flex items-center justify-center">
+        <img src="{{ url_for('static', filename='images/kutaikartanegara.png') }}" class="w-20 h-20 object-contain" alt="Logo Kukar" />
+      </div>
+      <div class="flex-1 text-center px-4">
+        <h3 class="text-base sm:text-lg font-bold tracking-wider uppercase">Pemerintah Kabupaten Kutai Kartanegara</h3>
+        <h3 class="text-base sm:text-lg font-bold tracking-wider uppercase">Kecamatan Marang Kayu</h3>
+        <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase mt-0.5">Pemerintah Desa Kersik</h2>
+        <p class="text-xs mt-1 text-slate-800 font-sans">
+          Alamat: {{ profil.alamat or 'Jalan Langaseng Dusun Empang RT.003, Desa Kersik, Marang Kayu 75385' }}<br />
+          Email: {{ profil.email or 'pemdes@kersik.desa.id' }} | Kode Pos: {{ profil.kode_pos or '75385' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- TITLE & NOMOR SURAT -->
+    <div class="text-center my-6">
+      <h3 class="text-lg font-black uppercase underline tracking-wide">{{ surat.jenis_surat }}</h3>
+      <p class="text-sm font-sans mt-1">Nomor Registrasi: <strong>{{ surat.no_reg }}</strong></p>
+    </div>
+
+    <!-- CONTENT BODY -->
+    <div class="text-sm leading-relaxed space-y-4 text-justify">
+      <p>
+        Yang bertanda tangan di bawah ini, Kepala Desa Kersik, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara, Provinsi Kalimantan Timur, dengan ini menerangkan dengan sebenarnya bahwa:
+      </p>
+
+      <table class="w-full my-4 text-sm font-sans">
+        <tbody>
+          <tr>
+            <td class="w-48 py-1 font-semibold">Nama Lengkap</td>
+            <td class="w-4">:</td>
+            <td class="font-bold uppercase">{{ surat.nama }}</td>
+          </tr>
+          <tr>
+            <td class="py-1 font-semibold">NIK (No. KTP)</td>
+            <td>:</td>
+            <td>{{ surat.nik }}</td>
+          </tr>
+          <tr>
+            <td class="py-1 font-semibold">Tempat / Tinggal</td>
+            <td>:</td>
+            <td>{{ surat.dusun }}, RT.{{ surat.rt }}, Desa Kersik</td>
+          </tr>
+          <tr>
+            <td class="py-1 font-semibold">Kecamatan</td>
+            <td>:</td>
+            <td>Marang Kayu</td>
+          </tr>
+          <tr>
+            <td class="py-1 font-semibold">Kabupaten / Provinsi</td>
+            <td>:</td>
+            <td>Kutai Kartanegara / Kalimantan Timur</td>
+          </tr>
+          <tr>
+            <td class="py-1 font-semibold">Nomor WhatsApp / HP</td>
+            <td>:</td>
+            <td>{{ surat.wa }}</td>
+          </tr>
+          <tr>
+            <td class="py-1 font-semibold">Keperluan Permohonan</td>
+            <td>:</td>
+            <td class="font-semibold">{{ surat.keperluan }}</td>
+          </tr>
+          <tr>
+            <td class="py-1 font-semibold">Status Pengajuan</td>
+            <td>:</td>
+            <td class="font-bold text-emerald-800 uppercase">{{ surat.status }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        Orang tersebut di atas adalah benar-benar penduduk yang bertempat tinggal di wilayah Desa Kersik, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara dan berdasarkan catatan administrasi desa berkelakuan baik.
+      </p>
+
+      <p>
+        Demikian Surat Keterangan ini dibuat dan diberikan kepada yang bersangkutan untuk dapat dipergunakan sebagaimana mestinya dan sesuai peruntukannya.
+      </p>
+    </div>
+
+    <!-- SIGNATURE AREA -->
+    <div class="mt-12 flex justify-between items-end font-sans text-xs">
+      
+      <!-- QR Verification Simulation Box -->
+      <div class="border border-slate-300 p-3 rounded-lg text-center w-48 bg-slate-50">
+        <div class="w-16 h-16 bg-slate-200 mx-auto flex items-center justify-center font-mono text-[9px] text-slate-500 border border-slate-300">
+          [QR VALIDASI]
+        </div>
+        <p class="text-[9px] text-slate-500 mt-1.5 font-mono">ID: {{ surat.no_reg }}</p>
+        <p class="text-[9px] text-emerald-700 font-bold">Dokumen Digital Terverifikasi</p>
+      </div>
+
+      <!-- Kades Signature -->
+      <div class="text-center w-64">
+        <p>Kersik, {{ surat.created_at[:10] if surat.created_at else '17 Oktober 2026' }}</p>
+        <p class="font-bold mt-1">Kepala Desa Kersik,</p>
+        
+        <!-- Stempel & Signature Space -->
+        <div class="h-20 flex items-center justify-center relative">
+          <div class="w-20 h-20 rounded-full border-2 border-dashed border-red-400 text-red-500 flex items-center justify-center text-[9px] uppercase font-bold transform -rotate-12 opacity-80 pointer-events-none">
+            [STEMPEL PEMDES]
+          </div>
+        </div>
+
+        <p class="font-bold uppercase text-sm underline">{{ profil.nama_kades or 'Jumadi, S.Sos' }}</p>
+        <p class="text-[11px] text-slate-600">Pemerintah Desa Kersik</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

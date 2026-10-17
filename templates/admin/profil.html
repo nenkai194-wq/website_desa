@@ -1,0 +1,95 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Identitas & Profil Desa{% endblock %}
+{% block header_title %}Pengaturan Identitas & Profil Pemerintahan Desa{% endblock %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('admin_profil') }}" enctype="multipart/form-data" class="space-y-6 max-w-4xl">
+
+  <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+    <div class="pb-4 border-b border-slate-100 flex items-center justify-between">
+      <div>
+        <h3 class="font-bold text-base text-slate-900">Informasi Umum Desa</h3>
+        <p class="text-xs text-slate-500">Data ini muncul pada header, footer, dan kartu profil resmi.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Nama Desa</label>
+        <input type="text" name="nama_desa" value="{{ profil.nama_desa }}" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold" />
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Kecamatan</label>
+        <input type="text" name="kecamatan" value="{{ profil.kecamatan }}" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Kabupaten</label>
+        <input type="text" name="kabupaten" value="{{ profil.kabupaten }}" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Kantor Desa</label>
+      <input type="text" name="alamat" value="{{ profil.alamat }}" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Telepon / WhatsApp</label>
+        <input type="text" name="telepon" value="{{ profil.telepon }}" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Email Resmi</label>
+        <input type="email" name="email" value="{{ profil.email }}" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Jam Pelayanan</label>
+        <input type="text" name="jam_pelayanan" value="{{ profil.jam_pelayanan }}" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-6 items-start">
+      <div class="sm:col-span-2">
+        <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kepala Desa</label>
+        <input type="text" name="nama_kades" value="{{ profil.nama_kades }}" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-800 mb-4" />
+        
+        <label class="block text-xs font-bold text-slate-700 mb-1">Unggah Foto Kepala Desa Baru</label>
+        <input type="file" name="foto_kades_file" accept="image/*" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" />
+        <p class="text-[11px] text-slate-400 mt-1">Format: JPG, JPEG, PNG, WEBP. Otomatis sinkron ke menu SOTK & Beranda.</p>
+        <input type="hidden" name="foto_kades" value="{{ profil.foto_kades }}" />
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <span class="block text-xs font-bold text-slate-700 mb-2">Foto Saat Ini</span>
+        <div class="w-28 h-36 rounded-2xl overflow-hidden shadow-md border-2 border-emerald-100 bg-slate-100">
+          <img src="{{ url_for('static', filename=profil.foto_kades.replace('static/', '')) if profil.foto_kades and profil.foto_kades.startswith('static/') else (profil.foto_kades or url_for('static', filename='images/kades.jpg')) }}" alt="{{ profil.nama_kades }}" class="w-full h-full object-cover" onerror="this.src='{{ url_for('static', filename='images/kades.jpg') }}'" />
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-xs font-bold text-slate-700 mb-1">Teks Sambutan Kepala Desa</label>
+      <textarea name="sambutan_kades" rows="4" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium leading-relaxed">{{ profil.sambutan_kades }}</textarea>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Visi Desa</label>
+        <textarea name="visi" rows="4" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">{{ profil.visi }}</textarea>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Misi Desa</label>
+        <textarea name="misi" rows="4" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">{{ profil.misi }}</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-end">
+    <button type="submit" class="px-6 py-3 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow-lg shadow-brand-700/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+      <i class="fa-solid fa-floppy-disk"></i> Simpan Pengaturan Profil
+    </button>
+  </div>
+
+</form>
+{% endblock %}

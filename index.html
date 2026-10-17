@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Resmi Desa Kersik - Kabupaten Kutai Kartanegara</title>
+  <meta name="description" content="Website Resmi Pemerintah Desa Kersik, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara, Kalimantan Timur. Wisata Pantai Biru Kersik, Ekowisata Mangrove Proklim Utama, Pelayanan Surat Online." />
+  <meta property="og:title" content="Website Resmi Desa Kersik - Kutai Kartanegara" />
+  <meta property="og:description" content="Portal Resmi Desa Kersik: Informasi Pemerintahan, Transparansi APBDes, Wisata Bahari, UMKM, dan Layanan Mandiri." />
+  <meta property="og:image" content="assets/images/kutaikartanegara.png" />
+  <link rel="icon" type="image/png" href="assets/images/kutaikartanegara.png" />
+
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#effee7',
+              100: '#e0f8d4',
+              200: '#c2efab',
+              300: '#a2e67e',
+              400: '#87de57',
+              500: '#6bd731',
+              600: '#59be23',
+              700: '#4da91b',
+              800: '#3d920c',
+              900: '#1c4e09',
+            }
+          },
+          fontFamily: {
+            outfit: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 font-outfit antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- TOP ANNOUNCEMENT BAR -->
+  <div class="bg-brand-900 text-emerald-100 text-xs py-2 px-4 border-b border-brand-800">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2 text-center sm:text-left">
+        <span class="bg-brand-500 text-white font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider">Info</span>
+        <span>Jam Pelayanan Kantor: Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00) WITA</span>
+      </div>
+      <div class="flex items-center gap-4 text-[11px]">
+        <a href="tel:082150208664" class="hover:text-white flex items-center gap-1.5"><i class="fa-solid fa-phone text-brand-400"></i> 0821-5020-8664</a>
+        <span class="text-brand-700 hidden sm:inline">|</span>
+        <span class="hidden sm:inline"><i class="fa-solid fa-shield-halved text-brand-400"></i> Proklim Utama KLHK RI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN HEADER / NAVBAR -->
+  <header class="sticky top-0 z-50 bg-[#2b6d08] text-white shadow-md transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo & Village Identity -->
+        <a href="#" class="flex items-center gap-3.5 group">
+          <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white/10 rounded-xl p-1.5 border border-white/20 flex items-center justify-center transition group-hover:scale-105 shadow-inner">
+            <img src="assets/images/kutaikartanegara.png" alt="Logo Kutai Kartanegara" class="w-full h-full object-contain drop-shadow" />
+          </div>
+          <div>
+            <span class="text-xs uppercase tracking-widest text-brand-200 font-semibold block leading-none">Pemerintah Desa</span>
+            <span class="text-xl sm:text-2xl font-black tracking-tight text-white block mt-0.5 leading-none">Kersik</span>
+            <span class="text-[11px] text-brand-100 font-light block mt-1">Kec. Marang Kayu, Kab. Kutai Kartanegara</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-white/90">
+          <a href="#" class="hover:text-brand-300 transition py-2 text-brand-300 border-b-2 border-brand-300">Beranda</a>
+          <a href="#profil" class="hover:text-brand-300 transition py-2">Profil Desa</a>
+          <a href="#infografis" class="hover:text-brand-300 transition py-2">Infografis</a>
+          <a href="#peta" class="hover:text-brand-300 transition py-2">Peta</a>
+          <a href="#wisata" class="hover:text-brand-300 transition py-2">Wisata & Potensi</a>
+          <a href="#umkm" class="hover:text-brand-300 transition py-2">Belanja UMKM</a>
+          <a href="#berita" class="hover:text-brand-300 transition py-2">Berita</a>
+          <a href="#pengaduan" class="hover:text-brand-300 transition py-2">Pengaduan</a>
+        </nav>
+
+        <!-- CTA & Mobile Burger -->
+        <div class="flex items-center gap-3">
+          <a href="#layanan-surat" class="hidden sm:inline-flex items-center gap-2 bg-white text-brand-900 font-bold px-4 py-2.5 rounded-xl text-xs hover:bg-brand-100 transition shadow-sm">
+            <i class="fa-solid fa-file-pen text-brand-700"></i> Layanan Surat
+          </a>
+
+          <!-- Mobile Toggle Button -->
+          <button id="mobile-menu-toggle" type="button" class="lg:hidden p-2.5 rounded-xl text-white hover:bg-white/10 transition" aria-label="Menu Navigasi">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobile-menu-dropdown" class="hidden lg:hidden bg-brand-900/98 backdrop-blur-lg border-t border-brand-800 px-4 pt-3 pb-6 text-white text-sm font-semibold space-y-1">
+      <a href="#" class="block px-3 py-2.5 rounded-lg bg-brand-800 text-brand-300">Beranda</a>
+      <a href="#profil" class="block px-3 py-2.5 rounded-lg hover:bg-brand-800/60">Profil Desa</a>
+      <a href="#infografis" class="block px-3 py-2.5 rounded-lg hover:bg-brand-800/60">Infografis & APBDes</a>
+      <a href="#peta" class="block px-3 py-2.5 rounded-lg hover:bg-brand-800/60">Peta Digital Wilayah</a>
+      <a href="#wisata" class="block px-3 py-2.5 rounded-lg hover:bg-brand-800/60">Wisata & Potensi Pesisir</a>
+      <a href="#umkm" class="block px-3 py-2.5 rounded-lg hover:bg-brand-800/60">Belanja Produk Desa</a>
+      <a href="#berita" class="block px-3 py-2.5 rounded-lg hover:bg-brand-800/60">Berita & Informasi</a>
+      <a href="#layanan-surat" class="block px-3 py-2.5 rounded-lg hover:bg-brand-800/60 text-brand-300 font-bold">Layanan Surat Mandiri</a>
+      <a href="#pengaduan" class="block px-3 py-2.5 rounded-lg hover:bg-brand-800/60">Aspirasi & Pengaduan Warga</a>
+    </div>
+  </header>
+
+  <!-- HERO CAROUSEL SLIDER -->
+  <section class="relative h-[480px] sm:h-[580px] lg:h-[650px] w-full overflow-hidden bg-slate-900">
+    <div id="hero-slides-container" class="relative w-full h-full">
+      <!-- Slides will be rendered by main.js -->
+    </div>
+
+    <!-- Carousel Controls -->
+    <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm transition border border-white/20" aria-label="Slide Sebelumnya">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm transition border border-white/20" aria-label="Slide Selanjutnya">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+    <!-- Carousel Dots -->
+    <div id="carousel-dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+      <!-- Dots rendered by main.js -->
+    </div>
+  </section>
+
+  <!-- QUICK ACTION GRID (8 Menu Utama Cepat / Mobile App Bar) -->
+  <section class="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-14 sm:-mt-16">
+    <div class="bg-white rounded-3xl p-5 sm:p-8 shadow-xl border border-slate-100">
+      <div class="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6 text-center">
+        
+        <a href="#profil" class="action-item flex flex-col items-center group">
+          <div class="action-icon-box mb-2">
+            <i class="fa-solid fa-landmark text-xl"></i>
+          </div>
+          <span class="text-xs font-bold text-slate-700 group-hover:text-brand-800 transition">Profil Desa</span>
+        </a>
+
+        <a href="#infografis" class="action-item flex flex-col items-center group">
+          <div class="action-icon-box mb-2">
+            <i class="fa-solid fa-chart-pie text-xl"></i>
+          </div>
+          <span class="text-xs font-bold text-slate-700 group-hover:text-brand-800 transition">Infografis</span>
+        </a>
+
+        <a href="#apbdes" class="action-item flex flex-col items-center group">
+          <div class="action-icon-box mb-2">
+            <i class="fa-solid fa-vault text-xl"></i>
+          </div>
+          <span class="text-xs font-bold text-slate-700 group-hover:text-brand-800 transition">APBDes</span>
+        </a>
+
+        <a href="#peta" class="action-item flex flex-col items-center group">
+          <div class="action-icon-box mb-2">
+            <i class="fa-solid fa-map-location-dot text-xl"></i>
+          </div>
+          <span class="text-xs font-bold text-slate-700 group-hover:text-brand-800 transition">Peta Wilayah</span>
+        </a>
+
+        <a href="#wisata" class="action-item flex flex-col items-center group">
+          <div class="action-icon-box mb-2">
+            <i class="fa-solid fa-umbrella-beach text-xl"></i>
+          </div>
+          <span class="text-xs font-bold text-slate-700 group-hover:text-brand-800 transition">Wisata Pantai</span>
+        </a>
+
+        <a href="#umkm" class="action-item flex flex-col items-center group">
+          <div class="action-icon-box mb-2">
+            <i class="fa-solid fa-basket-shopping text-xl"></i>
+          </div>
+          <span class="text-xs font-bold text-slate-700 group-hover:text-brand-800 transition">Belanja UMKM</span>
+        </a>
+
+        <a href="#layanan-surat" class="action-item flex flex-col items-center group">
+          <div class="action-icon-box mb-2">
+            <i class="fa-solid fa-envelope-open-text text-xl"></i>
+          </div>
+          <span class="text-xs font-bold text-slate-700 group-hover:text-brand-800 transition">Layanan Surat</span>
+        </a>
+
+        <a href="#berita" class="action-item flex flex-col items-center group">
+          <div class="action-icon-box mb-2">
+            <i class="fa-solid fa-newspaper text-xl"></i>
+          </div>
+          <span class="text-xs font-bold text-slate-700 group-hover:text-brand-800 transition">Berita Desa</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- JELAJAHI DESA KERSIK & SAMBUTAN KEPALA DESA -->
+  <section id="profil" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      
+      <!-- Foto Kepala Desa -->
+      <div class="lg:col-span-5 flex flex-col items-center text-center">
+        <div class="relative w-64 h-80 sm:w-72 sm:h-96 rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-100">
+          <img src="assets/images/kades.jpg" alt="Kepala Desa Kersik" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-900/90 via-transparent to-transparent flex flex-col justify-end p-6 text-white text-left">
+            <span class="text-xs font-bold text-brand-300 uppercase tracking-widest">Kepala Desa Kersik</span>
+            <h3 class="text-xl font-extrabold mt-0.5">Jumadi, S.Sos</h3>
+            <p class="text-[11px] text-gray-200 mt-1">Periode 2021 - 2027</p>
+          </div>
+        </div>
+        
+        <div class="mt-4 flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-4 py-1.5 rounded-full text-xs font-semibold">
+          <i class="fa-solid fa-award text-emerald-600"></i> Desa Berprestasi Proklim Utama KLHK
+        </div>
+      </div>
+
+      <!-- Sambutan & Ringkasan Desa -->
+      <div class="lg:col-span-7">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 text-brand-800 text-xs font-bold uppercase tracking-wider mb-3">
+          <i class="fa-solid fa-scroll text-brand-600"></i> Sambutan Kepala Desa
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
+          Selamat Datang di Portal Resmi Informasi & Pelayanan Publik Desa Kersik
+        </h2>
+        
+        <p class="mt-4 text-slate-600 text-sm sm:text-base leading-relaxed">
+          <em>Assalamu’alaikum Warahmatullahi Wabarakatuh, Salam Sejahtera untuk kita semua.</em>
+        </p>
+        <p class="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed">
+          Puji syukur senantiasa kita panjatkan kepada Allah SWT atas segala limpahan rahmat-Nya. Atas nama Pemerintah Desa Kersik, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara, kami menyambut hangat kehadiran seluruh masyarakat dan pengunjung di portal digital resmi ini.
+        </p>
+        <p class="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed">
+          Website ini kami kembangkan sebagai wujud transparansi anggaran, kemudahan akses informasi publik, serta transformasi pelayanan surat mandiri secara daring. Desa Kersik dianugerahi garis pantai nan memesona—<strong>Pantai Biru Kersik</strong>—serta komitmen kuat dalam pelestarian hutan mangrove yang telah mengantarkan desa kita meraih penghargaan <strong>Kampung Iklim (Proklim) Utama</strong> dari Kementerian Lingkungan Hidup dan Kehutanan (KLHK) Republik Indonesia.
+        </p>
+
+        <!-- Highlight Points -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-8 pt-6 border-t border-slate-200">
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <span class="text-2xl font-black text-brand-800 block">42,85 km²</span>
+            <span class="text-xs text-slate-500 font-medium">Luas Wilayah</span>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <span class="text-2xl font-black text-brand-800 block">2.486</span>
+            <span class="text-xs text-slate-500 font-medium">Jiwa Penduduk</span>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm col-span-2 sm:col-span-1">
+            <span class="text-2xl font-black text-brand-800 block">3 Dusun</span>
+            <span class="text-xs text-slate-500 font-medium">10 Rukun Tetangga (RT)</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PETA DIGITAL INTERAKTIF DESA KERSIK -->
+  <section id="peta" class="py-16 bg-white border-y border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Sistem Informasi Geografis</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Peta Wilayah & Titik Minat Desa Kersik</h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Peta interaktif mencakup Kantor Desa, Pantai Biru Kersik, Mangrove Center, dan fasilitas publik.</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+          <i class="fa-solid fa-location-crosshairs text-brand-700"></i>
+          <span>Kordinat Utama: <strong>-0.0682, 117.3854</strong> (Marang Kayu, Kukar)</span>
+        </div>
+      </div>
+
+      <!-- Leaflet Map Container -->
+      <div class="shadow-xl rounded-2xl overflow-hidden border border-slate-200 relative">
+        <div id="map"></div>
+      </div>
+
+      <!-- Legend & Batas Wilayah -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
+          <span class="font-bold text-slate-800 block mb-1">Sebelah Utara</span>
+          <span class="text-slate-600">Berbatasan dengan Desa Sebuntal</span>
+        </div>
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
+          <span class="font-bold text-slate-800 block mb-1">Sebelah Selatan</span>
+          <span class="text-slate-600">Selat Makassar / Desa Santan Ulu</span>
+        </div>
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
+          <span class="font-bold text-slate-800 block mb-1">Sebelah Barat</span>
+          <span class="text-slate-600">Berbatasan dengan Desa Semangko</span>
+        </div>
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
+          <span class="font-bold text-slate-800 block mb-1">Sebelah Timur</span>
+          <span class="text-slate-600">Bentang Pantai Selat Makassar</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SOTK / STRUKTUR ORGANISASI PEMERINTAH DESA KERSIK -->
+  <section class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Aparatur Desa</span>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Struktur Organisasi & Tata Kerja (SOTK)</h2>
+      <p class="text-xs sm:text-sm text-slate-500 mt-1">Mengenal perangkat desa yang berdedikasi melayani segenap warga Desa Kersik secara profesional dan berintegritas.</p>
+    </div>
+
+    <div id="perangkat-desa-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Rendered dynamically by main.js -->
+    </div>
+  </section>
+
+  <!-- INFOGRAFIS KEPENDUDUKAN & DEMOGRAFI -->
+  <section id="infografis" class="py-16 bg-slate-900 text-white relative overflow-hidden">
+    <!-- Ambient glow -->
+    <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-brand-800/30 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="text-xs font-bold uppercase tracking-widest text-brand-300 bg-brand-900/60 border border-brand-700 px-3 py-1 rounded-full">Data Statistik</span>
+        <h2 class="text-2xl sm:text-4xl font-extrabold mt-2">Infografis Kependudukan Desa Kersik</h2>
+        <p class="text-xs sm:text-sm text-slate-300 mt-1">Transparansi data demografi kependudukan yang diperbarui berkala untuk perencanaan pembangunan yang tepat sasaran.</p>
+      </div>
+
+      <!-- Key Stat Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
+        <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 text-center">
+          <i class="fa-solid fa-users text-2xl text-brand-400 mb-2"></i>
+          <span class="text-2xl font-black block">2.486</span>
+          <span class="text-xs text-slate-300">Total Penduduk</span>
+        </div>
+        <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 text-center">
+          <i class="fa-solid fa-person text-2xl text-blue-400 mb-2"></i>
+          <span class="text-2xl font-black block">1.278</span>
+          <span class="text-xs text-slate-300">Laki-Laki</span>
+        </div>
+        <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 text-center">
+          <i class="fa-solid fa-person-dress text-2xl text-pink-400 mb-2"></i>
+          <span class="text-2xl font-black block">1.208</span>
+          <span class="text-xs text-slate-300">Perempuan</span>
+        </div>
+        <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 text-center">
+          <i class="fa-solid fa-people-roof text-2xl text-amber-400 mb-2"></i>
+          <span class="text-2xl font-black block">742</span>
+          <span class="text-xs text-slate-300">Kepala Keluarga</span>
+        </div>
+        <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 text-center">
+          <i class="fa-solid fa-user-clock text-2xl text-emerald-400 mb-2"></i>
+          <span class="text-2xl font-black block">84</span>
+          <span class="text-xs text-slate-300">Penduduk Sementara</span>
+        </div>
+        <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 text-center">
+          <i class="fa-solid fa-arrow-right-arrow-left text-2xl text-purple-400 mb-2"></i>
+          <span class="text-2xl font-black block">27</span>
+          <span class="text-xs text-slate-300">Mutasi Masuk/Keluar</span>
+        </div>
+      </div>
+
+      <!-- Interactive Charts -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-white p-6 rounded-3xl text-slate-800 shadow-xl">
+          <h3 class="font-bold text-base text-slate-900 mb-1 flex items-center gap-2">
+            <i class="fa-solid fa-chart-column text-brand-700"></i> Distribusi Kelompok Usia Penduduk
+          </h3>
+          <p class="text-xs text-slate-400 mb-4">Jumlah jiwa berdasarkan kelompok usia di Desa Kersik</p>
+          <div class="h-64">
+            <canvas id="chartUsia"></canvas>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl text-slate-800 shadow-xl">
+          <h3 class="font-bold text-base text-slate-900 mb-1 flex items-center gap-2">
+            <i class="fa-solid fa-briefcase text-brand-700"></i> Komposisi Mata Pencaharian Warga
+          </h3>
+          <p class="text-xs text-slate-400 mb-4">Dominasi sektor maritim nelayan & budidaya perikanan laut</p>
+          <div class="h-64 flex items-center justify-center">
+            <canvas id="chartPekerjaan"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TRANSPARANSI APBDES 2026 & STATUS IDM -->
+  <section id="apbdes" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-14">
+      <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Transparansi Keuangan</span>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">APBDes 2026 & Indeks Desa Membangun (IDM)</h2>
+      <p class="text-xs sm:text-sm text-slate-500 mt-1">Keterbukaan informasi pengelolaan Anggaran Pendapatan dan Belanja Desa demi mewujudkan tata kelola desa yang bersih dan akuntabel.</p>
+    </div>
+
+    <!-- APBDes Summary Row -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      
+      <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white rounded-3xl p-6 shadow-lg shadow-emerald-700/20">
+        <span class="text-xs font-semibold text-emerald-200 uppercase tracking-wider block">Total Pendapatan Desa</span>
+        <span class="text-2xl sm:text-3xl font-black block mt-2">Rp 2.540.000.000</span>
+        <div class="mt-4 pt-4 border-t border-white/20 text-xs text-emerald-100 space-y-1">
+          <div class="flex justify-between"><span>Dana Desa (APBN)</span><span class="font-bold">44,1%</span></div>
+          <div class="flex justify-between"><span>ADD Kab. Kukar</span><span class="font-bold">38,6%</span></div>
+          <div class="flex justify-between"><span>PADes & Bagi Hasil</span><span class="font-bold">17,3%</span></div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-blue-600 to-blue-800 text-white rounded-3xl p-6 shadow-lg shadow-blue-700/20">
+        <span class="text-xs font-semibold text-blue-200 uppercase tracking-wider block">Total Belanja Desa</span>
+        <span class="text-2xl sm:text-3xl font-black block mt-2">Rp 2.490.000.000</span>
+        <div class="mt-4 pt-4 border-t border-white/20 text-xs text-blue-100 space-y-1">
+          <div class="flex justify-between"><span>Pembangunan & Pesisir</span><span class="font-bold">39,8%</span></div>
+          <div class="flex justify-between"><span>Pemerintahan Desa</span><span class="font-bold">31,3%</span></div>
+          <div class="flex justify-between"><span>Pemberdayaan & Bencana</span><span class="font-bold">28,9%</span></div>
+        </div>
+      </div>
+
+      <!-- IDM Card -->
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Status IDM 2026</span>
+            <span class="bg-brand-100 text-brand-800 font-bold text-xs px-2.5 py-0.5 rounded-full">Skor 0,7984</span>
+          </div>
+          <h3 class="text-2xl font-black text-brand-800">DESA MAJU</h3>
+          <p class="text-xs text-slate-500 mt-1">Menuju Kategori Desa Mandiri Terpadu</p>
+        </div>
+
+        <div class="space-y-2 mt-4 pt-3 border-t border-slate-100 text-xs text-slate-600">
+          <div class="flex justify-between">
+            <span>Indeks Sosial (IKS):</span>
+            <span class="font-bold text-slate-800">0,8120 (Tinggi)</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Indeks Ekonomi (IKE):</span>
+            <span class="font-bold text-slate-800">0,7740 (Maju)</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Indeks Lingkungan (IKL):</span>
+            <span class="font-bold text-emerald-700 font-black">0,8092 (Proklim)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Chart Belanja APBDes -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-md">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-6">
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Rincian Alokasi Belanja APBDes Tahun Anggaran 2026</h3>
+          <p class="text-xs text-slate-500 mb-6 leading-relaxed">Prioritas belanja difokuskan pada penguatan jalan lingkungan pesisir, perbaikan dermaga nelayan Dusun Muara, penanaman mangrove penahan abrasi, serta pelatihan ekonomi kreatif UMKM.</p>
+          
+          <div class="space-y-3 text-xs">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex justify-between items-center">
+              <span class="font-medium text-slate-700">Pelaksanaan Pembangunan Pesisir & Lingkungan</span>
+              <span class="font-bold text-emerald-700">Rp 990.000.000</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex justify-between items-center">
+              <span class="font-medium text-slate-700">Penyelenggaraan Pemerintahan & Pelayanan</span>
+              <span class="font-bold text-blue-700">Rp 780.000.000</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex justify-between items-center">
+              <span class="font-medium text-slate-700">Pemberdayaan Masyarakat & Pelatihan Nelayan</span>
+              <span class="font-bold text-amber-700">Rp 340.000.000</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex justify-between items-center">
+              <span class="font-medium text-slate-700">Pembinaan Kemasyarakatan, Seni & Budaya</span>
+              <span class="font-bold text-purple-700">Rp 260.000.000</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 flex items-center justify-center">
+          <div class="w-full max-w-sm">
+            <canvas id="chartApbdes"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POTENSI & WISATA DESA KERSIK -->
+  <section id="wisata" class="py-16 sm:py-24 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-100 px-3 py-1 rounded-full">Destinasi Unggulan</span>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-2">Pariwisata & Potensi Alam Pesisir</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Keindahan bahari Pantai Biru Kersik, kerimbunan ekowisata mangrove, dan keunikan budaya nelayan Selat Makassar.</p>
+      </div>
+
+      <!-- Wisata Cards -->
+      <div id="wisata-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Rendered by main.js -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BELANJA DARI DESA / LAPAK UMKM -->
+  <section id="umkm" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Ekonomi Kreatif</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Beli Dari Desa (Lapak UMKM Kersik)</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Dukung perajin dan nelayan lokal dengan membeli langsung produk olahan laut dan kerajinan khas Desa Kersik.</p>
+      </div>
+      <div class="text-xs text-slate-500 bg-brand-50 text-brand-800 px-4 py-2 rounded-xl border border-brand-200 font-semibold flex items-center gap-2">
+        <i class="fa-brands fa-whatsapp text-emerald-600 text-base"></i> Pemesanan Langsung via WhatsApp Admin / BUMDes
+      </div>
+    </div>
+
+    <!-- UMKM Grid -->
+    <div id="umkm-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Rendered by main.js -->
+    </div>
+  </section>
+
+  <!-- LAYANAN SURAT MANDIRI ONLINE (INTERAKTIF & CETAK BUKTI) -->
+  <section id="layanan-surat" class="py-16 sm:py-24 bg-gradient-to-b from-brand-900 to-slate-900 text-white relative">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <div class="text-center mb-10">
+        <span class="text-xs font-bold uppercase tracking-widest text-brand-300 bg-brand-800/60 border border-brand-600 px-3 py-1 rounded-full">Pelayanan Digital 24/7</span>
+        <h2 class="text-2xl sm:text-4xl font-extrabold mt-2">Layanan Pengajuan Surat Mandiri</h2>
+        <p class="text-xs sm:text-sm text-slate-300 mt-2 max-w-xl mx-auto leading-relaxed">
+          Warga Desa Kersik kini dapat mengajukan permohonan surat keterangan dari rumah tanpa harus antre lama di kantor desa.
+        </p>
+      </div>
+
+      <!-- Form Box -->
+      <div class="bg-white rounded-3xl p-6 sm:p-10 text-slate-800 shadow-2xl">
+        <form id="form-layanan-surat" class="space-y-5">
+          
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Jenis Surat Keterangan <span class="text-red-500">*</span></label>
+            <select id="pilih-jenis-surat" required class="w-full text-sm bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+              <!-- Options rendered by main.js -->
+            </select>
+            <div id="syarat-surat-list"></div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nomor Induk Kependudukan (NIK) <span class="text-red-500">*</span></label>
+              <input type="text" id="surat-nik" required maxlength="16" placeholder="Contoh: 640217xxxxxxxxxx" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap (Sesuai KTP) <span class="text-red-500">*</span></label>
+              <input type="text" id="surat-nama" required placeholder="Contoh: Andi Muhammad Syarif" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nomor WhatsApp Aktif <span class="text-red-500">*</span></label>
+              <input type="tel" id="surat-wa" required placeholder="08xxxxxxxxxx" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Wilayah Dusun <span class="text-red-500">*</span></label>
+              <select id="surat-dusun" required class="w-full text-sm bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+                <option value="Dusun Empang">Dusun Empang</option>
+                <option value="Dusun Kersik">Dusun Kersik</option>
+                <option value="Dusun Muara">Dusun Muara</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">RT (Rukun Tetangga) <span class="text-red-500">*</span></label>
+              <input type="text" id="surat-rt" required placeholder="003" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Keperluan Pembuatan Surat <span class="text-red-500">*</span></label>
+            <textarea id="surat-keperluan" required rows="3" placeholder="Jelaskan secara singkat tujuan permohonan surat (misal: Pengajuan KUR Nelayan BRI, Persyaratan Berkas Beasiswa, dll)" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium"></textarea>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" class="w-full py-4 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-extrabold text-sm shadow-lg shadow-brand-700/30 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i> Kirim Permohonan & Buat Resi Pengajuan
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BERITA DESA & PENGUMUMAN -->
+  <section id="berita" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Kabar Desa</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Warta & Kabar Terkini Desa Kersik</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Kegiatan pemerintahan desa, festival wisata pesisir, dan program kemasyarakatan terbaru.</p>
+      </div>
+      <a href="#berita" class="text-xs font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1.5">
+        Lihat Semua Berita <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <div id="berita-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Rendered by main.js -->
+    </div>
+  </section>
+
+  <!-- GALERI FOTO KEGIATAN DESA -->
+  <section class="py-16 bg-slate-100 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-white px-3 py-1 rounded-full border border-slate-200">Dokumentasi</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Galeri Keindahan & Kegiatan Desa</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Momen keseharian warga, aksi penanaman mangrove, dan pesona bahari Pantai Kersik.</p>
+      </div>
+
+      <div id="galeri-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <!-- Rendered by main.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- PENGADUAN & ASPIRASI WARGA -->
+  <section id="pengaduan" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-gradient-to-br from-brand-50 to-emerald-100/50 rounded-3xl p-6 sm:p-12 border border-brand-200/60 shadow-lg">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <div class="lg:col-span-5">
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-white px-3 py-1 rounded-full border border-brand-200">Kanal Aspirasi</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3">Layanan Pengaduan & Kotak Saran Warga</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+            Punya saran, masukan perbaikan fasilitas umum, atau pengaduan seputar lingkungan pesisir Desa Kersik? Sampaikan langsung kepada kami untuk ditindaklanjuti.
+          </p>
+
+          <div class="mt-6 space-y-3 text-xs text-slate-700">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">1</div>
+              <span>Laporan diterima langsung oleh perangkat desa terkait.</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">2</div>
+              <span>Mendapat nomor tiket pelacakan aduan secara resmi.</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">3</div>
+              <span>Kerahasiaan identitas pelapor terjamin aman.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-brand-100">
+          <form id="form-pengaduan" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap</label>
+                <input type="text" id="aduan-nama" required placeholder="Nama Anda" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nomor WhatsApp / HP</label>
+                <input type="tel" id="aduan-kontak" required placeholder="08xxxxxxxxxx" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Laporan</label>
+              <select id="aduan-kategori" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+                <option value="Infrastruktur & Jalan">Infrastruktur Jalan & Dermaga</option>
+                <option value="Lingkungan & Sampah Pantai">Kebersihan Lingkungan & Pantai</option>
+                <option value="Pelayanan Administrasi">Pelayanan Kantor Desa</option>
+                <option value="Bantuan Sosial">Bantuan Sosial & Nelayan</option>
+                <option value="Keamanan & Ketertiban">Keamanan & Ketertiban Umum</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Isi Pesan Aspirasi / Aduan</label>
+              <textarea id="aduan-pesan" required rows="3" placeholder="Tuliskan detail laporan, lokasi kejadian, dan saran Anda..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium"></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition shadow-md flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane text-brand-400"></i> Kirim Laporan Aspirasi
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER RESMI DESA KERSIK -->
+  <footer class="bg-slate-950 text-slate-400 text-xs pt-16 pb-24 lg:pb-12 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
+        
+        <!-- Kolom Identitas -->
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <img src="assets/images/kutaikartanegara.png" alt="Logo Kutai Kartanegara" class="w-10 h-10 object-contain brightness-110" />
+            <div>
+              <h3 class="text-white font-bold text-sm">Pemerintah Desa Kersik</h3>
+              <p class="text-[11px] text-brand-400">Kutai Kartanegara, Kaltim</p>
+            </div>
+          </div>
+          <p class="text-slate-400 leading-relaxed text-xs">
+            Desa Kersik merupakan salah satu desa pesisir di Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara, Kalimantan Timur. Dikenal dengan destinasi Pantai Biru Kersik dan keindahan hutan bakau Proklim Utama.
+          </p>
+          <div class="mt-4 text-[11px] space-y-1 text-slate-500">
+            <p><strong>Kode Wilayah:</strong> 64.02.17.2005</p>
+            <p><strong>Kode Pos:</strong> 75385</p>
+          </div>
+        </div>
+
+        <!-- Kontak & Alamat -->
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-building-columns text-brand-500"></i> Kontak Kantor Desa
+          </h4>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-location-dot text-brand-500 mt-1"></i>
+              <span>Jalan Langaseng Dusun Empang RT.003, Desa Kersik, Marang Kayu</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i class="fa-solid fa-phone text-brand-500"></i>
+              <a href="tel:082150208664" class="hover:text-white">0821-5020-8664</a>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i class="fa-solid fa-envelope text-brand-500"></i>
+              <a href="mailto:pemdes@kersik.desa.id" class="hover:text-white">pemdes@kersik.desa.id</a>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i class="fa-regular fa-clock text-brand-500 mt-1"></i>
+              <span>Senin - Kamis (08.00 - 15.00)<br />Jum'at (08.00 - 11.00) WITA</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tautan Terkait -->
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-link text-brand-500"></i> Tautan Penting
+          </h4>
+          <ul class="space-y-2">
+            <li><a href="https://kukarkab.go.id" target="_blank" class="hover:text-brand-300 transition">Pemerintah Kab. Kutai Kartanegara</a></li>
+            <li><a href="https://kaltimprov.go.id" target="_blank" class="hover:text-brand-300 transition">Pemerintah Provinsi Kalimantan Timur</a></li>
+            <li><a href="https://kemendesa.go.id" target="_blank" class="hover:text-brand-300 transition">Kementerian Desa PDTT</a></li>
+            <li><a href="https://menlhk.go.id" target="_blank" class="hover:text-brand-300 transition">Program Kampung Iklim (Proklim) KLHK</a></li>
+            <li><a href="#layanan-surat" class="hover:text-brand-300 transition">Layanan Surat Mandiri Online</a></li>
+            <li><a href="#wisata" class="hover:text-brand-300 transition">Wisata Bahari Pantai Kersik</a></li>
+          </ul>
+        </div>
+
+        <!-- Statistik Kunjungan Web (Live Counter) -->
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-brand-500"></i> Statistik Pengunjung
+          </h4>
+          <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-brand-400"></i> Hari Ini:</span>
+              <span id="count-today" class="font-bold text-white">142</span>
+            </div>
+            <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-brand-400"></i> Bulan Ini:</span>
+              <span id="count-month" class="font-bold text-white">3.840</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-brand-400"></i> Total Kunjungan:</span>
+              <span id="count-total" class="font-black text-brand-300">28.519</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Copyright Bar -->
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px]">
+        <p>© 2026 Pemerintah Desa Kersik, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara. Hak Cipta Dilindungi.</p>
+        <p class="text-slate-500">Diadopsi dan disempurnakan dari portal <a href="https://kersik.desa.id" target="_blank" class="text-brand-400 hover:underline">kersik.desa.id</a></p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- MOBILE BOTTOM FLOATING NAVIGATION (App Bar) -->
+  <div class="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 py-2 px-3 z-40 mobile-bottom-nav">
+    <div class="grid grid-cols-5 text-center text-[10px] font-bold text-slate-600">
+      <a href="#" class="flex flex-col items-center py-1 hover:text-brand-700">
+        <i class="fa-solid fa-house text-base mb-0.5 text-brand-700"></i>
+        <span>Home</span>
+      </a>
+      <a href="#profil" class="flex flex-col items-center py-1 hover:text-brand-700">
+        <i class="fa-solid fa-landmark text-base mb-0.5"></i>
+        <span>Profil</span>
+      </a>
+      <a href="#layanan-surat" class="flex flex-col items-center py-1 text-brand-700 -mt-3">
+        <div class="w-11 h-11 bg-brand-700 text-white rounded-full flex items-center justify-center shadow-lg shadow-brand-700/40">
+          <i class="fa-solid fa-file-pen text-base"></i>
+        </div>
+        <span class="mt-0.5">Surat</span>
+      </a>
+      <a href="#wisata" class="flex flex-col items-center py-1 hover:text-brand-700">
+        <i class="fa-solid fa-umbrella-beach text-base mb-0.5"></i>
+        <span>Wisata</span>
+      </a>
+      <a href="#pengaduan" class="flex flex-col items-center py-1 hover:text-brand-700">
+        <i class="fa-solid fa-bullhorn text-base mb-0.5"></i>
+        <span>Aduan</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- GENERAL MODAL CONTAINER (Detail Wisata, Berita, Bukti Cetak Surat, dsb) -->
+  <div id="general-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div id="general-modal-content" class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative animate-fade-in">
+      <!-- Modal dynamic content injected by JS -->
+    </div>
+  </div>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Village Data & Logic -->
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

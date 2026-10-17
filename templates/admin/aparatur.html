@@ -1,0 +1,824 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Kelola Aparatur Desa{% endblock %}
+{% block header_title %}Struktur Organisasi & Tata Kerja (SOTK){% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- Header & Action Buttons -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+    <div>
+      <h3 class="font-bold text-slate-800 text-sm">Daftar Aparatur & Perangkat Desa</h3>
+      <p class="text-xs text-slate-500 mt-0.5">Kelola struktur organisasi pemerintahan desa mulai dari Kepala Desa, Sekretaris, Kasi, Kaur, hingga Kepala Dusun.</p>
+    </div>
+    <div class="flex items-center gap-2.5 flex-wrap">
+      <button onclick="bukaModalKelolaJabatan()" class="px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-brand-800 hover:border-brand-500 font-bold text-xs flex items-center gap-2 shadow-sm transition">
+        <i class="fa-solid fa-list-check text-brand-700"></i> Kelola Daftar Jabatan
+      </button>
+      <button onclick="bukaModalTambahAparatur()" class="px-4 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs flex items-center gap-2 shadow-md hover:shadow-lg transition">
+        <i class="fa-solid fa-user-plus"></i> Tambah Perangkat Desa
+      </button>
+    </div>
+  </div>
+
+  <!-- Grid Cards Aparatur -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% for a in aparatur_list %}
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+      <div>
+        <div class="h-56 overflow-hidden relative bg-slate-100 group">
+          {% if a.foto and a.foto.startswith('static/') %}
+            <img src="{{ url_for('static', filename=a.foto.replace('static/', '')) }}" alt="{{ a.nama }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/kades.jpg') }}'" />
+          {% else %}
+            <img src="{{ a.foto or url_for('static', filename='images/kades.jpg') }}" alt="{{ a.nama }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/kades.jpg') }}'" />
+          {% endif %}
+          <div class="absolute top-2.5 right-2.5">
+            <span class="text-[10px] font-semibold bg-black/60 backdrop-blur-md text-emerald-200 border border-emerald-400/30 px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+              <i class="fa-regular fa-clock text-[9px]"></i> {{ a.periode or '2021 - 2027' }}
+            </span>
+          </div>
+          <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-900/70 to-transparent p-3 text-white">
+            <span class="text-[10px] font-bold text-brand-300 uppercase tracking-wider block">{{ a.jabatan }}</span>
+            <h4 class="font-bold text-sm leading-tight mt-0.5">{{ a.nama }}</h4>
+          </div>
+        </div>
+        <div class="p-4 text-xs">
+          <p class="text-slate-500 italic mb-2 leading-relaxed min-h-[36px]">"{{ a.sambutan_singkat }}"</p>
+          <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-100">
+            <span>Kontak / WA:</span>
+            <span class="font-semibold text-slate-700">{{ a.kontak or '-' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
+        <span class="text-[10px] text-slate-500 font-medium bg-slate-200/70 px-2 py-0.5 rounded-md">Urutan #{{ a.urutan }}</span>
+        <div class="flex items-center gap-1.5">
+          <button type="button" 
+                  onclick="bukaModalEditAparatur({{ a.id }}, this)" 
+                  data-nama="{{ a.nama }}"
+                  data-jabatan="{{ a.jabatan }}"
+                  data-periode="{{ a.periode or '2021 - 2027' }}"
+                  data-foto="{{ a.foto }}"
+                  data-kontak="{{ a.kontak }}"
+                  data-sambutan="{{ a.sambutan_singkat }}"
+                  data-urutan="{{ a.urutan }}"
+                  class="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-brand-800 hover:border-brand-500 shadow-sm transition flex items-center gap-1 text-xs font-semibold" title="Edit Data">
+            <i class="fa-solid fa-pen-to-square text-xs text-brand-700"></i> Edit
+          </button>
+          <form method="POST" action="{{ url_for('admin_hapus_aparatur', id=a.id) }}" onsubmit="return confirm('Yakin ingin menghapus aparatur {{ a.nama }}?');" class="inline">
+            <button type="submit" class="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-300 shadow-sm transition" title="Hapus">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL 1: TAMBAH / EDIT APARATUR                          -->
+<!-- ======================================================== -->
+<div id="modal-aparatur" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 max-h-[92vh] overflow-y-auto shadow-2xl animate-fade-in">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div>
+        <h3 id="modal-aparatur-title" class="font-bold text-base text-slate-900">Tambah Aparatur Desa</h3>
+        <p class="text-[11px] text-slate-400 mt-0.5">Kelola data pejabat dan staf pemerintahan desa</p>
+      </div>
+      <button onclick="tutupModalAparatur()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-lg font-bold transition">&times;</button>
+    </div>
+
+    <form id="form-aparatur" method="POST" action="{{ url_for('admin_tambah_aparatur') }}" enctype="multipart/form-data" class="space-y-4">
+      
+      <!-- Nama Lengkap -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap & Gelar <span class="text-red-500">*</span></label>
+        <input type="text" name="nama" id="input-aparatur-nama" required placeholder="Contoh: Jumadi, S.Sos" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+      </div>
+
+      <!-- Jabatan Struktural (Dropdown + Tombol +Jabatan & Kelola) -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="text-xs font-bold text-slate-700">Jabatan Struktural <span class="text-red-500">*</span></label>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="toggleFormTambahJabatan()" class="text-brand-700 hover:text-brand-900 font-bold text-[11px] flex items-center gap-1 bg-brand-50 hover:bg-brand-100 border border-brand-200 px-2 py-0.5 rounded-lg transition" title="Buka menu tambah / edit / hapus jabatan">
+              <i class="fa-solid fa-plus-circle text-xs"></i> + Jabatan Baru
+            </button>
+            <button type="button" onclick="bukaModalKelolaJabatan()" class="text-slate-600 hover:text-slate-900 font-bold text-[11px] flex items-center gap-1 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-2 py-0.5 rounded-lg transition" title="Kelola dan bersihkan daftar jabatan">
+              <i class="fa-solid fa-sliders text-xs"></i> Kelola / Hapus
+            </button>
+          </div>
+        </div>
+
+        <select name="jabatan" id="input-aparatur-jabatan" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+          <option value="" disabled selected>-- Pilih Jabatan Struktural --</option>
+          {% for j in jabatan_list %}
+          <option value="{{ j.nama_jabatan }}">{{ j.nama_jabatan }}</option>
+          {% endfor %}
+        </select>
+
+        <!-- Inline Box: Tambah, Edit, & Hapus Jabatan Langsung -->
+        <div id="box-tambah-jabatan-langsung" class="hidden mt-2 p-3 bg-emerald-50/90 border border-emerald-200 rounded-2xl transition space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-emerald-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-layer-group text-xs text-brand-700"></i> Kelola Jabatan Langsung
+            </span>
+            <button type="button" onclick="toggleFormTambahJabatan(false)" class="text-slate-400 hover:text-slate-600 text-xs font-bold">&times;</button>
+          </div>
+
+          <!-- Input Tambah Baru -->
+          <div class="flex items-center gap-2">
+            <input type="text" id="input-nama-jabatan-baru" placeholder="Ketik nama jabatan baru..." class="flex-1 text-xs bg-white border border-emerald-300 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+            <button type="button" id="btn-simpan-jabatan" onclick="simpanJabatanBaruLangsung()" class="px-3 py-1.5 bg-brand-700 hover:bg-brand-800 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-sm whitespace-nowrap">
+              <i class="fa-solid fa-check"></i> Tambahkan
+            </button>
+          </div>
+          <p id="msg-tambah-jabatan" class="text-[10px] text-emerald-700 hidden font-medium"></p>
+
+          <!-- List Jabatan Inline (Bisa Edit / Hapus langsung agar tidak menumpuk) -->
+          <div class="pt-2 border-t border-emerald-200/80">
+            <div class="flex items-center justify-between mb-1.5 text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+              <span>Daftar Jabatan Saat Ini (Edit / Hapus)</span>
+              <span id="label-total-jabatan" class="text-emerald-700"></span>
+            </div>
+            <div id="container-list-jabatan-inline" class="max-h-40 overflow-y-auto space-y-1.5 pr-1 text-xs">
+              <!-- Dynamically populated by renderInlineJabatanList() -->
+              <div class="text-center py-2 text-slate-400 text-[11px]">Memuat daftar jabatan...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kontak, Periode, & Urutan -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Masa Periode (Tahun)</label>
+          <input type="text" name="periode" id="input-aparatur-periode" placeholder="2021 - 2027" value="2021 - 2027" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Kontak / WA</label>
+          <input type="text" name="kontak" id="input-aparatur-kontak" placeholder="0821-5020-8664" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Tampil</label>
+          <input type="number" name="urutan" id="input-aparatur-urutan" value="1" min="1" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        </div>
+      </div>
+
+      <!-- File Foto Upload dengan Live Preview -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">
+          Upload Foto Aparatur <span class="text-[10px] text-slate-400 font-normal">(File Gambar)</span>
+        </label>
+        
+        <input type="hidden" name="foto_lama" id="input-aparatur-foto-lama" value="" />
+        <input type="hidden" name="foto" id="input-aparatur-foto" value="" />
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center gap-4">
+          <!-- Thumbnail Preview -->
+          <div class="relative w-16 h-16 rounded-xl border-2 border-slate-300 bg-white overflow-hidden flex-shrink-0 flex items-center justify-center shadow-inner group">
+            <img id="preview-aparatur-img" src="" alt="Pratinjau" class="w-full h-full object-cover hidden" />
+            <div id="placeholder-aparatur-icon" class="text-slate-300 text-2xl flex flex-col items-center">
+              <i class="fa-solid fa-user"></i>
+            </div>
+          </div>
+
+          <!-- File Input -->
+          <div class="flex-1 min-w-0">
+            <input type="file" name="foto_file" id="input-aparatur-file" accept="image/png, image/jpeg, image/jpg, image/webp" onchange="previewUploadFoto(this)" class="block w-full text-xs text-slate-500 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-700 file:text-white hover:file:bg-brand-800 file:cursor-pointer cursor-pointer" />
+            <p id="label-foto-info" class="text-[10px] text-slate-400 mt-1">Pilih file foto dari komputer (JPG, PNG, WEBP). Foto lama tetap dipakai jika dikosongkan.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kutipan / Motto Pelayanan -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Kutipan / Motto Pelayanan</label>
+        <textarea name="sambutan_singkat" id="input-aparatur-sambutan" rows="2" placeholder="Komitmen melayani masyarakat desa..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium"></textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+        <button type="button" onclick="tutupModalAparatur()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+          Batal
+        </button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow-md hover:shadow-lg transition flex items-center gap-2">
+          <i class="fa-solid fa-check"></i> <span id="btn-submit-label">Simpan Aparatur</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL 2: KELOLA DAFTAR JABATAN STRUKTURAL (EDIT & HAPUS)  -->
+<!-- ======================================================== -->
+<div id="modal-kelola-jabatan" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 max-h-[90vh] overflow-y-auto shadow-2xl animate-fade-in flex flex-col">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div>
+        <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-sitemap text-brand-700"></i> Kelola Daftar Jabatan Struktural
+        </h3>
+        <p class="text-[11px] text-slate-500 mt-0.5">Edit nama jabatan atau hapus jabatan yang tidak digunakan agar tidak menumpuk di dropdown.</p>
+      </div>
+      <button onclick="tutupModalKelolaJabatan()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-lg font-bold transition">&times;</button>
+    </div>
+
+    <!-- Tambah Cepat di Dalam Modal -->
+    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 mb-4">
+      <label class="block text-xs font-bold text-slate-700 mb-1.5">Tambah Jabatan Baru</label>
+      <div class="flex items-center gap-2">
+        <input type="text" id="input-modal-jabatan-baru" placeholder="Contoh: Kaur Pembangunan, Ketua RT..." class="flex-1 text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        <button type="button" onclick="simpanJabatanDariModal()" class="px-4 py-2 bg-brand-700 hover:bg-brand-800 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+          <i class="fa-solid fa-plus"></i> Tambahkan
+        </button>
+      </div>
+      <p id="msg-modal-jabatan" class="text-[10px] text-emerald-700 mt-1 hidden font-medium"></p>
+    </div>
+
+    <!-- Filter / Search Box -->
+    <div class="mb-3">
+      <input type="text" id="filter-jabatan" oninput="filterJabatanList()" placeholder="Cari jabatan..." class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+    </div>
+
+    <!-- Tabel / Daftar Jabatan -->
+    <div class="flex-1 overflow-y-auto max-h-72 border border-slate-200 rounded-2xl bg-white">
+      <div id="list-jabatan-modal" class="divide-y divide-slate-100">
+        <div class="p-4 text-center text-xs text-slate-400">Memuat data...</div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+      <span class="text-[11px] text-slate-400" id="info-total-jabatan-modal">Total: 0 Jabatan</span>
+      <button type="button" onclick="tutupModalKelolaJabatan()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+        Tutup
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let cachedJabatanList = [];
+
+  function formatImageUrl(path) {
+    if (!path) return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    if (path.startsWith('/')) return path;
+    return '/' + path;
+  }
+
+  function setPreviewPhoto(url) {
+    const img = document.getElementById('preview-aparatur-img');
+    const placeholder = document.getElementById('placeholder-aparatur-icon');
+    if (url) {
+      img.src = formatImageUrl(url);
+      img.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+    } else {
+      img.src = '';
+      img.classList.add('hidden');
+      placeholder.classList.remove('hidden');
+    }
+  }
+
+  function previewUploadFoto(input) {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        setPreviewPhoto(e.target.result);
+        const info = document.getElementById('label-foto-info');
+        info.innerText = `File baru dipilih: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+        info.classList.add('text-brand-700', 'font-semibold');
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function bukaModalTambahAparatur() {
+    document.getElementById('modal-aparatur-title').innerText = 'Tambah Perangkat Desa';
+    document.getElementById('btn-submit-label').innerText = 'Simpan Aparatur';
+    const form = document.getElementById('form-aparatur');
+    form.action = "{{ url_for('admin_tambah_aparatur') }}";
+    form.reset();
+
+    document.getElementById('input-aparatur-periode').value = '2021 - 2027';
+    document.getElementById('input-aparatur-foto-lama').value = '';
+    document.getElementById('input-aparatur-foto').value = '';
+    setPreviewPhoto('');
+    document.getElementById('label-foto-info').innerText = 'Pilih file foto dari komputer (JPG, PNG, WEBP).';
+    document.getElementById('label-foto-info').classList.remove('text-brand-700', 'font-semibold');
+
+    // Reset dropdown jabatan
+    document.getElementById('input-aparatur-jabatan').selectedIndex = 0;
+    toggleFormTambahJabatan(false);
+
+    document.getElementById('modal-aparatur').classList.remove('hidden');
+  }
+
+  function bukaModalEditAparatur(id, btn) {
+    document.getElementById('modal-aparatur-title').innerText = 'Edit Aparatur Desa';
+    document.getElementById('btn-submit-label').innerText = 'Perbarui Aparatur';
+    const form = document.getElementById('form-aparatur');
+    form.action = `/admin/aparatur/${id}/edit`;
+
+    const nama = btn.getAttribute('data-nama') || '';
+    const jabatan = btn.getAttribute('data-jabatan') || '';
+    const periode = btn.getAttribute('data-periode') || '2021 - 2027';
+    const foto = btn.getAttribute('data-foto') || '';
+    const kontak = btn.getAttribute('data-kontak') || '';
+    const sambutan = btn.getAttribute('data-sambutan') || '';
+    const urutan = btn.getAttribute('data-urutan') || '1';
+
+    document.getElementById('input-aparatur-nama').value = nama;
+    document.getElementById('input-aparatur-periode').value = periode;
+    document.getElementById('input-aparatur-kontak').value = kontak;
+    document.getElementById('input-aparatur-sambutan').value = sambutan;
+    document.getElementById('input-aparatur-urutan').value = urutan;
+    document.getElementById('input-aparatur-foto-lama').value = foto;
+    document.getElementById('input-aparatur-foto').value = foto;
+
+    // Reset file input
+    document.getElementById('input-aparatur-file').value = '';
+    document.getElementById('label-foto-info').innerText = 'Pilih file foto jika ingin mengganti foto saat ini.';
+    document.getElementById('label-foto-info').classList.remove('text-brand-700', 'font-semibold');
+
+    // Set Foto Preview
+    setPreviewPhoto(foto);
+
+    // Set Jabatan Dropdown (jika belum ada di list option, tambahkan otomatis)
+    const selectJabatan = document.getElementById('input-aparatur-jabatan');
+    let found = false;
+    for (let i = 0; i < selectJabatan.options.length; i++) {
+      if (selectJabatan.options[i].value === jabatan) {
+        selectJabatan.selectedIndex = i;
+        found = true;
+        break;
+      }
+    }
+    if (!found && jabatan) {
+      const opt = document.createElement('option');
+      opt.value = jabatan;
+      opt.text = jabatan;
+      opt.selected = true;
+      selectJabatan.appendChild(opt);
+    }
+
+    toggleFormTambahJabatan(false);
+    document.getElementById('modal-aparatur').classList.remove('hidden');
+  }
+
+  function tutupModalAparatur() {
+    document.getElementById('modal-aparatur').classList.add('hidden');
+    toggleFormTambahJabatan(false);
+  }
+
+  // ==========================================
+  // JABATAN MANAGEMENT (AJAX FETCH, DRAG & DROP, EDIT, HAPUS)
+  // ==========================================
+
+  async function loadJabatanData(selectedJabatan = null) {
+    try {
+      const res = await fetch("{{ url_for('admin_list_jabatan') }}");
+      const json = await res.json();
+      if (json.status === 'success') {
+        cachedJabatanList = json.data || [];
+        updateSelectOptions(selectedJabatan);
+        renderInlineJabatanList();
+        renderModalJabatanList();
+      }
+    } catch (err) {
+      console.error('Gagal memuat list jabatan:', err);
+    }
+  }
+
+  function updateSelectOptions(selectedVal = null) {
+    const select = document.getElementById('input-aparatur-jabatan');
+    const curVal = selectedVal || select.value;
+    
+    // Simpan default option
+    select.innerHTML = '<option value="" disabled>-- Pilih Jabatan Struktural --</option>';
+
+    cachedJabatanList.forEach(j => {
+      const opt = document.createElement('option');
+      opt.value = j.nama_jabatan;
+      opt.text = j.nama_jabatan;
+      if (curVal && curVal.toLowerCase() === j.nama_jabatan.toLowerCase()) {
+        opt.selected = true;
+      }
+      select.appendChild(opt);
+    });
+
+    if (!curVal) {
+      select.selectedIndex = 0;
+    }
+  }
+
+  function toggleFormTambahJabatan(forceState) {
+    const box = document.getElementById('box-tambah-jabatan-langsung');
+    const msg = document.getElementById('msg-tambah-jabatan');
+    msg.classList.add('hidden');
+    msg.innerText = '';
+
+    const willShow = (typeof forceState === 'boolean') ? forceState : box.classList.contains('hidden');
+    if (willShow) {
+      box.classList.remove('hidden');
+      loadJabatanData();
+      const input = document.getElementById('input-nama-jabatan-baru');
+      input.value = '';
+      setTimeout(() => input.focus(), 100);
+    } else {
+      box.classList.add('hidden');
+    }
+  }
+
+  function renderInlineJabatanList() {
+    const container = document.getElementById('container-list-jabatan-inline');
+    const countLabel = document.getElementById('label-total-jabatan');
+    if (!container) return;
+
+    if (countLabel) countLabel.innerText = `${cachedJabatanList.length} total (bisa di-drag)`;
+
+    if (cachedJabatanList.length === 0) {
+      container.innerHTML = '<div class="text-center py-2 text-slate-400 text-[11px]">Belum ada jabatan.</div>';
+      return;
+    }
+
+    container.innerHTML = cachedJabatanList.map((j, idx) => `
+      <div id="inline-jabatan-row-${j.id}" 
+           data-id="${j.id}" 
+           draggable="true" 
+           class="inline-jabatan-item flex items-center justify-between p-1.5 px-2 bg-white rounded-xl border border-emerald-200/80 hover:border-emerald-400 transition text-xs shadow-xs select-none cursor-move group">
+        
+        <div class="flex items-center gap-1.5 min-w-0 flex-1 mr-1">
+          <!-- Drag Handle Grip -->
+          <div class="text-slate-300 group-hover:text-emerald-700 transition flex items-center px-0.5 cursor-grab" title="Klik & tahan untuk drag ke atas / bawah">
+            <i class="fa-solid fa-grip-vertical text-xs"></i>
+          </div>
+          <span class="font-semibold text-slate-800 truncate" id="inline-nama-${j.id}">${j.nama_jabatan}</span>
+          ${j.total_dipakai > 0 ? 
+            `<span class="text-[9px] bg-blue-50 text-blue-700 border border-blue-200 font-bold px-1.5 py-0.2 rounded-md flex-shrink-0">${j.total_dipakai} Aparatur</span>` : 
+            `<span class="text-[9px] bg-slate-100 text-slate-400 font-medium px-1.5 py-0.2 rounded-md flex-shrink-0">Kosong</span>`
+          }
+        </div>
+
+        <div class="flex items-center gap-0.5 flex-shrink-0">
+          <!-- Tombol Panah Atas & Bawah -->
+          <button type="button" onclick="geserUrutanJabatan(${j.id}, -1)" class="p-1 px-1.5 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded transition ${idx === 0 ? 'opacity-30 cursor-not-allowed' : ''}" title="Geser ke Atas">
+            <i class="fa-solid fa-arrow-up text-[10px]"></i>
+          </button>
+          <button type="button" onclick="geserUrutanJabatan(${j.id}, 1)" class="p-1 px-1.5 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded transition ${idx === cachedJabatanList.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}" title="Geser ke Bawah">
+            <i class="fa-solid fa-arrow-down text-[10px]"></i>
+          </button>
+          <!-- Edit Nama -->
+          <button type="button" onclick="mulaiEditJabatanPrompt(${j.id}, '${j.nama_jabatan.replace(/'/g, "\\'")}')" class="p-1 px-1.5 text-slate-500 hover:text-brand-800 hover:bg-emerald-50 rounded-lg transition" title="Edit Nama">
+            <i class="fa-solid fa-pen text-[10px]"></i>
+          </button>
+          <!-- Hapus Jabatan -->
+          <button type="button" onclick="hapusJabatanAction(${j.id}, '${j.nama_jabatan.replace(/'/g, "\\'")}', ${j.total_dipakai})" class="p-1 px-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus Jabatan">
+            <i class="fa-solid fa-trash-can text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    inisialisasiDragAndDrop('container-list-jabatan-inline');
+  }
+
+  // Handle Drag & Drop Reordering
+  let draggedElement = null;
+
+  function inisialisasiDragAndDrop(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const items = container.querySelectorAll('[draggable="true"]');
+    items.forEach(item => {
+      item.addEventListener('dragstart', function(e) {
+        draggedElement = this;
+        this.classList.add('opacity-40', 'bg-emerald-100', 'border-dashed', 'border-emerald-500');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', this.getAttribute('data-id'));
+      });
+
+      item.addEventListener('dragend', function() {
+        this.classList.remove('opacity-40', 'bg-emerald-100', 'border-dashed', 'border-emerald-500');
+        draggedElement = null;
+        simpanUrutanJabatanDariDOM(containerId);
+      });
+
+      item.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (!draggedElement || draggedElement === this) return;
+
+        const bounding = this.getBoundingClientRect();
+        const offset = e.clientY - bounding.top;
+        if (offset > bounding.height / 2) {
+          this.after(draggedElement);
+        } else {
+          this.before(draggedElement);
+        }
+      });
+    });
+  }
+
+  async function simpanUrutanJabatanDariDOM(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const items = container.querySelectorAll('[data-id]');
+    const order = Array.from(items).map(el => parseInt(el.getAttribute('data-id')));
+    if (order.length === 0) return;
+
+    try {
+      const res = await fetch("{{ url_for('admin_reorder_jabatan') }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order: order })
+      });
+      const data = await res.json();
+      if (res.ok && data.status === 'success') {
+        const msg = document.getElementById('msg-tambah-jabatan');
+        if (msg) {
+          msg.innerText = '✓ Urutan jabatan berhasil diubah & disimpan!';
+          msg.className = 'text-[10px] text-emerald-700 block font-semibold';
+          msg.classList.remove('hidden');
+          setTimeout(() => msg.classList.add('hidden'), 2000);
+        }
+        cachedJabatanList.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+        updateSelectOptions();
+        renderModalJabatanList();
+      }
+    } catch (err) {
+      console.error('Gagal menyimpan urutan:', err);
+    }
+  }
+
+  function geserUrutanJabatan(id, arah) {
+    const idx = cachedJabatanList.findIndex(j => j.id === id);
+    if (idx === -1) return;
+    const targetIdx = idx + arah;
+    if (targetIdx < 0 || targetIdx >= cachedJabatanList.length) return;
+
+    const temp = cachedJabatanList[idx];
+    cachedJabatanList[idx] = cachedJabatanList[targetIdx];
+    cachedJabatanList[targetIdx] = temp;
+
+    const order = cachedJabatanList.map(j => j.id);
+    renderInlineJabatanList();
+    renderModalJabatanList();
+    updateSelectOptions();
+
+    fetch("{{ url_for('admin_reorder_jabatan') }}", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order: order })
+    });
+  }
+
+  async function simpanJabatanBaruLangsung() {
+    const input = document.getElementById('input-nama-jabatan-baru');
+    const nama = input.value.trim();
+    const msg = document.getElementById('msg-tambah-jabatan');
+    const btn = document.getElementById('btn-simpan-jabatan');
+
+    if (!nama) {
+      msg.innerText = 'Nama jabatan tidak boleh kosong!';
+      msg.className = 'text-[10px] mt-1 text-red-600 block font-medium';
+      msg.classList.remove('hidden');
+      input.focus();
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+    try {
+      const res = await fetch("{{ url_for('admin_tambah_jabatan') }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nama_jabatan: nama })
+      });
+      const data = await res.json();
+
+      if (res.ok && data.status === 'success') {
+        input.value = '';
+        msg.innerText = `✓ Jabatan "${data.nama_jabatan}" berhasil ditambahkan & terpilih!`;
+        msg.className = 'text-[10px] mt-1 text-emerald-700 block font-medium';
+        msg.classList.remove('hidden');
+
+        await loadJabatanData(data.nama_jabatan);
+      } else {
+        msg.innerText = data.message || 'Gagal menambahkan jabatan';
+        msg.className = 'text-[10px] mt-1 text-red-600 block font-medium';
+        msg.classList.remove('hidden');
+      }
+    } catch (err) {
+      msg.innerText = 'Terjadi kesalahan koneksi.';
+      msg.className = 'text-[10px] mt-1 text-red-600 block font-medium';
+      msg.classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Tambahkan';
+    }
+  }
+
+  async function mulaiEditJabatanPrompt(id, namaLama) {
+    const namaBaru = prompt(`Ubah nama jabatan:\n(Data aparatur dengan jabatan ini akan otomatis disesuaikan)`, namaLama);
+    if (!namaBaru || namaBaru.trim() === '' || namaBaru.trim() === namaLama) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/admin/aparatur/jabatan/${id}/edit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nama_jabatan: namaBaru.trim() })
+      });
+      const data = await res.json();
+      if (res.ok && data.status === 'success') {
+        alert(data.message);
+        await loadJabatanData(data.nama_jabatan);
+      } else {
+        alert(data.message || 'Gagal mengubah nama jabatan');
+      }
+    } catch (e) {
+      alert('Terjadi kesalahan saat menyimpan perubahan.');
+    }
+  }
+
+  async function hapusJabatanAction(id, nama, totalDipakai) {
+    let warning = `Hapus jabatan "${nama}" dari daftar pilihan?`;
+    if (totalDipakai > 0) {
+      warning = `Perhatian! Jabatan "${nama}" saat ini sedang digunakan oleh ${totalDipakai} orang aparatur.\n\nJika dihapus dari daftar pilihan, data aparatur tetap tersimpan namun jabatan ini tidak lagi muncul di menu dropdown.\n\nYakin ingin menghapus?`;
+    }
+
+    if (!confirm(warning)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/admin/aparatur/jabatan/${id}/hapus`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      if (res.ok && data.status === 'success') {
+        await loadJabatanData();
+      } else {
+        alert(data.message || 'Gagal menghapus jabatan');
+      }
+    } catch (e) {
+      alert('Terjadi kesalahan saat menghapus.');
+    }
+  }
+
+  // ==========================================
+  // MODAL KELOLA JABATAN STRUKTURAL (LENGKAP)
+  // ==========================================
+
+  function bukaModalKelolaJabatan() {
+    loadJabatanData();
+    document.getElementById('modal-kelola-jabatan').classList.remove('hidden');
+    document.getElementById('input-modal-jabatan-baru').value = '';
+    const msg = document.getElementById('msg-modal-jabatan');
+    msg.classList.add('hidden');
+    msg.innerText = '';
+  }
+
+  function tutupModalKelolaJabatan() {
+    document.getElementById('modal-kelola-jabatan').classList.add('hidden');
+  }
+
+  function renderModalJabatanList(items = null) {
+    const list = items || cachedJabatanList;
+    const container = document.getElementById('list-jabatan-modal');
+    const totalInfo = document.getElementById('info-total-jabatan-modal');
+    if (!container) return;
+
+    if (totalInfo) totalInfo.innerText = `Total: ${list.length} Jabatan`;
+
+    if (list.length === 0) {
+      container.innerHTML = '<div class="p-6 text-center text-xs text-slate-400">Tidak ada jabatan yang ditemukan.</div>';
+      return;
+    }
+
+    container.innerHTML = list.map((j, idx) => `
+      <div id="modal-jabatan-row-${j.id}" 
+           data-id="${j.id}"
+           draggable="true"
+           class="p-2.5 px-3 flex items-center justify-between hover:bg-slate-50 transition text-xs border-b border-slate-100 last:border-b-0 cursor-move group select-none">
+        
+        <div class="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
+          <div class="text-slate-300 group-hover:text-emerald-700 transition flex items-center cursor-grab" title="Drag ke atas / bawah">
+            <i class="fa-solid fa-grip-vertical text-xs"></i>
+          </div>
+          <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs flex-shrink-0">
+            <i class="fa-solid fa-briefcase text-[11px]"></i>
+          </div>
+          <div class="min-w-0">
+            <h5 class="font-bold text-slate-800 text-xs truncate">${j.nama_jabatan}</h5>
+            <div class="flex items-center gap-2 mt-0.5">
+              ${j.total_dipakai > 0 ? 
+                `<span class="text-[10px] text-brand-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">${j.total_dipakai} Aparatur Menggunakan</span>` : 
+                `<span class="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Belum Digunakan</span>`
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1 flex-shrink-0">
+          <button type="button" onclick="geserUrutanJabatan(${j.id}, -1)" class="p-1 px-1.5 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded transition ${idx === 0 ? 'opacity-30 cursor-not-allowed' : ''}" title="Geser ke Atas">
+            <i class="fa-solid fa-arrow-up text-[10px]"></i>
+          </button>
+          <button type="button" onclick="geserUrutanJabatan(${j.id}, 1)" class="p-1 px-1.5 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded transition ${idx === list.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}" title="Geser ke Bawah">
+            <i class="fa-solid fa-arrow-down text-[10px]"></i>
+          </button>
+          <button type="button" onclick="mulaiEditJabatanPrompt(${j.id}, '${j.nama_jabatan.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-lg transition flex items-center gap-1" title="Edit Nama">
+            <i class="fa-solid fa-pen text-[10px] text-brand-700"></i> Edit
+          </button>
+          <button type="button" onclick="hapusJabatanAction(${j.id}, '${j.nama_jabatan.replace(/'/g, "\\'")}', ${j.total_dipakai})" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-xs rounded-lg transition flex items-center gap-1" title="Hapus Jabatan">
+            <i class="fa-solid fa-trash-can text-[10px]"></i> Hapus
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    inisialisasiDragAndDrop('list-jabatan-modal');
+  }
+
+  function filterJabatanList() {
+    const q = document.getElementById('filter-jabatan').value.toLowerCase().trim();
+    if (!q) {
+      renderModalJabatanList(cachedJabatanList);
+      return;
+    }
+    const filtered = cachedJabatanList.filter(j => j.nama_jabatan.toLowerCase().includes(q));
+    renderModalJabatanList(filtered);
+  }
+
+  async function simpanJabatanDariModal() {
+    const input = document.getElementById('input-modal-jabatan-baru');
+    const nama = input.value.trim();
+    const msg = document.getElementById('msg-modal-jabatan');
+
+    if (!nama) {
+      alert('Nama jabatan tidak boleh kosong!');
+      input.focus();
+      return;
+    }
+
+    try {
+      const res = await fetch("{{ url_for('admin_tambah_jabatan') }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nama_jabatan: nama })
+      });
+      const data = await res.json();
+      if (res.ok && data.status === 'success') {
+        input.value = '';
+        msg.innerText = `✓ ${data.message}`;
+        msg.classList.remove('hidden');
+        await loadJabatanData(data.nama_jabatan);
+        setTimeout(() => msg.classList.add('hidden'), 2500);
+      } else {
+        alert(data.message || 'Gagal menambahkan jabatan');
+      }
+    } catch (e) {
+      alert('Terjadi kesalahan koneksi.');
+    }
+  }
+
+  // Handle Enter key on input-nama-jabatan-baru
+  document.getElementById('input-nama-jabatan-baru').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      simpanJabatanBaruLangsung();
+    }
+  });
+
+  // Handle Enter key on input-modal-jabatan-baru
+  document.getElementById('input-modal-jabatan-baru').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      simpanJabatanDariModal();
+    }
+  });
+
+  // Load initial jabatan list into memory on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    loadJabatanData();
+  });
+</script>
+{% endblock %}
