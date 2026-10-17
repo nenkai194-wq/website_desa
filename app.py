@@ -439,6 +439,16 @@ def cetak_surat(no_reg):
 
 @app.route('/api/surat/ajukan', methods=['POST'])
 def api_ajukan_surat():
+    # Cek status maintenance layanan surat
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT status_maintenance_surat, pesan_maintenance_surat FROM profil_desa WHERE id = 1")
+    row_prof = cursor.fetchone()
+    if row_prof and ('status_maintenance_surat' in row_prof.keys()) and row_prof['status_maintenance_surat'] == 1:
+        pesan = row_prof['pesan_maintenance_surat'] or 'Layanan Sedang Maintenace. Mohon maaf atas ketidaknyamananya !!!'
+        conn.close()
+        return jsonify({'success': False, 'message': pesan}), 503
+
     data = request.get_json(silent=True) or request.form
     jenis_surat = data.get('jenis_surat')
     nik = data.get('nik')
@@ -449,9 +459,10 @@ def api_ajukan_surat():
     keperluan = data.get('keperluan')
 
     if not (jenis_surat and nik and nama and wa and keperluan):
+        conn.close()
         return jsonify({'success': False, 'message': 'Mohon lengkapi seluruh formulir bertanda bintang (*).'}), 400
 
-    no_reg = f"KSK-2026-{random.randint(1000, 9999)}"
+    no_reg = f"PPY-2026-{random.randint(1000, 9999)}"
 
     conn = get_db()
     cursor = conn.cursor()
@@ -938,8 +949,43 @@ def admin_surat():
         cursor.execute("SELECT * FROM layanan_surat ORDER BY id DESC")
     
     surat_list = [dict(row) for row in cursor.fetchall()]
+
+    # Status Maintenance Layanan Surat
+    cursor.execute("SELECT status_maintenance_surat, pesan_maintenance_surat FROM profil_desa WHERE id = 1")
+    row_profil = cursor.fetchone()
+    status_maintenance = row_profil['status_maintenance_surat'] if (row_profil and 'status_maintenance_surat' in row_profil.keys()) else 1
+    pesan_maintenance = (row_profil['pesan_maintenance_surat'] if (row_profil and 'pesan_maintenance_surat' in row_profil.keys()) else None) or 'Layanan Sedang Maintenace. Mohon maaf atas ketidaknyamananya !!!'
+
     conn.close()
-    return render_template('admin/surat.html', surat_list=surat_list, active_status=status_filter)
+    return render_template(
+        'admin/surat.html',
+        surat_list=surat_list,
+        active_status=status_filter,
+        status_maintenance=status_maintenance,
+        pesan_maintenance=pesan_maintenance
+    )
+
+@app.route('/admin/surat/toggle-maintenance', methods=['POST'])
+@login_required
+def admin_toggle_maintenance_surat():
+    action = request.form.get('action')  # 'lock' or 'unlock'
+    pesan = request.form.get('pesan_maintenance_surat', '').strip()
+    new_status = 1 if action == 'lock' else 0
+
+    conn = get_db()
+    cursor = conn.cursor()
+    if pesan:
+        cursor.execute("UPDATE profil_desa SET status_maintenance_surat = ?, pesan_maintenance_surat = ? WHERE id = 1", (new_status, pesan))
+    else:
+        cursor.execute("UPDATE profil_desa SET status_maintenance_surat = ? WHERE id = 1", (new_status,))
+    conn.commit()
+    conn.close()
+
+    if new_status == 1:
+        flash('Layanan surat mandiri BERHASIL DIKUNCI (Mode Maintenance Aktif). Warga di frontend tidak dapat membuat surat sementara waktu.', 'warning')
+    else:
+        flash('Layanan surat mandiri BERHASIL DIBUKA KEMBALI (Mode Normal Aktif). Warga dapat mengajukan permohonan surat secara daring.', 'success')
+    return redirect(url_for('admin_surat'))
 
 @app.route('/admin/surat/<int:id>/update-status', methods=['POST'])
 @login_required

@@ -123,6 +123,10 @@ def init_db():
         cursor.execute("ALTER TABLE profil_desa ADD COLUMN keterangan_bagan_desa TEXT")
     if 'keterangan_bagan_bpd' not in cols_profil:
         cursor.execute("ALTER TABLE profil_desa ADD COLUMN keterangan_bagan_bpd TEXT")
+    if 'status_maintenance_surat' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN status_maintenance_surat INTEGER DEFAULT 1")
+    if 'pesan_maintenance_surat' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN pesan_maintenance_surat TEXT DEFAULT 'Layanan Sedang Maintenace. Mohon maaf atas ketidaknyamananya !!!'")
     conn.commit()
 
     # 3. Perangkat Desa (SOTK)

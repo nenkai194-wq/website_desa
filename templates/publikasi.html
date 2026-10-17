@@ -131,10 +131,10 @@
 
         <!-- CTA & Mobile Burger -->
         <div class="flex items-center gap-3">
-          <a href="{{ url_for('index') }}#layanan-surat" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-300 via-amber-200 to-yellow-300 text-emerald-950 font-black px-4 py-2 rounded-xl text-xs hover:brightness-105 transition shadow-md shadow-amber-400/20 border border-amber-200/80 hover:scale-105">
-            <i class="fa-solid fa-file-pen text-emerald-700"></i>
-            <span>Layanan Surat</span>
-          </a>
+          <button type="button" onclick="handleKlikLayananSurat()" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-300 via-amber-200 to-yellow-300 text-black font-black px-4 py-2 rounded-xl text-xs hover:brightness-105 transition shadow-md shadow-amber-400/20 border border-amber-300 hover:scale-105" style="color: #000000 !important;">
+            <i class="fa-solid fa-file-pen text-black" style="color: #000000 !important;"></i>
+            <span class="text-black font-black" style="color: #000000 !important;">Layanan Surat</span>
+          </button>
 
           <!-- Mobile Toggle Button -->
           <button id="mobile-menu-toggle" onclick="document.getElementById('mobile-menu-dropdown').classList.toggle('hidden')" type="button" class="lg:hidden p-2.5 rounded-xl text-white hover:bg-white/10 transition" aria-label="Menu Navigasi">
@@ -207,9 +207,10 @@
       <a href="{{ url_for('publikasi') }}" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-amber-500/20 text-amber-300 font-bold hover:bg-amber-500/30 flex items-center gap-2.5">
         <i class="fa-solid fa-book-bookmark w-4"></i> Buku Publikasi Desa (PDF)
       </a>
-      <a href="{{ url_for('index') }}#layanan-surat" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white text-emerald-950 font-bold hover:bg-emerald-100 flex items-center gap-2.5 shadow-sm">
-        <i class="fa-solid fa-file-pen w-4 text-emerald-700"></i> Layanan Surat Mandiri
-      </a>
+      <button type="button" onclick="handleKlikLayananSurat()" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white text-black font-black hover:bg-emerald-100 flex items-center gap-2.5 shadow-sm" style="color: #000000 !important;">
+        <i class="fa-solid fa-file-pen w-4 text-black" style="color: #000000 !important;"></i>
+        <span class="text-black font-black" style="color: #000000 !important;">Layanan Surat Mandiri</span>
+      </button>
     </div>
   </header>
 
@@ -606,6 +607,42 @@
     </div>
   </div>
 
+  <!-- MODAL NOTIFIKASI MAINTENANCE LAYANAN SURAT -->
+  <div id="modal-maintenance-surat" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden" onclick="if(event.target === this) tutupModalMaintenanceSurat();">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl animate-fade-in text-center border border-amber-300 relative overflow-hidden my-auto">
+      <!-- Glow background -->
+      <div class="absolute -top-12 -right-12 w-32 h-32 bg-amber-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Icon -->
+      <div class="w-16 h-16 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-amber-500/30">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+
+      <!-- Badge -->
+      <span class="inline-block bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-[11px] px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+        Pemberitahuan Layanan
+      </span>
+
+      <!-- Pesan Utama Sesuai Instruksi User -->
+      <h3 class="text-lg sm:text-xl font-black text-slate-900 leading-snug">
+        {{ profil.pesan_maintenance_surat or 'Layanan Sedang Maintenace. Mohon maaf atas ketidaknyamananya !!!' }}
+      </h3>
+
+      <p class="text-xs text-slate-600 mt-2.5 leading-relaxed">
+        Fitur pembuatan surat mandiri daring sedang dalam proses pemeliharaan sistem oleh Pemerintah Desa Papayan. Pelayanan administrasi tetap dapat dilayani secara langsung di Kantor Desa pada jam kerja.
+      </p>
+
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-2.5">
+        <a href="tel:{{ profil.telepon or '' }}" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-sm">
+          <i class="fa-solid fa-phone"></i> Kontak Kantor Desa
+        </a>
+        <button type="button" onclick="tutupModalMaintenanceSurat()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ========================================================================= -->
   <!-- MODAL BACA ONLINE / PRATINJAU PDF                                          -->
   <!-- ========================================================================= -->
@@ -851,11 +888,41 @@
       document.getElementById('pdf-modal-frame').src = '';
     }
 
+    // --- LOGIKA MAINTENANCE LAYANAN SURAT ---
+    window.STATUS_MAINTENANCE_SURAT = {{ 1 if profil.status_maintenance_surat == 1 else 0 }};
+
+    window.bukaModalMaintenanceSurat = function() {
+      const modal = document.getElementById('modal-maintenance-surat');
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      } else {
+        alert("Layanan Sedang Maintenace. Mohon maaf atas ketidaknyamananya !!!");
+      }
+    };
+
+    window.tutupModalMaintenanceSurat = function() {
+      const modal = document.getElementById('modal-maintenance-surat');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    };
+
+    window.handleKlikLayananSurat = function() {
+      if (window.STATUS_MAINTENANCE_SURAT === 1) {
+        window.bukaModalMaintenanceSurat();
+      } else {
+        window.location.href = "{{ url_for('index') }}#layanan-surat";
+      }
+    };
+
     // Close modals on Escape
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         tutupModalDetailBuku();
         tutupModalBacaPDF();
+        tutupModalMaintenanceSurat();
       }
     });
   </script>
