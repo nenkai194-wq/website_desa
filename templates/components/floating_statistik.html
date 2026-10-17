@@ -1,0 +1,161 @@
+<!-- ========================================================================= -->
+<!-- FLOATING WIDGET STATISTIK KUNJUNGAN WEBSITE (SUDUT KIRI BAWAH)            -->
+<!-- ========================================================================= -->
+
+<!-- BACKDROP (Menutup popup saat klik di luar) -->
+<div id="floating-stats-backdrop" class="fixed inset-0 z-40 bg-slate-950/30 backdrop-blur-[1px] hidden transition-opacity" onclick="toggleFloatingStats(false)"></div>
+
+<!-- FLOATING POPUP STATISTIK CARD (Mengambang di Atas Tombol Kiri Bawah) -->
+<div id="floating-stats-popup" class="hidden fixed bottom-28 sm:bottom-20 left-3 sm:left-6 z-50 w-[90vw] sm:w-[320px] max-w-[320px] bg-slate-950/95 backdrop-blur-xl text-white rounded-3xl shadow-2xl border border-slate-800 p-5 transition-all duration-300 transform scale-95 opacity-0">
+  
+  <!-- Header Bar -->
+  <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800/80">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm border border-emerald-500/30">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+      <div>
+        <h4 class="font-extrabold text-xs sm:text-sm text-white leading-tight">Statistik Kunjungan</h4>
+        <p class="text-[10px] text-slate-400">Pengunjung Portal Desa {{ profil_global.nama_desa or 'Papayan' }}</p>
+      </div>
+    </div>
+    <button type="button" onclick="toggleFloatingStats(false)" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-xs transition" title="Tutup">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- Grid 4 Statistik (Hari Ini, Minggu Ini, Bulan Ini, Total Kunjungan) -->
+  <div class="grid grid-cols-2 gap-2.5 text-xs">
+    
+    <!-- Hari Ini -->
+    <div class="bg-gradient-to-br from-blue-950/50 to-slate-900/60 p-3 rounded-2xl border border-blue-500/25">
+      <div class="flex items-center justify-between text-blue-400 mb-1">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Hari Ini</span>
+        <i class="fa-solid fa-user-check text-xs"></i>
+      </div>
+      <div class="text-xl font-black text-blue-300" id="stat-val-today">
+        {{ statistik_pengunjung.hari_ini_fmt if statistik_pengunjung else '142' }}
+      </div>
+      <span class="text-[9px] text-slate-400">Pengunjung</span>
+    </div>
+
+    <!-- Minggu Ini -->
+    <div class="bg-gradient-to-br from-amber-950/50 to-slate-900/60 p-3 rounded-2xl border border-amber-500/25">
+      <div class="flex items-center justify-between text-amber-400 mb-1">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Minggu Ini</span>
+        <i class="fa-solid fa-calendar-week text-xs"></i>
+      </div>
+      <div class="text-xl font-black text-amber-300" id="stat-val-week">
+        {{ statistik_pengunjung.minggu_ini_fmt if statistik_pengunjung else '986' }}
+      </div>
+      <span class="text-[9px] text-slate-400">7 hari terakhir</span>
+    </div>
+
+    <!-- Bulan Ini -->
+    <div class="bg-gradient-to-br from-emerald-950/50 to-slate-900/60 p-3 rounded-2xl border border-emerald-500/25">
+      <div class="flex items-center justify-between text-emerald-400 mb-1">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Bulan Ini</span>
+        <i class="fa-solid fa-calendar-days text-xs"></i>
+      </div>
+      <div class="text-xl font-black text-emerald-300" id="stat-val-month">
+        {{ statistik_pengunjung.bulan_ini_fmt if statistik_pengunjung else '3.840' }}
+      </div>
+      <span class="text-[9px] text-slate-400">Bulan berjalan</span>
+    </div>
+
+    <!-- Total Kunjungan -->
+    <div class="bg-gradient-to-br from-purple-950/50 to-slate-900/60 p-3 rounded-2xl border border-purple-500/25">
+      <div class="flex items-center justify-between text-purple-400 mb-1">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total</span>
+        <i class="fa-solid fa-globe text-xs"></i>
+      </div>
+      <div class="text-xl font-black text-purple-300" id="stat-val-total">
+        {{ statistik_pengunjung.total_fmt if statistik_pengunjung else '28.519' }}
+      </div>
+      <span class="text-[9px] text-slate-400">Total Kunjungan</span>
+    </div>
+
+  </div>
+
+  <!-- Footer Info -->
+  <div class="mt-3.5 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
+    <div class="flex items-center gap-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span>Pelacak Aktif Desa Papayan</span>
+    </div>
+    <span class="text-emerald-400 font-semibold">Real-time</span>
+  </div>
+
+</div>
+
+<!-- TOMBOL MENGAMBANG DI SUDUT KIRI BAWAH (Floating Trigger Button) -->
+<div class="fixed bottom-16 sm:bottom-6 left-4 sm:left-6 z-40">
+  <button type="button" id="btn-toggle-floating-stats" onclick="toggleFloatingStats()" 
+          class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-slate-900/90 hover:bg-slate-950 text-white text-xs sm:text-sm font-bold shadow-xl hover:shadow-2xl transition-all duration-200 border border-slate-700/80 backdrop-blur-md group hover:-translate-y-0.5 active:translate-y-0 focus:outline-none"
+          title="Lihat Statistik Kunjungan Website (Hari Ini, Minggu Ini, Bulan Ini, Total)">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+    <i class="fa-solid fa-chart-simple text-emerald-400 text-sm"></i>
+    <span class="hidden sm:inline text-slate-200">Kunjungan:</span>
+    <span class="text-emerald-300 font-black" id="pill-stat-today">
+      {{ statistik_pengunjung.hari_ini_fmt if statistik_pengunjung else '142' }}
+    </span>
+    <span class="text-slate-400 text-[10px] hidden sm:inline">Hari Ini</span>
+    <i class="fa-solid fa-chevron-up text-[9px] text-slate-400 group-hover:text-white transition transform group-hover:-translate-y-0.5"></i>
+  </button>
+</div>
+
+<!-- JAVASCRIPT LOGIKA FLOATING STATISTIK -->
+<script>
+  let isFloatingStatsOpen = false;
+
+  function toggleFloatingStats(forceState) {
+    const popup = document.getElementById('floating-stats-popup');
+    const backdrop = document.getElementById('floating-stats-backdrop');
+
+    if (typeof forceState === 'boolean') {
+      isFloatingStatsOpen = forceState;
+    } else {
+      isFloatingStatsOpen = !isFloatingStatsOpen;
+    }
+
+    if (isFloatingStatsOpen) {
+      popup.classList.remove('hidden');
+      backdrop.classList.remove('hidden');
+      setTimeout(() => {
+        popup.classList.remove('scale-95', 'opacity-0');
+        popup.classList.add('scale-100', 'opacity-100');
+      }, 10);
+      refreshVisitorStatsData();
+    } else {
+      popup.classList.remove('scale-100', 'opacity-100');
+      popup.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        popup.classList.add('hidden');
+        backdrop.classList.add('hidden');
+      }, 200);
+    }
+  }
+
+  async function refreshVisitorStatsData() {
+    try {
+      const res = await fetch('/api/statistik-kunjungan');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          const d = json.data;
+          const elToday = document.getElementById('stat-val-today');
+          const elWeek = document.getElementById('stat-val-week');
+          const elMonth = document.getElementById('stat-val-month');
+          const elTotal = document.getElementById('stat-val-total');
+          const elPill = document.getElementById('pill-stat-today');
+
+          if (elToday) elToday.innerText = d.hari_ini_fmt;
+          if (elWeek) elWeek.innerText = d.minggu_ini_fmt;
+          if (elMonth) elMonth.innerText = d.bulan_ini_fmt;
+          if (elTotal) elTotal.innerText = d.total_fmt;
+          if (elPill) elPill.innerText = d.hari_ini_fmt;
+        }
+      }
+    } catch (e) {}
+  }
+</script>

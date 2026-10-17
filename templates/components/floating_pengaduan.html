@@ -1,12 +1,12 @@
 <!-- ========================================================================= -->
-<!-- FLOATING WIDGET PENGADUAN & ASPIRASI MASYARAKAT (SUDUT KIRI BAWAH)        -->
+<!-- FLOATING WIDGET PENGADUAN & ASPIRASI MASYARAKAT (SUDUT KANAN BAWAH)       -->
 <!-- ========================================================================= -->
 
 <!-- BACKDROP CLICKEABLE (Untuk menutup popup saat klik di luar) -->
 <div id="floating-pengaduan-backdrop" class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-[2px] hidden transition-opacity" onclick="toggleFloatingPengaduan(false)"></div>
 
-<!-- FLOATING POPUP DIALOG FORM (Mengambang di Atas Tombol Pemicu) -->
-<div id="floating-pengaduan-popup" class="hidden fixed bottom-28 sm:bottom-20 left-3 sm:left-6 z-50 w-[93vw] sm:w-[360px] max-w-[360px] bg-white rounded-3xl shadow-2xl border border-slate-200/90 overflow-hidden transition-all duration-300 transform scale-95 opacity-0">
+<!-- FLOATING POPUP DIALOG FORM (Mengambang di Atas Tombol Pemicu di Kanan Bawah) -->
+<div id="floating-pengaduan-popup" class="hidden fixed bottom-28 sm:bottom-20 right-3 sm:right-6 z-50 w-[93vw] sm:w-[360px] max-w-[360px] bg-white rounded-3xl shadow-2xl border border-slate-200/90 overflow-hidden transition-all duration-300 transform scale-95 opacity-0">
   
   <!-- Header Bar -->
   <div class="px-5 pt-3.5 pb-2.5 flex items-center justify-between border-b border-slate-100 bg-slate-50/70">
@@ -153,8 +153,8 @@
 
 </div>
 
-<!-- TOMBOL MENGAMBANG DI SUDUT KIRI BAWAH (Floating Trigger Button) -->
-<div class="fixed bottom-16 sm:bottom-6 left-4 sm:left-6 z-40">
+<!-- TOMBOL MENGAMBANG DI SUDUT KANAN BAWAH (Floating Trigger Button) -->
+<div class="fixed bottom-16 sm:bottom-6 right-4 sm:right-6 z-40">
   <button type="button" id="btn-toggle-floating-pengaduan" onclick="toggleFloatingPengaduan()" 
           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#fca5a5] hover:bg-[#f87171] text-white font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none border border-white/30"
           title="Sampaikan Pengaduan atau Aspirasi Warga">

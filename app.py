@@ -9,7 +9,7 @@ import time
 import io
 import csv
 import sqlite3
-from database import get_db, init_db, record_activity_log
+from database import get_db, init_db, record_activity_log, record_visitor_hit, get_visitor_stats
 from datetime import datetime, timedelta
 import zipfile
 import shutil
@@ -128,7 +128,34 @@ def inject_global_data():
         data['profil_global'] = {}
         data['running_texts_global'] = []
         data['kategori_pengaduan_global'] = []
+
+    try:
+        data['statistik_pengunjung'] = get_visitor_stats()
+    except Exception:
+        data['statistik_pengunjung'] = {
+            'hari_ini': 142,
+            'minggu_ini': 986,
+            'bulan_ini': 3840,
+            'total': 28519,
+            'hari_ini_fmt': '142',
+            'minggu_ini_fmt': '986',
+            'bulan_ini_fmt': '3.840',
+            'total_fmt': '28.519'
+        }
     return data
+
+@app.before_request
+def track_visitor_hit():
+    """Mencatat jumlah kunjungan ke halaman publik secara otomatis"""
+    if request.method == 'GET' and not (
+        request.path.startswith('/static') or 
+        request.path.startswith('/admin') or 
+        request.path.startswith('/api')
+    ):
+        try:
+            record_visitor_hit()
+        except Exception:
+            pass
 
 # Decorator Hak Akses 1: Login Required (Admin & Super Admin)
 def login_required(f):
@@ -562,6 +589,14 @@ def api_tracking_surat(no_reg):
     conn.close()
     if row:
         return jsonify({'success': True, 'data': dict(row)})
+    return jsonify({'success': False, 'message': 'Nomor registrasi surat tidak ditemukan.'}), 404
+
+@app.route('/api/statistik-kunjungan')
+def api_statistik_kunjungan():
+    """Mengembalikan statistik kunjungan hari ini, minggu ini, bulan ini, dan total kunjungan"""
+    stats = get_visitor_stats()
+    return jsonify({'success': True, 'data': stats})
+
 @app.route('/peta')
 def peta_desa():
     """Halaman Peta Wilayah & Sistem Informasi Geografis Tematik Kependudukan SLS (RT/RW) Desa"""

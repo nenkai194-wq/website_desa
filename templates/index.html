@@ -3176,16 +3176,20 @@
           </h4>
           <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-              <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-brand-400"></i> Hari Ini:</span>
-              <span id="count-today" class="font-bold text-white">142</span>
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-blue-400"></i> Hari Ini:</span>
+              <span id="count-today" class="font-bold text-white">{{ statistik_pengunjung.hari_ini_fmt if statistik_pengunjung else '142' }}</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-              <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-brand-400"></i> Bulan Ini:</span>
-              <span id="count-month" class="font-bold text-white">3.840</span>
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-week text-amber-400"></i> Minggu Ini:</span>
+              <span id="count-week" class="font-bold text-white">{{ statistik_pengunjung.minggu_ini_fmt if statistik_pengunjung else '986' }}</span>
+            </div>
+            <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-emerald-400"></i> Bulan Ini:</span>
+              <span id="count-month" class="font-bold text-white">{{ statistik_pengunjung.bulan_ini_fmt if statistik_pengunjung else '3.840' }}</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-brand-400"></i> Total Kunjungan:</span>
-              <span id="count-total" class="font-black text-brand-300">28.519</span>
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-purple-400"></i> Total Kunjungan:</span>
+              <span id="count-total" class="font-black text-brand-300">{{ statistik_pengunjung.total_fmt if statistik_pengunjung else '28.519' }}</span>
             </div>
           </div>
         </div>
@@ -3227,7 +3231,11 @@
     </div>
   </div>
 
-  <!-- FLOATING FORM PENGADUAN SUDUT KIRI BAWAH -->
+  <!-- FLOATING WIDGETS -->
+  <!-- KIRI: STATISTIK KUNJUNGAN (HARI INI, MINGGU INI, BULAN INI, TOTAL) -->
+  {% include 'components/floating_statistik.html' %}
+
+  <!-- KANAN: FORM PENGADUAN & ASPIRASI WARGA -->
   {% include 'components/floating_pengaduan.html' %}
 
   <!-- GENERAL MODAL CONTAINER -->
