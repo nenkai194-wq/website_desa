@@ -3326,6 +3326,47 @@
           </div>
         </div>
 
+        <!-- Leaflet Map Picker untuk Lokasi Usaha UMKM Warga -->
+        <div class="bg-gradient-to-br from-emerald-50/80 to-teal-50/80 p-4 rounded-2xl border border-emerald-200 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <label class="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
+                <i class="fa-solid fa-map-location-dot text-brand-700 text-sm"></i>
+                Tentukan Titik di Peta (Otomatis & Akurat)
+              </label>
+              <p class="text-[11px] text-emerald-800">
+                Klik pada peta atau geser pin ke lokasi tempat usaha/produksi UMKM Anda.
+              </p>
+            </div>
+            <button type="button" onclick="ambilLokasiGPSWargaUMKM()" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-sm transition flex-shrink-0" title="Gunakan GPS saat Anda sedang berada di lokasi usaha">
+              <i class="fa-solid fa-crosshairs"></i> Gunakan GPS Saya
+            </button>
+          </div>
+
+          <div class="relative w-full h-48 rounded-xl border-2 border-emerald-300 overflow-hidden shadow-inner bg-slate-200">
+            <div id="warga-umkm-map-picker" class="w-full h-full"></div>
+            <div class="absolute bottom-2 left-2 z-[400] bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] text-slate-700 font-semibold border border-slate-200 shadow flex items-center gap-1.5">
+              <i class="fa-solid fa-hand-pointer text-brand-600"></i>
+              <span>Klik peta atau geser pin merah</span>
+            </div>
+            <div id="warga-umkm-map-loader" class="hidden absolute inset-0 z-[500] bg-white/80 backdrop-blur-sm flex items-center justify-center gap-2 text-xs font-bold text-emerald-800">
+              <i class="fa-solid fa-spinner fa-spin text-base text-brand-600"></i>
+              <span>Mendeteksi GPS...</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <span class="text-[10px] font-bold text-emerald-900 block mb-0.5">Latitude (Lintang)</span>
+              <input type="text" name="latitude" id="warga-umkm-lat" readonly placeholder="Otomatis..." class="w-full text-xs bg-white border border-emerald-300 rounded-lg px-2.5 py-1.5 font-mono text-emerald-950 font-bold focus:outline-none cursor-default" />
+            </div>
+            <div>
+              <span class="text-[10px] font-bold text-emerald-900 block mb-0.5">Longitude (Bujur)</span>
+              <input type="text" name="longitude" id="warga-umkm-lng" readonly placeholder="Otomatis..." class="w-full text-xs bg-white border border-emerald-300 rounded-lg px-2.5 py-1.5 font-mono text-emerald-950 font-bold focus:outline-none cursor-default" />
+            </div>
+          </div>
+        </div>
+
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Produk <span class="text-red-500">*</span></label>
           <textarea name="deskripsi" id="warga-umkm-deskripsi" required rows="3" placeholder="Jelaskan bahan baku, keunggulan rasa, daya tahan, atau cara pesan..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium"></textarea>
@@ -4123,9 +4164,99 @@
     }
 
     // Modal & Form Pengajuan UMKM Warga
+    let wargaUmkmPickerMap = null;
+    let wargaUmkmPickerMarker = null;
+
+    function initWargaUmkmMapPicker() {
+      const villageLat = (window.SERVER_DATA && window.SERVER_DATA.profil && window.SERVER_DATA.profil.koordinat_lat) ? parseFloat(window.SERVER_DATA.profil.koordinat_lat) : -0.0682;
+      const villageLng = (window.SERVER_DATA && window.SERVER_DATA.profil && window.SERVER_DATA.profil.koordinat_lng) ? parseFloat(window.SERVER_DATA.profil.koordinat_lng) : 117.3854;
+
+      setTimeout(() => {
+        const container = document.getElementById('warga-umkm-map-picker');
+        if (!container) return;
+
+        if (!wargaUmkmPickerMap) {
+          wargaUmkmPickerMap = L.map('warga-umkm-map-picker').setView([villageLat, villageLng], 14);
+
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap',
+            maxZoom: 19
+          }).addTo(wargaUmkmPickerMap);
+
+          const redIcon = L.divIcon({
+            className: 'warga-umkm-pin',
+            html: `<div style="background-color:#0284c7;color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.4);border:2px solid white;">
+                    <i class="fa-solid fa-store text-xs"></i>
+                  </div>`,
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -28]
+          });
+
+          wargaUmkmPickerMarker = L.marker([villageLat, villageLng], {
+            draggable: true,
+            icon: redIcon
+          }).addTo(wargaUmkmPickerMap);
+
+          wargaUmkmPickerMarker.on('dragend', function(e) {
+            const pos = wargaUmkmPickerMarker.getLatLng();
+            setWargaUmkmCoord(pos.lat, pos.lng);
+          });
+
+          wargaUmkmPickerMap.on('click', function(e) {
+            wargaUmkmPickerMarker.setLatLng(e.latlng);
+            setWargaUmkmCoord(e.latlng.lat, e.latlng.lng);
+          });
+        }
+
+        wargaUmkmPickerMap.invalidateSize();
+        wargaUmkmPickerMap.setView([villageLat, villageLng], 14);
+        wargaUmkmPickerMarker.setLatLng([villageLat, villageLng]);
+        setWargaUmkmCoord(villageLat, villageLng);
+      }, 250);
+    }
+
+    function setWargaUmkmCoord(lat, lng) {
+      const latEl = document.getElementById('warga-umkm-lat');
+      const lngEl = document.getElementById('warga-umkm-lng');
+      if (latEl && lngEl) {
+        latEl.value = parseFloat(lat).toFixed(6);
+        lngEl.value = parseFloat(lng).toFixed(6);
+      }
+    }
+
+    function ambilLokasiGPSWargaUMKM() {
+      if (!navigator.geolocation) {
+        alert('Perangkat Anda tidak mendukung deteksi GPS browser.');
+        return;
+      }
+
+      const loader = document.getElementById('warga-umkm-map-loader');
+      if (loader) loader.classList.remove('hidden');
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          if (loader) loader.classList.add('hidden');
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          if (wargaUmkmPickerMap && wargaUmkmPickerMarker) {
+            wargaUmkmPickerMap.setView([lat, lng], 16);
+            wargaUmkmPickerMarker.setLatLng([lat, lng]);
+            setWargaUmkmCoord(lat, lng);
+          }
+        },
+        (err) => {
+          if (loader) loader.classList.add('hidden');
+          alert('Gagal mendeteksi lokasi GPS: ' + (err.message || 'Mohon izinkan akses izin lokasi di browser.'));
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+
     function bukaModalDaftarUmkmWarga() {
       const modal = document.getElementById('modal-daftar-umkm-warga');
       if (modal) modal.classList.remove('hidden');
+      initWargaUmkmMapPicker();
     }
 
     function tutupModalDaftarUmkmWarga() {

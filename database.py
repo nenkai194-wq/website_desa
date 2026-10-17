@@ -284,6 +284,8 @@ def init_db():
         gambar TEXT,
         gambar2 TEXT,
         gambar3 TEXT,
+        latitude REAL,
+        longitude REAL,
         rating REAL DEFAULT 4.8,
         terjual INTEGER DEFAULT 0,
         status TEXT DEFAULT 'Disetujui',
@@ -293,13 +295,17 @@ def init_db():
     )
     ''')
 
-    # Migration: pastikan kolom gambar2, gambar3, status, nik_pemilik, catatan_admin, created_at ada di umkm
+    # Migration: pastikan kolom gambar2, gambar3, latitude, longitude, status, nik_pemilik, catatan_admin, created_at ada di umkm
     cursor.execute("PRAGMA table_info(umkm)")
     cols_umkm = [col[1] for col in cursor.fetchall()]
     if 'gambar2' not in cols_umkm:
         cursor.execute("ALTER TABLE umkm ADD COLUMN gambar2 TEXT")
     if 'gambar3' not in cols_umkm:
         cursor.execute("ALTER TABLE umkm ADD COLUMN gambar3 TEXT")
+    if 'latitude' not in cols_umkm:
+        cursor.execute("ALTER TABLE umkm ADD COLUMN latitude REAL")
+    if 'longitude' not in cols_umkm:
+        cursor.execute("ALTER TABLE umkm ADD COLUMN longitude REAL")
     if 'status' not in cols_umkm:
         cursor.execute("ALTER TABLE umkm ADD COLUMN status TEXT DEFAULT 'Disetujui'")
         cursor.execute("UPDATE umkm SET status = 'Disetujui' WHERE status IS NULL")

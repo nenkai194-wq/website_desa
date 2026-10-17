@@ -1561,6 +1561,16 @@ def admin_tambah_umkm():
     deskripsi = request.form.get('deskripsi')
     kontak_wa = request.form.get('kontak_wa', '').replace('+', '').replace('-', '').strip()
 
+    try:
+        latitude = float(request.form.get('latitude')) if request.form.get('latitude') else None
+    except (ValueError, TypeError):
+        latitude = None
+
+    try:
+        longitude = float(request.form.get('longitude')) if request.form.get('longitude') else None
+    except (ValueError, TypeError):
+        longitude = None
+
     # Upload Foto 1 (Foto Utama)
     gambar1 = request.form.get('gambar1') or request.form.get('gambar') or 'static/images/produk_terasi.jpg'
     if 'gambar_file1' in request.files:
@@ -1597,13 +1607,13 @@ def admin_tambah_umkm():
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO umkm (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar, gambar2, gambar3)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3))
+    INSERT INTO umkm (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar, gambar2, gambar3, latitude, longitude)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, latitude, longitude))
     conn.commit()
     conn.close()
 
-    flash('Produk UMKM berhasil ditambahkan lengkap dengan foto galeri.', 'success')
+    flash('Produk UMKM berhasil ditambahkan lengkap dengan foto galeri dan titik lokasi peta.', 'success')
     return redirect(url_for('admin_umkm'))
 
 @app.route('/admin/umkm/<int:id>/edit', methods=['POST'])
@@ -1616,9 +1626,19 @@ def admin_edit_umkm(id):
     deskripsi = request.form.get('deskripsi')
     kontak_wa = request.form.get('kontak_wa', '').replace('+', '').replace('-', '').strip()
 
+    try:
+        latitude = float(request.form.get('latitude')) if request.form.get('latitude') else None
+    except (ValueError, TypeError):
+        latitude = None
+
+    try:
+        longitude = float(request.form.get('longitude')) if request.form.get('longitude') else None
+    except (ValueError, TypeError):
+        longitude = None
+
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT gambar, gambar2, gambar3 FROM umkm WHERE id = ?", (id,))
+    cursor.execute("SELECT gambar, gambar2, gambar3, latitude, longitude FROM umkm WHERE id = ?", (id,))
     current = cursor.fetchone()
     old_g1 = current['gambar'] if current and current['gambar'] else 'static/images/produk_terasi.jpg'
     old_g2 = current['gambar2'] if current and current['gambar2'] else None
@@ -1658,13 +1678,13 @@ def admin_edit_umkm(id):
                 gambar3 = f"static/images/uploads/{fn}"
 
     cursor.execute('''
-    UPDATE umkm SET nama=?, produsen=?, harga=?, satuan=?, deskripsi=?, kontak_wa=?, gambar=?, gambar2=?, gambar3=?
+    UPDATE umkm SET nama=?, produsen=?, harga=?, satuan=?, deskripsi=?, kontak_wa=?, gambar=?, gambar2=?, gambar3=?, latitude=?, longitude=?
     WHERE id=?
-    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, id))
+    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, latitude, longitude, id))
     conn.commit()
     conn.close()
 
-    flash('Produk UMKM berhasil diperbarui dengan variasi foto lengkap.', 'success')
+    flash('Produk UMKM berhasil diperbarui dengan variasi foto lengkap dan titik peta.', 'success')
     return redirect(url_for('admin_umkm'))
 
 @app.route('/admin/umkm/<int:id>/hapus', methods=['POST'])
@@ -1712,6 +1732,16 @@ def api_ajukan_umkm():
     deskripsi = request.form.get('deskripsi')
     kontak_wa = request.form.get('kontak_wa', '').replace('+', '').replace('-', '').strip()
 
+    try:
+        latitude = float(request.form.get('latitude')) if request.form.get('latitude') else None
+    except (ValueError, TypeError):
+        latitude = None
+
+    try:
+        longitude = float(request.form.get('longitude')) if request.form.get('longitude') else None
+    except (ValueError, TypeError):
+        longitude = None
+
     if not (nama and produsen and harga and satuan and deskripsi and kontak_wa):
         return jsonify({'success': False, 'message': 'Mohon lengkapi seluruh formulir pengajuan produk bertanda bintang (*).'}), 400
 
@@ -1753,9 +1783,9 @@ def api_ajukan_umkm():
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO umkm (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar, gambar2, gambar3, status, nik_pemilik, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Menunggu Approval', ?, ?)
-    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, nik_pemilik, created_at))
+    INSERT INTO umkm (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar, gambar2, gambar3, latitude, longitude, status, nik_pemilik, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Menunggu Approval', ?, ?)
+    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, latitude, longitude, nik_pemilik, created_at))
     conn.commit()
     conn.close()
 
