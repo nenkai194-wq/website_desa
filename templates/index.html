@@ -2411,16 +2411,25 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {% for prod in umkm %}
-      <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 card-hover flex flex-col group">
-        <div class="relative h-52 overflow-hidden bg-gray-50">
-          <img id="public-prod-img-{{ prod.id }}" src="{{ url_for('static', filename=prod.gambar.replace('static/', '')) if prod.gambar and prod.gambar.startswith('static/') else (prod.gambar or url_for('static', filename='images/produk_terasi.jpg')) }}" alt="{{ prod.nama }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/produk_terasi.jpg') }}'">
-          <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 z-10">
+      <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 card-hover flex flex-col group cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5"
+           onclick="bukaModalDetailUmkm({{ prod.id }})"
+           title="Klik untuk melihat foto besar & detail produk {{ prod.nama }}">
+        <div class="relative h-56 overflow-hidden bg-slate-900">
+          <img id="public-prod-img-{{ prod.id }}" src="{{ url_for('static', filename=prod.gambar.replace('static/', '')) if prod.gambar and prod.gambar.startswith('static/') else (prod.gambar or url_for('static', filename='images/produk_terasi.jpg')) }}" alt="{{ prod.nama }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" onerror="this.src='{{ url_for('static', filename='images/produk_terasi.jpg') }}'">
+          <span class="absolute top-3 right-3 bg-white/95 backdrop-blur-md text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 z-10">
             <i class="fa-solid fa-star text-amber-400"></i> {{ prod.rating }} ({{ prod.terjual }} terjual)
           </span>
 
+          <!-- Overlay Info on Hover -->
+          <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center pointer-events-none">
+            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 backdrop-blur-md text-slate-900 font-bold text-xs shadow-lg flex items-center gap-1.5">
+              <i class="fa-solid fa-expand text-emerald-600"></i> Lihat Foto &amp; Detail
+            </span>
+          </div>
+
           <!-- Switcher 3 Foto Produk jika tersedia -->
           {% if prod.gambar2 or prod.gambar3 %}
-          <div class="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 bg-black/60 backdrop-blur-md p-1 rounded-xl z-20">
+          <div class="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 bg-black/60 backdrop-blur-md p-1 rounded-xl z-20" onclick="event.stopPropagation()">
             <button type="button" onclick="gantiPublicProdImg({{ prod.id }}, '{{ prod.gambar }}')" class="w-6 h-6 rounded-lg bg-white overflow-hidden border border-white hover:scale-110 transition shadow-sm" title="Foto 1">
               <img src="{{ url_for('static', filename=prod.gambar.replace('static/', '')) if prod.gambar and prod.gambar.startswith('static/') else (prod.gambar or url_for('static', filename='images/produk_terasi.jpg')) }}" class="w-full h-full object-cover">
             </button>
@@ -2437,17 +2446,19 @@
           </div>
           {% endif %}
         </div>
-        <div class="p-5 flex-1 flex flex-col">
-          <span class="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">{{ prod.produsen }}</span>
-          <h3 class="font-bold text-gray-900 text-base mt-1 line-clamp-1 group-hover:text-emerald-700 transition">{{ prod.nama }}</h3>
-          <p class="text-xs text-gray-500 mt-2 line-clamp-2 leading-relaxed flex-1">{{ prod.deskripsi }}</p>
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <span class="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">{{ prod.produsen }}</span>
+            <h3 class="font-bold text-gray-900 text-base mt-1 line-clamp-1 group-hover:text-emerald-700 transition">{{ prod.nama }}</h3>
+            <p class="text-xs text-gray-500 mt-2 line-clamp-2 leading-relaxed">{{ prod.deskripsi }}</p>
+          </div>
           
           <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
             <div>
               <p class="text-[11px] text-gray-400">Harga / {{ prod.satuan }}</p>
               <p class="text-lg font-black text-emerald-700">Rp {{ "{:,}".format(prod.harga).replace(',', '.') }}</p>
             </div>
-            <a href="https://wa.me/{{ prod.kontak_wa }}?text=Halo%20Penjual%20UMKM%20Desa%20{{ profil.nama_desa|urlencode }},%20saya%20tertarik%20membeli%20produk:%20{{ prod.nama|urlencode }}" target="_blank" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+            <a href="https://wa.me/{{ prod.kontak_wa }}?text=Halo%20Penjual%20UMKM%20Desa%20{{ profil.nama_desa|urlencode }},%20saya%20tertarik%20membeli%20produk:%20{{ prod.nama|urlencode }}" target="_blank" onclick="event.stopPropagation()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
               <i class="fa-brands fa-whatsapp text-sm"></i> Beli
             </a>
           </div>
@@ -2575,23 +2586,37 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       {% for b in berita %}
-      <article class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 card-hover flex flex-col">
-        <div class="relative h-48 overflow-hidden">
-          <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar and b.gambar.startswith('static/') else (b.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" alt="{{ b.judul }}" class="w-full h-full object-cover" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'">
-          <span class="absolute top-3 left-3 bg-emerald-600/90 text-white text-[11px] font-bold px-3 py-0.5 rounded-full backdrop-blur-md">
+      <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 card-hover flex flex-col group cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5"
+               onclick="bukaModalDetailBerita({{ b.id }})"
+               title="Klik untuk membaca berita lengkap & foto besar">
+        <div class="relative h-56 overflow-hidden bg-slate-900">
+          <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar and b.gambar.startswith('static/') else (b.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" alt="{{ b.judul }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'">
+          <span class="absolute top-3 left-3 bg-emerald-600/90 text-white text-[11px] font-bold px-3 py-1 rounded-full backdrop-blur-md shadow-md z-10">
             {{ b.kategori }}
           </span>
-        </div>
-        <div class="p-5 flex-1 flex flex-col">
-          <div class="flex items-center gap-3 text-xs text-gray-400 mb-2">
-            <span><i class="fa-regular fa-calendar mr-1"></i> {{ b.tanggal }}</span>
-            <span>•</span>
-            <span><i class="fa-regular fa-user mr-1"></i> {{ b.penulis }}</span>
+          <!-- Overlay Info on Hover -->
+          <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center pointer-events-none">
+            <span class="px-4 py-2 rounded-xl bg-white/95 backdrop-blur-md text-slate-900 font-bold text-xs shadow-lg flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition duration-300">
+              <i class="fa-regular fa-newspaper text-emerald-600"></i> Baca Berita Lengkap
+            </span>
           </div>
-          <h3 class="font-bold text-gray-900 text-base leading-snug hover:text-emerald-700 transition line-clamp-2 mb-2">
-            <a href="javascript:void(0)" onclick="bukaModalBerita('{{ b.id }}')">{{ b.judul }}</a>
-          </h3>
-          <p class="text-xs text-gray-600 line-clamp-3 leading-relaxed flex-1">{{ b.ringkasan }}</p>
+        </div>
+        <div class="p-6 flex-1 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-3 text-xs text-gray-400 mb-2.5">
+              <span><i class="fa-regular fa-calendar mr-1"></i> {{ b.tanggal }}</span>
+              <span>•</span>
+              <span><i class="fa-regular fa-user mr-1"></i> {{ b.penulis }}</span>
+            </div>
+            <h3 class="font-bold text-gray-900 text-lg leading-snug group-hover:text-emerald-700 transition line-clamp-2 mb-2">
+              {{ b.judul }}
+            </h3>
+            <p class="text-xs text-gray-600 line-clamp-3 leading-relaxed">{{ b.ringkasan }}</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-emerald-700">
+            <span>Baca Selengkapnya</span>
+            <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition duration-200"></i>
+          </div>
         </div>
       </article>
       {% endfor %}
@@ -3369,6 +3394,175 @@
           </a>
         </div>
         <button type="button" onclick="tutupModalDetailWisata()" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL DETAIL PRODUK UMKM BESAR / POPUP LENGKAP          -->
+  <!-- ======================================================== -->
+  <div id="modal-detail-umkm" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto" onclick="if(event.target === this) tutupModalDetailUmkm();">
+    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-fade-in my-auto border border-slate-200">
+      
+      <!-- Header Gambar Besar UMKM -->
+      <div class="relative w-full h-64 sm:h-80 md:h-96 bg-slate-900 shrink-0 overflow-hidden group">
+        <img id="modal-umkm-img" src="" alt="Foto Produk UMKM" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-black/20"></div>
+        
+        <!-- Tombol Tutup X -->
+        <button type="button" onclick="tutupModalDetailUmkm()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center text-xl font-bold transition shadow-lg z-20" title="Tutup">
+          &times;
+        </button>
+
+        <!-- Rating & Terjual Badge -->
+        <div class="absolute top-4 left-4 z-20 flex items-center gap-2">
+          <span id="modal-umkm-rating" class="text-xs font-bold bg-white/95 text-emerald-800 px-3 py-1 rounded-full shadow-md flex items-center gap-1.5">
+            <i class="fa-solid fa-star text-amber-400"></i> 5.0 (100+ terjual)
+          </span>
+          <span class="text-xs font-bold bg-emerald-600/90 text-white px-3 py-1 rounded-full shadow-md border border-emerald-400/30">
+            Produk UMKM Desa
+          </span>
+        </div>
+
+        <!-- Thumbnails switcher inside header if multi photos -->
+        <div id="modal-umkm-gallery" class="absolute bottom-4 right-4 sm:right-6 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-md p-1.5 rounded-2xl">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Judul & Produsen di atas foto -->
+        <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-8 right-32 sm:right-56 z-20 text-white">
+          <span id="modal-umkm-produsen" class="text-xs font-bold uppercase tracking-wider text-emerald-300">Nama Produsen</span>
+          <h2 id="modal-umkm-nama" class="text-xl sm:text-3xl font-black leading-tight drop-shadow-md mt-0.5">Nama Produk UMKM</h2>
+        </div>
+      </div>
+
+      <!-- Konten Detail Produk -->
+      <div class="p-5 sm:p-8 overflow-y-auto space-y-6 flex-1">
+        
+        <!-- Grid Harga & Spesifikasi -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-emerald-50/80 rounded-2xl p-4 border border-emerald-200 flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg shrink-0 shadow-xs">
+              <i class="fa-solid fa-tag"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">Harga Produk</span>
+              <span id="modal-umkm-harga" class="text-base sm:text-lg font-black text-emerald-700">Rp 0</span>
+            </div>
+          </div>
+
+          <div class="bg-blue-50/80 rounded-2xl p-4 border border-blue-200 flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg shrink-0 shadow-xs">
+              <i class="fa-solid fa-store"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-blue-800 block">Penjual / Perajin</span>
+              <span id="modal-umkm-penjual" class="text-xs sm:text-sm font-extrabold text-slate-900">Warga Desa Papayan</span>
+            </div>
+          </div>
+
+          <div class="bg-purple-50/80 rounded-2xl p-4 border border-purple-200 flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-purple-600 text-white flex items-center justify-center text-lg shrink-0 shadow-xs">
+              <i class="fa-solid fa-truck-fast"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-purple-800 block">Metode Pemesanan</span>
+              <span class="text-xs sm:text-sm font-extrabold text-slate-900">Langsung via WhatsApp</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deskripsi Produk -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-info text-emerald-600"></i> Deskripsi &amp; Keunggulan Produk
+          </h4>
+          <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200/80">
+            <p id="modal-umkm-deskripsi" class="text-sm sm:text-[15px] text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+              Deskripsi lengkap produk UMKM...
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Modal & Tombol Aksi -->
+      <div class="px-5 sm:px-8 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+        <a id="modal-umkm-wa-btn" href="#" target="_blank" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-md hover:shadow-lg">
+          <i class="fa-brands fa-whatsapp text-lg"></i> Pesan / Beli Langsung via WhatsApp
+        </a>
+        <button type="button" onclick="tutupModalDetailUmkm()" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL DETAIL BERITA BESAR / POPUP LENGKAP               -->
+  <!-- ======================================================== -->
+  <div id="modal-detail-berita" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto" onclick="if(event.target === this) tutupModalDetailBerita();">
+    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-fade-in my-auto border border-slate-200">
+      
+      <!-- Header Gambar Besar Berita -->
+      <div class="relative w-full h-64 sm:h-80 md:h-96 bg-slate-900 shrink-0 overflow-hidden group">
+        <img id="modal-berita-img" src="" alt="Foto Berita" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-black/20"></div>
+        
+        <!-- Tombol Tutup X -->
+        <button type="button" onclick="tutupModalDetailBerita()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center text-xl font-bold transition shadow-lg z-20" title="Tutup">
+          &times;
+        </button>
+
+        <!-- Kategori Badge -->
+        <div class="absolute top-4 left-4 z-20">
+          <span id="modal-berita-kategori" class="text-xs font-bold bg-emerald-600/90 backdrop-blur-md text-white px-3.5 py-1.5 rounded-full shadow-md border border-emerald-400/30">
+            Kabar Desa
+          </span>
+        </div>
+
+        <!-- Judul & Meta di atas foto -->
+        <div class="absolute bottom-4 sm:bottom-6 inset-x-4 sm:inset-x-8 z-20 text-white">
+          <div class="flex items-center gap-3 text-xs text-emerald-200 font-medium mb-2 drop-shadow-sm">
+            <span id="modal-berita-tanggal"><i class="fa-regular fa-calendar mr-1"></i> Tanggal</span>
+            <span>•</span>
+            <span id="modal-berita-penulis"><i class="fa-regular fa-user mr-1"></i> Penulis</span>
+          </div>
+          <h2 id="modal-berita-judul" class="text-xl sm:text-3xl font-black leading-tight drop-shadow-md">Judul Berita &amp; Informasi Desa</h2>
+        </div>
+      </div>
+
+      <!-- Konten Berita -->
+      <div class="p-5 sm:p-8 overflow-y-auto space-y-6 flex-1">
+        
+        <!-- Ringkasan / Lead Paragraph -->
+        <div class="bg-emerald-50/70 border-l-4 border-emerald-500 rounded-r-2xl p-4 sm:p-5">
+          <p id="modal-berita-ringkasan" class="text-sm sm:text-base text-slate-800 leading-relaxed font-semibold italic">
+            Ringkasan warta berita desa...
+          </p>
+        </div>
+
+        <!-- Isi Lengkap Berita -->
+        <div>
+          <div id="modal-berita-isi" class="text-sm sm:text-base text-slate-700 leading-relaxed space-y-4 font-normal">
+            <!-- Diisi paragraf lengkap melalui JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Modal & Tombol Aksi -->
+      <div class="px-5 sm:px-8 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="bagikanBeritaModal()" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:border-emerald-600 text-slate-700 hover:text-emerald-700 font-bold text-xs transition flex items-center gap-2 shadow-xs">
+            <i class="fa-solid fa-share-nodes text-emerald-600"></i> Bagikan Berita
+          </button>
+        </div>
+        <button type="button" onclick="tutupModalDetailBerita()" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition">
           Tutup
         </button>
       </div>
@@ -4433,6 +4627,182 @@
           }
         }
       }, 350);
+    };
+
+    // --- DATA & POPUP MODAL PRODUK UMKM ---
+    const umkmDataMap = {
+      {% for prod in umkm %}
+      {{ prod.id }}: {
+        id: {{ prod.id }},
+        nama: {{ (prod.nama or '')|tojson }},
+        produsen: {{ (prod.produsen or 'UMKM Desa Papayan')|tojson }},
+        harga: {{ prod.harga if prod.harga is not none else 0 }},
+        satuan: {{ (prod.satuan or 'pcs')|tojson }},
+        deskripsi: {{ (prod.deskripsi or '')|tojson }},
+        kontak_wa: {{ (prod.kontak_wa or '')|tojson }},
+        rating: {{ (prod.rating or '5.0')|tojson }},
+        terjual: {{ prod.terjual if prod.terjual is not none else 0 }},
+        gambar: {{ (url_for('static', filename=prod.gambar.replace('static/', '')) if prod.gambar and prod.gambar.startswith('static/') else (prod.gambar or url_for('static', filename='images/produk_terasi.jpg')))|tojson }},
+        gambar2: {{ ((url_for('static', filename=prod.gambar2.replace('static/', '')) if prod.gambar2 and prod.gambar2.startswith('static/') else prod.gambar2) if prod.gambar2 else None)|tojson }},
+        gambar3: {{ ((url_for('static', filename=prod.gambar3.replace('static/', '')) if prod.gambar3 and prod.gambar3.startswith('static/') else prod.gambar3) if prod.gambar3 else None)|tojson }}
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    };
+
+    window.bukaModalDetailUmkm = function(id) {
+      const item = umkmDataMap[id];
+      if (!item) return;
+
+      const modal = document.getElementById('modal-detail-umkm');
+      const img = document.getElementById('modal-umkm-img');
+      const produsen = document.getElementById('modal-umkm-produsen');
+      const nama = document.getElementById('modal-umkm-nama');
+      const rating = document.getElementById('modal-umkm-rating');
+      const harga = document.getElementById('modal-umkm-harga');
+      const penjual = document.getElementById('modal-umkm-penjual');
+      const deskripsi = document.getElementById('modal-umkm-deskripsi');
+      const waBtn = document.getElementById('modal-umkm-wa-btn');
+      const gallery = document.getElementById('modal-umkm-gallery');
+
+      if (img) {
+        img.src = item.gambar || '/static/images/produk_terasi.jpg';
+        img.alt = item.nama;
+      }
+      if (produsen) produsen.innerText = item.produsen || 'UMKM Warga Desa Papayan';
+      if (nama) nama.innerText = item.nama;
+      if (rating) rating.innerHTML = `<i class="fa-solid fa-star text-amber-400"></i> ${item.rating || '5.0'} (${item.terjual || 0} terjual)`;
+      if (harga) harga.innerText = `Rp ${Number(item.harga).toLocaleString('id-ID')} / ${item.satuan || 'pcs'}`;
+      if (penjual) penjual.innerText = item.produsen || 'Warga Desa Papayan';
+      if (deskripsi) deskripsi.innerText = item.deskripsi || 'Belum ada deskripsi lengkap mengenai produk ini.';
+
+      if (gallery) {
+        gallery.innerHTML = '';
+        const photos = [item.gambar, item.gambar2, item.gambar3].filter(Boolean);
+        if (photos.length > 1) {
+          photos.forEach((p, idx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border-2 border-white hover:scale-110 transition shadow-sm bg-white shrink-0';
+            btn.title = `Foto ${idx + 1}`;
+            btn.innerHTML = `<img src="${p}" class="w-full h-full object-cover">`;
+            btn.onclick = function() {
+              if (img) img.src = p;
+            };
+            gallery.appendChild(btn);
+          });
+          gallery.classList.remove('hidden');
+        } else {
+          gallery.classList.add('hidden');
+        }
+      }
+
+      if (waBtn) {
+        const cleanWa = (item.kontak_wa || '').replace(/[^0-9]/g, '');
+        const textMsg = encodeURIComponent(`Halo ${item.produsen || 'Penjual UMKM Desa Papayan'}, saya tertarik membeli produk: ${item.nama} (Rp ${Number(item.harga).toLocaleString('id-ID')}/${item.satuan || 'pcs'}). Apakah stok masih tersedia?`);
+        waBtn.href = `https://wa.me/${cleanWa}?text=${textMsg}`;
+      }
+
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      }
+    };
+
+    window.tutupModalDetailUmkm = function() {
+      const modal = document.getElementById('modal-detail-umkm');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    };
+
+    // --- DATA & POPUP MODAL BERITA DESA ---
+    const beritaDataMap = {
+      {% for b in berita %}
+      {{ b.id }}: {
+        id: {{ b.id }},
+        judul: {{ (b.judul or '')|tojson }},
+        kategori: {{ (b.kategori or 'Kabar Desa')|tojson }},
+        penulis: {{ (b.penulis or 'Admin Desa')|tojson }},
+        tanggal: {{ (b.tanggal or '')|tojson }},
+        ringkasan: {{ (b.ringkasan or '')|tojson }},
+        isi: {{ (b.isi or '')|tojson }},
+        gambar: {{ (url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar and b.gambar.startswith('static/') else (b.gambar or url_for('static', filename='images/pantai_kersik.jpg')))|tojson }}
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    };
+
+    window.bukaModalDetailBerita = function(id) {
+      const item = beritaDataMap[id];
+      if (!item) return;
+
+      const modal = document.getElementById('modal-detail-berita');
+      const img = document.getElementById('modal-berita-img');
+      const kategori = document.getElementById('modal-berita-kategori');
+      const judul = document.getElementById('modal-berita-judul');
+      const tanggal = document.getElementById('modal-berita-tanggal');
+      const penulis = document.getElementById('modal-berita-penulis');
+      const ringkasan = document.getElementById('modal-berita-ringkasan');
+      const isi = document.getElementById('modal-berita-isi');
+
+      if (img) {
+        img.src = item.gambar || '/static/images/pantai_kersik.jpg';
+        img.alt = item.judul;
+      }
+      if (kategori) kategori.innerText = item.kategori || 'Kabar Desa';
+      if (judul) judul.innerText = item.judul;
+      if (tanggal) tanggal.innerHTML = `<i class="fa-regular fa-calendar mr-1"></i> ${item.tanggal || 'Terbaru'}`;
+      if (penulis) penulis.innerHTML = `<i class="fa-regular fa-user mr-1"></i> ${item.penulis || 'Pemerintah Desa Papayan'}`;
+      if (ringkasan) ringkasan.innerText = `"${item.ringkasan || ''}"`;
+
+      if (isi) {
+        isi.innerHTML = '';
+        const fullContent = (item.isi && item.isi.trim()) ? item.isi : item.ringkasan;
+        if (fullContent) {
+          const paragraphs = fullContent.split('\n').map(p => p.trim()).filter(Boolean);
+          paragraphs.forEach(p => {
+            const pEl = document.createElement('p');
+            pEl.className = 'text-slate-700 leading-relaxed text-sm sm:text-base';
+            pEl.innerText = p;
+            isi.appendChild(pEl);
+          });
+        } else {
+          isi.innerHTML = '<p class="text-slate-400 italic">Isi berita belum tersedia.</p>';
+        }
+      }
+
+      window.currentBeritaActive = item;
+
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      }
+    };
+
+    window.bukaModalBerita = window.bukaModalDetailBerita;
+
+    window.tutupModalDetailBerita = function() {
+      const modal = document.getElementById('modal-detail-berita');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    };
+
+    window.bagikanBeritaModal = function() {
+      const item = window.currentBeritaActive;
+      if (!item) return;
+      const shareUrl = window.location.origin + window.location.pathname + '#berita';
+      if (navigator.share) {
+        navigator.share({
+          title: item.judul,
+          text: item.ringkasan,
+          url: shareUrl
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(`${item.judul} - ${shareUrl}`);
+        alert('Tautan berita berhasil disalin ke clipboard!');
+      }
     };
   </script>
 
