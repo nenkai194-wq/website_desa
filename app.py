@@ -2244,6 +2244,34 @@ def admin_running_text_toggle(id):
     flash(f'Status teks berjalan berhasil {status_str.lower()}.', 'success')
     return redirect(url_for('admin_running_text'))
 
+@app.route('/admin/running-text/reorder', methods=['POST'])
+@login_required
+def admin_reorder_running_text():
+    data = request.get_json(silent=True) or request.form
+    order_ids = data.get('order', [])
+    if not order_ids or not isinstance(order_ids, list):
+        return jsonify({'status': 'error', 'message': 'Data urutan tidak valid'}), 400
+
+    conn = get_db()
+    cursor = conn.cursor()
+    for index, item_id in enumerate(order_ids):
+        try:
+            cursor.execute("UPDATE running_texts SET urutan = ? WHERE id = ?", (index + 1, int(item_id)))
+        except (ValueError, TypeError):
+            continue
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='REORDER_RUNNING_TEXT',
+        details=f'Mengubah urutan running text melalui drag and drop ({len(order_ids)} item)',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+    return jsonify({'status': 'success', 'message': 'Urutan running text berhasil disimpan!'})
+
 # ==========================================
 # PUBLIC PUBLIKASI & PERPUSTAKAAN DIGITAL
 # ==========================================

@@ -56,7 +56,7 @@
         <span class="text-[10px] text-slate-500 font-medium bg-slate-200/70 px-2 py-0.5 rounded-md">Urutan #{{ a.urutan }}</span>
         <div class="flex items-center gap-1.5">
           <button type="button" 
-                  onclick="bukaModalEditAparatur({{ a.id }}, this)" 
+                  onclick="bukaModalEditAparatur({{ a.id }})" 
                   data-nama="{{ a.nama }}"
                   data-jabatan="{{ a.jabatan }}"
                   data-periode="{{ a.periode or '2021 - 2027' }}"
@@ -326,19 +326,30 @@
     document.getElementById('modal-aparatur').classList.remove('hidden');
   }
 
-  function bukaModalEditAparatur(id, btn) {
+  const aparaturDataMap = {
+    {% for a in aparatur_list %}
+    {{ a.id }}: {{ a | tojson }},
+    {% endfor %}
+  };
+
+  function bukaModalEditAparatur(id) {
+    const a = aparaturDataMap[id];
+    if (!a) {
+      console.error('Data aparatur tidak ditemukan:', id);
+      return;
+    }
     document.getElementById('modal-aparatur-title').innerText = 'Edit Aparatur Desa';
     document.getElementById('btn-submit-label').innerText = 'Perbarui Aparatur';
     const form = document.getElementById('form-aparatur');
     form.action = `/admin/aparatur/${id}/edit`;
 
-    const nama = btn.getAttribute('data-nama') || '';
-    const jabatan = btn.getAttribute('data-jabatan') || '';
-    const periode = btn.getAttribute('data-periode') || '2021 - 2027';
-    const foto = btn.getAttribute('data-foto') || '';
-    const kontak = btn.getAttribute('data-kontak') || '';
-    const sambutan = btn.getAttribute('data-sambutan') || '';
-    const urutan = btn.getAttribute('data-urutan') || '1';
+    const nama = a.nama || '';
+    const jabatan = a.jabatan || '';
+    const periode = a.periode || '2021 - 2027';
+    const foto = a.foto || '';
+    const kontak = a.kontak || '';
+    const sambutan = a.sambutan_singkat || '';
+    const urutan = a.urutan || '1';
 
     document.getElementById('input-aparatur-nama').value = nama;
     document.getElementById('input-aparatur-periode').value = periode;

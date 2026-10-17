@@ -98,7 +98,7 @@
             <i class="fa-brands fa-whatsapp text-sm text-emerald-600"></i> WhatsApp
           </a>
           <div class="flex items-center gap-1">
-            <button onclick="bukaModalEditUmkm({{ p.id }}, '{{ p.nama|replace("'", "\\'") }}', '{{ p.produsen|replace("'", "\\'") }}', {{ p.harga }}, '{{ p.satuan|replace("'", "\\'") }}', '{{ p.deskripsi|replace("'", "\\'") }}', '{{ p.kontak_wa }}', '{{ p.gambar or '' }}', '{{ p.gambar2 or '' }}', '{{ p.gambar3 or '' }}')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-brand-800 text-xs font-bold transition flex items-center gap-1" title="Edit">
+            <button onclick="bukaModalEditUmkm({{ p.id }})" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-brand-800 text-xs font-bold transition flex items-center gap-1" title="Edit">
               <i class="fa-solid fa-pen-to-square"></i> Edit
             </button>
             <form method="POST" action="{{ url_for('admin_hapus_umkm', id=p.id) }}" onsubmit="return confirm('Hapus produk {{ p.nama }}?');" class="inline">
@@ -209,7 +209,7 @@
                   </form>
 
                   <!-- Edit / Analisa -->
-                  <button onclick="bukaModalEditUmkm({{ req.id }}, '{{ req.nama|replace("'", "\\'") }}', '{{ req.produsen|replace("'", "\\'") }}', {{ req.harga }}, '{{ req.satuan|replace("'", "\\'") }}', '{{ req.deskripsi|replace("'", "\\'") }}', '{{ req.kontak_wa }}', '{{ req.gambar or '' }}', '{{ req.gambar2 or '' }}', '{{ req.gambar3 or '' }}')" class="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-brand-800 text-xs transition" title="Koreksi / Analisa Detail">
+                  <button onclick="bukaModalEditUmkm({{ req.id }})" class="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-brand-800 text-xs transition" title="Koreksi / Analisa Detail">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
 
@@ -477,28 +477,49 @@
     document.getElementById('modal-umkm').classList.remove('hidden');
   }
 
-  function bukaModalEditUmkm(id, nama, produsen, harga, satuan, deskripsi, wa, g1, g2, g3) {
+  const umkmDataMap = {
+    {% for p in umkm_list %}
+    {{ p.id }}: {{ p | tojson }},
+    {% endfor %}
+    {% for p in pengajuan_list %}
+    {{ p.id }}: {{ p | tojson }},
+    {% endfor %}
+    {% for p in ditolak_list %}
+    {{ p.id }}: {{ p | tojson }},
+    {% endfor %}
+  };
+
+  function bukaModalEditUmkm(idOrObj) {
+    const p = (typeof idOrObj === 'object' && idOrObj !== null) ? idOrObj : umkmDataMap[idOrObj];
+    if (!p) {
+      console.error('Data UMKM tidak ditemukan untuk ID:', idOrObj);
+      return;
+    }
     document.getElementById('modal-umkm-title').innerText = 'Edit Produk UMKM';
     const form = document.getElementById('form-umkm');
-    form.action = `/admin/umkm/${id}/edit`;
-    document.getElementById('input-umkm-nama').value = nama;
-    document.getElementById('input-umkm-produsen').value = produsen;
-    document.getElementById('input-umkm-harga').value = harga;
-    document.getElementById('input-umkm-satuan').value = satuan;
-    document.getElementById('input-umkm-deskripsi').value = deskripsi;
-    document.getElementById('input-umkm-wa').value = wa;
+    form.action = `/admin/umkm/${p.id}/edit`;
+    document.getElementById('input-umkm-nama').value = p.nama || '';
+    document.getElementById('input-umkm-produsen').value = p.produsen || '';
+    document.getElementById('input-umkm-harga').value = p.harga || 0;
+    document.getElementById('input-umkm-satuan').value = p.satuan || 'Pcs';
+    document.getElementById('input-umkm-deskripsi').value = p.deskripsi || '';
+    document.getElementById('input-umkm-wa').value = p.kontak_wa || '';
+
+    const g1 = p.gambar || '';
+    const g2 = p.gambar2 || '';
+    const g3 = p.gambar3 || '';
 
     // Foto 1
     const p1 = document.getElementById('preview-umkm-1');
-    document.getElementById('lama-umkm-1').value = g1 || '';
-    document.getElementById('text-umkm-1').value = g1 || '';
+    document.getElementById('lama-umkm-1').value = g1;
+    document.getElementById('text-umkm-1').value = g1;
     p1.src = resolveImgSrc(g1);
     p1.classList.remove('opacity-60');
 
     // Foto 2
     const p2 = document.getElementById('preview-umkm-2');
-    document.getElementById('lama-umkm-2').value = g2 || '';
-    document.getElementById('text-umkm-2').value = g2 || '';
+    document.getElementById('lama-umkm-2').value = g2;
+    document.getElementById('text-umkm-2').value = g2;
     if (g2) {
       p2.src = resolveImgSrc(g2);
       p2.classList.remove('opacity-60');
@@ -509,8 +530,8 @@
 
     // Foto 3
     const p3 = document.getElementById('preview-umkm-3');
-    document.getElementById('lama-umkm-3').value = g3 || '';
-    document.getElementById('text-umkm-3').value = g3 || '';
+    document.getElementById('lama-umkm-3').value = g3;
+    document.getElementById('text-umkm-3').value = g3;
     if (g3) {
       p3.src = resolveImgSrc(g3);
       p3.classList.remove('opacity-60');

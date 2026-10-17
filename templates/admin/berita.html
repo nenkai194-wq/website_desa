@@ -117,7 +117,7 @@
               </td>
               <td class="py-3.5 px-4 text-center whitespace-nowrap">
                 <div class="flex items-center justify-center gap-1.5">
-                  <button onclick="bukaModalEditBerita({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}', '{{ b.kategori|replace("'", "\\'") }}', '{{ b.penulis|replace("'", "\\'") }}', '{{ b.tanggal }}', '{{ b.gambar }}', '{{ b.ringkasan|replace("'", "\\'") }}', '{{ b.isi|replace("'", "\\'")|replace('\n', ' ') }}', '{{ b.status or 'Tayang' }}', '{{ b.catatan_redaksi|replace("'", "\\'") if b.catatan_redaksi else '' }}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition" title="Edit Berita">
+                  <button onclick="bukaModalEditBerita({{ b.id }})" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition" title="Edit Berita">
                     <i class="fa-solid fa-pen-to-square"></i> Edit
                   </button>
 
@@ -215,7 +215,7 @@
                     </button>
                   </form>
 
-                  <button onclick="bukaModalEditBerita({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}', '{{ b.kategori|replace("'", "\\'") }}', '{{ b.penulis|replace("'", "\\'") }}', '{{ b.tanggal }}', '{{ b.gambar }}', '{{ b.ringkasan|replace("'", "\\'") }}', '{{ b.isi|replace("'", "\\'")|replace('\n', ' ') }}', '{{ b.status }}', '{{ b.catatan_redaksi|replace("'", "\\'") if b.catatan_redaksi else '' }}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+                  <button onclick="bukaModalEditBerita({{ b.id }})" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
                     <i class="fa-solid fa-pen-to-square"></i> Edit
                   </button>
 
@@ -306,7 +306,7 @@
                     </button>
                   </form>
 
-                  <button onclick="bukaModalEditBerita({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}', '{{ b.kategori|replace("'", "\\'") }}', '{{ b.penulis|replace("'", "\\'") }}', '{{ b.tanggal }}', '{{ b.gambar }}', '{{ b.ringkasan|replace("'", "\\'") }}', '{{ b.isi|replace("'", "\\'")|replace('\n', ' ') }}', '{{ b.status }}', '{{ b.catatan_redaksi|replace("'", "\\'") if b.catatan_redaksi else '' }}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs transition">
+                  <button onclick="bukaModalEditBerita({{ b.id }})" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs transition">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
                 </div>
@@ -394,7 +394,7 @@
                     </button>
                   </form>
 
-                  <button onclick="bukaModalEditBerita({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}', '{{ b.kategori|replace("'", "\\'") }}', '{{ b.penulis|replace("'", "\\'") }}', '{{ b.tanggal }}', '{{ b.gambar }}', '{{ b.ringkasan|replace("'", "\\'") }}', '{{ b.isi|replace("'", "\\'")|replace('\n', ' ') }}', '{{ b.status }}', '{{ b.catatan_redaksi|replace("'", "\\'") if b.catatan_redaksi else '' }}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs transition">
+                  <button onclick="bukaModalEditBerita({{ b.id }})" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs transition">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
 
@@ -477,7 +477,7 @@
               </td>
               <td class="py-3.5 px-4 text-center whitespace-nowrap">
                 <div class="flex items-center justify-center gap-1.5">
-                  <button onclick="bukaModalEditBerita({{ b.id }}, '{{ b.judul|replace("'", "\\'") }}', '{{ b.kategori|replace("'", "\\'") }}', '{{ b.penulis|replace("'", "\\'") }}', '{{ b.tanggal }}', '{{ b.gambar }}', '{{ b.ringkasan|replace("'", "\\'") }}', '{{ b.isi|replace("'", "\\'")|replace('\n', ' ') }}', '{{ b.status or 'Tayang' }}', '{{ b.catatan_redaksi|replace("'", "\\'") if b.catatan_redaksi else '' }}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+                  <button onclick="bukaModalEditBerita({{ b.id }})" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
                     <i class="fa-solid fa-pen-to-square"></i> Edit
                   </button>
                   <form method="POST" action="{{ url_for('admin_hapus_berita', id=b.id) }}" onsubmit="return confirm('Hapus artikel {{ b.judul }}?');" class="inline">
@@ -833,39 +833,51 @@
     document.getElementById('modal-berita').classList.remove('hidden');
   }
 
-  function bukaModalEditBerita(id, judul, kategori, penulis, tanggal, gambar, ringkasan, isi, status, catatan) {
+  const beritaDataMap = {
+    {% for b in semua_list %}
+    {{ b.id }}: {{ b | tojson }},
+    {% endfor %}
+  };
+
+  function bukaModalEditBerita(idOrObj) {
+    const b = (typeof idOrObj === 'object' && idOrObj !== null) ? idOrObj : beritaDataMap[idOrObj];
+    if (!b) {
+      console.error('Data berita tidak ditemukan untuk ID:', idOrObj);
+      return;
+    }
     document.getElementById('modal-berita-title').innerText = 'Edit Berita & Status Kelayakan';
     const form = document.getElementById('form-berita');
-    form.action = `/admin/berita/${id}/edit`;
-    document.getElementById('input-berita-judul').value = judul;
-    document.getElementById('input-berita-penulis').value = penulis;
+    form.action = `/admin/berita/${b.id}/edit`;
+    document.getElementById('input-berita-judul').value = b.judul || '';
+    document.getElementById('input-berita-penulis').value = b.penulis || '';
 
     // Set tanggal dari data berita (konversi ke YYYY-MM-DD agar muncul di datepicker)
-    const isoDate = convertIndoDateToISO(tanggal);
+    const isoDate = convertIndoDateToISO(b.tanggal);
     document.getElementById('input-berita-tanggal').value = isoDate;
     updateLabelTanggalIndo();
 
-    document.getElementById('input-berita-gambar').value = gambar || '';
-    document.getElementById('input-berita-gambar-lama').value = gambar || '';
-    document.getElementById('input-berita-ringkasan').value = ringkasan;
-    document.getElementById('input-berita-isi').value = isi;
-    document.getElementById('input-berita-status').value = status || 'Tayang';
-    document.getElementById('input-berita-catatan-redaksi').value = catatan || '';
+    const gambar = b.gambar || '';
+    document.getElementById('input-berita-gambar').value = gambar;
+    document.getElementById('input-berita-gambar-lama').value = gambar;
+    document.getElementById('input-berita-ringkasan').value = b.ringkasan || '';
+    document.getElementById('input-berita-isi').value = b.isi || '';
+    document.getElementById('input-berita-status').value = b.status || 'Tayang';
+    document.getElementById('input-berita-catatan-redaksi').value = b.catatan_redaksi || '';
 
     // Set dropdown kategori
     const selectKat = document.getElementById('input-berita-kategori');
     let optionFound = false;
     for (let i = 0; i < selectKat.options.length; i++) {
-      if (selectKat.options[i].value === kategori) {
+      if (selectKat.options[i].value === b.kategori) {
         selectKat.selectedIndex = i;
         optionFound = true;
         break;
       }
     }
-    if (!optionFound && kategori) {
+    if (!optionFound && b.kategori) {
       const opt = document.createElement('option');
-      opt.value = kategori;
-      opt.textContent = kategori;
+      opt.value = b.kategori;
+      opt.textContent = b.kategori;
       opt.selected = true;
       selectKat.appendChild(opt);
     }

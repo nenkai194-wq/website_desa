@@ -105,7 +105,7 @@
         </div>
 
         <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
-          <button onclick="bukaModalEditWisata({{ w.id }}, '{{ w.nama|replace("'", "\\'") }}', '{{ w.kategori|replace("'", "\\'") }}', '{{ w.deskripsi|replace("'", "\\'") }}', '{{ w.fasilitas|replace("'", "\\'") if w.fasilitas else '' }}', '{{ w.tiket|replace("'", "\\'") }}', '{{ w.lokasi|replace("'", "\\'") }}', {{ w.latitude if w.latitude is not none else 'null' }}, {{ w.longitude if w.longitude is not none else 'null' }}, '{{ w.gambar }}')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:text-brand-800 transition">
+          <button onclick="bukaModalEditWisata({{ w.id }})" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:text-brand-800 transition">
             <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
           </button>
           <form method="POST" action="{{ url_for('admin_hapus_wisata', id=w.id) }}" onsubmit="return confirm('Hapus destinasi {{ w.nama }}?');" class="inline">
@@ -226,7 +226,7 @@
                   </form>
 
                   <!-- Edit / Koreksi -->
-                  <button onclick="bukaModalEditWisata({{ req.id }}, '{{ req.nama|replace("'", "\\'") }}', '{{ req.kategori|replace("'", "\\'") }}', '{{ req.deskripsi|replace("'", "\\'") }}', '{{ req.fasilitas|replace("'", "\\'") if req.fasilitas else '' }}', '{{ req.tiket|replace("'", "\\'") }}', '{{ req.lokasi|replace("'", "\\'") }}', {{ req.latitude if req.latitude is not none else 'null' }}, {{ req.longitude if req.longitude is not none else 'null' }}, '{{ req.gambar }}')" class="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-brand-800 text-xs transition" title="Koreksi / Analisa Detail & Titik Peta">
+                  <button onclick="bukaModalEditWisata({{ req.id }})" class="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-brand-800 text-xs transition" title="Koreksi / Analisa Detail & Titik Peta">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
 
@@ -579,20 +579,37 @@
     }, 200);
   }
 
-  function bukaModalEditWisata(id, nama, kategori, deskripsi, fasilitas, tiket, lokasi, lat, lng, gambar) {
+  const wisataDataMap = {
+    {% for w in wisata_list %}
+    {{ w.id }}: {{ w | tojson }},
+    {% endfor %}
+    {% for req in pengajuan_list %}
+    {{ req.id }}: {{ req | tojson }},
+    {% endfor %}
+    {% for d in ditolak_list %}
+    {{ d.id }}: {{ d | tojson }},
+    {% endfor %}
+  };
+
+  function bukaModalEditWisata(idOrObj) {
+    const w = (typeof idOrObj === 'object' && idOrObj !== null) ? idOrObj : wisataDataMap[idOrObj];
+    if (!w) {
+      console.error('Data wisata tidak ditemukan untuk ID:', idOrObj);
+      return;
+    }
     document.getElementById('modal-wisata-title').innerText = 'Edit Destinasi Wisata';
     const form = document.getElementById('form-wisata');
-    form.action = `/admin/wisata/${id}/edit`;
-    document.getElementById('input-wisata-nama').value = nama;
-    document.getElementById('input-wisata-kategori').value = kategori;
-    document.getElementById('input-wisata-deskripsi').value = deskripsi;
-    document.getElementById('input-wisata-fasilitas').value = fasilitas;
-    document.getElementById('input-wisata-tiket').value = tiket;
-    document.getElementById('input-wisata-lokasi').value = lokasi;
-    document.getElementById('input-wisata-gambar').value = gambar || '';
-    document.getElementById('input-wisata-gambar-lama').value = gambar || '';
+    form.action = `/admin/wisata/${w.id}/edit`;
+    document.getElementById('input-wisata-nama').value = w.nama || '';
+    document.getElementById('input-wisata-kategori').value = w.kategori || '';
+    document.getElementById('input-wisata-deskripsi').value = w.deskripsi || '';
+    document.getElementById('input-wisata-fasilitas').value = w.fasilitas || '';
+    document.getElementById('input-wisata-tiket').value = w.tiket || '';
+    document.getElementById('input-wisata-lokasi').value = w.lokasi || '';
+    document.getElementById('input-wisata-gambar').value = w.gambar || '';
+    document.getElementById('input-wisata-gambar-lama').value = w.gambar || '';
     
-    // Set preview image
+    const gambar = w.gambar || '';
     let previewSrc = defaultFotoWisata;
     if (gambar) {
       if (gambar.startsWith('static/')) {
@@ -606,6 +623,8 @@
     document.getElementById('preview-wisata-gambar').src = previewSrc;
     document.getElementById('modal-wisata').classList.remove('hidden');
 
+    const lat = w.latitude;
+    const lng = w.longitude;
     const targetLat = (lat !== null && lat !== undefined && lat !== '') ? parseFloat(lat) : defaultVillageLat;
     const targetLng = (lng !== null && lng !== undefined && lng !== '') ? parseFloat(lng) : defaultVillageLng;
 

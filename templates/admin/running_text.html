@@ -6,6 +6,12 @@
 {% block content %}
 <div class="space-y-6">
 
+  <!-- TOAST NOTIFIKASI DRAG & DROP -->
+  <div id="toastReorder" class="fixed top-20 right-6 z-50 hidden bg-emerald-600 text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 transform transition-all">
+    <i class="fa-solid fa-circle-check text-sm"></i>
+    <span id="toastReorderMsg">Urutan berhasil disimpan!</span>
+  </div>
+
   <!-- TOP BAR & ACTION BUTTONS -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
     <div>
@@ -39,7 +45,7 @@
         <i class="fa-solid fa-bullhorn text-[9px]"></i> Info Desa
       </span>
       <div class="overflow-hidden flex-1 relative text-[11px] font-medium text-emerald-100">
-        <marquee onmouseover="this.stop();" onmouseout="this.start();" scrollamount="5" class="py-0.5">
+        <marquee id="liveMarquee" onmouseover="this.stop();" onmouseout="this.start();" scrollamount="5" class="py-0.5">
           {% set ada_aktif = false %}
           {% for it in items %}
             {% if it.is_active == 1 %}
@@ -60,7 +66,7 @@
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center">
       <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Pengumuman</span>
-      <span class="text-2xl font-black text-slate-900 block mt-1">{{ items|length }} Item</span>
+      <span class="text-2xl font-black text-slate-900 block mt-1" id="kpiTotal">{{ items|length }} Item</span>
       <span class="text-[10px] text-slate-500">Tersimpan di database</span>
     </div>
 
@@ -68,7 +74,7 @@
       <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Status Aktif (Tayang)</span>
       {% set aktif_count = [] %}
       {% for it in items %}{% if it.is_active == 1 %}{% if aktif_count.append(1) %}{% endif %}{% endif %}{% endfor %}
-      <span class="text-2xl font-black text-emerald-600 block mt-1">{{ aktif_count|length }} Item</span>
+      <span class="text-2xl font-black text-emerald-600 block mt-1" id="kpiAktif">{{ aktif_count|length }} Item</span>
       <span class="text-[10px] text-emerald-700 font-bold">Sedang tampil di web</span>
     </div>
 
@@ -76,23 +82,28 @@
       <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Status Nonaktif</span>
       {% set nonaktif_count = [] %}
       {% for it in items %}{% if it.is_active == 0 %}{% if nonaktif_count.append(1) %}{% endif %}{% endif %}{% endfor %}
-      <span class="text-2xl font-black text-slate-600 block mt-1">{{ nonaktif_count|length }} Item</span>
+      <span class="text-2xl font-black text-slate-600 block mt-1" id="kpiNonaktif">{{ nonaktif_count|length }} Item</span>
       <span class="text-[10px] text-slate-500">Disimpan sementara</span>
     </div>
 
     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center">
-      <span class="text-[10px] font-bold text-brand-700 uppercase tracking-wider block">Kecepatan Gerak</span>
-      <span class="text-2xl font-black text-brand-600 block mt-1">Standar (5)</span>
-      <span class="text-[10px] text-brand-700 font-bold">Otomatis jeda saat hover</span>
+      <span class="text-[10px] font-bold text-brand-700 uppercase tracking-wider block">Urutan Tampil</span>
+      <span class="text-2xl font-black text-brand-600 block mt-1">Drag & Drop</span>
+      <span class="text-[10px] text-brand-700 font-bold">Tarik baris ke atas / bawah</span>
     </div>
   </div>
 
-  <!-- TABEL DAFTAR RUNNING TEXT -->
+  <!-- TABEL DAFTAR RUNNING TEXT (DENGAN FITUR DRAG AND DROP) -->
   <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-    <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50">
       <div>
-        <h3 class="font-bold text-slate-900 text-sm">Daftar Kalimat Running Text</h3>
-        <p class="text-[11px] text-slate-500">Urutan tampil diatur berdasarkan nomor urutan (angka terkecil tampil lebih dulu).</p>
+        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+          <span>Daftar Kalimat Running Text</span>
+          <span class="text-[11px] font-normal bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-lg">
+            <i class="fa-solid fa-arrows-up-down text-[10px]"></i> Bisa di-drag ke atas / bawah
+          </span>
+        </h3>
+        <p class="text-[11px] text-slate-500 mt-0.5">Tarik baris tabel untuk mengubah prioritas urutan tampil teks berjalan.</p>
       </div>
       <div class="text-xs text-slate-500">
         Total: <span class="font-bold text-slate-900">{{ items|length }} baris</span>
@@ -103,27 +114,39 @@
       <table class="w-full text-left border-collapse text-xs">
         <thead>
           <tr class="bg-slate-50 text-slate-600 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
-            <th class="py-3.5 px-4 w-16 text-center">Urutan</th>
+            <th class="py-3.5 px-3 w-12 text-center">Tarik</th>
+            <th class="py-3.5 px-3 w-16 text-center">Urutan</th>
             <th class="py-3.5 px-4">Isi Teks Pengumuman</th>
             <th class="py-3.5 px-4 w-32 text-center">Status</th>
             <th class="py-3.5 px-4 w-36 text-center">Dibuat</th>
             <th class="py-3.5 px-4 w-32 text-center">Aksi</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody id="sortableRunningTextTable" class="divide-y divide-slate-100">
           {% if items %}
             {% for it in items %}
-            <tr class="hover:bg-slate-50/70 transition">
-              <!-- Urutan -->
-              <td class="py-3.5 px-4 text-center">
-                <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 text-slate-800 font-black text-xs">
+            <tr class="sortable-row hover:bg-emerald-50/40 transition cursor-default select-none" 
+                draggable="true" 
+                data-id="{{ it.id }}"
+                id="row-rt-{{ it.id }}">
+              
+              <!-- Drag Handle Icon -->
+              <td class="py-3.5 px-3 text-center">
+                <span class="drag-handle inline-flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-emerald-700 hover:bg-emerald-100 cursor-grab active:cursor-grabbing transition" title="Tahan dan geser ke atas/bawah untuk mengubah urutan">
+                  <i class="fa-solid fa-grip-vertical text-sm"></i>
+                </span>
+              </td>
+
+              <!-- Urutan Badge -->
+              <td class="py-3.5 px-3 text-center">
+                <span class="badge-urutan inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 text-slate-800 font-black text-xs">
                   {{ it.urutan }}
                 </span>
               </td>
 
               <!-- Isi Teks -->
               <td class="py-3.5 px-4">
-                <div class="font-medium text-slate-800 text-xs leading-relaxed max-w-xl">
+                <div class="font-medium text-slate-800 text-xs leading-relaxed max-w-xl item-teks-display">
                   {{ it.teks }}
                 </div>
               </td>
@@ -153,15 +176,15 @@
                 <div class="flex items-center justify-center gap-1.5">
                   <!-- Tombol Edit -->
                   <button type="button" 
-                          onclick="bukaModalEdit({{ it.id }}, {{ it.teks|tojson }}, {{ it.urutan }}, {{ it.is_active }})"
+                          onclick="bukaModalEdit({{ it.id }})"
                           title="Edit Teks"
-                          class="p-2 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition">
+                          class="p-2 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition shadow-sm">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
 
                   <!-- Tombol Hapus -->
                   <form action="{{ url_for('admin_running_text_hapus', id=it.id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus baris running text ini?');" class="inline-block">
-                    <button type="submit" title="Hapus" class="p-2 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition">
+                    <button type="submit" title="Hapus" class="p-2 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition shadow-sm">
                       <i class="fa-solid fa-trash-can"></i>
                     </button>
                   </form>
@@ -171,7 +194,7 @@
             {% endfor %}
           {% else %}
             <tr>
-              <td colspan="5" class="py-8 text-center text-slate-400">
+              <td colspan="6" class="py-8 text-center text-slate-400">
                 <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-300 block"></i>
                 Belum ada data running text. Silakan klik tombol "Tambah Running Text Baru" di atas.
               </td>
@@ -182,16 +205,15 @@
     </div>
   </div>
 
-  <!-- TIPS & SARAN PENGISIAN -->
+  <!-- PETUNJUK DRAG & DROP -->
   <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-200 text-xs text-emerald-900 space-y-2">
     <div class="font-bold flex items-center gap-2 text-emerald-950">
-      <i class="fa-solid fa-lightbulb text-emerald-600"></i> Tips Penulisan Running Text:
+      <i class="fa-solid fa-lightbulb text-emerald-600"></i> Cara Menggunakan Drag & Drop dan Tips:
     </div>
     <ul class="list-disc list-inside space-y-1 text-emerald-800 pl-1 text-[11px]">
-      <li>Gunakan awalan emoji (🕒, 🏛️, 📄, 📢, 🚨, ✨) untuk menarik perhatian pembaca.</li>
-      <li>Tuliskan pengumuman penting secara padat dan jelas (contoh: Jam Buka Kantor Desa, Jadwal Posyandu, Pengajuan Surat Online).</li>
-      <li>Atur nomor <strong>Urutan</strong> (1, 2, 3...) untuk menentukan posisi teks mana yang berjalan lebih dahulu.</li>
-      <li>Anda bisa menonaktifkan sementara suatu pengumuman tanpa harus menghapusnya dengan mengklik tombol status <strong>Aktif / Nonaktif</strong>.</li>
+      <li><strong>Drag & Drop:</strong> Arahkan kursor ke ikon titik enam (<i class="fa-solid fa-grip-vertical"></i>) di sebelah kiri tabel, lalu klik tahan dan geser ke atas atau ke bawah. Urutan akan tersimpan secara otomatis!</li>
+      <li><strong>Edit Kalimat:</strong> Klik tombol pensil kuning di kolom Aksi untuk mengubah kalimat atau emoji.</li>
+      <li><strong>Aktif / Nonaktif:</strong> Klik tombol status berwarna hijau/abu-abu untuk mengaktifkan atau mematikan pengumuman tanpa menghapusnya.</li>
     </ul>
   </div>
 
@@ -232,7 +254,7 @@
         <div>
           <label class="block font-bold text-slate-700 mb-1">Nomor Urutan Tampil</label>
           <input type="number" name="urutan" value="{{ (items|length) + 1 }}" min="1" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 font-bold" />
-          <span class="text-[10px] text-slate-400 mt-1 block">Angka kecil tampil di awal</span>
+          <span class="text-[10px] text-slate-400 mt-1 block">Bisa juga diatur lewat drag baris</span>
         </div>
 
         <div>
@@ -314,6 +336,9 @@
 </div>
 
 <script>
+  // 1. DATA MASTER DALAM FORMAT JSON AMAN
+  const runningTextData = {{ items | tojson }};
+
   function bukaModalTambah() {
     document.getElementById('modalTambah').classList.remove('hidden');
   }
@@ -322,11 +347,18 @@
     document.getElementById('modalTambah').classList.add('hidden');
   }
 
-  function bukaModalEdit(id, teks, urutan, isActive) {
-    document.getElementById('formEdit').action = '/admin/running-text/' + id + '/edit';
-    document.getElementById('editTeks').value = teks;
-    document.getElementById('editUrutan').value = urutan;
-    document.getElementById('editStatus').value = isActive;
+  // 2. FUNGSI EDIT AMAN (100% BEBAS DARI KENDALA TANDA PETIK/EMOJI)
+  function bukaModalEdit(id) {
+    const item = runningTextData.find(x => Number(x.id) === Number(id));
+    if (!item) {
+      console.error('Data item tidak ditemukan untuk id:', id);
+      alert('Data tidak ditemukan.');
+      return;
+    }
+    document.getElementById('formEdit').action = '/admin/running-text/' + item.id + '/edit';
+    document.getElementById('editTeks').value = item.teks || '';
+    document.getElementById('editUrutan').value = item.urutan || 1;
+    document.getElementById('editStatus').value = item.is_active;
     document.getElementById('modalEdit').classList.remove('hidden');
   }
 
@@ -354,5 +386,141 @@
     if (e.target === mt) tutupModalTambah();
     if (e.target === me) tutupModalEdit();
   });
+
+  // ============================================================
+  // 3. FITUR DRAG AND DROP KEATAS / KEBAWAH TABEL RUNNING TEXT
+  // ============================================================
+  (function initDragAndDrop() {
+    const tbody = document.getElementById('sortableRunningTextTable');
+    if (!tbody) return;
+
+    let draggedRow = null;
+
+    tbody.querySelectorAll('.sortable-row').forEach(row => {
+      // Event saat drag dimulai
+      row.addEventListener('dragstart', function(e) {
+        draggedRow = row;
+        row.classList.add('opacity-40', 'bg-emerald-100');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', row.dataset.id);
+      });
+
+      // Event saat drag selesai
+      row.addEventListener('dragend', function() {
+        row.classList.remove('opacity-40', 'bg-emerald-100');
+        tbody.querySelectorAll('.sortable-row').forEach(r => {
+          r.classList.remove('border-t-2', 'border-b-2', 'border-emerald-500');
+        });
+      });
+
+      // Event saat dragover
+      row.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (draggedRow === row) return;
+
+        const rect = row.getBoundingClientRect();
+        const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+        
+        tbody.querySelectorAll('.sortable-row').forEach(r => {
+          r.classList.remove('border-t-2', 'border-b-2', 'border-emerald-500');
+        });
+
+        if (next) {
+          row.classList.add('border-b-2', 'border-emerald-500');
+        } else {
+          row.classList.add('border-t-2', 'border-emerald-500');
+        }
+      });
+
+      // Event saat drop
+      row.addEventListener('drop', function(e) {
+        e.preventDefault();
+        tbody.querySelectorAll('.sortable-row').forEach(r => {
+          r.classList.remove('border-t-2', 'border-b-2', 'border-emerald-500');
+        });
+
+        if (draggedRow && draggedRow !== row) {
+          const rect = row.getBoundingClientRect();
+          const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+          tbody.insertBefore(draggedRow, next ? row.nextSibling : row);
+          
+          simpanUrutanBaru();
+        }
+      });
+    });
+
+    // Simpan urutan baru ke backend & update badge angka
+    function simpanUrutanBaru() {
+      const rows = tbody.querySelectorAll('.sortable-row');
+      const orderIds = [];
+      const updatedActiveTexts = [];
+
+      rows.forEach((r, idx) => {
+        const id = parseInt(r.dataset.id);
+        orderIds.push(id);
+        
+        // Update badge nomor urutan di UI langsung
+        const badge = r.querySelector('.badge-urutan');
+        if (badge) badge.textContent = (idx + 1);
+
+        // Update data objek runningTextData
+        const found = runningTextData.find(x => Number(x.id) === id);
+        if (found) {
+          found.urutan = (idx + 1);
+          if (found.is_active === 1) {
+            updatedActiveTexts.push(found.teks);
+          }
+        }
+      });
+
+      // Update Live Preview Marquee
+      const marquee = document.getElementById('liveMarquee');
+      if (marquee && updatedActiveTexts.length > 0) {
+        marquee.innerHTML = updatedActiveTexts.map((txt, i) => `<span>${txt}</span>${i < updatedActiveTexts.length - 1 ? '<span class="mx-5 text-emerald-400 font-bold">•</span>' : ''}`).join('');
+      }
+
+      // Kirim urutan baru ke Backend via Fetch
+      fetch('/admin/running-text/reorder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ order: orderIds })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 'success') {
+          tampilkanToast('Urutan running text berhasil diperbarui!');
+        } else {
+          tampilkanToast('Gagal menyimpan urutan: ' + (res.message || 'Error'), true);
+        }
+      })
+      .catch(err => {
+        console.error('Error reordering:', err);
+        tampilkanToast('Koneksi terganggu saat menyimpan urutan.', true);
+      });
+    }
+
+    function tampilkanToast(msg, isError = false) {
+      const toast = document.getElementById('toastReorder');
+      const msgSpan = document.getElementById('toastReorderMsg');
+      if (!toast || !msgSpan) return;
+
+      msgSpan.textContent = msg;
+      if (isError) {
+        toast.className = "fixed top-20 right-6 z-50 bg-rose-600 text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 transform transition-all";
+      } else {
+        toast.className = "fixed top-20 right-6 z-50 bg-emerald-600 text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 transform transition-all";
+      }
+
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+  })();
 </script>
 {% endblock %}

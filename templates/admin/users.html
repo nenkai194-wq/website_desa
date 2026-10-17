@@ -142,7 +142,7 @@
             <td class="py-3.5 px-3.5 text-center">
               <div class="flex items-center justify-center gap-1.5">
                 <!-- Edit Role & Status -->
-                <button type="button" onclick="bukaModalEditUser({{ u.id }}, '{{ u.username|escape }}', '{{ u.nama|escape }}', '{{ u.role }}', '{{ u.status }}')" 
+                <button type="button" onclick="bukaModalEditUser({{ u.id }})" 
                         class="p-1.5 rounded-lg text-brand-700 hover:bg-brand-50 transition" title="Edit Peran & Status">
                   <i class="fa-solid fa-pen-to-square"></i>
                 </button>
@@ -376,12 +376,23 @@
     document.getElementById('modal-tambah-user').classList.add('hidden');
   }
 
-  function bukaModalEditUser(id, username, nama, role, status) {
-    document.getElementById('modal-edit-user-title').innerText = 'Edit Akun @' + username;
-    document.getElementById('edit-user-nama').value = nama;
-    document.getElementById('edit-user-role').value = role;
-    document.getElementById('edit-user-status').value = status;
-    document.getElementById('form-edit-user').action = '/admin/users/' + id + '/edit';
+  const usersDataMap = {
+    {% for u in users_list %}
+    {{ u.id }}: {{ u | tojson }},
+    {% endfor %}
+  };
+
+  function bukaModalEditUser(idOrObj) {
+    const u = (typeof idOrObj === 'object' && idOrObj !== null) ? idOrObj : usersDataMap[idOrObj];
+    if (!u) {
+      console.error('Data user tidak ditemukan:', idOrObj);
+      return;
+    }
+    document.getElementById('modal-edit-user-title').innerText = 'Edit Akun @' + (u.username || '');
+    document.getElementById('edit-user-nama').value = u.nama || '';
+    document.getElementById('edit-user-role').value = u.role || 'admin';
+    document.getElementById('edit-user-status').value = u.status || 'aktif';
+    document.getElementById('form-edit-user').action = '/admin/users/' + u.id + '/edit';
     document.getElementById('modal-edit-user').classList.remove('hidden');
   }
   function tutupModalEditUser() {

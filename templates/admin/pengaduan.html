@@ -243,7 +243,7 @@
             <!-- Aksi -->
             <td class="py-3.5 px-3.5 text-center">
               <div class="flex items-center justify-center gap-1.5">
-                <button type="button" onclick="bukaModalTindakLanjut({{ a.id }}, '{{ a.no_tiket }}', '{{ a.nama|escape }}', '{{ a.kontak|escape }}', '{{ a.kategori|escape }}', '{{ a.pesan|replace('\n', ' ')|escape }}', '{{ a.status }}', '{{ (a.uraian_tindak_lanjut or a.tanggapan_admin or '')|replace('\n', ' ')|escape }}', '{{ a.lampiran or '' }}')" 
+                <button type="button" onclick="bukaModalTindakLanjut({{ a.id }})" 
                         class="px-2.5 py-1.5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-bold text-[11px] shadow-sm transition flex items-center gap-1" title="Tindak lanjuti & perbarui uraian">
                   <i class="fa-solid fa-pen-to-square"></i>
                   <span>Tindak Lanjut</span>
@@ -339,7 +339,7 @@
           <button type="submit" class="px-3 py-1.5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-bold text-[11px] shadow-sm transition flex items-center gap-1">
             <i class="fa-solid fa-floppy-disk"></i> Simpan Status & Uraian
           </button>
-          <button type="button" onclick="bukaModalTindakLanjut({{ a.id }}, '{{ a.no_tiket }}', '{{ a.nama|escape }}', '{{ a.kontak|escape }}', '{{ a.kategori|escape }}', '{{ a.pesan|replace('\n', ' ')|escape }}', '{{ a.status }}', '{{ (a.uraian_tindak_lanjut or a.tanggapan_admin or '')|replace('\n', ' ')|escape }}', '{{ a.lampiran or '' }}')" class="text-xs text-brand-700 font-bold hover:underline">
+          <button type="button" onclick="bukaModalTindakLanjut({{ a.id }})" class="text-xs text-brand-700 font-bold hover:underline">
             Buka Form Lengkap
           </button>
         </div>
@@ -492,7 +492,7 @@
               <td class="py-2 px-3 text-slate-500 text-[11px]">{{ kat.keterangan or '-' }}</td>
               <td class="py-2 px-3 text-center">
                 <div class="flex items-center justify-center gap-1.5">
-                  <button type="button" onclick="bukaModalEditKategori({{ kat.id }}, '{{ kat.nama|escape }}', '{{ (kat.keterangan or '')|escape }}', {{ kat.urutan }})" class="p-1.5 rounded-lg text-brand-700 hover:bg-brand-50 transition" title="Edit Kategori">
+                  <button type="button" onclick="bukaModalEditKategori({{ kat.id }})" class="p-1.5 rounded-lg text-brand-700 hover:bg-brand-50 transition" title="Edit Kategori">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
                   <form method="POST" action="{{ url_for('admin_hapus_kategori_pengaduan', id=kat.id) }}" onsubmit="return confirm('Hapus kategori ini? Kategori yang sudah memiliki aduan akan tetap tersimpan datanya.');" class="inline">
@@ -581,18 +581,36 @@
     }
   }
 
+  const aduanDataMap = {
+    {% for a in aduan_list %}
+    {{ a.id }}: {{ a | tojson }},
+    {% endfor %}
+  };
+
+  const kategoriPengaduanMap = {
+    {% for kat in kategori_list %}
+    {{ kat.id }}: {{ kat | tojson }},
+    {% endfor %}
+  };
+
   // Modal Tindak Lanjut
-  function bukaModalTindakLanjut(id, noTiket, nama, kontak, kategori, pesan, status, uraian, lampiran) {
-    document.getElementById('modal-tl-tiket').innerText = noTiket;
-    document.getElementById('modal-tl-nama').innerText = nama;
-    document.getElementById('modal-tl-kontak').innerText = kontak;
-    document.getElementById('modal-tl-kategori').innerText = kategori;
-    document.getElementById('modal-tl-pesan').innerText = '"' + pesan + '"';
-    document.getElementById('modal-tl-status-select').value = status || 'Belum Ditanggapi';
-    document.getElementById('modal-tl-uraian').value = uraian || '';
+  function bukaModalTindakLanjut(idOrObj) {
+    const a = (typeof idOrObj === 'object' && idOrObj !== null) ? idOrObj : aduanDataMap[idOrObj];
+    if (!a) {
+      console.error('Data aduan tidak ditemukan:', idOrObj);
+      return;
+    }
+    document.getElementById('modal-tl-tiket').innerText = a.no_tiket || '';
+    document.getElementById('modal-tl-nama').innerText = a.nama || '';
+    document.getElementById('modal-tl-kontak').innerText = a.kontak || '';
+    document.getElementById('modal-tl-kategori').innerText = a.kategori || '';
+    document.getElementById('modal-tl-pesan').innerText = '"' + (a.pesan || '') + '"';
+    document.getElementById('modal-tl-status-select').value = a.status || 'Belum Ditanggapi';
+    document.getElementById('modal-tl-uraian').value = a.uraian_tindak_lanjut || a.tanggapan_admin || '';
 
     const lampiranContainer = document.getElementById('modal-tl-lampiran-container');
     const lampiranLink = document.getElementById('modal-tl-lampiran-link');
+    const lampiran = a.lampiran || '';
     if (lampiran) {
       lampiranLink.href = '/' + lampiran;
       lampiranContainer.classList.remove('hidden');
@@ -600,7 +618,7 @@
       lampiranContainer.classList.add('hidden');
     }
 
-    document.getElementById('form-tindak-lanjut').action = '/admin/pengaduan/' + id + '/tanggapi';
+    document.getElementById('form-tindak-lanjut').action = '/admin/pengaduan/' + a.id + '/tanggapi';
     document.getElementById('modal-tindak-lanjut').classList.remove('hidden');
   }
 
@@ -618,11 +636,16 @@
   }
 
   // Modal Edit Kategori
-  function bukaModalEditKategori(id, nama, keterangan, urutan) {
-    document.getElementById('edit-kat-nama').value = nama;
-    document.getElementById('edit-kat-keterangan').value = keterangan;
-    document.getElementById('edit-kat-urutan').value = urutan;
-    document.getElementById('form-edit-kategori').action = '/admin/pengaduan/kategori/' + id + '/edit';
+  function bukaModalEditKategori(idOrObj) {
+    const kat = (typeof idOrObj === 'object' && idOrObj !== null) ? idOrObj : kategoriPengaduanMap[idOrObj];
+    if (!kat) {
+      console.error('Data kategori tidak ditemukan:', idOrObj);
+      return;
+    }
+    document.getElementById('edit-kat-nama').value = kat.nama || '';
+    document.getElementById('edit-kat-keterangan').value = kat.keterangan || '';
+    document.getElementById('edit-kat-urutan').value = kat.urutan || 1;
+    document.getElementById('form-edit-kategori').action = '/admin/pengaduan/kategori/' + kat.id + '/edit';
     document.getElementById('modal-edit-kategori').classList.remove('hidden');
   }
 
