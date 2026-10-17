@@ -19,6 +19,10 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-2.5">
+      <button type="button" onclick="gantiTabAduanFeedback('feedback')" id="btnTabFeedback" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-2 shadow-sm">
+        <i class="fa-solid fa-star text-amber-300"></i>
+        <span>Feedback Kepuasan ({{ feedback_list|length }})</span>
+      </button>
       <button type="button" onclick="bukaModalKelolaKategori()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-2 shadow-sm">
         <i class="fa-solid fa-tags text-amber-400"></i>
         <span>Kelola Kategori Pengaduan</span>
@@ -352,6 +356,126 @@
       Belum ada pengaduan atau aspirasi warga masuk.
     </div>
     {% endfor %}
+  <!-- PANEL TABEL FEEDBACK PENILAIAN KEPUASAN PENGUNJUNG -->
+  <div id="containerFeedbackView" class="hidden space-y-4">
+    <!-- Header KPI Feedback -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-gradient-to-br from-emerald-500 to-teal-700 text-white p-5 rounded-2xl shadow-sm flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-100 block">Total Feedback Masuk</span>
+          <span class="text-2xl font-black block mt-1">{{ summary.total_feedback }} Responden</span>
+          <span class="text-[11px] text-emerald-100 font-medium">Penilaian pengunjung website</span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-xl">
+          <i class="fa-solid fa-comments"></i>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-amber-500 to-amber-600 text-white p-5 rounded-2xl shadow-sm flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-100 block">Rata-Rata Kepuasan</span>
+          <span class="text-2xl font-black block mt-1">{{ summary.avg_rating }} / 5.0</span>
+          <span class="text-[11px] text-amber-100 font-medium">Skor indeks kepuasan publik</span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-xl">
+          <i class="fa-solid fa-face-smile"></i>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-sky-500 to-blue-600 text-white p-5 rounded-2xl shadow-sm flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-sky-100 block">Status Layanan</span>
+          <span class="text-2xl font-black block mt-1">Sangat Baik</span>
+          <span class="text-[11px] text-sky-100 font-medium">Evaluasi & perbaikan berkelanjutan</span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-xl">
+          <i class="fa-solid fa-award"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabel Feedback Masuk -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <h3 class="font-extrabold text-sm text-slate-900">Riwayat Feedback & Penilaian Kepuasan Pengunjung</h3>
+        </div>
+        <span class="text-xs text-slate-500">Total: <strong>{{ feedback_list|length }}</strong> masukan</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-50 text-slate-700 font-extrabold uppercase text-[10px] tracking-wider border-b border-slate-200">
+              <th class="p-4">Waktu</th>
+              <th class="p-4">Kepuasan</th>
+              <th class="p-4">Pekerjaan</th>
+              <th class="p-4">Aspek Ditingkatkan</th>
+              <th class="p-4">Saran & Masukan</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for fb in feedback_list %}
+            <tr class="hover:bg-slate-50/70 transition">
+              <td class="p-4 text-slate-500 whitespace-nowrap">
+                <i class="fa-regular fa-calendar mr-1"></i> {{ fb.created_at }}
+              </td>
+              <td class="p-4 whitespace-nowrap">
+                {% if fb.rating == 5 %}
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-xs">
+                    <span>😍</span> Sangat Puas (5)
+                  </span>
+                {% elif fb.rating == 4 %}
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-extrabold text-xs">
+                    <span>😄</span> Puas (4)
+                  </span>
+                {% elif fb.rating == 3 %}
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs">
+                    <span>😐</span> Cukup (3)
+                  </span>
+                {% elif fb.rating == 2 %}
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-800 font-extrabold text-xs">
+                    <span>🙁</span> Tidak Puas (2)
+                  </span>
+                {% else %}
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-800 font-extrabold text-xs">
+                    <span>😞</span> Sangat Tidak Puas (1)
+                  </span>
+                {% endif %}
+              </td>
+              <td class="p-4 text-slate-800 font-semibold whitespace-nowrap">
+                {{ fb.pekerjaan or '-' }}
+              </td>
+              <td class="p-4">
+                {% if fb.aspek_peningkatan %}
+                  <div class="flex flex-wrap gap-1">
+                    {% for asp in fb.aspek_peningkatan.split(',') %}
+                    <span class="px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-bold">
+                      {{ asp.strip() }}
+                    </span>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <span class="text-slate-400 italic text-[11px]">-</span>
+                {% endif %}
+              </td>
+              <td class="p-4 text-slate-700 max-w-sm">
+                {{ fb.saran or '-' }}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="5" class="p-8 text-center text-slate-400">
+                <i class="fa-solid fa-comment-slash text-2xl mb-1.5 block text-slate-300"></i>
+                Belum ada feedback kepuasan pengunjung yang tercatat.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -651,6 +775,28 @@
 
   function tutupModalEditKategori() {
     document.getElementById('modal-edit-kategori').classList.add('hidden');
+  }
+
+  function gantiTabAduanFeedback(tab) {
+    const tableContainer = document.getElementById('containerTableView');
+    const cardsContainer = document.getElementById('containerCardsView');
+    const feedbackContainer = document.getElementById('containerFeedbackView');
+    const btnFeedback = document.getElementById('btnTabFeedback');
+
+    if (tab === 'feedback') {
+      if (tableContainer) tableContainer.classList.add('hidden');
+      if (cardsContainer) cardsContainer.classList.add('hidden');
+      if (feedbackContainer) feedbackContainer.classList.remove('hidden');
+      if (btnFeedback) {
+        btnFeedback.className = 'px-4 py-2.5 rounded-xl bg-emerald-800 text-white text-xs font-bold transition flex items-center gap-2 shadow-inner ring-2 ring-emerald-400';
+      }
+    } else {
+      if (feedbackContainer) feedbackContainer.classList.add('hidden');
+      if (tableContainer) tableContainer.classList.remove('hidden');
+      if (btnFeedback) {
+        btnFeedback.className = 'px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-2 shadow-sm';
+      }
+    }
   }
 </script>
 {% endblock %}

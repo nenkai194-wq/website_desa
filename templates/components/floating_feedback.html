@@ -1,0 +1,260 @@
+<!-- ========================================================================= -->
+<!-- FLOATING WIDGET FEEDBACK PENILAIAN KEPUASAN PENGUNJUNG (SUDUT KIRI BAWAH)  -->
+<!-- ========================================================================= -->
+
+<!-- BACKDROP (Menutup popup saat klik di luar) -->
+<div id="floating-feedback-backdrop" class="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-[2px] hidden transition-opacity" onclick="toggleFloatingFeedback(false)"></div>
+
+<!-- FLOATING POPUP FEEDBACK MODAL (Mengambang di Kiri Bawah) -->
+<div id="floating-feedback-popup" class="hidden fixed bottom-16 sm:bottom-20 left-3 sm:left-6 z-50 w-[92vw] sm:w-[420px] max-w-[440px] bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transition-all duration-300 transform scale-95 opacity-0">
+  
+  <!-- Header Modal -->
+  <div class="flex items-center justify-between p-5 pb-3 border-b border-slate-100">
+    <div>
+      <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+        <i class="fa-solid fa-comments text-emerald-600"></i> Feedback
+      </h3>
+      <p class="text-[11px] text-slate-500 mt-0.5">Bantu kami meningkatkan kualitas layanan portal website desa.</p>
+    </div>
+    <button type="button" onclick="toggleFloatingFeedback(false)" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center text-sm font-bold transition" title="Tutup">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- Form Body -->
+  <form id="form-feedback-kepuasan" class="p-5 pt-4 space-y-4 max-h-[75vh] overflow-y-auto">
+    
+    <!-- 1. Pertanyaan Kepuasan Emotikon -->
+    <div>
+      <label class="block text-xs font-bold text-slate-800 mb-2">
+        Seberapa puas Anda dengan website kami? <span class="text-rose-500">*</span>
+      </label>
+      <input type="hidden" name="rating" id="input-feedback-rating" required value="">
+      
+      <div class="grid grid-cols-5 gap-2" id="rating-emoticon-container">
+        <!-- 1: Sangat Kecewa -->
+        <button type="button" onclick="pilihFeedbackRating(1)" data-rating="1" class="btn-emoticon group flex flex-col items-center justify-center p-2 rounded-2xl border-2 border-slate-200 hover:border-amber-400 bg-slate-50 hover:bg-amber-50/50 transition">
+          <span class="text-3xl transform group-hover:scale-125 transition duration-200">😞</span>
+          <span class="text-[9px] font-bold text-slate-500 group-hover:text-amber-800 mt-1">Sangat Tidak Puas</span>
+        </button>
+
+        <!-- 2: Kecewa -->
+        <button type="button" onclick="pilihFeedbackRating(2)" data-rating="2" class="btn-emoticon group flex flex-col items-center justify-center p-2 rounded-2xl border-2 border-slate-200 hover:border-amber-400 bg-slate-50 hover:bg-amber-50/50 transition">
+          <span class="text-3xl transform group-hover:scale-125 transition duration-200">🙁</span>
+          <span class="text-[9px] font-bold text-slate-500 group-hover:text-amber-800 mt-1">Tidak Puas</span>
+        </button>
+
+        <!-- 3: Netral -->
+        <button type="button" onclick="pilihFeedbackRating(3)" data-rating="3" class="btn-emoticon group flex flex-col items-center justify-center p-2 rounded-2xl border-2 border-slate-200 hover:border-amber-400 bg-slate-50 hover:bg-amber-50/50 transition">
+          <span class="text-3xl transform group-hover:scale-125 transition duration-200">😐</span>
+          <span class="text-[9px] font-bold text-slate-500 group-hover:text-amber-800 mt-1">Cukup</span>
+        </button>
+
+        <!-- 4: Puas -->
+        <button type="button" onclick="pilihFeedbackRating(4)" data-rating="4" class="btn-emoticon group flex flex-col items-center justify-center p-2 rounded-2xl border-2 border-slate-200 hover:border-amber-400 bg-slate-50 hover:bg-amber-50/50 transition">
+          <span class="text-3xl transform group-hover:scale-125 transition duration-200">😄</span>
+          <span class="text-[9px] font-bold text-slate-500 group-hover:text-amber-800 mt-1">Puas</span>
+        </button>
+
+        <!-- 5: Sangat Puas -->
+        <button type="button" onclick="pilihFeedbackRating(5)" data-rating="5" class="btn-emoticon group flex flex-col items-center justify-center p-2 rounded-2xl border-2 border-slate-200 hover:border-amber-400 bg-slate-50 hover:bg-amber-50/50 transition">
+          <span class="text-3xl transform group-hover:scale-125 transition duration-200">😍</span>
+          <span class="text-[9px] font-bold text-slate-500 group-hover:text-amber-800 mt-1">Sangat Puas</span>
+        </button>
+      </div>
+      <p id="rating-warning" class="hidden text-[10px] text-rose-500 font-semibold mt-1">Silakan klik salah satu emotikon di atas.</p>
+    </div>
+
+    <!-- 2. Pekerjaan Terakhir -->
+    <div>
+      <label class="block text-xs font-bold text-slate-800 mb-1">
+        Pekerjaan Terakhir
+      </label>
+      <select name="pekerjaan" id="input-feedback-pekerjaan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
+        <option value="">Pilih Pekerjaan</option>
+        <option value="Pelajar / Mahasiswa">Pelajar / Mahasiswa</option>
+        <option value="Aparatur Sipil Negara (ASN / PNS)">Aparatur Sipil Negara (ASN / PNS)</option>
+        <option value="TNI / POLRI">TNI / POLRI</option>
+        <option value="Karyawan Swasta / BUMN">Karyawan Swasta / BUMN</option>
+        <option value="Wiraswasta / Pengusaha / UMKM">Wiraswasta / Pengusaha / UMKM</option>
+        <option value="Petani / Nelayan / Peternak">Petani / Nelayan / Peternak</option>
+        <option value="Tenaga Pengajar / Dosen / Guru">Tenaga Pengajar / Dosen / Guru</option>
+        <option value="Peneliti / Praktisi">Peneliti / Praktisi</option>
+        <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+        <option value="Lainnya">Lainnya</option>
+      </select>
+    </div>
+
+    <!-- 3. Aspek yang Dapat Ditingkatkan (Pills Checkbox) -->
+    <div>
+      <label class="block text-xs font-bold text-slate-800 mb-1.5">
+        Apa yang dapat kami tingkatkan?
+      </label>
+      <div class="flex flex-wrap gap-1.5" id="pills-aspek-container">
+        <label class="cursor-pointer select-none">
+          <input type="checkbox" name="aspek_peningkatan" value="Tampilan" class="hidden peer">
+          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+            Tampilan
+          </span>
+        </label>
+
+        <label class="cursor-pointer select-none">
+          <input type="checkbox" name="aspek_peningkatan" value="Pencarian Data" class="hidden peer">
+          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+            Pencarian Data
+          </span>
+        </label>
+
+        <label class="cursor-pointer select-none">
+          <input type="checkbox" name="aspek_peningkatan" value="Kelengkapan Data" class="hidden peer">
+          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+            Kelengkapan Data
+          </span>
+        </label>
+
+        <label class="cursor-pointer select-none">
+          <input type="checkbox" name="aspek_peningkatan" value="Metadata" class="hidden peer">
+          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+            Metadata
+          </span>
+        </label>
+
+        <label class="cursor-pointer select-none">
+          <input type="checkbox" name="aspek_peningkatan" value="Fitur" class="hidden peer">
+          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+            Fitur
+          </span>
+        </label>
+
+        <label class="cursor-pointer select-none">
+          <input type="checkbox" name="aspek_peningkatan" value="Performa Akses" class="hidden peer">
+          <span class="inline-block text-[11px] font-semibold px-3 py-1.5 rounded-full border border-sky-400 text-sky-700 bg-white hover:bg-sky-50 peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 transition">
+            Performa Akses
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 4. Saran dan Masukan -->
+    <div>
+      <label class="block text-xs font-bold text-slate-800 mb-1">
+        Saran dan Masukkan
+      </label>
+      <textarea name="saran" id="input-feedback-saran" rows="3" placeholder="Tuliskan saran atau kritik membangun Anda di sini..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium placeholder-slate-400 resize-none"></textarea>
+    </div>
+
+    <!-- Tombol Submit -->
+    <div class="pt-1">
+      <button type="submit" id="btn-submit-feedback" class="w-full py-3 rounded-xl bg-slate-500 hover:bg-slate-600 text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2">
+        <span>Submit</span>
+      </button>
+    </div>
+
+  </form>
+
+</div>
+
+<!-- TOMBOL MENGAMBANG DI SUDUT KIRI BAWAH (Floating Trigger Button) -->
+<div class="fixed bottom-16 sm:bottom-6 left-4 sm:left-6 z-40">
+  <button type="button" id="btn-toggle-floating-feedback" onclick="toggleFloatingFeedback()" 
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold shadow-xl hover:shadow-2xl transition-all duration-200 border-2 border-white/80 backdrop-blur-md group hover:-translate-y-0.5 active:translate-y-0 focus:outline-none"
+          title="Beri Masukan & Penilaian Kepuasan untuk Website Kami">
+    <i class="fa-solid fa-comment-dots text-white text-sm group-hover:scale-110 transition duration-200"></i>
+    <span>Beri Feedback</span>
+  </button>
+</div>
+
+<script>
+  let feedbackRatingDipilih = 0;
+
+  function pilihFeedbackRating(nilai) {
+    feedbackRatingDipilih = nilai;
+    document.getElementById('input-feedback-rating').value = nilai;
+    document.getElementById('rating-warning').classList.add('hidden');
+
+    const submitBtn = document.getElementById('btn-submit-feedback');
+    if (submitBtn) {
+      submitBtn.classList.remove('bg-slate-500', 'hover:bg-slate-600');
+      submitBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+    }
+
+    const buttons = document.querySelectorAll('.btn-emoticon');
+    buttons.forEach(btn => {
+      const r = parseInt(btn.getAttribute('data-rating'));
+      if (r === nilai) {
+        btn.classList.remove('border-slate-200', 'bg-slate-50');
+        btn.classList.add('border-emerald-500', 'bg-emerald-50', 'ring-2', 'ring-emerald-400');
+      } else {
+        btn.classList.remove('border-emerald-500', 'bg-emerald-50', 'ring-2', 'ring-emerald-400');
+        btn.classList.add('border-slate-200', 'bg-slate-50');
+      }
+    });
+  }
+
+  function toggleFloatingFeedback(forceState) {
+    const popup = document.getElementById('floating-feedback-popup');
+    const backdrop = document.getElementById('floating-feedback-backdrop');
+    if (!popup || !backdrop) return;
+
+    const isHidden = popup.classList.contains('hidden');
+    const shouldOpen = typeof forceState === 'boolean' ? forceState : isHidden;
+
+    if (shouldOpen) {
+      backdrop.classList.remove('hidden');
+      popup.classList.remove('hidden');
+      setTimeout(() => {
+        popup.classList.remove('scale-95', 'opacity-0');
+        popup.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    } else {
+      popup.classList.remove('scale-100', 'opacity-100');
+      popup.classList.add('scale-95', 'opacity-0');
+      backdrop.classList.add('hidden');
+      setTimeout(() => {
+        popup.classList.add('hidden');
+      }, 250);
+    }
+  }
+
+  // Handle Submit Form Feedback
+  document.addEventListener('DOMContentLoaded', () => {
+    const formFeedback = document.getElementById('form-feedback-kepuasan');
+    if (formFeedback) {
+      formFeedback.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const ratingVal = document.getElementById('input-feedback-rating').value;
+        if (!ratingVal) {
+          document.getElementById('rating-warning').classList.remove('hidden');
+          return;
+        }
+
+        const btn = document.getElementById('btn-submit-feedback');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+        const formData = new FormData(formFeedback);
+
+        try {
+          const resp = await fetch('/api/feedback/kirim', {
+            method: 'POST',
+            body: formData
+          });
+          const res = await resp.json();
+          if (res.success) {
+            alert(res.message);
+            formFeedback.reset();
+            pilihFeedbackRating(0);
+            toggleFloatingFeedback(false);
+          } else {
+            alert(res.message || 'Terjadi kesalahan saat mengirim feedback.');
+          }
+        } catch (err) {
+          alert('Gagal menghubungi server. Pastikan koneksi server berjalan.');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Submit</span>';
+        }
+      });
+    }
+  });
+</script>

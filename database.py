@@ -377,6 +377,19 @@ def init_db():
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     ''')
+    # 8.2 Feedback Penilaian Kepuasan Pengunjung Website
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS feedback_kepuasan (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        rating INTEGER NOT NULL,
+        pekerjaan TEXT,
+        aspek_peningkatan TEXT,
+        saran TEXT,
+        ip_address TEXT,
+        user_agent TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
     conn.commit()
 
     # 9. APBDes Transparansi

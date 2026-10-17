@@ -558,6 +558,51 @@ def api_kirim_pengaduan():
         'no_tiket': no_tiket
     })
 
+# Endpoint Pengiriman Feedback Penilaian Kepuasan Pengunjung
+@app.route('/api/feedback/kirim', methods=['POST'])
+def api_kirim_feedback():
+    if request.is_json:
+        data = request.get_json(silent=True) or {}
+        rating = data.get('rating')
+        pekerjaan = (data.get('pekerjaan') or '').strip()
+        aspek_peningkatan = data.get('aspek_peningkatan') or []
+        saran = (data.get('saran') or '').strip()
+    else:
+        rating = request.form.get('rating')
+        pekerjaan = (request.form.get('pekerjaan') or '').strip()
+        aspek_peningkatan = request.form.getlist('aspek_peningkatan') or request.form.get('aspek_peningkatan', '').split(',')
+        saran = (request.form.get('saran') or '').strip()
+
+    try:
+        rating = int(rating)
+    except (ValueError, TypeError):
+        rating = None
+
+    if not rating or rating < 1 or rating > 5:
+        return jsonify({'success': False, 'message': 'Mohon berikan penilaian kepuasan Anda (pilih salah satu ikon emotikon).'}), 400
+
+    if isinstance(aspek_peningkatan, list):
+        aspek_str = ', '.join([str(a).strip() for a in aspek_peningkatan if str(a).strip()])
+    else:
+        aspek_str = str(aspek_peningkatan).strip()
+
+    ip_address = request.remote_addr or request.headers.get('X-Forwarded-For', '')
+    user_agent = request.headers.get('User-Agent', '')
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+    INSERT INTO feedback_kepuasan (rating, pekerjaan, aspek_peningkatan, saran, ip_address, user_agent)
+    VALUES (?, ?, ?, ?, ?, ?)
+    ''', (rating, pekerjaan, aspek_str, saran, ip_address, user_agent))
+    conn.commit()
+    conn.close()
+
+    return jsonify({
+        'success': True,
+        'message': 'Terima kasih atas penilaian dan masukan Anda! Feedback Anda sangat membantu kami dalam menyempurnakan website desa ini.'
+    })
+
 @app.route('/api/pengaduan/kategori')
 def api_kategori_pengaduan():
     """Mengembalikan daftar kategori pengaduan yang aktif"""
@@ -1148,19 +1193,32 @@ def admin_pengaduan():
     cursor.execute("SELECT * FROM kategori_pengaduan ORDER BY urutan ASC, id ASC")
     kategori_list = [dict(row) for row in cursor.fetchall()]
 
+    # Daftar Feedback Kepuasan Pengunjung
+    cursor.execute("SELECT * FROM feedback_kepuasan ORDER BY id DESC")
+    feedback_list = [dict(row) for row in cursor.fetchall()]
+
+    # Summary Feedback
+    cursor.execute("SELECT COUNT(*), AVG(rating) FROM feedback_kepuasan")
+    fb_row = cursor.fetchone()
+    total_feedback = fb_row[0] or 0
+    avg_rating = round(fb_row[1] or 0.0, 1)
+
     conn.close()
 
     summary = {
         'total': total_aduan,
         'belum_ditanggapi': total_belum,
         'perlu_khusus': total_khusus,
-        'sudah_selesai': total_selesai
+        'sudah_selesai': total_selesai,
+        'total_feedback': total_feedback,
+        'avg_rating': avg_rating
     }
 
     return render_template(
         'admin/pengaduan.html',
         aduan_list=aduan_list,
         kategori_list=kategori_list,
+        feedback_list=feedback_list,
         summary=summary,
         status_filter=status_filter,
         kategori_filter=kategori_filter,
