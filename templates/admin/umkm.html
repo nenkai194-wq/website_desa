@@ -80,12 +80,38 @@
                 {{ (1 if p.gambar else 0) + (1 if p.gambar2 else 0) + (1 if p.gambar3 else 0) }} Foto
               </span>
             </div>
+
+            {% if p.latitude and p.longitude %}
+            <span class="absolute bottom-2.5 right-2.5 bg-slate-900/80 backdrop-blur-sm text-emerald-300 text-[10px] font-mono font-semibold px-2 py-0.5 rounded-lg flex items-center gap-1 shadow">
+              <i class="fa-solid fa-map-pin text-emerald-400"></i> Aktif di Peta
+            </span>
+            {% endif %}
           </div>
 
           <div class="p-4">
             <span class="text-[10px] font-bold text-brand-700 uppercase tracking-wider block">{{ p.produsen }}</span>
             <h4 class="font-bold text-slate-900 text-sm mt-0.5 line-clamp-1">{{ p.nama }}</h4>
-            <p class="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">{{ p.deskripsi }}</p>
+            
+            <div class="mt-2 flex flex-col gap-1">
+              <p class="text-xs text-slate-500 flex items-start gap-1.5" title="{{ p.lokasi or p.alamat or 'Desa Papayan' }}">
+                <i class="fa-solid fa-location-dot text-brand-600 mt-0.5 flex-shrink-0"></i>
+                <span class="line-clamp-1">{{ p.lokasi or p.alamat or 'Desa Papayan' }}</span>
+              </p>
+              {% if p.latitude and p.longitude %}
+              <p class="text-[11px] font-mono text-slate-600 bg-slate-50 border border-slate-100 rounded-md px-2 py-1 flex items-center justify-between">
+                <span><i class="fa-solid fa-crosshairs text-brand-600 mr-1"></i>{{ "%.4f"|format(p.latitude) }}, {{ "%.4f"|format(p.longitude) }}</span>
+                <a href="https://www.google.com/maps?q={{ p.latitude }},{{ p.longitude }}" target="_blank" class="text-brand-700 hover:underline font-sans text-[10px] font-bold flex items-center gap-0.5">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> Cek GMaps
+                </a>
+              </p>
+              {% else %}
+              <p class="text-[10px] text-amber-600 italic bg-amber-50 px-2 py-0.5 rounded">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Belum ada koordinat peta
+              </p>
+              {% endif %}
+            </div>
+
+            <p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">{{ p.deskripsi }}</p>
             <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between">
               <span class="text-xs text-slate-400">/ {{ p.satuan }}</span>
               <span class="text-base font-black text-brand-800">Rp {{ "{:,}".format(p.harga).replace(',', '.') }}</span>
@@ -186,17 +212,21 @@
               </td>
 
               <!-- Koordinat Peta Lokasi Usaha -->
-              <td class="p-4 whitespace-nowrap">
+              <td class="p-4 max-w-xs">
+                <p class="text-xs text-slate-700 font-medium flex items-start gap-1">
+                  <i class="fa-solid fa-location-dot text-brand-600 mt-0.5 flex-shrink-0"></i>
+                  <span>{{ req.lokasi or req.alamat or 'Desa Papayan' }}</span>
+                </p>
                 {% if req.latitude and req.longitude %}
-                <div class="flex items-center gap-1.5 font-mono text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg w-max">
-                  <i class="fa-solid fa-location-dot text-brand-600"></i>
+                <div class="mt-1 flex items-center gap-1.5 font-mono text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md w-max">
+                  <i class="fa-solid fa-crosshairs text-emerald-600"></i>
                   <span>{{ "%.4f"|format(req.latitude) }}, {{ "%.4f"|format(req.longitude) }}</span>
                   <a href="https://www.google.com/maps?q={{ req.latitude }},{{ req.longitude }}" target="_blank" class="text-brand-700 hover:underline font-sans text-[10px] font-bold ml-1">
                     [Cek GMaps]
                   </a>
                 </div>
                 {% else %}
-                <span class="text-[10px] text-amber-600 italic bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg inline-block">
+                <span class="text-[10px] text-amber-600 italic bg-amber-50 px-2 py-0.5 rounded mt-1 inline-block">
                   <i class="fa-solid fa-triangle-exclamation mr-1"></i> Belum ada koordinat
                 </span>
                 {% endif %}
@@ -405,23 +435,29 @@
         </div>
       </div>
 
+      <!-- Alamat / Lokasi Tertulis -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Alamat / Lokasi Tertulis <span class="text-red-500">*</span></label>
+        <input type="text" name="lokasi" id="input-umkm-lokasi" required placeholder="Contoh: RT 001 RW 003 Dusun Ranca Sari, Desa Papayan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+      </div>
+
       <!-- PENENTUAN TITIK KOORDINAT TEMPAT USAHA OTOMATIS DENGAN PETA INTERAKTIF -->
       <div class="bg-gradient-to-br from-emerald-50/80 to-teal-50/80 p-4 rounded-2xl border border-emerald-200 space-y-3">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <label class="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
               <i class="fa-solid fa-map-location-dot text-brand-700 text-sm"></i>
-              Penentuan Titik di Peta (Otomatis & Akurat)
+              Penentuan Koordinat Peta (Otomatis & Presisi)
             </label>
             <p class="text-[11px] text-emerald-800">
-              Cukup <strong>klik pada peta</strong> atau <strong>geser pin</strong> ke lokasi tempat usaha/produksi UMKM.
+              Cukup <strong>klik pada peta</strong> atau <strong>geser pin</strong> ke lokasi usaha UMKM. Angka koordinat otomatis terisi akurat!
             </p>
           </div>
           <div class="flex items-center gap-1.5 flex-shrink-0">
             <button type="button" onclick="ambilLokasiGPSAdminUMKM()" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-sm transition" title="Gunakan GPS lokasi perangkat saat ini">
               <i class="fa-solid fa-crosshairs"></i> Gunakan GPS Saya
             </button>
-            <button type="button" onclick="cariLokasiOtomatisUMKM()" class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-bold flex items-center gap-1 transition" title="Cari otomatis berdasarkan nama atau produsen">
+            <button type="button" onclick="cariLokasiOtomatisUMKM()" class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-bold flex items-center gap-1 transition" title="Cari otomatis berdasarkan nama atau alamat">
               <i class="fa-solid fa-magnifying-glass"></i> Cari Otomatis
             </button>
           </div>
@@ -572,16 +608,16 @@
 
     adminUmkmMarker.on('dragend', function(e) {
       const pos = adminUmkmMarker.getLatLng();
-      setUmkmKoordinatOtomatis(pos.lat, pos.lng);
+      setUmkmKoordinatOtomatis(pos.lat, pos.lng, true);
     });
 
     adminUmkmMap.on('click', function(e) {
       adminUmkmMarker.setLatLng(e.latlng);
-      setUmkmKoordinatOtomatis(e.latlng.lat, e.latlng.lng);
+      setUmkmKoordinatOtomatis(e.latlng.lat, e.latlng.lng, true);
     });
   }
 
-  function setUmkmKoordinatOtomatis(lat, lng) {
+  function setUmkmKoordinatOtomatis(lat, lng, doReverseGeocode = false) {
     const latNum = parseFloat(lat);
     const lngNum = parseFloat(lng);
     if (isNaN(latNum) || isNaN(lngNum)) return;
@@ -596,6 +632,21 @@
 
     if (adminUmkmMarker) {
       adminUmkmMarker.setLatLng([latNum, lngNum]);
+    }
+
+    // Reverse geocode jika lokasi tertulis masih kosong
+    if (doReverseGeocode) {
+      const lokasiInput = document.getElementById('input-umkm-lokasi');
+      if (lokasiInput && !lokasiInput.value.trim()) {
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latNum}&lon=${lngNum}&zoom=16&addressdetails=1`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.display_name && !lokasiInput.value.trim()) {
+              lokasiInput.value = data.address.village || data.address.suburb || data.address.road || data.display_name.split(',')[0];
+            }
+          })
+          .catch(() => {});
+      }
     }
   }
 
@@ -625,7 +676,7 @@
         const lng = pos.coords.longitude;
         if (adminUmkmMap && adminUmkmMarker) {
           adminUmkmMap.setView([lat, lng], 16);
-          setUmkmKoordinatOtomatis(lat, lng);
+          setUmkmKoordinatOtomatis(lat, lng, true);
         }
       },
       (err) => {
@@ -639,10 +690,11 @@
   function cariLokasiOtomatisUMKM() {
     const nama = document.getElementById('input-umkm-nama').value.trim();
     const produsen = document.getElementById('input-umkm-produsen').value.trim();
-    const query = produsen || nama;
+    const lokasi = document.getElementById('input-umkm-lokasi').value.trim();
+    const query = lokasi || nama || produsen;
 
     if (!query) {
-      alert('Ketik terlebih dahulu Nama Produk atau Produsen di atas untuk mencari otomatis.');
+      alert('Ketik terlebih dahulu Nama Produk atau Alamat / Lokasi Tertulis di atas untuk mencari otomatis.');
       return;
     }
 
@@ -651,20 +703,64 @@
     if (loaderText) loaderText.innerText = `Mencari lokasi: ${query}...`;
     if (loader) loader.classList.remove('hidden');
 
+    // 1. Cek SLS/RT lokal Desa jika tertera dalam teks alamat
+    const slsMap = {
+      'RT 001 RW 003': [-7.46832, 108.20620],
+      'RT 002 RW 003': [-7.47000, 108.20691],
+      'RT 002 RW 006': [-7.48672, 108.19814],
+      'RT 001 RW 006': [-7.49348, 108.19590],
+      'RT 003 RW 006': [-7.48930, 108.19487],
+      'RT 001 RW 002': [-7.46596, 108.20883],
+      'RT 002 RW 002': [-7.46699, 108.21113],
+      'RT 004 RW 002': [-7.46997, 108.21429],
+      'RT 003 RW 002': [-7.46643, 108.21008],
+      'RT 002 RW 004': [-7.48124, 108.20497],
+      'RT 001 RW 005': [-7.49057, 108.20506],
+      'RT 002 RW 005': [-7.49352, 108.20286],
+      'RT 003 RW 005': [-7.49357, 108.20081],
+      'RT 002 RW 001': [-7.46541, 108.20052],
+      'RT 002 RW 007': [-7.46462, 108.20651],
+      'RT 001 RW 007': [-7.46317, 108.20886],
+      'RT 005 RW 001': [-7.46572, 108.20288],
+      'RT 003 RW 008': [-7.47935, 108.20787],
+      'RT 002 RW 008': [-7.47708, 108.20932],
+      'RT 001 RW 008': [-7.47584, 108.20638],
+      'RT 004 RW 001': [-7.46183, 108.20099],
+      'RT 003 RW 001': [-7.46793, 108.20358],
+      'RT 001 RW 001': [-7.46273, 108.20337],
+      'RT 003 RW 004': [-7.48277, 108.20264],
+      'RT 001 RW 004': [-7.47930, 108.20479],
+      'RT 004 RW 005': [-7.49750, 108.20137]
+    };
+
+    const upperQ = query.toUpperCase();
+    for (const [rtKey, coords] of Object.entries(slsMap)) {
+      if (upperQ.includes(rtKey) || upperQ.includes(rtKey.replace(/ /g, ''))) {
+        if (loader) loader.classList.add('hidden');
+        adminUmkmMap.setView(coords, 17);
+        setUmkmKoordinatOtomatis(coords[0], coords[1]);
+        const badge = document.getElementById('umkm-coord-status-badge');
+        if (badge) badge.innerHTML = `<i class="fa-solid fa-circle-check text-brand-600"></i> Ditemukan di ${rtKey}: <strong>${coords[0].toFixed(4)}, ${coords[1].toFixed(4)}</strong>`;
+        return;
+      }
+    }
+
+    // 2. Geocoding OpenStreetMap
     const fullQuery = `${query}, ${namaDesa}, Kutai Kartanegara`;
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullQuery)}&limit=1`)
       .then(res => res.json())
       .then(data => {
-        if (loader) loader.classList.add('hidden');
         if (data && data.length > 0) {
+          if (loader) loader.classList.add('hidden');
           const lat = parseFloat(data[0].lat);
           const lng = parseFloat(data[0].lon);
           adminUmkmMap.setView([lat, lng], 16);
           setUmkmKoordinatOtomatis(lat, lng);
         } else {
-          return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ' Kalimantan Timur')}&limit=1`)
+          return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
             .then(res => res.json())
             .then(data2 => {
+              if (loader) loader.classList.add('hidden');
               if (data2 && data2.length > 0) {
                 const lat = parseFloat(data2[0].lat);
                 const lng = parseFloat(data2[0].lon);
@@ -687,6 +783,7 @@
     const form = document.getElementById('form-umkm');
     form.action = "{{ url_for('admin_tambah_umkm') }}";
     form.reset();
+    document.getElementById('input-umkm-lokasi').value = '';
 
     for (let i = 1; i <= 3; i++) {
       const preview = document.getElementById(`preview-umkm-${i}`);
@@ -735,6 +832,7 @@
     form.action = `/admin/umkm/${p.id}/edit`;
     document.getElementById('input-umkm-nama').value = p.nama || '';
     document.getElementById('input-umkm-produsen').value = p.produsen || '';
+    document.getElementById('input-umkm-lokasi').value = p.lokasi || p.alamat || '';
     document.getElementById('input-umkm-harga').value = p.harga || 0;
     document.getElementById('input-umkm-satuan').value = p.satuan || 'Pcs';
     document.getElementById('input-umkm-deskripsi').value = p.deskripsi || '';

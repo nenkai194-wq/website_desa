@@ -1,11 +1,71 @@
 {% extends "base_admin.html" %}
 
-{% block title %}Kelola Berita & Informasi{% endblock %}
-{% block header_title %}Manajemen Warta & Berita Desa{% endblock %}
+{% block title %}Kelola Berita, Galeri & Piagam Penghargaan{% endblock %}
+{% block header_title %}Manajemen Berita, Galeri & Piagam Penghargaan{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
 
+  <!-- UNIFIED HEADER & QUICK ACTIONS FOR 3 INPUTS -->
+  <div class="bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 text-white p-5 sm:p-6 rounded-3xl shadow-lg border border-emerald-700/50 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+    <div>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-700/70 text-emerald-200 text-xs font-semibold backdrop-blur-sm border border-emerald-500/30 mb-2.5">
+        <i class="fa-solid fa-layer-group text-emerald-300"></i> Satu Pintu Publikasi & Dokumentasi Desa
+      </div>
+      <h2 class="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2.5">
+        <span>Berita, Galeri & Piagam Penghargaan Desa</span>
+      </h2>
+      <p class="text-xs sm:text-sm text-emerald-100/80 mt-1 max-w-2xl leading-relaxed">
+        Kelola publikasi warta berita terkini, album dokumentasi foto kegiatan Pemdes bersama warga, serta etalase arsip piagam penghargaan prestasi desa dalam satu halaman terpadu.
+      </p>
+    </div>
+
+    <!-- 3 TOMBOL INPUT CEPAT: INPUT BERITA, INPUT GALERI FOTO, INPUT PIAGAM -->
+    <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+      <button type="button" onclick="bukaModalTambahBerita()" 
+              class="px-3.5 py-2.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 font-extrabold text-xs shadow-md transition flex items-center gap-2 hover:-translate-y-0.5 transform cursor-pointer">
+        <i class="fa-solid fa-newspaper text-emerald-700 text-sm"></i>
+        <span>+ Input Berita</span>
+      </button>
+
+      <button type="button" onclick="bukaModalTambahGaleri('kegiatan')" 
+              class="px-3.5 py-2.5 rounded-xl bg-teal-400 hover:bg-teal-300 text-slate-950 font-extrabold text-xs shadow-md transition flex items-center gap-2 hover:-translate-y-0.5 transform cursor-pointer">
+        <i class="fa-solid fa-camera-retro text-slate-950 text-sm"></i>
+        <span>+ Input Galeri Foto</span>
+      </button>
+
+      <button type="button" onclick="bukaModalTambahGaleri('penghargaan')" 
+              class="px-3.5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs shadow-md transition flex items-center gap-2 hover:-translate-y-0.5 transform cursor-pointer">
+        <i class="fa-solid fa-award text-slate-950 text-sm"></i>
+        <span>+ Input Piagam</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- NAVIGATION SUB-MENU: BERITA / GALERI / PIAGAM PENGHARGAAN -->
+  <div class="flex items-center gap-2 p-1.5 bg-slate-100 rounded-2xl border border-slate-200 overflow-x-auto">
+    <a href="{{ url_for('admin_berita', view='berita') }}" class="px-5 py-2.5 rounded-xl font-extrabold text-xs transition flex items-center gap-2 whitespace-nowrap {% if active_view != 'galeri' and active_view != 'penghargaan' %}bg-white text-brand-800 shadow-sm border border-slate-200/60{% else %}text-slate-600 hover:text-slate-900{% endif %}">
+      <i class="fa-solid fa-newspaper text-brand-600"></i>
+      <span>1. Warta & Berita Desa</span>
+      <span class="bg-slate-100 text-slate-700 text-[10px] px-2 py-0.5 rounded-full font-bold ml-1">{{ semua_list|length }}</span>
+    </a>
+    <a href="{{ url_for('admin_berita', view='galeri') }}" class="px-5 py-2.5 rounded-xl font-extrabold text-xs transition flex items-center gap-2 whitespace-nowrap {% if active_view == 'galeri' %}bg-white text-teal-800 shadow-sm border border-slate-200/60{% else %}text-slate-600 hover:text-slate-900{% endif %}">
+      <i class="fa-solid fa-camera-retro text-teal-600"></i>
+      <span>2. Galeri Dokumentasi Kegiatan</span>
+      {% if pending_galeri_count > 0 %}
+      <span class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold ml-1 animate-pulse">{{ pending_galeri_count }} Pengajuan Masuk</span>
+      {% else %}
+      <span class="bg-teal-50 text-teal-800 text-[10px] px-2 py-0.5 rounded-full font-bold ml-1">{{ galeri_semua|length }}</span>
+      {% endif %}
+    </a>
+    <a href="{{ url_for('admin_berita', view='penghargaan') }}" class="px-5 py-2.5 rounded-xl font-extrabold text-xs transition flex items-center gap-2 whitespace-nowrap {% if active_view == 'penghargaan' %}bg-white text-amber-900 shadow-sm border border-slate-200/60{% else %}text-slate-600 hover:text-slate-900{% endif %}">
+      <i class="fa-solid fa-award text-amber-500"></i>
+      <span>3. Sub-Galeri Piagam & Penghargaan Pemdes</span>
+      <span class="bg-amber-50 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-bold ml-1">{{ penghargaan_list|length }}</span>
+    </a>
+  </div>
+
+  {% if active_view != 'galeri' and active_view != 'penghargaan' %}
   <!-- TOP HEADER & ACTION BANNER -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
     <div>
@@ -495,6 +555,361 @@
     </div>
   </div>
 
+  {% elif active_view == 'galeri' %}
+  <!-- ================= GALERI FOTO & DOKUMENTASI KEGIATAN DESA ================= -->
+  <div class="space-y-6">
+    <!-- Header Banner Galeri -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+      <div>
+        <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-camera-retro text-teal-600"></i> Galeri Foto Dokumentasi Kegiatan Desa
+        </h3>
+        <p class="text-xs text-slate-500 mt-0.5">Kelola dokumentasi visual kegiatan Pemerintah Desa dan warga desa, serta tinjau pengajuan foto dari masyarakat.</p>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <button onclick="bukaModalTambahGaleri('kegiatan')" class="px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs flex items-center gap-2 shadow-md transition">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Unggah Foto Dokumentasi
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs Galeri -->
+    <div class="flex border-b border-slate-200 gap-1 overflow-x-auto pb-px">
+      <!-- Tab 1: Sudah Tayang -->
+      <button onclick="gantiTabGaleri('tayang')" id="tab-galeri-btn-tayang" class="px-4 py-3 font-bold text-xs border-b-2 {% if active_tab == 'tayang' or not active_tab %}border-teal-600 text-teal-800{% else %}border-transparent text-slate-500 hover:text-slate-800{% endif %} flex items-center gap-2 transition whitespace-nowrap">
+        <i class="fa-solid fa-circle-check text-emerald-600"></i>
+        <span>Sudah Tayang di Web</span>
+        <span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-bold">{{ galeri_tayang|length }}</span>
+      </button>
+
+      <!-- Tab 2: Pengajuan Masuk Warga -->
+      <button onclick="gantiTabGaleri('pengajuan')" id="tab-galeri-btn-pengajuan" class="px-4 py-3 font-bold text-xs border-b-2 {% if active_tab == 'pengajuan' %}border-amber-500 text-amber-800{% else %}border-transparent text-slate-500 hover:text-slate-800{% endif %} flex items-center gap-2 transition whitespace-nowrap">
+        <i class="fa-solid fa-user-clock text-amber-500"></i>
+        <span>Pengajuan Masuk Warga</span>
+        {% if pending_galeri_count > 0 %}
+        <span class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold animate-pulse">{{ pending_galeri_count }} Pengajuan</span>
+        {% else %}
+        <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
+        {% endif %}
+      </button>
+
+      <!-- Tab 3: Semua Foto -->
+      <button onclick="gantiTabGaleri('semua')" id="tab-galeri-btn-semua" class="px-4 py-3 font-bold text-xs border-b-2 {% if active_tab == 'semua' %}border-slate-700 text-slate-900{% else %}border-transparent text-slate-500 hover:text-slate-800{% endif %} flex items-center gap-2 transition whitespace-nowrap">
+        <i class="fa-solid fa-images text-slate-400"></i>
+        <span>Semua Foto Kegiatan</span>
+        <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-bold">{{ galeri_semua|length }}</span>
+      </button>
+    </div>
+
+    <!-- TAB 1 CONTENT: SUDAH TAYANG -->
+    <div id="tab-galeri-content-tayang" class="space-y-4 {% if active_tab == 'pengajuan' or active_tab == 'semua' %}hidden{% endif %}">
+      <div class="bg-teal-50/80 border border-teal-200 p-3.5 rounded-2xl text-xs text-teal-900 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-circle-check text-teal-600 text-base flex-shrink-0"></i>
+          <span>Dokumentasi berikut <strong>telah disetujui</strong> dan <strong>sedang aktif tayang</strong> pada galeri publik website desa.</span>
+        </div>
+        <span class="font-bold text-teal-800">{{ galeri_tayang|length }} Foto Aktif</span>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead class="text-[11px] uppercase text-slate-400 bg-slate-50 border-b border-slate-100 font-bold">
+              <tr>
+                <th class="py-3.5 px-4 w-24">Foto</th>
+                <th class="py-3.5 px-4">Judul Kegiatan & Deskripsi</th>
+                <th class="py-3.5 px-4">Kategori</th>
+                <th class="py-3.5 px-4">Pengunggah & Tanggal</th>
+                <th class="py-3.5 px-4 text-center">Status</th>
+                <th class="py-3.5 px-4 text-center">Tindakan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {% for g in galeri_tayang %}
+              <tr class="hover:bg-slate-50/70 transition">
+                <td class="py-3.5 px-4">
+                  <div class="w-20 h-14 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 relative cursor-pointer group" onclick="bukaLightbox('{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar.startswith('static/') else g.gambar }}', '{{ g.judul|replace('\"', '') }}', '{{ g.kategori }}', '{{ g.tanggal }}')">
+                    <img src="{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar.startswith('static/') else g.gambar }}" class="w-full h-full object-cover group-hover:scale-105 transition" alt="{{ g.judul }}" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'" />
+                    <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-[10px]">
+                      <i class="fa-solid fa-expand"></i>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4 max-w-sm">
+                  <h4 class="font-bold text-slate-900 text-xs leading-snug">{{ g.judul }}</h4>
+                  <p class="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">{{ g.deskripsi or '-' }}</p>
+                </td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2.5 py-1 rounded-full text-[10px] font-bold {% if g.kategori == 'Kegiatan Pemdes' %}bg-blue-50 text-blue-700 border border-blue-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+                    {{ g.kategori }}
+                  </span>
+                </td>
+                <td class="py-3.5 px-4">
+                  <div class="font-bold text-slate-800">{{ g.pengunggah or 'Admin Desa' }}</div>
+                  <div class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-calendar mr-1"></i>{{ g.tanggal }}</div>
+                  {% if g.kontak_pengunggah and g.kontak_pengunggah != '-' %}
+                  <div class="text-[10px] text-emerald-600 font-medium mt-0.5"><i class="fa-brands fa-whatsapp mr-1"></i>{{ g.kontak_pengunggah }}</div>
+                  {% endif %}
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                    <i class="fa-solid fa-circle-check mr-1 text-[9px]"></i> Tayang di Web
+                  </span>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <div class="flex items-center justify-center gap-1.5">
+                    <button onclick="bukaModalEditGaleri({{ g.id }})" class="p-2 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 transition" title="Edit Data">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <form method="POST" action="{{ url_for('admin_hapus_galeri', id=g.id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus foto dokumentasi ini?');" class="inline">
+                      <button type="submit" class="p-2 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 transition" title="Hapus Foto">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="6" class="py-8 text-center text-slate-400">Belum ada foto dokumentasi yang tayang.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2 CONTENT: PENGAJUAN MASUK WARGA (APPROVAL) -->
+    <div id="tab-galeri-content-pengajuan" class="space-y-4 {% if active_tab != 'pengajuan' %}hidden{% endif %}">
+      <div class="bg-amber-50/80 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-900 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-clock-rotate-left text-amber-600 text-base flex-shrink-0"></i>
+          <span>Daftar foto dokumentasi yang <strong>diajukan oleh warga desa</strong> dari halaman depan. Klik <strong>Setujui & Tayangkan</strong> agar tampil di galeri publik.</span>
+        </div>
+        <span class="font-bold text-amber-800">{{ galeri_pengajuan|length }} Menunggu Review</span>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead class="text-[11px] uppercase text-slate-400 bg-slate-50 border-b border-slate-100 font-bold">
+              <tr>
+                <th class="py-3.5 px-4 w-24">Foto</th>
+                <th class="py-3.5 px-4">Judul Kegiatan & Keterangan</th>
+                <th class="py-3.5 px-4">Warga Pengunggah & Kontak</th>
+                <th class="py-3.5 px-4">Tanggal Kegiatan</th>
+                <th class="py-3.5 px-4 text-center">Status</th>
+                <th class="py-3.5 px-4 text-center">Keputusan Approval</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {% for g in galeri_pengajuan %}
+              <tr class="hover:bg-amber-50/40 transition">
+                <td class="py-3.5 px-4">
+                  <div class="w-20 h-14 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 relative cursor-pointer group" onclick="bukaLightbox('{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar.startswith('static/') else g.gambar }}', '{{ g.judul|replace('\"', '') }}', '{{ g.kategori }}', '{{ g.tanggal }}')">
+                    <img src="{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar.startswith('static/') else g.gambar }}" class="w-full h-full object-cover group-hover:scale-105 transition" alt="{{ g.judul }}" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'" />
+                    <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-[10px]">
+                      <i class="fa-solid fa-expand"></i>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4 max-w-sm">
+                  <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wider mb-1 inline-block">{{ g.kategori }}</span>
+                  <h4 class="font-bold text-slate-900 text-xs leading-snug">{{ g.judul }}</h4>
+                  <p class="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">{{ g.deskripsi or '-' }}</p>
+                </td>
+                <td class="py-3.5 px-4">
+                  <div class="font-bold text-slate-900 flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-400"></i> {{ g.pengunggah }}</div>
+                  {% if g.kontak_pengunggah and g.kontak_pengunggah != '-' %}
+                  <a href="https://wa.me/{{ g.kontak_pengunggah|replace(' ', '')|replace('-', '') }}" target="_blank" class="text-emerald-700 font-bold hover:underline inline-flex items-center gap-1 mt-1 text-[11px]">
+                    <i class="fa-brands fa-whatsapp text-emerald-600"></i> {{ g.kontak_pengunggah }}
+                  </a>
+                  {% endif %}
+                </td>
+                <td class="py-3.5 px-4 text-slate-600">
+                  <i class="fa-regular fa-calendar mr-1 text-slate-400"></i>{{ g.tanggal }}
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 animate-pulse">
+                    <i class="fa-solid fa-hourglass-half mr-1 text-[9px]"></i> Menunggu Review
+                  </span>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <div class="flex items-center justify-center gap-2">
+                    <form method="POST" action="{{ url_for('admin_approve_galeri', id=g.id) }}" class="inline">
+                      <button type="submit" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition" title="Setujui & Tayangkan">
+                        <i class="fa-solid fa-check"></i>
+                        <span>Setujui</span>
+                      </button>
+                    </form>
+                    <form method="POST" action="{{ url_for('admin_reject_galeri', id=g.id) }}" class="inline">
+                      <button type="submit" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-100 text-slate-700 hover:text-rose-700 font-bold text-xs transition" title="Tolak Pengajuan">
+                        <i class="fa-solid fa-xmark"></i>
+                        <span>Tolak</span>
+                      </button>
+                    </form>
+                    <form method="POST" action="{{ url_for('admin_hapus_galeri', id=g.id) }}" onsubmit="return confirm('Hapus permanen pengajuan ini?');" class="inline">
+                      <button type="submit" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 transition" title="Hapus Permanen">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="6" class="py-12 text-center text-slate-400">
+                  <i class="fa-solid fa-inbox text-3xl text-slate-300 block mb-2"></i>
+                  Tidak ada pengajuan foto dokumentasi dari warga yang menunggu review.
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3 CONTENT: SEMUA FOTO -->
+    <div id="tab-galeri-content-semua" class="space-y-4 {% if active_tab != 'semua' %}hidden{% endif %}">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead class="text-[11px] uppercase text-slate-400 bg-slate-50 border-b border-slate-100 font-bold">
+              <tr>
+                <th class="py-3.5 px-4 w-24">Foto</th>
+                <th class="py-3.5 px-4">Judul & Kategori</th>
+                <th class="py-3.5 px-4">Pengunggah & Tanggal</th>
+                <th class="py-3.5 px-4 text-center">Status</th>
+                <th class="py-3.5 px-4 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {% for g in galeri_semua %}
+              <tr class="hover:bg-slate-50/70 transition">
+                <td class="py-3.5 px-4">
+                  <div class="w-20 h-14 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 relative cursor-pointer" onclick="bukaLightbox('{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar.startswith('static/') else g.gambar }}', '{{ g.judul|replace('\"', '') }}', '{{ g.kategori }}', '{{ g.tanggal }}')">
+                    <img src="{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar.startswith('static/') else g.gambar }}" class="w-full h-full object-cover" alt="{{ g.judul }}" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'" />
+                  </div>
+                </td>
+                <td class="py-3.5 px-4">
+                  <h4 class="font-bold text-slate-900 text-xs">{{ g.judul }}</h4>
+                  <span class="text-[10px] text-slate-500 font-semibold">{{ g.kategori }}</span>
+                </td>
+                <td class="py-3.5 px-4">
+                  <div class="font-bold text-slate-800">{{ g.pengunggah }}</div>
+                  <div class="text-[11px] text-slate-400">{{ g.tanggal }}</div>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  {% if g.status == 'Tayang' %}
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Tayang</span>
+                  {% elif g.status == 'Menunggu Persetujuan' %}
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Menunggu</span>
+                  {% else %}
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">{{ g.status }}</span>
+                  {% endif %}
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <div class="flex items-center justify-center gap-1.5">
+                    <button onclick="bukaModalEditGaleri({{ g.id }})" class="p-1.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 transition">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <form method="POST" action="{{ url_for('admin_hapus_galeri', id=g.id) }}" onsubmit="return confirm('Hapus item ini?');" class="inline">
+                      <button type="submit" class="p-1.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 transition">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% elif active_view == 'penghargaan' %}
+  <!-- ================= SUB-GALERI PIAGAM & PENGHARGAAN PRESTASI DESA ================= -->
+  <div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-amber-900 via-amber-800 to-amber-950 p-6 rounded-3xl text-white shadow-xl border border-amber-700/50">
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-400/20 text-amber-300 border border-amber-300/30 mb-2">
+          <i class="fa-solid fa-crown text-amber-300"></i> Prestasi Resmi Desa
+        </div>
+        <h3 class="font-extrabold text-lg sm:text-xl text-white flex items-center gap-2">
+          Sub-Galeri Piagam & Penghargaan Prestasi Pemerintah Desa
+        </h3>
+        <p class="text-xs text-amber-200/90 mt-1 max-w-2xl leading-relaxed">
+          Dokumentasi sertifikat, piagam penghargaan, trofi kejuaraan, dan apresiasi resmi yang telah diterima oleh Pemerintah Desa {{ (profil.nama_desa if profil is defined and profil else profil_global.nama_desa) or 'Desa' }} dari tingkat Kabupaten, Provinsi, hingga Nasional.
+        </p>
+      </div>
+      <div>
+        <button onclick="bukaModalTambahGaleri('penghargaan')" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs flex items-center gap-2 shadow-lg shadow-amber-400/20 transition transform hover:-translate-y-0.5 shrink-0">
+          <i class="fa-solid fa-award text-slate-950 text-sm"></i> Tambah Piagam Penghargaan
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid Kartu Piagam Penghargaan -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for p in penghargaan_list %}
+      <div class="bg-white rounded-3xl border border-amber-200/80 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group">
+        <!-- Bingkai Sertifikat Emas -->
+        <div class="p-3 bg-gradient-to-br from-amber-50 to-orange-50/60 border-b border-amber-100">
+          <div class="h-52 rounded-2xl overflow-hidden bg-slate-950 border-2 border-amber-300/80 relative shadow-inner group cursor-pointer" onclick="bukaLightbox('{{ url_for('static', filename=p.gambar.replace('static/', '')) if p.gambar.startswith('static/') else p.gambar }}', '{{ p.judul|replace('\"', '') }}', '{{ p.pemberi_penghargaan }} ({{ p.tahun_penghargaan }})', '{{ p.tanggal }}')">
+            <img src="{{ url_for('static', filename=p.gambar.replace('static/', '')) if p.gambar.startswith('static/') else p.gambar }}" alt="{{ p.judul }}" class="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/logo_tasikmalaya.png') }}'">
+            <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center text-white text-xs font-bold gap-2">
+              <span class="px-3 py-1.5 rounded-xl bg-white/90 text-slate-900 font-bold shadow-md flex items-center gap-1.5"><i class="fa-solid fa-expand text-amber-600"></i> Perbesar Sertifikat</span>
+            </div>
+            <div class="absolute top-2 right-2 px-2.5 py-1 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black shadow-md border border-amber-200">
+              {{ p.tahun_penghargaan or 'Prestasi' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-amber-700 mb-1.5">
+              <i class="fa-solid fa-landmark text-amber-600"></i>
+              <span class="truncate">{{ p.pemberi_penghargaan or 'Instansi Pemerintah' }}</span>
+            </div>
+            <h4 class="font-extrabold text-slate-900 text-sm leading-snug group-hover:text-amber-800 transition">
+              {{ p.judul }}
+            </h4>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed line-clamp-3">
+              {{ p.deskripsi or '(Belum ada uraian prestasi)' }}
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-[11px] text-slate-400 font-mono"><i class="fa-regular fa-calendar mr-1"></i>{{ p.tanggal }}</span>
+            <div class="flex items-center gap-2">
+              <button onclick="bukaModalEditGaleri({{ p.id }})" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold text-xs transition flex items-center gap-1">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+              <form method="POST" action="{{ url_for('admin_hapus_galeri', id=p.id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus piagam penghargaan ini?');" class="inline">
+                <button type="submit" class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition flex items-center gap-1">
+                  <i class="fa-solid fa-trash-can"></i> Hapus
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="col-span-3 py-16 text-center text-slate-400 bg-white rounded-3xl border border-slate-200 p-8">
+        <i class="fa-solid fa-award text-4xl text-amber-400 block mb-3"></i>
+        <h4 class="font-bold text-slate-700 text-sm">Belum Ada Piagam Penghargaan</h4>
+        <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">Klik tombol <strong>+ Tambah Piagam Penghargaan</strong> untuk menambahkan foto sertifikat atau piala prestasi desa.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
 </div>
 
 <!-- ================= MODAL TAMBAH / EDIT BERITA ================= -->
@@ -712,6 +1127,223 @@
     <div class="mt-5 pt-3 border-t border-slate-100 text-right">
       <button type="button" onclick="tutupModalKelolaKategori()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
         Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL TAMBAH FOTO DOKUMENTASI / PIAGAM ================= -->
+<div id="modal-tambah-galeri" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 max-h-[92vh] overflow-y-auto shadow-2xl">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div>
+        <h3 id="modal-tambah-galeri-title" class="font-bold text-base text-slate-900">Unggah Foto Dokumentasi Baru</h3>
+        <p id="modal-tambah-galeri-desc" class="text-[11px] text-slate-400">Dokumentasikan kegiatan penting pemerintahan desa atau kegiatan masyarakat.</p>
+      </div>
+      <button onclick="tutupModalTambahGaleri()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+    </div>
+
+    <form method="POST" action="{{ url_for('admin_tambah_galeri') }}" enctype="multipart/form-data" class="space-y-4">
+      <input type="hidden" name="tipe" id="tambah-galeri-tipe" value="kegiatan" />
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Dokumentasi / Nama Piagam <span class="text-red-500">*</span></label>
+        <input type="text" name="judul" required placeholder="Contoh: Musyawarah Desa RKPDes 2026 / Sertifikat ProKlim Utama" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-800" />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Dokumentasi</label>
+          <select name="kategori" id="tambah-galeri-kategori" onchange="sesuaikanFieldGaleri(this.value)" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+            <option value="Kegiatan Pemdes">Kegiatan Pemdes</option>
+            <option value="Kegiatan Warga">Kegiatan Warga</option>
+            <option value="Piagam & Penghargaan">Piagam & Penghargaan</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Kegiatan / Diterima</label>
+          <input type="date" name="tanggal" value="{{ now_date or '' }}" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        </div>
+      </div>
+
+      <!-- Field Khusus Piagam Penghargaan -->
+      <div id="field-khusus-penghargaan" class="hidden p-3.5 bg-amber-50 rounded-2xl border border-amber-200/80 space-y-3">
+        <span class="text-[11px] font-bold text-amber-900 block flex items-center gap-1.5">
+          <i class="fa-solid fa-crown text-amber-600"></i> Detail Prestasi / Penghargaan:
+        </span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Lembaga Pemberi Penghargaan</label>
+            <input type="text" name="pemberi_penghargaan" placeholder="Contoh: Kementerian LHK RI / BPS RI" class="w-full text-xs bg-white border border-amber-300 rounded-xl px-3 py-2 text-slate-800 font-medium" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Tahun Penghargaan</label>
+            <input type="text" name="tahun_penghargaan" placeholder="Contoh: 2026" class="w-full text-xs bg-white border border-amber-300 rounded-xl px-3 py-2 text-slate-800 font-bold" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Field Pengunggah -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Pengunggah / Sumber</label>
+          <input type="text" name="pengunggah" value="Pemerintah Desa" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-800" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">No. Kontak / WA (Opsional)</label>
+          <input type="text" name="kontak_pengunggah" placeholder="Contoh: 08123456789" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-800" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi / Uraian Singkat</label>
+        <textarea name="deskripsi" rows="3" placeholder="Ceritakan ringkasan kegiatan atau makna penghargaan ini..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-700"></textarea>
+      </div>
+
+      <!-- Upload Foto -->
+      <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+        <label class="block text-xs font-bold text-slate-700">Berkas Foto Dokumentasi / Piagam <span class="text-red-500">*</span></label>
+        <div>
+          <input type="file" name="gambar_file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-brand-50 file:text-brand-800 file:font-bold border border-slate-200 rounded-xl p-1 bg-white" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-500 mb-1">Atau Path / URL Foto</label>
+          <input type="text" name="gambar_url" placeholder="static/images/..." class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-600 font-mono" />
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+        <button type="button" onclick="tutupModalTambahGaleri()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+          Batal
+        </button>
+        <button type="submit" class="px-6 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-xs shadow-md shadow-teal-700/20 flex items-center gap-1.5">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Simpan & Publikasikan
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL EDIT FOTO DOKUMENTASI / PIAGAM ================= -->
+<div id="modal-edit-galeri" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 max-h-[92vh] overflow-y-auto shadow-2xl">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div>
+        <h3 id="modal-edit-galeri-title" class="font-bold text-base text-slate-900">Edit Data Dokumentasi</h3>
+        <p class="text-[11px] text-slate-400">Perbarui judul, foto, atau status penayangan.</p>
+      </div>
+      <button onclick="tutupModalEditGaleri()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+    </div>
+
+    <form id="form-edit-galeri" method="POST" action="" enctype="multipart/form-data" class="space-y-4">
+      <input type="hidden" name="tipe" id="edit-galeri-tipe" value="kegiatan" />
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Dokumentasi / Piagam <span class="text-red-500">*</span></label>
+        <input type="text" name="judul" id="edit-galeri-judul" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-800" />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kategori</label>
+          <select name="kategori" id="edit-galeri-kategori" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+            <option value="Kegiatan Pemdes">Kegiatan Pemdes</option>
+            <option value="Kegiatan Warga">Kegiatan Warga</option>
+            <option value="Piagam & Penghargaan">Piagam & Penghargaan</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Status Penayangan</label>
+          <select name="status" id="edit-galeri-status" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-800">
+            <option value="Tayang">Tayang di Web</option>
+            <option value="Menunggu Persetujuan">Menunggu Persetujuan</option>
+            <option value="Ditolak">Ditolak / Nonaktif</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal</label>
+          <input type="date" name="tanggal" id="edit-galeri-tanggal" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Pengunggah</label>
+          <input type="text" name="pengunggah" id="edit-galeri-pengunggah" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-800" />
+        </div>
+      </div>
+
+      <!-- Field Penghargaan Edit -->
+      <div id="edit-field-penghargaan" class="hidden p-3.5 bg-amber-50 rounded-2xl border border-amber-200/80 space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Lembaga Pemberi</label>
+            <input type="text" name="pemberi_penghargaan" id="edit-galeri-pemberi" class="w-full text-xs bg-white border border-amber-300 rounded-xl px-3 py-2 text-slate-800 font-medium" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Tahun Penghargaan</label>
+            <input type="text" name="tahun_penghargaan" id="edit-galeri-tahun" class="w-full text-xs bg-white border border-amber-300 rounded-xl px-3 py-2 text-slate-800 font-bold" />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi / Uraian</label>
+        <textarea name="deskripsi" id="edit-galeri-deskripsi" rows="3" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-700"></textarea>
+      </div>
+
+      <!-- Foto Saat Ini & Ganti Foto -->
+      <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+        <label class="block text-xs font-bold text-slate-700">Foto Saat Ini & Pengganti</label>
+        <div class="flex items-center gap-3">
+          <div class="w-20 h-14 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 flex-shrink-0">
+            <img id="edit-galeri-preview-img" src="" class="w-full h-full object-cover" />
+          </div>
+          <div class="text-[11px] text-slate-500 font-mono truncate" id="edit-galeri-current-path"></div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">Unggah Foto Baru (Jika Ingin Diganti)</label>
+          <input type="file" name="gambar_file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-brand-50 file:text-brand-800 file:font-bold border border-slate-200 rounded-xl p-1 bg-white" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">Atau Path / URL Foto</label>
+          <input type="text" name="gambar_url" id="edit-galeri-url" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-600 font-mono" />
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+        <button type="button" onclick="tutupModalEditGaleri()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+          Batal
+        </button>
+        <button type="submit" class="px-6 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-extrabold text-xs shadow-md shadow-brand-700/20 flex items-center gap-1.5">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL LIGHTBOX FOTO GALERI / PIAGAM ================= -->
+<div id="modal-lightbox-galeri" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden" onclick="if(event.target === this) tutupLightbox()">
+  <div class="max-w-4xl w-full bg-slate-950 text-white rounded-3xl overflow-hidden shadow-2xl border border-white/20 animate-scale-up">
+    <div class="p-4 sm:p-5 flex items-center justify-between border-b border-white/10">
+      <div>
+        <span id="lightbox-kategori" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 uppercase tracking-wider"></span>
+        <h4 id="lightbox-caption" class="text-sm sm:text-base font-extrabold text-white mt-1 leading-snug"></h4>
+      </div>
+      <button onclick="tutupLightbox()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-lg font-bold leading-none transition">
+        &times;
+      </button>
+    </div>
+    <div class="p-3 bg-black flex items-center justify-center max-h-[72vh] overflow-hidden">
+      <img id="lightbox-img" src="" class="max-w-full max-h-[70vh] object-contain rounded-xl" alt="Foto Dokumentasi" />
+    </div>
+    <div class="p-3.5 bg-slate-900 flex items-center justify-between text-xs text-slate-400 border-t border-white/10">
+      <span id="lightbox-tanggal"><i class="fa-regular fa-calendar mr-1"></i></span>
+      <button onclick="tutupLightbox()" class="px-4 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs">
+        Tutup Pratinjau
       </button>
     </div>
   </div>
@@ -975,6 +1607,122 @@
         alert('Gagal menghubungi server.');
       }
     }
+  }
+
+  // --- GALERI & PIAGAM JAVASCRIPT FUNCTIONS ---
+  const galeriMap = {
+    {% for g in (galeri_semua or []) + (penghargaan_list or []) %}
+    {{ g.id }}: {{ g | tojson }},
+    {% endfor %}
+  };
+
+  function gantiTabGaleri(tab) {
+    ['tayang', 'pengajuan', 'semua'].forEach(t => {
+      const btn = document.getElementById('tab-galeri-btn-' + t);
+      const content = document.getElementById('tab-galeri-content-' + t);
+      if (btn && content) {
+        if (t === tab) {
+          btn.classList.add('border-teal-600', 'text-teal-800');
+          btn.classList.remove('border-transparent', 'text-slate-500');
+          content.classList.remove('hidden');
+        } else {
+          btn.classList.remove('border-teal-600', 'text-teal-800', 'border-amber-500', 'text-amber-800', 'border-slate-700', 'text-slate-900');
+          btn.classList.add('border-transparent', 'text-slate-500');
+          content.classList.add('hidden');
+        }
+      }
+    });
+  }
+
+  function bukaModalTambahGaleri(tipe) {
+    const modal = document.getElementById('modal-tambah-galeri');
+    const tipeInput = document.getElementById('tambah-galeri-tipe');
+    const katSelect = document.getElementById('tambah-galeri-kategori');
+    const titleEl = document.getElementById('modal-tambah-galeri-title');
+    const descEl = document.getElementById('modal-tambah-galeri-desc');
+    const extraPenghargaan = document.getElementById('field-khusus-penghargaan');
+
+    if (tipe === 'penghargaan') {
+      tipeInput.value = 'penghargaan';
+      katSelect.value = 'Piagam & Penghargaan';
+      titleEl.innerText = 'Tambah Piagam & Penghargaan Prestasi';
+      descEl.innerText = 'Tambahkan sertifikat resmi atau piagam apresiasi yang diraih Pemerintah Desa.';
+      extraPenghargaan.classList.remove('hidden');
+    } else {
+      tipeInput.value = 'kegiatan';
+      katSelect.value = 'Kegiatan Pemdes';
+      titleEl.innerText = 'Unggah Foto Dokumentasi Baru';
+      descEl.innerText = 'Dokumentasikan kegiatan penting pemerintahan desa atau kegiatan masyarakat.';
+      extraPenghargaan.classList.add('hidden');
+    }
+    modal.classList.remove('hidden');
+  }
+
+  function sesuaikanFieldGaleri(kat) {
+    const extra = document.getElementById('field-khusus-penghargaan');
+    const tipe = document.getElementById('tambah-galeri-tipe');
+    if (kat === 'Piagam & Penghargaan') {
+      extra.classList.remove('hidden');
+      tipe.value = 'penghargaan';
+    } else {
+      extra.classList.add('hidden');
+      tipe.value = 'kegiatan';
+    }
+  }
+
+  function tutupModalTambahGaleri() {
+    document.getElementById('modal-tambah-galeri').classList.add('hidden');
+  }
+
+  function bukaModalEditGaleri(id) {
+    const g = galeriMap[id];
+    if (!g) return;
+    const modal = document.getElementById('modal-edit-galeri');
+    const form = document.getElementById('form-edit-galeri');
+    form.action = `/admin/galeri/${id}/edit`;
+
+    document.getElementById('edit-galeri-tipe').value = g.tipe || 'kegiatan';
+    document.getElementById('edit-galeri-judul').value = g.judul || '';
+    document.getElementById('edit-galeri-kategori').value = g.kategori || 'Kegiatan Pemdes';
+    document.getElementById('edit-galeri-status').value = g.status || 'Tayang';
+    document.getElementById('edit-galeri-tanggal').value = g.tanggal || '';
+    document.getElementById('edit-galeri-pengunggah').value = g.pengunggah || 'Pemerintah Desa';
+    document.getElementById('edit-galeri-deskripsi').value = g.deskripsi || '';
+    document.getElementById('edit-galeri-url').value = g.gambar || '';
+    document.getElementById('edit-galeri-current-path').innerText = g.gambar || '';
+
+    const previewImg = document.getElementById('edit-galeri-preview-img');
+    const gambarPath = g.gambar ? (g.gambar.startsWith('static/') ? '/' + g.gambar : g.gambar) : '/static/images/banner1.png';
+    previewImg.src = gambarPath;
+
+    const extra = document.getElementById('edit-field-penghargaan');
+    if (g.tipe === 'penghargaan' || g.kategori === 'Piagam & Penghargaan') {
+      extra.classList.remove('hidden');
+      document.getElementById('edit-galeri-pemberi').value = g.pemberi_penghargaan || '';
+      document.getElementById('edit-galeri-tahun').value = g.tahun_penghargaan || '';
+      document.getElementById('modal-edit-galeri-title').innerText = 'Edit Piagam & Penghargaan Prestasi';
+    } else {
+      extra.classList.add('hidden');
+      document.getElementById('modal-edit-galeri-title').innerText = 'Edit Foto Dokumentasi Kegiatan';
+    }
+
+    modal.classList.remove('hidden');
+  }
+
+  function tutupModalEditGaleri() {
+    document.getElementById('modal-edit-galeri').classList.add('hidden');
+  }
+
+  function bukaLightbox(url, caption, kat, tgl) {
+    document.getElementById('lightbox-img').src = url;
+    document.getElementById('lightbox-caption').innerText = caption || 'Dokumentasi Desa';
+    document.getElementById('lightbox-kategori').innerText = kat || 'Foto Kegiatan';
+    document.getElementById('lightbox-tanggal').innerHTML = '<i class="fa-regular fa-calendar mr-1"></i> ' + (tgl || '-');
+    document.getElementById('modal-lightbox-galeri').classList.remove('hidden');
+  }
+
+  function tutupLightbox() {
+    document.getElementById('modal-lightbox-galeri').classList.add('hidden');
   }
 </script>
 {% endblock %}

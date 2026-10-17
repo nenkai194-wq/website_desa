@@ -4,7 +4,7 @@
 {% block header_title %}Pengaturan Logo, Judul & Tampilan Website{% endblock %}
 
 {% block content %}
-<form method="POST" action="{{ url_for('admin_branding') }}" enctype="multipart/form-data" class="space-y-8 max-w-4xl">
+<div class="space-y-8 max-w-5xl">
 
   <!-- LIVE PREVIEW CARD -->
   <div class="bg-slate-900 rounded-3xl p-6 text-white shadow-xl border border-slate-800">
@@ -23,14 +23,14 @@
     </div>
   </div>
 
-  <!-- BAGIAN 1: LOGO & JUDUL UTAMA WEBSITE -->
-  <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+  <!-- BAGIAN 1: LOGO & IDENTITAS UTAMA WEBSITE -->
+  <form method="POST" action="{{ url_for('admin_branding') }}" enctype="multipart/form-data" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
     <div class="pb-4 border-b border-slate-100 flex items-center justify-between">
       <div>
         <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
           <i class="fa-solid fa-image text-brand-700"></i> Logo & Identitas Utama Website
         </h3>
-        <p class="text-xs text-slate-500">Perubahan logo dan judul akan langsung muncul di halaman publik dan sidebar panel admin.</p>
+        <p class="text-xs text-slate-500">Perubahan logo dan nama identitas akan langsung terpasang di header navigasi publik dan panel admin.</p>
       </div>
     </div>
 
@@ -72,135 +72,292 @@
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">Tagline / Slogan Desa</label>
-        <input type="text" name="tagline_website" value="{{ profil.tagline_website or 'Desa Wisata Pesisir Marang Kayu' }}" placeholder="Contoh: Desa Wisata Pesisir Marang Kayu" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
-      </div>
-
-      <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">Penghargaan / Sub-tagline</label>
-        <input type="text" name="subtagline_website" value="{{ profil.subtagline_website or 'Penerima Sertifikat Proklim Utama KLHK RI' }}" placeholder="Contoh: Penerima Sertifikat Proklim Utama KLHK RI" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
-      </div>
-
-      <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">Kecamatan</label>
-        <input type="text" name="kecamatan" value="{{ profil.kecamatan }}" required placeholder="Marang Kayu" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        <input type="text" name="kecamatan" value="{{ profil.kecamatan }}" required placeholder="Jatiwaras" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
       </div>
 
       <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">Kabupaten</label>
-        <input type="text" name="kabupaten" id="input-kabupaten" value="{{ profil.kabupaten }}" required placeholder="Kutai Kartanegara" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        <input type="text" name="kabupaten" id="input-kabupaten" value="{{ profil.kabupaten }}" required placeholder="Tasikmalaya" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
       </div>
     </div>
-  </div>
 
-  <!-- BAGIAN 2: PENGATURAN HERO CAROUSEL / BANNER DEPAN -->
-  <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
-    <div class="pb-4 border-b border-slate-100 flex items-center justify-between">
+    <!-- Tombol Simpan Identitas -->
+    <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+      <button type="submit" class="px-7 py-3 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-extrabold text-xs shadow-lg shadow-brand-700/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+        <i class="fa-solid fa-floppy-disk"></i> Simpan Identitas & Logo Website
+      </button>
+    </div>
+  </form>
+
+  <!-- BAGIAN 2: PENGATURAN SLIDER BANNER UTAMA (HALAMAN DEPAN) -->
+  <div id="section-slider" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+    <div class="pb-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
         <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
           <i class="fa-solid fa-sliders text-brand-700"></i> Pengaturan Slider Banner Utama (Halaman Depan)
         </h3>
-        <p class="text-xs text-slate-500">Sesuaikan gambar latar belakang dan kalimat pembuka pada slider utama website.</p>
+        <p class="text-xs text-slate-500 mt-0.5">
+          Tersedia total <strong>{{ sliders|length }} Slider</strong> dengan kendali penuh: <strong>Edit</strong>, <strong>Hapus</strong>, dan switch <strong>Aktif Tayang</strong> di beranda.
+        </p>
+      </div>
+      <div>
+        <button type="button" onclick="openModalTambahSlider()" class="px-4 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-extrabold text-xs shadow-md shadow-brand-700/20 transition flex items-center gap-2 shrink-0">
+          <i class="fa-solid fa-plus-circle"></i> Tambah Banner Slider Baru
+        </button>
       </div>
     </div>
 
-    <!-- Banner 1 -->
-    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-bold text-slate-800 uppercase flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-brand-600"></span> Banner Slider #1
-        </span>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">Unggah Foto Banner 1</label>
-          <input type="file" name="banner_file_1" accept="image/*" class="w-full text-xs text-slate-500 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white file:text-slate-700 file:font-semibold border border-slate-200 rounded-lg p-1 bg-white" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">Path / URL Foto Banner 1</label>
-          <input type="text" name="banner_hero_1" value="{{ profil.banner_hero_1 or 'static/images/banner1.png' }}" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-600 font-mono" />
-        </div>
-      </div>
-      <div>
-        <label class="block text-[11px] font-bold text-slate-600 mb-1">Judul Banner 1</label>
-        <input type="text" name="banner_title_1" value="{{ profil.banner_title_1 or 'Selamat Datang di Website Resmi Desa Papayan' }}" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-800" />
-      </div>
-      <div>
-        <label class="block text-[11px] font-bold text-slate-600 mb-1">Deskripsi Singkat Banner 1</label>
-        <textarea name="banner_desc_1" rows="2" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-700">{{ profil.banner_desc_1 or 'Menjelajahi pesona Pantai Biru Papayan, kelestarian mangrove pesisir, dan kemajuan masyarakat.' }}</textarea>
-      </div>
-    </div>
+    <!-- DAFTAR KARTU BANNER SLIDER (TOTAL 5 SLIDER) -->
+    <div class="space-y-4">
+      {% for s in sliders %}
+      <div class="p-5 bg-slate-50/80 hover:bg-white rounded-2xl border border-slate-200 transition space-y-4 shadow-xs">
+        
+        <!-- Header Kartu: Label Urutan, Status Tayang & Tombol Kendali Aksi -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
+          <div class="flex items-center gap-2.5">
+            <span class="px-3 py-1 rounded-xl text-xs font-black bg-brand-100 text-brand-900 border border-brand-200 tracking-wide">
+              BANNER SLIDER #{{ s.urutan or loop.index }}
+            </span>
+            
+            {% if s.is_active == 1 %}
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Aktif Tayang di Depan
+            </span>
+            {% else %}
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-slate-200 text-slate-600 border border-slate-300">
+              <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+              Nonaktif (Disembunyikan)
+            </span>
+            {% endif %}
+          </div>
 
-    <!-- Banner 2 -->
-    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-bold text-slate-800 uppercase flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-brand-600"></span> Banner Slider #2
-        </span>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">Unggah Foto Banner 2</label>
-          <input type="file" name="banner_file_2" accept="image/*" class="w-full text-xs text-slate-500 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white file:text-slate-700 file:font-semibold border border-slate-200 rounded-lg p-1 bg-white" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">Path / URL Foto Banner 2</label>
-          <input type="text" name="banner_hero_2" value="{{ profil.banner_hero_2 or 'static/images/banner2.png' }}" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-600 font-mono" />
-        </div>
-      </div>
-      <div>
-        <label class="block text-[11px] font-bold text-slate-600 mb-1">Judul Banner 2</label>
-        <input type="text" name="banner_title_2" value="{{ profil.banner_title_2 or 'Penerima Sertifikat Proklim Utama KLHK RI' }}" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-800" />
-      </div>
-      <div>
-        <label class="block text-[11px] font-bold text-slate-600 mb-1">Deskripsi Singkat Banner 2</label>
-        <textarea name="banner_desc_2" rows="2" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-700">{{ profil.banner_desc_2 or 'Komitmen nyata masyarakat Desa Papayan dalam menjaga kelestarian lingkungan pesisir.' }}</textarea>
-      </div>
-    </div>
+          <!-- Action Buttons: Toggle Tayang, Edit, Hapus -->
+          <div class="flex items-center gap-2">
+            <!-- Toggle Aktif/Nonaktif -->
+            <form method="POST" action="{{ url_for('admin_banner_slider_toggle', id=s.id) }}" class="inline">
+              <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {% if s.is_active == 1 %}bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300{% else %}bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm{% endif %}" title="{% if s.is_active == 1 %}Nonaktifkan banner ini dari halaman depan{% else %}Aktifkan banner ini agar tayang di halaman depan{% endif %}">
+                <i class="fa-solid {% if s.is_active == 1 %}fa-eye-slash{% else %}fa-circle-check{% endif %}"></i>
+                <span>{% if s.is_active == 1 %}Sembunyikan{% else %}Aktifkan Tayang{% endif %}</span>
+              </button>
+            </form>
 
-    <!-- Banner 3 -->
-    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-bold text-slate-800 uppercase flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-brand-600"></span> Banner Slider #3
-        </span>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">Unggah Foto Banner 3</label>
-          <input type="file" name="banner_file_3" accept="image/*" class="w-full text-xs text-slate-500 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white file:text-slate-700 file:font-semibold border border-slate-200 rounded-lg p-1 bg-white" />
+            <!-- Tombol Edit Modal -->
+            <button type="button" onclick="openModalEditSlider({{ s.id }})" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition flex items-center gap-1.5" title="Edit foto, judul, dan deskripsi slider">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>Edit</span>
+            </button>
+
+            <!-- Tombol Hapus -->
+            <form method="POST" action="{{ url_for('admin_banner_slider_hapus', id=s.id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Banner Slider #{{ s.urutan or loop.index }}?');" class="inline">
+              <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition flex items-center gap-1.5" title="Hapus slider">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Hapus</span>
+              </button>
+            </form>
+          </div>
         </div>
-        <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">Path / URL Foto Banner 3</label>
-          <input type="text" name="banner_hero_3" value="{{ profil.banner_hero_3 or 'static/images/pantai_kersik.jpg' }}" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-600 font-mono" />
+
+        <!-- Konten Banner: Foto & Teks -->
+        <div class="flex flex-col sm:flex-row gap-4 items-start">
+          <div class="w-full sm:w-56 h-32 rounded-xl overflow-hidden bg-slate-900 border border-slate-200 flex-shrink-0 relative group">
+            <img src="{{ url_for('static', filename=s.gambar.replace('static/', '')) if s.gambar and s.gambar.startswith('static/') else (s.gambar or url_for('static', filename='images/banner1.png')) }}" 
+                 alt="{{ s.judul }}" 
+                 onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'" 
+                 class="w-full h-full object-cover brightness-95 group-hover:scale-105 transition duration-300" />
+            <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/60 text-white text-[9px] font-mono">
+              Foto #{{ s.urutan or loop.index }}
+            </div>
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <h4 class="text-sm sm:text-base font-extrabold text-slate-900 leading-snug">
+              {{ s.judul }}
+            </h4>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+              {{ s.deskripsi or '(Tidak ada deskripsi singkat)' }}
+            </p>
+            <div class="text-[11px] font-mono text-slate-400 mt-3 flex items-center gap-1.5 truncate">
+              <i class="fa-regular fa-image text-slate-400"></i>
+              <span class="truncate">{{ s.gambar }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MODAL EDIT BANNER SLIDER {{ s.id }} -->
+      <div id="modal-edit-slider-{{ s.id }}" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-xl w-full p-6 sm:p-7 space-y-5 animate-scale-up max-h-[90vh] overflow-y-auto">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-pen-to-square text-brand-700"></i>
+              Edit Banner Slider #{{ s.urutan or loop.index }}
+            </h3>
+            <button type="button" onclick="closeModalEditSlider({{ s.id }})" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
+              <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+          </div>
+
+          <form method="POST" action="{{ url_for('admin_banner_slider_edit', id=s.id) }}" enctype="multipart/form-data" class="space-y-4">
+            
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Judul Banner <span class="text-red-500">*</span></label>
+              <input type="text" name="judul" value="{{ s.judul }}" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-800" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Singkat Banner</label>
+              <textarea name="deskripsi" rows="3" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-700">{{ s.deskripsi }}</textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Tampil</label>
+                <input type="number" name="urutan" value="{{ s.urutan or loop.index }}" min="1" max="99" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-800" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Status Penayangan</label>
+                <div class="flex items-center gap-2 mt-2">
+                  <input type="checkbox" name="is_active" id="edit_active_{{ s.id }}" value="1" {% if s.is_active == 1 %}checked{% endif %} class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
+                  <label for="edit_active_{{ s.id }}" class="text-xs font-bold text-slate-700 cursor-pointer">Aktif Tayang di Halaman Depan</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ganti Gambar -->
+            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+              <span class="text-[11px] font-bold text-slate-700 block">Pengaturan Foto Banner:</span>
+              
+              <div class="flex items-center gap-3">
+                <div class="w-20 h-14 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 flex-shrink-0">
+                  <img src="{{ url_for('static', filename=s.gambar.replace('static/', '')) if s.gambar and s.gambar.startswith('static/') else (s.gambar or url_for('static', filename='images/banner1.png')) }}" alt="Foto" class="w-full h-full object-cover">
+                </div>
+                <div class="text-[11px] text-slate-500 font-mono truncate">
+                  Saat ini: {{ s.gambar }}
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Unggah Foto Pengganti Baru</label>
+                <input type="file" name="gambar_file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-brand-50 file:text-brand-800 file:font-bold border border-slate-200 rounded-xl p-1 bg-white" />
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Atau Path / URL Foto</label>
+                <input type="text" name="gambar_url" value="{{ s.gambar }}" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-600 font-mono" />
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+              <button type="button" onclick="closeModalEditSlider({{ s.id }})" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+                Batal
+              </button>
+              <button type="submit" class="px-6 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-extrabold text-xs shadow-md shadow-brand-700/20 flex items-center gap-1.5">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+              </button>
+            </div>
+
+          </form>
         </div>
       </div>
-      <div>
-        <label class="block text-[11px] font-bold text-slate-600 mb-1">Judul Banner 3</label>
-        <input type="text" name="banner_title_3" value="{{ profil.banner_title_3 or 'Pelayanan Publik Cepat, Transparan dan Akuntabel' }}" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-800" />
-      </div>
-      <div>
-        <label class="block text-[11px] font-bold text-slate-600 mb-1">Deskripsi Singkat Banner 3</label>
-        <textarea name="banner_desc_3" rows="2" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-700">{{ profil.banner_desc_3 or 'Nikmati kemudahan layanan pengajuan surat online mandiri dan keterbukaan informasi.' }}</textarea>
-      </div>
+      {% endfor %}
     </div>
 
   </div>
 
-  <!-- TOMBOL SIMPAN -->
-  <div class="flex items-center justify-end gap-3 pt-2">
-    <a href="{{ url_for('admin_dashboard') }}" class="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
-      Batal
-    </a>
-    <button type="submit" class="px-7 py-3 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-extrabold text-xs shadow-lg shadow-brand-700/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
-      <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan Logo & Judul
-    </button>
+  <!-- MODAL TAMBAH BANNER SLIDER BARU -->
+  <div id="modal-tambah-slider" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-xl w-full p-6 sm:p-7 space-y-5 animate-scale-up max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+          <i class="fa-solid fa-plus-circle text-brand-700"></i>
+          Tambah Banner Slider Baru
+        </h3>
+        <button type="button" onclick="closeModalTambahSlider()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <form method="POST" action="{{ url_for('admin_banner_slider_tambah') }}" enctype="multipart/form-data" class="space-y-4">
+        
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Judul Banner <span class="text-red-500">*</span></label>
+          <input type="text" name="judul" required placeholder="Contoh: Panen Raya & Agrowisata Desa Papayan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-800" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Singkat Banner</label>
+          <textarea name="deskripsi" rows="3" placeholder="Kalimat penjelasan atau ajakan singkat..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-700"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Tampil</label>
+            <input type="number" name="urutan" value="{{ (sliders|length) + 1 }}" min="1" max="99" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-800" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Status Penayangan</label>
+            <div class="flex items-center gap-2 mt-2">
+              <input type="checkbox" name="is_active" id="tambah_is_active" value="1" checked class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
+              <label for="tambah_is_active" class="text-xs font-bold text-slate-700 cursor-pointer">Langsung Aktif Tayang</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+          <span class="text-[11px] font-bold text-slate-700 block">Pilih Foto Banner:</span>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Unggah Berkas Foto</label>
+            <input type="file" name="gambar_file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-brand-50 file:text-brand-800 file:font-bold border border-slate-200 rounded-xl p-1 bg-white" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Atau Masukkan Path / URL Foto</label>
+            <input type="text" name="gambar_url" placeholder="static/images/banner1.png" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-600 font-mono" />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeModalTambahSlider()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+            Batal
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-extrabold text-xs shadow-md shadow-brand-700/20 flex items-center gap-1.5">
+            <i class="fa-solid fa-plus-circle"></i> Tambah Banner Slider
+          </button>
+        </div>
+
+      </form>
+    </div>
   </div>
 
-</form>
+</div>
 
-<!-- Live Preview Sync Script -->
+<!-- Modal & Live Preview Sync Script -->
 <script>
+  function openModalEditSlider(id) {
+    const m = document.getElementById('modal-edit-slider-' + id);
+    if (m) m.classList.remove('hidden');
+  }
+
+  function closeModalEditSlider(id) {
+    const m = document.getElementById('modal-edit-slider-' + id);
+    if (m) m.classList.add('hidden');
+  }
+
+  function openModalTambahSlider() {
+    const m = document.getElementById('modal-tambah-slider');
+    if (m) m.classList.remove('hidden');
+  }
+
+  function closeModalTambahSlider() {
+    const m = document.getElementById('modal-tambah-slider');
+    if (m) m.classList.add('hidden');
+  }
+
+  // Live preview header sync
   const namaDesaInput = document.getElementById('input-nama-desa');
   const judulWebsiteInput = document.getElementById('input-judul-website');
   const kabupatenInput = document.getElementById('input-kabupaten');
@@ -208,27 +365,35 @@
   const formLogoPreview = document.getElementById('form-logo-preview');
   const previewLogoImg = document.getElementById('preview-logo-img');
 
-  namaDesaInput.addEventListener('input', (e) => {
-    document.getElementById('preview-nama-desa').innerText = 'Admin Desa ' + e.target.value;
-  });
+  if (namaDesaInput) {
+    namaDesaInput.addEventListener('input', (e) => {
+      document.getElementById('preview-nama-desa').innerText = 'Admin Desa ' + e.target.value;
+    });
+  }
 
-  judulWebsiteInput.addEventListener('input', (e) => {
-    document.getElementById('preview-judul').innerText = e.target.value;
-  });
+  if (judulWebsiteInput) {
+    judulWebsiteInput.addEventListener('input', (e) => {
+      document.getElementById('preview-judul').innerText = e.target.value;
+    });
+  }
 
-  kabupatenInput.addEventListener('input', (e) => {
-    document.getElementById('preview-kabupaten').innerText = 'Kabupaten ' + e.target.value;
-  });
+  if (kabupatenInput) {
+    kabupatenInput.addEventListener('input', (e) => {
+      document.getElementById('preview-kabupaten').innerText = 'Kabupaten ' + e.target.value;
+    });
+  }
 
-  logoFileInput.addEventListener('change', function(e) {
-    if (this.files && this.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        formLogoPreview.src = evt.target.result;
-        previewLogoImg.src = evt.target.result;
-      };
-      reader.readAsDataURL(this.files[0]);
-    }
-  });
+  if (logoFileInput) {
+    logoFileInput.addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          formLogoPreview.src = evt.target.result;
+          previewLogoImg.src = evt.target.result;
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  }
 </script>
 {% endblock %}

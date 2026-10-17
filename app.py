@@ -71,13 +71,13 @@ from statistik_helper import (
     parse_uploaded_stunting_file
 )
 from peta_helper import buat_geojson_sls_dengan_penduduk, unduh_kml_dari_url, DEFAULT_KML_URL
+from security_engine import init_security
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'desa_kersik_secure_entropy_key_2026_tasikmalaya_papayan')
 
-# Hardening Konfigurasi Session & Keamanan Cookie
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+# Inisialisasi Arsitektur Keamanan Modern 2026 (Anti-CSRF, Rate Limiting, Security Headers, Audit Monitoring)
+init_security(app)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=3)
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'images', 'uploads')
@@ -89,16 +89,6 @@ os.makedirs(BACKUP_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['DOCS_FOLDER'] = DOCS_FOLDER
 app.config['BACKUP_FOLDER'] = BACKUP_FOLDER
-
-# HTTP Security Headers (Anti-Clickjacking, Anti-MIME Sniffing, XSS Defense)
-@app.after_request
-def apply_security_headers(response):
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-    response.headers['Permissions-Policy'] = 'geolocation=(self)'
-    return response
 
 @app.route('/assets/<path:filename>')
 def assets_fallback(filename):
@@ -129,12 +119,25 @@ def inject_global_data():
         row_pop = cursor.fetchone()
         data['popup_aktif_global'] = dict(row_pop) if row_pop else None
 
+        # Banner Slider Aktif (Tayang)
+        cursor.execute("SELECT * FROM banner_slider WHERE is_active = 1 ORDER BY urutan ASC, id ASC")
+        data['banner_sliders_global'] = [dict(r) for r in cursor.fetchall()]
+
+        # Hitung Pengajuan Galeri Warga Pending
+        try:
+            cursor.execute("SELECT COUNT(*) FROM galeri WHERE status = 'Menunggu Persetujuan'")
+            data['pending_galeri_count_global'] = cursor.fetchone()[0] or 0
+        except Exception:
+            data['pending_galeri_count_global'] = 0
+
         conn.close()
     except Exception:
         data['profil_global'] = {}
         data['running_texts_global'] = []
         data['kategori_pengaduan_global'] = []
         data['popup_aktif_global'] = None
+        data['banner_sliders_global'] = []
+        data['pending_galeri_count_global'] = 0
 
     try:
         data['statistik_pengunjung'] = get_visitor_stats()
@@ -419,11 +422,25 @@ def index():
     cursor.execute("SELECT id, no_tiket, nama, kontak, kategori, pesan, lampiran, status, uraian_tindak_lanjut, created_at FROM pengaduan ORDER BY id DESC LIMIT 20")
     monitoring_aduan_list = [dict(row) for row in cursor.fetchall()]
 
+    # 10. Banner Slider Hero
+    cursor.execute("SELECT * FROM banner_slider WHERE is_active = 1 ORDER BY urutan ASC, id ASC")
+    sliders = [dict(row) for row in cursor.fetchall()]
+
+    # 11. Galeri Foto Kegiatan & Sub-Galeri Piagam Penghargaan
+    cursor.execute("SELECT * FROM galeri WHERE tipe = 'kegiatan' AND status = 'Tayang' ORDER BY tanggal DESC, id DESC")
+    galeri_list = [dict(row) for row in cursor.fetchall()]
+
+    cursor.execute("SELECT * FROM galeri WHERE tipe = 'penghargaan' AND status = 'Tayang' ORDER BY tahun_penghargaan DESC, tanggal DESC, id DESC")
+    penghargaan_list = [dict(row) for row in cursor.fetchall()]
+
     conn.close()
 
     return render_template(
         'index.html',
         profil=profil,
+        sliders=sliders,
+        galeri_list=galeri_list,
+        penghargaan_list=penghargaan_list,
         kades_sotk=kades_sotk,
         perangkat=perangkat,
         wisata=wisata,
@@ -1406,10 +1423,13 @@ def admin_hapus_feedback(id):
     flash('Data masukan feedback berhasil dihapus.', 'info')
     return redirect(url_for('admin_pengaduan', tab='feedback'))
 
-# --- 3. MANAJEMEN BERITA ---
+# --- 3. MANAJEMEN BERITA & GALERI DOKUMENTASI DESA ---
 @app.route('/admin/berita')
 @login_required
 def admin_berita():
+    active_view = request.args.get('view', 'berita')
+    active_tab = request.args.get('tab', 'tayang')
+
     conn = get_db()
     cursor = conn.cursor()
 
@@ -1435,15 +1455,50 @@ def admin_berita():
 
     cursor.execute("SELECT * FROM kategori_berita ORDER BY urutan ASC, id ASC")
     kategori_list = [dict(row) for row in cursor.fetchall()]
+
+    # --- DATA GALERI FOTO DOKUMENTASI KEGIATAN DESA ---
+    cursor.execute("SELECT * FROM galeri WHERE tipe = 'kegiatan' AND status = 'Tayang' ORDER BY tanggal DESC, id DESC")
+    galeri_tayang = [dict(row) for row in cursor.fetchall()]
+
+    cursor.execute("SELECT * FROM galeri WHERE tipe = 'kegiatan' AND status = 'Menunggu Persetujuan' ORDER BY id DESC")
+    galeri_pengajuan = [dict(row) for row in cursor.fetchall()]
+
+    cursor.execute("SELECT * FROM galeri WHERE tipe = 'kegiatan' ORDER BY id DESC")
+    galeri_semua = [dict(row) for row in cursor.fetchall()]
+
+    # --- DATA SUB-GALERI PIAGAM & PENGHARGAAN PRESTASI PEMERINTAH DESA ---
+    cursor.execute("SELECT * FROM galeri WHERE tipe = 'penghargaan' ORDER BY tahun_penghargaan DESC, tanggal DESC, id DESC")
+    penghargaan_list = [dict(row) for row in cursor.fetchall()]
+
+    cursor.execute("SELECT * FROM profil_desa WHERE id = 1")
+    row_profil = cursor.fetchone()
+    profil = dict(row_profil) if row_profil else {}
+
+    pending_galeri_count = len(galeri_pengajuan)
     conn.close()
 
     return render_template('admin/berita.html',
+                           profil=profil,
+                           active_view=active_view,
+                           active_tab=active_tab,
                            tayang_list=tayang_list,
                            disetujui_list=disetujui_list,
                            draft_list=draft_list,
                            batal_list=batal_list,
                            semua_list=semua_list,
-                           kategori_list=kategori_list)
+                           kategori_list=kategori_list,
+                           galeri_tayang=galeri_tayang,
+                           galeri_pengajuan=galeri_pengajuan,
+                           galeri_semua=galeri_semua,
+                           penghargaan_list=penghargaan_list,
+                           pending_galeri_count=pending_galeri_count)
+
+@app.route('/admin/galeri')
+@login_required
+def admin_galeri():
+    view = request.args.get('view', 'galeri')
+    tab = request.args.get('tab', 'tayang')
+    return redirect(url_for('admin_berita', view=view, tab=tab))
 
 def format_tanggal_indo(tgl_str):
     if not tgl_str:
@@ -1656,6 +1711,244 @@ def api_tambah_kategori_berita():
         conn.close()
         return jsonify({'success': False, 'message': f'Kategori "{nama}" sudah ada.'}), 400
 
+# ==========================================
+# MANAJEMEN GALERI FOTO & SUB-GALERI PIAGAM PENGHARGAAN
+# ==========================================
+@app.route('/admin/galeri/tambah', methods=['POST'])
+@login_required
+def admin_tambah_galeri():
+    judul = request.form.get('judul', '').strip()
+    kategori = request.form.get('kategori', 'Kegiatan Pemdes').strip()
+    tipe = request.form.get('tipe', 'kegiatan').strip()
+    if 'penghargaan' in kategori.lower() or tipe == 'penghargaan':
+        tipe = 'penghargaan'
+    else:
+        tipe = 'kegiatan'
+
+    deskripsi = request.form.get('deskripsi', '').strip()
+    tanggal = request.form.get('tanggal') or datetime.now().strftime('%Y-%m-%d')
+    pengunggah = request.form.get('pengunggah') or 'Pemerintah Desa'
+    kontak_pengunggah = request.form.get('kontak_pengunggah', '-')
+    status = request.form.get('status', 'Tayang')
+    pemberi_penghargaan = request.form.get('pemberi_penghargaan', '').strip() if tipe == 'penghargaan' else None
+    tahun_penghargaan = request.form.get('tahun_penghargaan', '').strip() if tipe == 'penghargaan' else None
+
+    if not judul:
+        flash('Judul foto / piagam wajib diisi.', 'danger')
+        return redirect(url_for('admin_berita', view='penghargaan' if tipe == 'penghargaan' else 'galeri'))
+
+    gambar = request.form.get('gambar_url', '').strip()
+    if 'gambar_file' in request.files:
+        file = request.files['gambar_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp']:
+                prefix = 'piagam' if tipe == 'penghargaan' else 'galeri'
+                filename = secure_filename(f"{prefix}_{int(time.time())}_{random.randint(100,999)}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                gambar = f"static/images/uploads/{filename}"
+
+    if not gambar:
+        gambar = "static/images/banner1.png"
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+    INSERT INTO galeri (judul, deskripsi, kategori, tipe, gambar, tanggal, pengunggah, kontak_pengunggah, status, pemberi_penghargaan, tahun_penghargaan)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (judul, deskripsi, kategori, tipe, gambar, tanggal, pengunggah, kontak_pengunggah, status, pemberi_penghargaan, tahun_penghargaan))
+    conn.commit()
+    new_id = cursor.lastrowid
+    conn.close()
+
+    record_activity_log(
+        action='TAMBAH_GALERI',
+        details=f'Menambahkan {"piagam penghargaan" if tipe == "penghargaan" else "foto dokumentasi kegiatan"} ID {new_id}: "{judul[:40]}"',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+
+    item_name = "Piagam penghargaan" if tipe == "penghargaan" else "Foto dokumentasi kegiatan"
+    flash(f'{item_name} berhasil ditambahkan dan berstatus "{status}".', 'success')
+    return redirect(url_for('admin_berita', view='penghargaan' if tipe == 'penghargaan' else 'galeri', tab='tayang'))
+
+
+@app.route('/admin/galeri/<int:id>/edit', methods=['POST'])
+@login_required
+def admin_edit_galeri(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM galeri WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        flash('Data galeri tidak ditemukan.', 'danger')
+        return redirect(url_for('admin_berita', view='galeri'))
+
+    item = dict(row)
+    judul = request.form.get('judul', item['judul']).strip()
+    kategori = request.form.get('kategori', item['kategori']).strip()
+    tipe = request.form.get('tipe', item['tipe']).strip()
+    if 'penghargaan' in kategori.lower() or tipe == 'penghargaan':
+        tipe = 'penghargaan'
+    else:
+        tipe = 'kegiatan'
+
+    deskripsi = request.form.get('deskripsi', item['deskripsi']).strip()
+    tanggal = request.form.get('tanggal', item['tanggal'])
+    pengunggah = request.form.get('pengunggah', item['pengunggah'])
+    kontak_pengunggah = request.form.get('kontak_pengunggah', item['kontak_pengunggah'])
+    status = request.form.get('status', item['status'])
+    pemberi_penghargaan = request.form.get('pemberi_penghargaan', item['pemberi_penghargaan']) if tipe == 'penghargaan' else None
+    tahun_penghargaan = request.form.get('tahun_penghargaan', item['tahun_penghargaan']) if tipe == 'penghargaan' else None
+
+    gambar = request.form.get('gambar_url', '').strip() or item['gambar']
+    if 'gambar_file' in request.files:
+        file = request.files['gambar_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp']:
+                prefix = 'piagam' if tipe == 'penghargaan' else 'galeri'
+                filename = secure_filename(f"{prefix}_{id}_{int(time.time())}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                gambar = f"static/images/uploads/{filename}"
+
+    cursor.execute('''
+    UPDATE galeri 
+    SET judul = ?, deskripsi = ?, kategori = ?, tipe = ?, gambar = ?, tanggal = ?, 
+        pengunggah = ?, kontak_pengunggah = ?, status = ?, pemberi_penghargaan = ?, tahun_penghargaan = ?
+    WHERE id = ?
+    ''', (judul, deskripsi, kategori, tipe, gambar, tanggal, pengunggah, kontak_pengunggah, status, pemberi_penghargaan, tahun_penghargaan, id))
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='EDIT_GALERI',
+        details=f'Mengedit {"piagam" if tipe == "penghargaan" else "foto galeri"} ID {id}: "{judul[:40]}"',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+
+    flash('Perubahan data galeri berhasil disimpan.', 'success')
+    return redirect(url_for('admin_berita', view='penghargaan' if tipe == 'penghargaan' else 'galeri'))
+
+
+@app.route('/admin/galeri/<int:id>/approve', methods=['POST'])
+@login_required
+def admin_approve_galeri(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT judul, pengunggah FROM galeri WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    if row:
+        cursor.execute("UPDATE galeri SET status = 'Tayang' WHERE id = ?", (id,))
+        conn.commit()
+        record_activity_log(
+            action='APPROVE_GALERI',
+            details=f'Menyetujui pengajuan foto galeri warga ID {id}: "{row[0][:40]}" oleh {row[1]}',
+            username=session.get('username'),
+            user_id=session.get('user_id'),
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        flash(f'Foto dokumentasi "{row[0][:35]}" dari warga berhasil disetujui dan ditayangkan!', 'success')
+    conn.close()
+    return redirect(url_for('admin_berita', view='galeri', tab='tayang'))
+
+
+@app.route('/admin/galeri/<int:id>/reject', methods=['POST'])
+@login_required
+def admin_reject_galeri(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT judul FROM galeri WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    if row:
+        cursor.execute("UPDATE galeri SET status = 'Ditolak' WHERE id = ?", (id,))
+        conn.commit()
+        record_activity_log(
+            action='REJECT_GALERI',
+            details=f'Menolak pengajuan foto galeri warga ID {id}: "{row[0][:40]}"',
+            username=session.get('username'),
+            user_id=session.get('user_id'),
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        flash(f'Pengajuan foto dokumentasi "{row[0][:35]}" telah ditolak.', 'info')
+    conn.close()
+    return redirect(url_for('admin_berita', view='galeri', tab='pengajuan'))
+
+
+@app.route('/admin/galeri/<int:id>/hapus', methods=['POST'])
+@login_required
+def admin_hapus_galeri(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT judul, tipe FROM galeri WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    tipe = 'kegiatan'
+    if row:
+        judul = row[0]
+        tipe = row[1]
+        cursor.execute("DELETE FROM galeri WHERE id = ?", (id,))
+        conn.commit()
+        record_activity_log(
+            action='HAPUS_GALERI',
+            details=f'Menghapus {"piagam" if tipe == "penghargaan" else "foto galeri"} ID {id}: "{judul[:40]}"',
+            username=session.get('username'),
+            user_id=session.get('user_id'),
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        flash(f'Data "{judul[:35]}" berhasil dihapus.', 'info')
+    conn.close()
+    return redirect(url_for('admin_berita', view='penghargaan' if tipe == 'penghargaan' else 'galeri'))
+
+
+# --- ENDPOINT FRONTEND: PENGAJUAN FOTO DOKUMENTASI DARI WARGA ---
+@app.route('/galeri/ajukan', methods=['POST'])
+def galeri_ajukan_warga():
+    nama_pengunggah = (request.form.get('pengunggah') or request.form.get('nama_pengunggah', '')).strip()
+    kontak_pengunggah = (request.form.get('kontak_pengunggah') or request.form.get('wa', '')).strip()
+    judul = request.form.get('judul', '').strip()
+    kategori = request.form.get('kategori', 'Kegiatan Warga').strip()
+    tanggal = request.form.get('tanggal') or datetime.now().strftime('%Y-%m-%d')
+    deskripsi = request.form.get('deskripsi', '').strip()
+
+    if not nama_pengunggah or not judul:
+        flash('Mohon lengkapi Nama Pengunggah dan Judul Kegiatan Dokumentasi.', 'danger')
+        return redirect(url_for('index') + '#berita')
+
+    gambar = None
+    if 'gambar_file' in request.files:
+        file = request.files['gambar_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp']:
+                filename = secure_filename(f"warga_galeri_{int(time.time())}_{random.randint(100,999)}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                gambar = f"static/images/uploads/{filename}"
+
+    if not gambar:
+        flash('Silakan pilih berkas foto dokumentasi kegiatan yang ingin diajukan.', 'danger')
+        return redirect(url_for('index') + '#berita')
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+    INSERT INTO galeri (judul, deskripsi, kategori, tipe, gambar, tanggal, pengunggah, kontak_pengunggah, status)
+    VALUES (?, ?, ?, 'kegiatan', ?, ?, ?, ?, 'Menunggu Persetujuan')
+    ''', (judul, deskripsi, kategori, gambar, tanggal, nama_pengunggah, kontak_pengunggah))
+    conn.commit()
+    conn.close()
+
+    flash('Terima kasih! Foto dokumentasi kegiatan warga berhasil diajukan dan sedang menunggu persetujuan (approval) admin desa sebelum tampil di galeri publik.', 'success')
+    return redirect(url_for('index') + '#berita')
+
 # --- 4. MANAJEMEN UMKM ---
 @app.route('/admin/umkm')
 @login_required
@@ -1690,6 +1983,8 @@ def admin_tambah_umkm():
     satuan = request.form.get('satuan')
     deskripsi = request.form.get('deskripsi')
     kontak_wa = request.form.get('kontak_wa', '').replace('+', '').replace('-', '').strip()
+    alamat = (request.form.get('lokasi') or request.form.get('alamat') or '').strip()
+    lokasi = alamat
 
     try:
         latitude = float(request.form.get('latitude')) if request.form.get('latitude') else None
@@ -1737,13 +2032,13 @@ def admin_tambah_umkm():
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO umkm (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar, gambar2, gambar3, latitude, longitude)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, latitude, longitude))
+    INSERT INTO umkm (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar, gambar2, gambar3, latitude, longitude, alamat, lokasi)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, latitude, longitude, alamat, lokasi))
     conn.commit()
     conn.close()
 
-    flash('Produk UMKM berhasil ditambahkan lengkap dengan foto galeri dan titik lokasi peta.', 'success')
+    flash('Produk UMKM berhasil ditambahkan lengkap dengan alamat / lokasi tertulis, foto galeri, dan titik lokasi peta.', 'success')
     return redirect(url_for('admin_umkm'))
 
 @app.route('/admin/umkm/<int:id>/edit', methods=['POST'])
@@ -1755,6 +2050,8 @@ def admin_edit_umkm(id):
     satuan = request.form.get('satuan')
     deskripsi = request.form.get('deskripsi')
     kontak_wa = request.form.get('kontak_wa', '').replace('+', '').replace('-', '').strip()
+    alamat = (request.form.get('lokasi') or request.form.get('alamat') or '').strip()
+    lokasi = alamat
 
     try:
         latitude = float(request.form.get('latitude')) if request.form.get('latitude') else None
@@ -1808,13 +2105,13 @@ def admin_edit_umkm(id):
                 gambar3 = f"static/images/uploads/{fn}"
 
     cursor.execute('''
-    UPDATE umkm SET nama=?, produsen=?, harga=?, satuan=?, deskripsi=?, kontak_wa=?, gambar=?, gambar2=?, gambar3=?, latitude=?, longitude=?
+    UPDATE umkm SET nama=?, produsen=?, harga=?, satuan=?, deskripsi=?, kontak_wa=?, gambar=?, gambar2=?, gambar3=?, latitude=?, longitude=?, alamat=?, lokasi=?
     WHERE id=?
-    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, latitude, longitude, id))
+    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, latitude, longitude, alamat, lokasi, id))
     conn.commit()
     conn.close()
 
-    flash('Produk UMKM berhasil diperbarui dengan variasi foto lengkap dan titik peta.', 'success')
+    flash('Produk UMKM berhasil diperbarui dengan alamat tertulis, variasi foto lengkap, dan titik peta.', 'success')
     return redirect(url_for('admin_umkm'))
 
 @app.route('/admin/umkm/<int:id>/hapus', methods=['POST'])
@@ -1861,6 +2158,8 @@ def api_ajukan_umkm():
     satuan = request.form.get('satuan')
     deskripsi = request.form.get('deskripsi')
     kontak_wa = request.form.get('kontak_wa', '').replace('+', '').replace('-', '').strip()
+    alamat = (request.form.get('lokasi') or request.form.get('alamat') or '').strip()
+    lokasi = alamat
 
     try:
         latitude = float(request.form.get('latitude')) if request.form.get('latitude') else None
@@ -1913,9 +2212,9 @@ def api_ajukan_umkm():
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO umkm (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar, gambar2, gambar3, latitude, longitude, status, nik_pemilik, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Menunggu Approval', ?, ?)
-    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, latitude, longitude, nik_pemilik, created_at))
+    INSERT INTO umkm (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar, gambar2, gambar3, latitude, longitude, status, nik_pemilik, created_at, alamat, lokasi)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Menunggu Approval', ?, ?, ?, ?)
+    ''', (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar1, gambar2, gambar3, latitude, longitude, nik_pemilik, created_at, alamat, lokasi))
     conn.commit()
     conn.close()
 
@@ -6246,8 +6545,8 @@ def admin_branding():
     if request.method == 'POST':
         judul_website = request.form.get('judul_website')
         nama_desa = request.form.get('nama_desa')
-        tagline_website = request.form.get('tagline_website')
-        subtagline_website = request.form.get('subtagline_website')
+        tagline_website = request.form.get('tagline_website') or ''
+        subtagline_website = request.form.get('subtagline_website') or ''
         kecamatan = request.form.get('kecamatan')
         kabupaten = request.form.get('kabupaten')
         
@@ -6312,26 +6611,189 @@ def admin_branding():
         cursor.execute('''
         UPDATE profil_desa SET 
             judul_website=?, nama_desa=?, tagline_website=?, subtagline_website=?,
-            kecamatan=?, kabupaten=?, logo_website=?, favicon_website=?,
-            banner_hero_1=?, banner_title_1=?, banner_desc_1=?,
-            banner_hero_2=?, banner_title_2=?, banner_desc_2=?,
-            banner_hero_3=?, banner_title_3=?, banner_desc_3=?
+            kecamatan=?, kabupaten=?, logo_website=?, favicon_website=?
         WHERE id = 1
         ''', (
             judul_website, nama_desa, tagline_website, subtagline_website,
-            kecamatan, kabupaten, logo_website, favicon_website,
-            banner_hero_1, banner_title_1, banner_desc_1,
-            banner_hero_2, banner_title_2, banner_desc_2,
-            banner_hero_3, banner_title_3, banner_desc_3
+            kecamatan, kabupaten, logo_website, favicon_website
         ))
         conn.commit()
-        flash('Pengaturan logo, judul website, dan hero banner berhasil diperbarui!', 'success')
+        flash('Pengaturan logo & identitas website berhasil diperbarui!', 'success')
 
     cursor.execute("SELECT * FROM profil_desa WHERE id = 1")
     profil = dict(cursor.fetchone() or {})
+
+    cursor.execute("SELECT * FROM banner_slider ORDER BY urutan ASC, id ASC")
+    sliders = [dict(row) for row in cursor.fetchall()]
     conn.close()
 
-    return render_template('admin/branding.html', profil=profil)
+    return render_template('admin/branding.html', profil=profil, sliders=sliders)
+
+# --- BANNER SLIDER MANAGEMENT ROUTES (Edit, Hapus, Aktif Tayang) ---
+@app.route('/admin/banner-slider/tambah', methods=['POST'])
+@superadmin_required
+def admin_banner_slider_tambah():
+    judul = request.form.get('judul', '').strip()
+    deskripsi = request.form.get('deskripsi', '').strip()
+    try:
+        urutan = int(request.form.get('urutan', 1) or 1)
+    except (ValueError, TypeError):
+        urutan = 1
+    is_active = 1 if request.form.get('is_active') in ['1', 'on', 'true', True] else 0
+
+    gambar = request.form.get('gambar_url', '').strip()
+    if 'gambar_file' in request.files:
+        file = request.files['gambar_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.svg', '.webp']:
+                filename = secure_filename(f"slider_{int(time.time())}_{random.randint(100,999)}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                gambar = f"static/images/uploads/{filename}"
+
+    if not gambar:
+        gambar = "static/images/banner1.png"
+
+    if not judul:
+        flash('Judul banner slider wajib diisi.', 'danger')
+        return redirect(url_for('admin_branding') + '#section-slider')
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO banner_slider (judul, deskripsi, gambar, urutan, is_active)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (judul, deskripsi, gambar, urutan, is_active))
+    new_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='TAMBAH_BANNER_SLIDER',
+        details=f'Menambahkan banner slider ID {new_id}: "{judul[:40]}" (Urutan: {urutan}, Status: {"Aktif" if is_active else "Nonaktif"})',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+
+    flash('Banner slider baru berhasil ditambahkan!', 'success')
+    return redirect(url_for('admin_branding') + '#section-slider')
+
+
+@app.route('/admin/banner-slider/<int:id>/edit', methods=['POST'])
+@superadmin_required
+def admin_banner_slider_edit(id):
+    judul = request.form.get('judul', '').strip()
+    deskripsi = request.form.get('deskripsi', '').strip()
+    try:
+        urutan = int(request.form.get('urutan', 1) or 1)
+    except (ValueError, TypeError):
+        urutan = 1
+    is_active = 1 if request.form.get('is_active') in ['1', 'on', 'true', True] else 0
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT gambar, urutan FROM banner_slider WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        flash('Banner slider tidak ditemukan.', 'danger')
+        return redirect(url_for('admin_branding') + '#section-slider')
+
+    gambar = request.form.get('gambar_url', '').strip() or row[0]
+    if 'gambar_file' in request.files:
+        file = request.files['gambar_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.svg', '.webp']:
+                filename = secure_filename(f"slider_{id}_{int(time.time())}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                gambar = f"static/images/uploads/{filename}"
+
+    if not judul:
+        conn.close()
+        flash('Judul banner slider tidak boleh kosong.', 'danger')
+        return redirect(url_for('admin_branding') + '#section-slider')
+
+    cursor.execute('''
+        UPDATE banner_slider 
+        SET judul = ?, deskripsi = ?, gambar = ?, urutan = ?, is_active = ?
+        WHERE id = ?
+    ''', (judul, deskripsi, gambar, urutan, is_active, id))
+    conn.commit()
+
+    # Sync back to profil_desa if this corresponds to slider 1, 2, or 3
+    if urutan == 1:
+        cursor.execute("UPDATE profil_desa SET banner_hero_1 = ?, banner_title_1 = ?, banner_desc_1 = ? WHERE id = 1", (gambar, judul, deskripsi))
+    elif urutan == 2:
+        cursor.execute("UPDATE profil_desa SET banner_hero_2 = ?, banner_title_2 = ?, banner_desc_2 = ? WHERE id = 1", (gambar, judul, deskripsi))
+    elif urutan == 3:
+        cursor.execute("UPDATE profil_desa SET banner_hero_3 = ?, banner_title_3 = ?, banner_desc_3 = ? WHERE id = 1", (gambar, judul, deskripsi))
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='EDIT_BANNER_SLIDER',
+        details=f'Mengedit banner slider ID {id}: "{judul[:40]}" (Urutan: {urutan}, Status: {"Aktif" if is_active else "Nonaktif"})',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+
+    flash('Banner slider berhasil diperbarui!', 'success')
+    return redirect(url_for('admin_branding') + '#section-slider')
+
+
+@app.route('/admin/banner-slider/<int:id>/toggle', methods=['POST'])
+@superadmin_required
+def admin_banner_slider_toggle(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE banner_slider SET is_active = CASE WHEN is_active = 1 THEN 0 ELSE 1 END WHERE id = ?", (id,))
+    conn.commit()
+    cursor.execute("SELECT judul, is_active FROM banner_slider WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if row:
+        status_str = "diaktifkan (tayang di depan)" if row[1] == 1 else "dinonaktifkan (disembunyikan)"
+        flash(f'Banner slider "{row[0][:35]}" berhasil {status_str}.', 'success')
+        record_activity_log(
+            action='TOGGLE_BANNER_SLIDER',
+            details=f'Mengubah status banner slider ID {id} menjadi {"Aktif" if row[1] == 1 else "Nonaktif"}',
+            username=session.get('username'),
+            user_id=session.get('user_id'),
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+    return redirect(url_for('admin_branding') + '#section-slider')
+
+
+@app.route('/admin/banner-slider/<int:id>/hapus', methods=['POST'])
+@superadmin_required
+def admin_banner_slider_hapus(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT judul FROM banner_slider WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    judul = row[0] if row else f"ID {id}"
+    cursor.execute("DELETE FROM banner_slider WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='HAPUS_BANNER_SLIDER',
+        details=f'Menghapus banner slider ID {id}: "{judul[:40]}"',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+
+    flash(f'Banner slider "{judul[:35]}" berhasil dihapus.', 'info')
+    return redirect(url_for('admin_branding') + '#section-slider')
 
 # ==========================================
 # 10. MENU BACKUP & RESTORE DATA (Khusus Super Admin)
@@ -6783,5 +7245,16 @@ def admin_keamanan():
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get('PORT', 8080))
-    print(f"=== Menjalankan Website Desa Papayan di http://127.0.0.1:{port} ===")
+    print("=" * 65)
+    print("       PORTAL RESMI WEBSITE DESA - SISTEM AKTIF & TERLINDUNGI")
+    print("=" * 65)
+    print(f" [FRONTEND PUBLIK]  : http://localhost:{port}")
+    print(f"                      http://192.168.2.105:{port} (Akses Jaringan LAN/WiFi)")
+    print(f" [BACKEND ADMIN]    : http://localhost:{port}/admin")
+    print(f"                      http://192.168.2.105:{port}/admin")
+    print(f" [AKUN ADMIN]       : admin / admin123 (Super Admin)")
+    print(f"                      operator / operator123 (Staf Pelayanan)")
+    print(f" [KEAMANAN SISTEM]  : Aktif (Anti-CSRF, Rate Limiting, HTTP Hardening, CSP)")
+    print("=" * 65)
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
+

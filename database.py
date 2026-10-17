@@ -296,6 +296,7 @@ def init_db():
         gambar3 TEXT,
         latitude REAL,
         longitude REAL,
+        alamat TEXT DEFAULT '',
         rating REAL DEFAULT 4.8,
         terjual INTEGER DEFAULT 0,
         status TEXT DEFAULT 'Disetujui',
@@ -305,9 +306,16 @@ def init_db():
     )
     ''')
 
-    # Migration: pastikan kolom gambar2, gambar3, latitude, longitude, status, nik_pemilik, catatan_admin, created_at ada di umkm
+    # Migration: pastikan kolom gambar2, gambar3, latitude, longitude, alamat, lokasi, status, nik_pemilik, catatan_admin, created_at ada di umkm
     cursor.execute("PRAGMA table_info(umkm)")
     cols_umkm = [col[1] for col in cursor.fetchall()]
+    if 'alamat' not in cols_umkm:
+        cursor.execute("ALTER TABLE umkm ADD COLUMN alamat TEXT DEFAULT ''")
+    if 'lokasi' not in cols_umkm:
+        cursor.execute("ALTER TABLE umkm ADD COLUMN lokasi TEXT DEFAULT ''")
+    # Sinkronisasi alamat & lokasi agar konsisten dengan fitur wisata
+    cursor.execute("UPDATE umkm SET lokasi = alamat WHERE (lokasi IS NULL OR lokasi = '') AND alamat IS NOT NULL AND alamat != ''")
+    cursor.execute("UPDATE umkm SET alamat = lokasi WHERE (alamat IS NULL OR alamat = '') AND lokasi IS NOT NULL AND lokasi != ''")
     if 'gambar2' not in cols_umkm:
         cursor.execute("ALTER TABLE umkm ADD COLUMN gambar2 TEXT")
     if 'gambar3' not in cols_umkm:
@@ -1456,6 +1464,52 @@ def init_db():
         ]
         cursor.executemany("INSERT INTO running_texts (teks, urutan, is_active) VALUES (?, ?, ?)", default_running)
         conn.commit()
+
+    # 14. Banner Slider Hero Halaman Depan
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS banner_slider (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        judul TEXT NOT NULL,
+        deskripsi TEXT,
+        gambar TEXT,
+        urutan INTEGER DEFAULT 1,
+        is_active INTEGER DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+    conn.commit()
+
+    cursor.execute("SELECT COUNT(*) FROM banner_slider")
+    if cursor.fetchone()[0] == 0:
+        default_sliders = [
+            ('Selamat Datang di Portal Resmi Desa Papayan', 'Desa Digital dari Jatiwaras', 'static/images/uploads/b1_1792274448.jpeg', 1, 1),
+            ('Pembinaan Desa Cantik 2026', 'Papayan menjadi salahsatu desa yang ikut serta dalam Program Desa Cinta Statistik 2026 yang dilakukan oleh BPS Kabupaten Tasikmalaya yang menyisihkan ratusan desa yang ada di Wilayah Pemerintahan Kabupeten Tasikmalaya', 'static/images/uploads/b2_1792274407.jpeg', 2, 1),
+            ('AgriCamp Papayan', 'Untuk mewujudkan petani Papayan sejahtera', 'static/images/uploads/b3_1792274617.jpg', 3, 1),
+            ('Pelayanan Publik Cepat, Transparan dan Akuntabel', 'Nikmati kemudahan layanan pengajuan surat online mandiri dan transparansi tata kelola desa.', 'static/images/banner1.png', 4, 1),
+            ('Pemberdayaan UMKM & Potensi Agrowisata Desa', 'Mendorong kemandirian ekonomi masyarakat melalui digitalisasi produk lokal dan pesona agrowisata.', 'static/images/banner2.png', 5, 1)
+        ]
+        cursor.executemany("INSERT INTO banner_slider (judul, deskripsi, gambar, urutan, is_active) VALUES (?, ?, ?, ?, ?)", default_sliders)
+        conn.commit()
+
+    # 15. Galeri Foto & Dokumentasi Kegiatan serta Sub-Galeri Piagam Penghargaan
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS galeri (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        judul TEXT NOT NULL,
+        deskripsi TEXT,
+        kategori TEXT NOT NULL,
+        tipe TEXT DEFAULT 'kegiatan',
+        gambar TEXT NOT NULL,
+        tanggal DATE,
+        pengunggah TEXT DEFAULT 'Admin Desa',
+        kontak_pengunggah TEXT,
+        status TEXT DEFAULT 'Tayang',
+        pemberi_penghargaan TEXT,
+        tahun_penghargaan TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+    conn.commit()
 
     conn.close()
 

@@ -73,8 +73,11 @@
       </a>
 
       <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider px-3 mt-6 mb-2">Konten & Publikasi</div>
-      <a href="{{ url_for('admin_berita') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_berita' %}bg-brand-700 text-white{% endif %}">
-        <i class="fa-solid fa-newspaper w-4 text-center"></i> Berita & Kabar Desa
+      <a href="{{ url_for('admin_berita') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_berita' or request.endpoint == 'admin_galeri' %}bg-brand-700 text-white{% endif %}">
+        <span class="flex items-center gap-3"><i class="fa-solid fa-newspaper w-4 text-center"></i> Berita, Galeri & Piagam</span>
+        {% if pending_galeri_count_global is defined and pending_galeri_count_global > 0 %}
+        <span class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-bold animate-pulse" title="{{ pending_galeri_count_global }} Pengajuan Foto Baru">{{ pending_galeri_count_global }}</span>
+        {% endif %}
       </a>
       <a href="{{ url_for('admin_umkm') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_umkm' %}bg-brand-700 text-white{% endif %}">
         <i class="fa-solid fa-basket-shopping w-4 text-center"></i> Produk UMKM Warga
@@ -90,6 +93,9 @@
       </a>
       <a href="{{ url_for('admin_popup') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_popup' %}bg-brand-700 text-white{% endif %}">
         <i class="fa-solid fa-window-restore w-4 text-center text-amber-400"></i> Pop-up Pengumuman Web
+      </a>
+      <a href="{{ url_for('admin_branding') }}#section-slider" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition">
+        <i class="fa-solid fa-images w-4 text-center text-teal-400"></i> Banner Slider Beranda
       </a>
 
       <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider px-3 mt-6 mb-2">Pemerintahan & Data</div>

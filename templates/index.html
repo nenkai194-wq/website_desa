@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ profil.judul_website or 'Website Resmi Desa ' ~ profil.nama_desa }} - Kabupaten {{ profil.kabupaten }}</title>
-  <meta name="description" content="{{ profil.judul_website or 'Website Resmi Desa' }}, Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}, Kalimantan Timur. {{ profil.tagline_website }}." />
+  <meta name="description" content="{{ profil.judul_website or 'Website Resmi Desa ' ~ profil.nama_desa }}, Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}." />
   <meta property="og:title" content="{{ profil.judul_website or 'Website Resmi Desa ' ~ profil.nama_desa }}" />
-  <meta property="og:description" content="{{ profil.tagline_website or 'Portal Resmi Desa' }}." />
+  <meta property="og:description" content="Portal Resmi Informasi & Layanan Mandiri Pemerintah Desa {{ profil.nama_desa }}." />
   <meta property="og:image" content="{{ url_for('static', filename=profil.logo_website.replace('static/', '')) if profil.logo_website and profil.logo_website.startswith('static/') else (profil.logo_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" />
   <link rel="icon" type="image/png" href="{{ url_for('static', filename=profil.favicon_website.replace('static/', '')) if profil.favicon_website and profil.favicon_website.startswith('static/') else (profil.favicon_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" />
 
@@ -54,66 +54,99 @@
 </head>
 <body class="bg-[#F8FAFC] text-slate-800 font-outfit antialiased selection:bg-brand-500 selection:text-white">
 
-  <!-- MAIN HEADER / NAVBAR -->
-  <header class="sticky top-0 z-50 bg-gradient-to-r from-[#174e0d] via-[#246b15] to-[#123e0a] text-white shadow-lg shadow-black/10 transition-all duration-300 border-b border-emerald-500/20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between py-2 sm:py-2.5 min-h-[84px]">
+  <!-- MAIN HEADER / NAVBAR: GRADASI HIJAU SESUAI SCREENSHOT -->
+  <header class="sticky top-0 z-50 bg-gradient-to-b from-[#1b5e20] via-[#164e1a] to-[#0f3813] text-white shadow-xl shadow-black/20 transition-all duration-300 border-b border-black/40">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between py-2 sm:py-2.5 min-h-[72px] gap-3">
         
-        <!-- Logo & Village Identity (Proporsional & Tulisan Besar) -->
+        <!-- Logo & Identitas Desa: Sesuai Screenshot -->
         <a href="javascript:void(0)" onclick="navigateToView('beranda')" class="flex items-center gap-3.5 group shrink-0">
-          <div class="shrink-0 flex items-center justify-center">
-            <img src="{{ url_for('static', filename=profil.logo_website.replace('static/', '')) if profil.logo_website and profil.logo_website.startswith('static/') else (profil.logo_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" 
-                 alt="Logo {{ profil.nama_desa }}" 
-                 class="h-14 sm:h-16 w-auto max-w-[62px] object-contain drop-shadow-md transition-transform duration-200 group-hover:scale-105" 
-                 onerror="this.src='{{ url_for('static', filename='images/logo_tasikmalaya.png') }}'" />
-          </div>
+          <img src="{{ url_for('static', filename=profil.logo_website.replace('static/', '')) if profil.logo_website and profil.logo_website.startswith('static/') else (profil.logo_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" 
+               alt="Logo {{ profil.nama_desa }}" 
+               class="h-12 sm:h-14 w-auto object-contain drop-shadow" 
+               onerror="this.src='{{ url_for('static', filename='images/logo_tasikmalaya.png') }}'" />
           <div class="flex flex-col justify-center">
-            <h1 class="text-xl sm:text-2xl lg:text-3xl font-black uppercase tracking-tight text-white block leading-none">
+            <h1 class="text-xl sm:text-2xl font-black uppercase tracking-tight text-white block leading-none font-outfit">
               PEMDES {{ (profil.nama_desa or 'PAPAYAN')|upper }}
             </h1>
-            <span class="text-[11px] sm:text-xs text-emerald-100/90 font-semibold block leading-tight mt-1.5">
-              Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}
+            <span class="text-[11px] sm:text-xs text-white/90 font-medium block mt-1 tracking-tight">
+              Kecamatan {{ profil.kecamatan or 'Jatiwaras' }}, Kabupaten {{ profil.kabupaten or 'Tasikmalaya' }}
             </span>
           </div>
         </a>
 
-        <!-- Desktop Navigation Links -->
-        <nav class="hidden lg:flex items-center gap-1 text-xs font-bold text-white/90">
-          <button type="button" onclick="navigateToView('beranda')" data-nav-view="beranda" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 bg-white/20 text-white">
-            <i class="fa-solid fa-house text-[11px]"></i> Beranda
+        <!-- Desktop Navigation: Menu Sejajar Sesuai Screenshot (Ukuran Teks & Jarak Proporsional) -->
+        <nav class="hidden lg:flex items-center gap-0.5 xl:gap-1.5 2xl:gap-2.5 font-bold text-white/95">
+          
+          <!-- 1. Beranda -->
+          <button type="button" onclick="navigateToView('beranda')" data-nav-view="beranda" 
+                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+            <i class="fa-solid fa-house text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Beranda</span>
           </button>
-          <button type="button" onclick="navigateToView('profil')" data-nav-view="profil" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-landmark text-[11px]"></i> Profil
-          </button>
-          <button type="button" onclick="navigateToView('infografis')" data-nav-view="infografis" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-chart-pie text-[11px]"></i> Infografis
-          </button>
-          <button type="button" onclick="navigateToView('peta')" data-nav-view="peta" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-map-location-dot text-[11px]"></i> Peta Desa
-          </button>
-          <button type="button" onclick="navigateToView('wisata')" data-nav-view="wisata" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-umbrella-beach text-[11px]"></i> Wisata
-          </button>
-          <button type="button" onclick="navigateToView('umkm')" data-nav-view="umkm" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-basket-shopping text-[11px]"></i> UMKM
-          </button>
-          <button type="button" onclick="navigateToView('berita')" data-nav-view="berita" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-newspaper text-[11px]"></i> Berita
-          </button>
-          <button type="button" onclick="navigateToView('publikasi')" data-nav-view="publikasi" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-book-bookmark text-[11px]"></i> Publikasi
-          </button>
-          </nav>
 
-        <!-- CTA & Mobile Burger -->
-        <div class="flex items-center gap-3">
-          <button type="button" onclick="handleKlikLayananSurat()" data-nav-view="layanan-surat" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-300 via-amber-200 to-yellow-300 text-black font-black px-4 py-2 rounded-xl text-xs hover:brightness-105 transition shadow-md shadow-amber-400/20 border border-amber-300 hover:scale-105" style="color: #000000 !important;">
-            <i class="fa-solid fa-file-pen text-black" style="color: #000000 !important;"></i>
-            <span class="text-black font-black" style="color: #000000 !important;">Layanan Surat</span>
+          <!-- 2. Profil -->
+          <button type="button" onclick="navigateToView('profil')" data-nav-view="profil" 
+                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+            <i class="fa-solid fa-landmark text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Profil</span>
+          </button>
+
+          <!-- 3. Statistik Desa -->
+          <button type="button" onclick="navigateToView('infografis')" data-nav-view="infografis" 
+                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+            <i class="fa-solid fa-chart-pie text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Statistik Desa</span>
+          </button>
+
+          <!-- 4. Peta Desa -->
+          <button type="button" onclick="navigateToView('peta')" data-nav-view="peta" 
+                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+            <i class="fa-solid fa-map-location-dot text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Peta Desa</span>
+          </button>
+
+          <!-- 5. Wisata -->
+          <button type="button" onclick="navigateToView('wisata')" data-nav-view="wisata" 
+                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+            <i class="fa-solid fa-umbrella-beach text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Wisata</span>
+          </button>
+
+          <!-- 6. UMKM -->
+          <button type="button" onclick="navigateToView('umkm')" data-nav-view="umkm" 
+                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+            <i class="fa-solid fa-basket-shopping text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>UMKM</span>
+          </button>
+
+          <!-- 7. Berita & Galeri -->
+          <button type="button" onclick="navigateToView('berita')" data-nav-view="berita" 
+                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+            <i class="fa-solid fa-newspaper text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Berita & Galeri</span>
+          </button>
+
+          <!-- 8. Publikasi -->
+          <button type="button" onclick="navigateToView('publikasi')" data-nav-view="publikasi" 
+                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+            <i class="fa-solid fa-book-bookmark text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Publikasi</span>
+          </button>
+
+        </nav>
+
+        <!-- Bagian Kanan: Tombol Kuning Layanan Surat & Toggle Mobile -->
+        <div class="flex items-center gap-3 shrink-0">
+          <button type="button" onclick="handleKlikLayananSurat()" data-nav-view="layanan-surat" 
+                  class="hidden sm:inline-flex items-center gap-2.5 bg-gradient-to-r from-[#ffe066] via-[#ffd43b] to-[#fcc419] hover:from-[#ffd43b] hover:to-[#fab005] text-slate-950 font-black px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm shadow-lg shadow-black/20 border border-amber-200/90 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
+            <i class="fa-solid fa-file-signature text-base text-slate-950"></i>
+            <span class="leading-tight text-center">Layanan<br class="hidden sm:inline">Surat</span>
           </button>
 
           <!-- Mobile Toggle Button -->
-          <button id="mobile-menu-toggle" type="button" class="lg:hidden p-2.5 rounded-xl text-white hover:bg-white/10 transition" aria-label="Menu Navigasi">
+          <button id="mobile-menu-toggle" type="button" 
+                  class="xl:hidden p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15" aria-label="Buka Menu Navigasi">
             <i class="fa-solid fa-bars text-xl"></i>
           </button>
         </div>
@@ -121,16 +154,17 @@
       </div>
     </div>
 
-    <!-- RUNNING TEXT TICKER (Di Bawah Menu Utama - Sejajar Logo) -->
-    <div class="bg-gradient-to-r from-[#0d2a07] via-[#143a0c] to-[#0a2305] text-emerald-100 text-xs py-2 border-t border-emerald-500/25 shadow-inner">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+    <!-- BARIS RUNNING TEXT TICKER PERSIS SEPERTI GAMBAR USER -->
+    <div class="bg-gradient-to-b from-[#0a2307] to-[#041203] text-emerald-100 text-xs py-1.5 border-t border-emerald-950">
+      <div class="max-w-[1440px] mx-auto px-4 sm:px-6 flex items-center justify-between gap-3">
         
         <!-- Running text marquee -->
         <div class="flex items-center gap-2.5 overflow-hidden flex-1 min-w-0">
-          <span class="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 font-black text-[10px] sm:text-xs px-3 py-0.5 rounded-full uppercase tracking-wider shrink-0 shadow-md shadow-emerald-400/30 flex items-center gap-1.5">
-            <i class="fa-solid fa-bullhorn text-[9px] sm:text-[10px]"></i> Info Desa
+          <!-- INFO DESA Badge Sesuai Screenshot (Border cyan/teal rounded pill) -->
+          <span class="bg-[#0f3d2e] text-[#2dd4bf] border border-[#2dd4bf] font-black text-[10px] sm:text-xs px-3.5 py-0.5 rounded-full uppercase tracking-wider shrink-0 flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-bullhorn text-[10px] text-[#2dd4bf]"></i> INFO DESA
           </span>
-          <div class="overflow-hidden flex-1 relative text-[11px] font-medium text-emerald-100">
+          <div class="overflow-hidden flex-1 relative text-[11px] font-medium text-white/90">
             <marquee onmouseover="this.stop();" onmouseout="this.start();" scrollamount="5" class="py-0.5">
               {% if running_texts_global %}
                 {% for item in running_texts_global %}
@@ -138,19 +172,22 @@
                   {% if not loop.last %}<span class="mx-5 text-emerald-400 font-bold">•</span>{% endif %}
                 {% endfor %}
               {% else %}
-                <span>🕒 <strong>Jam Pelayanan:</strong> {{ profil.jam_pelayanan or "Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00) WIB" }}</span>
+                <span>🕒 <strong>Jam Pelayanan:</strong> {{ profil.jam_pelayanan or "(08.00 - 16.30) WIB" }}</span>
                 <span class="mx-5 text-emerald-400 font-bold">•</span>
-                <span>🏛️ Selamat Datang di Portal Resmi Informasi & Layanan Mandiri Pemerintah Desa {{ profil.nama_desa }}, Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}</span>
+                <span>📄 Urus surat keterangan resmi (SKU, SKD, SKTM, dll.) secara online mandiri 24 jam melalui menu Layanan Surat</span>
+                <span class="mx-5 text-emerald-400 font-bold">•</span>
+                <span>📢 Sampaikan aspirasi & aduan masyarakat secara transparan</span>
               {% endif %}
             </marquee>
           </div>
         </div>
 
-        <!-- Right side: Kontak Telepon -->
-        <div class="flex items-center gap-2 text-[11px] shrink-0">
-          <a href="tel:{{ profil.telepon or '0821-xxxx-xxxx' }}" class="hover:text-white flex items-center gap-1.5 text-emerald-200 font-bold bg-white/10 hover:bg-white/20 px-3 py-1 rounded-xl border border-white/10 transition shadow-sm">
-            <i class="fa-solid fa-phone text-emerald-300 text-[10px]"></i>
-            <span>{{ profil.telepon or '0821-xxxx-xxxx' }}</span>
+        <!-- Right side: No Kontak Sesuai Screenshot (Green Rounded Pill) -->
+        <div class="flex items-center gap-2 shrink-0">
+          <a href="https://wa.me/{{ (profil.no_telepon or '0821-1991-8783').replace('-', '').replace(' ', '') }}" target="_blank" 
+             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0d3319] hover:bg-[#124220] text-[#a7f3d0] border border-[#34d399]/60 text-[11px] font-semibold transition shadow-xs">
+            <i class="fa-solid fa-phone text-[#34d399] text-[10px]"></i>
+            <span>{{ profil.no_telepon or '0821-1991-8783' }}</span>
           </a>
         </div>
 
@@ -166,7 +203,7 @@
         <i class="fa-solid fa-landmark w-4 text-emerald-300"></i> Profil Desa & SOTK
       </button>
       <button type="button" onclick="navigateToView('infografis')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
-        <i class="fa-solid fa-chart-pie w-4 text-emerald-300"></i> Infografis & APBDes
+        <i class="fa-solid fa-chart-pie w-4 text-emerald-300"></i> Statistik Desa & APBDes
       </button>
       <button type="button" onclick="navigateToView('peta')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
         <i class="fa-solid fa-map-location-dot w-4 text-emerald-300"></i> Peta Wilayah SLS (26 RT)
@@ -178,7 +215,7 @@
         <i class="fa-solid fa-basket-shopping w-4 text-emerald-300"></i> Belanja Produk UMKM
       </button>
       <button type="button" onclick="navigateToView('berita')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
-        <i class="fa-solid fa-newspaper w-4 text-emerald-300"></i> Berita & Kabar Desa
+        <i class="fa-solid fa-newspaper w-4 text-emerald-300"></i> Berita, Galeri & Prestasi
       </button>
       <button type="button" onclick="navigateToView('publikasi')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
         <i class="fa-solid fa-book-bookmark w-4 text-emerald-300"></i> Buku Publikasi Desa (PDF)
@@ -197,86 +234,49 @@
   <div id="view-beranda" class="page-view-container">
     <section class="relative h-[480px] sm:h-[580px] lg:h-[650px] w-full overflow-hidden bg-slate-900">
     <div id="hero-slides-container" class="relative w-full h-full">
-      <!-- Slide 1 -->
-      <div class="carousel-slide absolute inset-0 w-full h-full transition-opacity duration-1000 opacity-100 z-10" data-slide="0">
-        <img src="{{ url_for('static', filename=profil.banner_hero_1.replace('static/', '')) if profil.banner_hero_1 and profil.banner_hero_1.startswith('static/') else (profil.banner_hero_1 or url_for('static', filename='images/banner1.png')) }}" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'" class="w-full h-full object-cover brightness-[0.45]" alt="{{ profil.banner_title_1 or 'Banner 1' }}">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30 flex items-center">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white pt-12 md:pt-16">
-            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-600/90 text-white backdrop-blur-md mb-4 border border-emerald-400/30">
-              <span class="w-2 h-2 rounded-full bg-emerald-300 animate-ping"></span>
-              {{ profil.tagline_website or 'Wisata Bahari Unggulan' }}
-            </span>
-            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold max-w-3xl leading-tight text-white drop-shadow-md">
-              {{ profil.banner_title_1 or 'Selamat Datang di Website Resmi Desa ' ~ profil.nama_desa }}
-            </h1>
-            <p class="mt-4 text-base sm:text-xl text-gray-200 max-w-2xl leading-relaxed">
-              {{ profil.banner_desc_1 or 'Menjelajahi pesona pantai, kelestarian mangrove, dan kemajuan masyarakat.' }}
-            </p>
-            <div class="mt-8 flex flex-wrap gap-4">
-              <a href="javascript:void(0)" onclick="navigateToView('layanan-surat')" class="px-6 py-3.5 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
-                <i class="fa-solid fa-file-signature"></i> Layanan Surat Mandiri
-              </a>
-              <a href="javascript:void(0)" onclick="navigateToView('wisata')" class="px-6 py-3.5 rounded-xl font-bold bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
-                <i class="fa-solid fa-compass"></i> Jelajahi Potensi Desa
-              </a>
+      {% set active_sliders = sliders or banner_sliders_global or [] %}
+      {% if active_sliders %}
+        {% for s in active_sliders %}
+        <div class="carousel-slide absolute inset-0 w-full h-full transition-opacity duration-1000 {% if loop.first %}opacity-100 z-10{% else %}opacity-0 z-0{% endif %}" data-slide="{{ loop.index0 }}">
+          <img src="{{ url_for('static', filename=s.gambar.replace('static/', '')) if s.gambar and s.gambar.startswith('static/') else (s.gambar or url_for('static', filename='images/banner1.png')) }}" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'" class="w-full h-full object-cover brightness-[0.45]" alt="{{ s.judul }}">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30 flex items-center">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white pt-12 md:pt-16">
+              <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold max-w-3xl leading-tight text-white drop-shadow-md">
+                {{ s.judul }}
+              </h1>
+              {% if s.deskripsi %}
+              <p class="mt-4 text-base sm:text-xl text-gray-200 max-w-2xl leading-relaxed">
+                {{ s.deskripsi }}
+              </p>
+              {% endif %}
+              <div class="mt-8 flex flex-wrap gap-4">
+                <a href="javascript:void(0)" onclick="navigateToView('layanan-surat')" class="px-6 py-3.5 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                  <i class="fa-solid fa-file-signature"></i> Layanan Surat Mandiri
+                </a>
+                <a href="javascript:void(0)" onclick="navigateToView('wisata')" class="px-6 py-3.5 rounded-xl font-bold bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                  <i class="fa-solid fa-compass"></i> Jelajahi Potensi Desa
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Slide 2 -->
-      <div class="carousel-slide absolute inset-0 w-full h-full transition-opacity duration-1000 opacity-0 z-0" data-slide="1">
-        <img src="{{ url_for('static', filename=profil.banner_hero_2.replace('static/', '')) if profil.banner_hero_2 and profil.banner_hero_2.startswith('static/') else (profil.banner_hero_2 or url_for('static', filename='images/banner2.png')) }}" onerror="this.src='{{ url_for('static', filename='images/mangrove.jpg') }}'" class="w-full h-full object-cover brightness-[0.45]" alt="{{ profil.banner_title_2 or 'Banner 2' }}">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30 flex items-center">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white pt-12 md:pt-16">
-            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-600/90 text-white backdrop-blur-md mb-4 border border-emerald-400/30">
-              <span class="w-2 h-2 rounded-full bg-emerald-300 animate-ping"></span>
-              {{ profil.subtagline_website or 'Lingkungan Hidup Lestari' }}
-            </span>
-            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold max-w-3xl leading-tight text-white drop-shadow-md">
-              {{ profil.banner_title_2 or 'Penerima Sertifikat {{ profil.subtagline_website or "Desa Digital & Mandiri" }}' }}
-            </h1>
-            <p class="mt-4 text-base sm:text-xl text-gray-200 max-w-2xl leading-relaxed">
-              {{ profil.banner_desc_2 or 'Komitmen nyata masyarakat dalam menjaga kelestarian lingkungan pesisir.' }}
-            </p>
-            <div class="mt-8 flex flex-wrap gap-4">
-              <a href="javascript:void(0)" onclick="navigateToView('layanan-surat')" class="px-6 py-3.5 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
-                <i class="fa-solid fa-file-signature"></i> Layanan Surat Mandiri
-              </a>
-              <a href="javascript:void(0)" onclick="navigateToView('wisata')" class="px-6 py-3.5 rounded-xl font-bold bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
-                <i class="fa-solid fa-compass"></i> Jelajahi Potensi Desa
-              </a>
+        {% endfor %}
+      {% else %}
+        <!-- Fallback jika belum ada slider -->
+        <div class="carousel-slide absolute inset-0 w-full h-full transition-opacity duration-1000 opacity-100 z-10" data-slide="0">
+          <img src="{{ url_for('static', filename='images/banner1.png') }}" class="w-full h-full object-cover brightness-[0.45]" alt="Banner Desa">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30 flex items-center">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white pt-12 md:pt-16">
+              <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold max-w-3xl leading-tight text-white drop-shadow-md">
+                Selamat Datang di Website Resmi Desa {{ profil.nama_desa }}
+              </h1>
+              <p class="mt-4 text-base sm:text-xl text-gray-200 max-w-2xl leading-relaxed">
+                Portal Informasi & Pelayanan Publik Mandiri Masyarakat Desa.
+              </p>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Slide 3 -->
-      <div class="carousel-slide absolute inset-0 w-full h-full transition-opacity duration-1000 opacity-0 z-0" data-slide="2">
-        <img src="{{ url_for('static', filename=profil.banner_hero_3.replace('static/', '')) if profil.banner_hero_3 and profil.banner_hero_3.startswith('static/') else (profil.banner_hero_3 or url_for('static', filename='images/pantai_kersik.jpg')) }}" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'" class="w-full h-full object-cover brightness-[0.45]" alt="{{ profil.banner_title_3 or 'Banner 3' }}">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30 flex items-center">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white pt-12 md:pt-16">
-            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-600/90 text-white backdrop-blur-md mb-4 border border-emerald-400/30">
-              <span class="w-2 h-2 rounded-full bg-emerald-300 animate-ping"></span>
-              Pelayanan Digital
-            </span>
-            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold max-w-3xl leading-tight text-white drop-shadow-md">
-              {{ profil.banner_title_3 or 'Pelayanan Publik Cepat, Transparan dan Akuntabel' }}
-            </h1>
-            <p class="mt-4 text-base sm:text-xl text-gray-200 max-w-2xl leading-relaxed">
-              {{ profil.banner_desc_3 or 'Nikmati kemudahan layanan pengajuan surat online mandiri dan transparansi desa.' }}
-            </p>
-            <div class="mt-8 flex flex-wrap gap-4">
-              <a href="javascript:void(0)" onclick="navigateToView('layanan-surat')" class="px-6 py-3.5 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
-                <i class="fa-solid fa-file-signature"></i> Layanan Surat Mandiri
-              </a>
-              <a href="javascript:void(0)" onclick="navigateToView('wisata')" class="px-6 py-3.5 rounded-xl font-bold bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
-                <i class="fa-solid fa-compass"></i> Jelajahi Potensi Desa
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      {% endif %}
     </div>
 
     <!-- Carousel Controls -->
@@ -421,7 +421,7 @@
               <i class="fa-solid fa-chart-pie"></i>
             </div>
             <div class="flex items-center justify-between mb-2">
-              <h3 class="text-lg font-black text-slate-900 group-hover:text-blue-700 transition">Infografis & APBDes</h3>
+              <h3 class="text-lg font-black text-slate-900 group-hover:text-blue-700 transition">Statistik Desa & APBDes</h3>
               <span class="text-[10px] font-bold bg-blue-100/90 text-blue-800 px-2.5 py-0.5 rounded-full border border-blue-300 shadow-xs">{{ "{:,}".format(statistik.total_penduduk).replace(',', '.') if statistik.total_penduduk else '4.898' }} Jiwa</span>
             </div>
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
@@ -434,7 +434,7 @@
             </ul>
           </div>
           <div class="pt-3 border-t border-blue-100 flex items-center justify-between text-xs font-bold text-blue-700 group-hover:text-blue-800">
-            <span>Lihat Infografis & APBDes</span>
+            <span>Lihat Statistik Desa & APBDes</span>
             <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1.5 transition"></i>
           </div>
         </div>
@@ -843,7 +843,7 @@
       
       <div class="text-center max-w-2xl mx-auto mb-14">
         <span class="text-xs font-bold uppercase tracking-widest text-brand-300 bg-brand-900/60 border border-brand-700 px-3 py-1 rounded-full">Data Statistik</span>
-        <h2 class="text-2xl sm:text-4xl font-extrabold mt-2">Infografis Kependudukan Desa {{ profil.nama_desa }}</h2>
+        <h2 class="text-2xl sm:text-4xl font-extrabold mt-2">Statistik Kependudukan Desa {{ profil.nama_desa }}</h2>
         <p class="text-xs sm:text-sm text-slate-300 mt-1">Transparansi data demografi kependudukan yang diperbarui berkala untuk perencanaan pembangunan yang tepat sasaran.</p>
       </div>
 
@@ -2441,6 +2441,12 @@
             <i class="fa-solid fa-star text-amber-400"></i> {{ prod.rating }} ({{ prod.terjual }} terjual)
           </span>
 
+          {% if prod.latitude and prod.longitude %}
+          <span class="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-md text-emerald-300 text-[10px] font-mono font-semibold px-2 py-0.5 rounded-lg flex items-center gap-1 shadow z-10">
+            <i class="fa-solid fa-map-pin text-emerald-400 text-[9px]"></i> Aktif di Peta
+          </span>
+          {% endif %}
+
           <!-- Overlay Info on Hover -->
           <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center pointer-events-none">
             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 backdrop-blur-md text-slate-900 font-bold text-xs shadow-lg flex items-center gap-1.5">
@@ -2471,12 +2477,22 @@
           <div>
             <span class="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">{{ prod.produsen }}</span>
             <h3 class="font-bold text-gray-900 text-base mt-1 line-clamp-1 group-hover:text-emerald-700 transition">{{ prod.nama }}</h3>
-            {% if prod.latitude and prod.longitude %}
-            <div class="mt-1 flex items-center gap-1 text-[11px] text-sky-700 font-medium">
-              <i class="fa-solid fa-location-dot text-sky-600 text-[10px]"></i>
-              <span class="font-mono">{{ "%.4f"|format(prod.latitude) }}, {{ "%.4f"|format(prod.longitude) }}</span>
+            
+            <div class="mt-2 flex flex-col gap-1">
+              <p class="text-xs text-slate-500 flex items-start gap-1.5" title="{{ prod.lokasi or prod.alamat or 'Desa Papayan' }}">
+                <i class="fa-solid fa-location-dot text-brand-600 mt-0.5 flex-shrink-0 text-xs"></i>
+                <span class="line-clamp-1">{{ prod.lokasi or prod.alamat or 'Desa Papayan' }}</span>
+              </p>
+              {% if prod.latitude and prod.longitude %}
+              <div class="text-[11px] font-mono text-slate-600 bg-slate-50 border border-slate-100 rounded-md px-2 py-1 flex items-center justify-between">
+                <span><i class="fa-solid fa-crosshairs text-brand-600 mr-1 text-[10px]"></i>{{ "%.4f"|format(prod.latitude) }}, {{ "%.4f"|format(prod.longitude) }}</span>
+                <a href="https://www.google.com/maps?q={{ prod.latitude }},{{ prod.longitude }}" target="_blank" onclick="event.stopPropagation()" class="text-brand-700 hover:underline font-sans text-[10px] font-bold flex items-center gap-0.5">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> Cek GMaps
+                </a>
+              </div>
+              {% endif %}
             </div>
-            {% endif %}
+
             <p class="text-xs text-gray-500 mt-2 line-clamp-2 leading-relaxed">{{ prod.deskripsi }}</p>
           </div>
           
@@ -2622,59 +2638,321 @@
   <!-- ==================== VIEW 8: BERITA DESA ==================== -->
   <div id="view-berita" class="page-view-container hidden">
 
-    <section id="berita" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-      <div>
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Kabar Desa</span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Warta & Kabar Terkini Desa {{ profil.nama_desa }}</h2>
-        <p class="text-xs sm:text-sm text-slate-500 mt-1">Kegiatan pemerintahan desa, festival wisata pesisir, dan program kemasyarakatan terbaru.</p>
-      </div>
-      <a href="#berita" class="text-xs font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1.5">
-        Lihat Semua Berita <i class="fa-solid fa-arrow-right"></i>
-      </a>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {% for b in berita %}
-      <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 card-hover flex flex-col group cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5"
-               onclick="bukaModalDetailBerita({{ b.id }})"
-               title="Klik untuk membaca berita lengkap & foto besar">
-        <div class="relative h-56 overflow-hidden bg-slate-900">
-          <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar and b.gambar.startswith('static/') else (b.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" alt="{{ b.judul }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'">
-          <span class="absolute top-3 left-3 bg-emerald-600/90 text-white text-[11px] font-bold px-3 py-1 rounded-full backdrop-blur-md shadow-md z-10">
-            {{ b.kategori }}
-          </span>
-          <!-- Overlay Info on Hover -->
-          <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center pointer-events-none">
-            <span class="px-4 py-2 rounded-xl bg-white/95 backdrop-blur-md text-slate-900 font-bold text-xs shadow-lg flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition duration-300">
-              <i class="fa-regular fa-newspaper text-emerald-600"></i> Baca Berita Lengkap
-            </span>
-          </div>
-        </div>
-        <div class="p-6 flex-1 flex flex-col justify-between">
+    <!-- SUB-NAVIGASI HEADER BERITA & GALERI DESA -->
+    <div class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-950 text-white py-10 px-4 sm:px-6 lg:px-8 border-b border-emerald-700/60 shadow-inner">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <div class="flex items-center gap-3 text-xs text-gray-400 mb-2.5">
-              <span><i class="fa-regular fa-calendar mr-1"></i> {{ b.tanggal }}</span>
-              <span>•</span>
-              <span><i class="fa-regular fa-user mr-1"></i> {{ b.penulis }}</span>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-700/60 text-emerald-200 text-xs font-semibold backdrop-blur-sm border border-emerald-600/40 mb-3">
+              <i class="fa-solid fa-newspaper text-emerald-300"></i> Publikasi & Dokumentasi Resmi
             </div>
-            <h3 class="font-bold text-gray-900 text-lg leading-snug group-hover:text-emerald-700 transition line-clamp-2 mb-2">
-              {{ b.judul }}
-            </h3>
-            <p class="text-xs text-gray-600 line-clamp-3 leading-relaxed">{{ b.ringkasan }}</p>
+            <h1 class="text-2xl sm:text-4xl font-black tracking-tight text-white flex items-center gap-3">
+              <span>Warta, Galeri & Penghargaan Desa</span>
+            </h1>
+            <p class="text-xs sm:text-sm text-emerald-100/90 mt-2 max-w-2xl leading-relaxed">
+              Jendela informasi terpadu: warta kegiatan harian, album dokumentasi foto bersama masyarakat, serta jejak prestasi & piagam penghargaan resmi Pemerintah Desa {{ profil.nama_desa }}.
+            </p>
           </div>
-          <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-emerald-700">
-            <span>Baca Selengkapnya</span>
-            <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition duration-200"></i>
+          
+          <!-- Tombol Aksi Cepat Pengajuan Foto Warga -->
+          <div class="flex flex-wrap items-center gap-3">
+            <button type="button" onclick="bukaModalPengajuanGaleriWarga()" 
+                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold text-xs shadow-lg shadow-amber-900/30 transition-all transform hover:-translate-y-0.5 cursor-pointer">
+              <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
+              <span>+ Ajukan Foto Warga</span>
+            </button>
           </div>
         </div>
-      </article>
-      {% endfor %}
-    </div>
-  </section>
 
-  <!-- BUKU & PUBLIKASI DESA SHOWCASE (PERPUSTAKAAN DIGITAL) -->
-  
+        <!-- Tab Selector Submenu -->
+        <div class="flex flex-wrap gap-2.5 mt-8 pt-5 border-t border-emerald-700/50" id="tabs-submenu-berita">
+          <button type="button" onclick="gantiSubmenuBerita('warta')" id="btn-sub-warta"
+                  class="subtab-berita-btn px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-white text-emerald-900 shadow-md">
+            <i class="fa-regular fa-newspaper"></i>
+            <span>Warta & Berita Desa</span>
+          </button>
+          <button type="button" onclick="gantiSubmenuBerita('galeri')" id="btn-sub-galeri"
+                  class="subtab-berita-btn px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-emerald-900/60 hover:bg-emerald-700/60 text-emerald-100 border border-emerald-600/40">
+            <i class="fa-solid fa-camera-retro"></i>
+            <span>Galeri Dokumentasi</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-700 text-emerald-200 font-bold">{{ galeri_list|length }}</span>
+          </button>
+          <button type="button" onclick="gantiSubmenuBerita('penghargaan')" id="btn-sub-penghargaan"
+                  class="subtab-berita-btn px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-emerald-900/60 hover:bg-emerald-700/60 text-emerald-100 border border-emerald-600/40">
+            <i class="fa-solid fa-award text-amber-300"></i>
+            <span>Sub-Galeri Piagam & Prestasi</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500 text-amber-950 font-extrabold">{{ penghargaan_list|length }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 1: WARTA & BERITA DESA -->
+    <div id="panel-sub-warta" class="subpanel-berita">
+      <section id="berita" class="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Kabar Desa</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Warta & Kabar Terkini Desa {{ profil.nama_desa }}</h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Kegiatan pemerintahan desa, festival wisata pesisir, dan program kemasyarakatan terbaru.</p>
+          </div>
+          <a href="#berita" class="text-xs font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1.5">
+            Lihat Semua Berita <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {% for b in berita %}
+          <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 card-hover flex flex-col group cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5"
+                   onclick="bukaModalDetailBerita({{ b.id }})"
+                   title="Klik untuk membaca berita lengkap & foto besar">
+            <div class="relative h-56 overflow-hidden bg-slate-900">
+              <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar and b.gambar.startswith('static/') else (b.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" alt="{{ b.judul }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'">
+              <span class="absolute top-3 left-3 bg-emerald-600/90 text-white text-[11px] font-bold px-3 py-1 rounded-full backdrop-blur-md shadow-md z-10">
+                {{ b.kategori }}
+              </span>
+              <!-- Overlay Info on Hover -->
+              <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center pointer-events-none">
+                <span class="px-4 py-2 rounded-xl bg-white/95 backdrop-blur-md text-slate-900 font-bold text-xs shadow-lg flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition duration-300">
+                  <i class="fa-regular fa-newspaper text-emerald-600"></i> Baca Berita Lengkap
+                </span>
+              </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-3 text-xs text-gray-400 mb-2.5">
+                  <span><i class="fa-regular fa-calendar mr-1"></i> {{ b.tanggal }}</span>
+                  <span>•</span>
+                  <span><i class="fa-regular fa-user mr-1"></i> {{ b.penulis }}</span>
+                </div>
+                <h3 class="font-bold text-gray-900 text-lg leading-snug group-hover:text-emerald-700 transition line-clamp-2 mb-2">
+                  {{ b.judul }}
+                </h3>
+                <p class="text-xs text-gray-600 line-clamp-3 leading-relaxed">{{ b.ringkasan }}</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-emerald-700">
+                <span>Baca Selengkapnya</span>
+                <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition duration-200"></i>
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+
+    <!-- PANEL 2: GALERI DOKUMENTASI KEGIATAN DESA & WARGA -->
+    <div id="panel-sub-galeri" class="subpanel-berita hidden">
+      <section class="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Galeri & Filter Kategori -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold mb-2">
+              <i class="fa-solid fa-camera"></i> Album Dokumentasi Visual
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Galeri Foto Kegiatan Desa & Warga</h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
+              Kumpulan dokumentasi momen gotong royong, musyawarah, peringatan hari besar, kegiatan pemuda, serta program kerja nyata kemasyarakatan.
+            </p>
+          </div>
+          
+          <!-- Filter Tombol -->
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="filterGaleriFrontend('semua')" id="btn-flt-semua"
+                    class="btn-galeri-flt px-4 py-2 rounded-xl text-xs font-bold transition bg-emerald-700 text-white shadow-sm">
+              Semua Foto
+            </button>
+            <button type="button" onclick="filterGaleriFrontend('Kegiatan Pemdes')" id="btn-flt-pemdes"
+                    class="btn-galeri-flt px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 hover:bg-slate-200 text-slate-700">
+              Kegiatan Pemdes
+            </button>
+            <button type="button" onclick="filterGaleriFrontend('Kegiatan Warga')" id="btn-flt-warga"
+                    class="btn-galeri-flt px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 hover:bg-slate-200 text-slate-700">
+              Kegiatan Warga
+            </button>
+            <button type="button" onclick="bukaModalPengajuanGaleriWarga()"
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-cloud-arrow-up"></i> + Ajukan Foto
+            </button>
+          </div>
+        </div>
+
+        <!-- Banner Info Partisipasi Warga -->
+        <div class="mb-8 p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md">
+              <i class="fa-solid fa-hand-holding-heart"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-800 text-xs sm:text-sm">Warga Bisa Ikut Mengirimkan Foto Dokumentasi!</h4>
+              <p class="text-[11px] sm:text-xs text-slate-600 mt-0.5">Punya dokumentasi kegiatan RT/RW, kerja bakti, kejuaraan olahraga, atau pengajian? Kirimkan foto Anda untuk ditayangkan setelah disetujui Admin Desa.</p>
+            </div>
+          </div>
+          <button type="button" onclick="bukaModalPengajuanGaleriWarga()" class="shrink-0 px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-paper-plane text-xs"></i> Kirim Foto Sekarang
+          </button>
+        </div>
+
+        <!-- Grid Galeri -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-galeri-frontend">
+          {% for g in galeri_list %}
+          <div class="galeri-item-card bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col group cursor-pointer"
+               data-kategori="{{ g.kategori }}"
+               onclick="bukaLightboxFrontend('{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar and g.gambar.startswith('static/') else (g.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}', '{{ g.judul|replace('\'', '\\\'') }}', '{{ g.kategori }}', '{{ g.tanggal }}', '{{ g.pengunggah|replace('\'', '\\\'') if g.pengunggah else 'Pemerintah Desa' }}', '{{ (g.deskripsi or '')|replace('\r', '')|replace('\n', ' ')|replace('\'', '\\\'') }}')">
+            <div class="relative h-60 overflow-hidden bg-slate-900">
+              <img src="{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar and g.gambar.startswith('static/') else (g.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" 
+                   alt="{{ g.judul }}" 
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'">
+              
+              <!-- Badge Kategori -->
+              <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-bold shadow-md z-10 backdrop-blur-md {% if g.kategori == 'Kegiatan Pemdes' %}bg-blue-600/90 text-white{% else %}bg-emerald-600/90 text-white{% endif %}">
+                <i class="{% if g.kategori == 'Kegiatan Pemdes' %}fa-solid fa-landmark{% else %}fa-solid fa-users{% endif %} mr-1"></i>
+                {{ g.kategori }}
+              </span>
+
+              <!-- Hover overlay with Zoom icon -->
+              <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <span class="w-12 h-12 rounded-full bg-white/90 text-slate-900 flex items-center justify-center text-lg shadow-xl transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                  <i class="fa-solid fa-magnifying-glass-plus text-emerald-700"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="p-5 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between text-[11px] text-slate-400 mb-2">
+                  <span class="flex items-center gap-1.5"><i class="fa-regular fa-calendar"></i> {{ g.tanggal }}</span>
+                  <span class="flex items-center gap-1.5 truncate max-w-[140px] text-slate-500 font-medium">
+                    <i class="fa-regular fa-user"></i> {{ g.pengunggah or 'Pemerintah Desa' }}
+                  </span>
+                </div>
+                <h3 class="font-extrabold text-slate-800 text-base leading-snug group-hover:text-emerald-700 transition line-clamp-2 mb-2">
+                  {{ g.judul }}
+                </h3>
+                {% if g.deskripsi %}
+                <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">{{ g.deskripsi }}</p>
+                {% endif %}
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-700">
+                <span>Perbesar Foto</span>
+                <i class="fa-solid fa-expand text-[11px] group-hover:scale-125 transition-transform duration-200"></i>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200/80 p-8 shadow-xs">
+            <div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mx-auto mb-3">
+              <i class="fa-solid fa-camera"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-lg">Belum Ada Foto Dokumentasi</h4>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-md mx-auto">Foto kegiatan desa dan partisipasi warga akan segera diunggah dan diperbarui di sini.</p>
+            <button type="button" onclick="bukaModalPengajuanGaleriWarga()" class="mt-4 px-4 py-2 rounded-xl bg-emerald-700 text-white font-bold text-xs inline-flex items-center gap-2">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Ajukan Foto Pertama
+            </button>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+
+    <!-- PANEL 3: SUB-GALERI KHUSUS PIAGAM PENGHARGAAN & PRESTASI PEMERINTAH DESA -->
+    <div id="panel-sub-penghargaan" class="subpanel-berita hidden">
+      <section class="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Hero Banner Khusus Piagam & Prestasi -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-600 via-amber-700 to-amber-900 text-white p-8 sm:p-10 shadow-xl mb-12 border border-amber-400/40">
+          <div class="absolute -right-10 -bottom-10 opacity-15 text-amber-200 text-9xl pointer-events-none">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <div class="relative z-10 max-w-3xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/30 text-amber-100 text-xs font-bold border border-amber-300/40 mb-3 backdrop-blur-sm">
+              <i class="fa-solid fa-award text-amber-300"></i> Etalase Kehormatan & Prestasi
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight">Piagam & Penghargaan Prestasi Pemerintah Desa</h2>
+            <p class="text-xs sm:text-sm text-amber-100/90 mt-2 leading-relaxed">
+              Dokumentasi resmi atas berbagai capaian, penghargaan tingkat Daerah hingga Nasional, serta apresiasi yang diraih Pemerintah Desa {{ profil.nama_desa }} bersama seluruh elemen masyarakat.
+            </p>
+            <div class="flex flex-wrap items-center gap-4 mt-6 pt-4 border-t border-amber-500/40 text-xs font-semibold text-amber-200">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-certificate text-amber-300"></i> Terverifikasi Resmi</span>
+              <span>•</span>
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-star text-amber-300"></i> {{ penghargaan_list|length }} Prestasi Tercatat</span>
+              <span>•</span>
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-users text-amber-300"></i> Buah Kolaborasi Pemdes & Warga</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid Kartu Piagam Penghargaan -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {% for p in penghargaan_list %}
+          <div class="bg-gradient-to-b from-amber-50/60 to-white rounded-3xl overflow-hidden border-2 border-amber-200/80 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col group cursor-pointer"
+               onclick="bukaLightboxFrontend('{{ url_for('static', filename=p.gambar.replace('static/', '')) if p.gambar and p.gambar.startswith('static/') else (p.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}', '{{ p.judul|replace('\'', '\\\'') }}', 'Piagam & Penghargaan', '{{ p.tanggal }}', '{{ (p.pemberi_penghargaan or 'Pemerintah / Instansi Resmi')|replace('\'', '\\\'') }}', '{{ (p.deskripsi or '')|replace('\r', '')|replace('\n', ' ')|replace('\'', '\\\'') }}')">
+            
+            <!-- Frame Piagam dengan aksen Gold Ribbon -->
+            <div class="relative h-64 overflow-hidden bg-slate-900 border-b border-amber-200/70">
+              <img src="{{ url_for('static', filename=p.gambar.replace('static/', '')) if p.gambar and p.gambar.startswith('static/') else (p.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" 
+                   alt="{{ p.judul }}" 
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'">
+              
+              <!-- Badge Tahun -->
+              {% if p.tahun_penghargaan %}
+              <div class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-black shadow-md z-10 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 flex items-center gap-1">
+                <i class="fa-solid fa-calendar-check text-[11px]"></i>
+                <span>Tahun {{ p.tahun_penghargaan }}</span>
+              </div>
+              {% endif %}
+
+              <!-- Badge Gold Trophy -->
+              <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-amber-400 text-amber-950 flex items-center justify-center font-bold text-xs shadow-md z-10">
+                <i class="fa-solid fa-trophy"></i>
+              </div>
+
+              <!-- Hover overlay with zoom icon -->
+              <div class="absolute inset-0 bg-amber-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <span class="px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs shadow-xl flex items-center gap-2 transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                  <i class="fa-solid fa-magnifying-glass-plus"></i> Lihat Pratinjau Piagam
+                </span>
+              </div>
+            </div>
+
+            <!-- Detail Piagam -->
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-2 text-xs text-amber-800 font-bold mb-2">
+                  <i class="fa-solid fa-building-columns text-amber-600"></i>
+                  <span class="truncate">{{ p.pemberi_penghargaan or 'Pemerintah / Instansi Resmi' }}</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg leading-snug group-hover:text-amber-700 transition line-clamp-2 mb-2">
+                  {{ p.judul }}
+                </h3>
+                {% if p.deskripsi %}
+                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">{{ p.deskripsi }}</p>
+                {% endif %}
+              </div>
+
+              <div class="mt-5 pt-3 border-t border-amber-100 flex items-center justify-between text-xs font-bold text-amber-700">
+                <span class="flex items-center gap-1"><i class="fa-regular fa-calendar-days text-[11px]"></i> {{ p.tanggal }}</span>
+                <span class="flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-200">
+                  Buka Piagam <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="col-span-full py-16 text-center bg-white rounded-3xl border-2 border-dashed border-amber-200 p-8 shadow-xs">
+            <div class="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-3xl mx-auto mb-3">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-lg">Belum Ada Piagam Penghargaan Ditampilkan</h4>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-md mx-auto">Piagam dan dokumentasi penghargaan prestasi desa akan diinput oleh admin desa melalui panel backend.</p>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+
   </div>
 
   <!-- ==================== VIEW 9: BUKU PUBLIKASI ==================== -->
@@ -3129,7 +3407,7 @@
             </div>
           </div>
           <p class="text-slate-400 leading-relaxed text-xs">
-            {{ profil.teks_footer_deskripsi or ('Desa ' ~ profil.nama_desa ~ ' terletak di Kecamatan ' ~ profil.kecamatan ~ ', Kabupaten ' ~ profil.kabupaten ~ ', ' ~ (profil.provinsi or 'Jawa Barat') ~ '. ' ~ (profil.tagline_website or '') ~ '. ' ~ (profil.subtagline_website or '')) }}
+            {{ profil.teks_footer_deskripsi or ('Desa ' ~ profil.nama_desa ~ ' terletak di Kecamatan ' ~ profil.kecamatan ~ ', Kabupaten ' ~ profil.kabupaten ~ ', ' ~ (profil.provinsi or 'Jawa Barat') ~ '.') }}
           </p>
           <div class="mt-4 text-[11px] space-y-1 text-slate-500">
             <p><strong>Kode Wilayah:</strong> {{ profil.kode_wilayah }}</p>
@@ -3335,6 +3613,12 @@
           </div>
         </div>
 
+        <!-- Alamat / Lokasi Tertulis -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Alamat / Lokasi Tertulis <span class="text-red-500">*</span></label>
+          <input type="text" name="lokasi" id="warga-umkm-lokasi" required placeholder="Contoh: RT 001 RW 003 Dusun Ranca Sari, Desa Papayan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        </div>
+
         <!-- Leaflet Map Picker untuk Lokasi Usaha UMKM Warga -->
         <div class="bg-gradient-to-br from-emerald-50/80 to-teal-50/80 p-4 rounded-2xl border border-emerald-200 space-y-3">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -3347,9 +3631,14 @@
                 Klik pada peta atau geser pin ke lokasi tempat usaha/produksi UMKM Anda.
               </p>
             </div>
-            <button type="button" onclick="ambilLokasiGPSWargaUMKM()" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-sm transition flex-shrink-0" title="Gunakan GPS saat Anda sedang berada di lokasi usaha">
-              <i class="fa-solid fa-crosshairs"></i> Gunakan GPS Saya
-            </button>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <button type="button" onclick="ambilLokasiGPSWargaUMKM()" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-sm transition" title="Gunakan GPS saat Anda sedang berada di lokasi usaha">
+                <i class="fa-solid fa-crosshairs"></i> Gunakan GPS Saya
+              </button>
+              <button type="button" onclick="cariLokasiOtomatisWargaUMKM()" class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-bold flex items-center gap-1 transition" title="Cari otomatis berdasarkan nama atau alamat">
+                <i class="fa-solid fa-magnifying-glass"></i> Cari Otomatis
+              </button>
+            </div>
           </div>
 
           <div class="relative w-full h-48 rounded-xl border-2 border-emerald-300 overflow-hidden shadow-inner bg-slate-200">
@@ -4227,12 +4516,12 @@
 
           wargaUmkmPickerMarker.on('dragend', function(e) {
             const pos = wargaUmkmPickerMarker.getLatLng();
-            setWargaUmkmCoord(pos.lat, pos.lng);
+            setWargaUmkmCoord(pos.lat, pos.lng, true);
           });
 
           wargaUmkmPickerMap.on('click', function(e) {
             wargaUmkmPickerMarker.setLatLng(e.latlng);
-            setWargaUmkmCoord(e.latlng.lat, e.latlng.lng);
+            setWargaUmkmCoord(e.latlng.lat, e.latlng.lng, true);
           });
         }
 
@@ -4243,12 +4532,26 @@
       }, 250);
     }
 
-    function setWargaUmkmCoord(lat, lng) {
+    function setWargaUmkmCoord(lat, lng, doReverseGeocode = false) {
       const latEl = document.getElementById('warga-umkm-lat');
       const lngEl = document.getElementById('warga-umkm-lng');
       if (latEl && lngEl) {
         latEl.value = parseFloat(lat).toFixed(6);
         lngEl.value = parseFloat(lng).toFixed(6);
+      }
+
+      if (doReverseGeocode) {
+        const lokasiInput = document.getElementById('warga-umkm-lokasi');
+        if (lokasiInput && !lokasiInput.value.trim()) {
+          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${parseFloat(lat)}&lon=${parseFloat(lng)}&zoom=16&addressdetails=1`)
+            .then(res => res.json())
+            .then(data => {
+              if (data && data.display_name && !lokasiInput.value.trim()) {
+                lokasiInput.value = data.address.village || data.address.suburb || data.address.road || data.display_name.split(',')[0];
+              }
+            })
+            .catch(() => {});
+        }
       }
     }
 
@@ -4269,7 +4572,7 @@
           if (wargaUmkmPickerMap && wargaUmkmPickerMarker) {
             wargaUmkmPickerMap.setView([lat, lng], 16);
             wargaUmkmPickerMarker.setLatLng([lat, lng]);
-            setWargaUmkmCoord(lat, lng);
+            setWargaUmkmCoord(lat, lng, true);
           }
         },
         (err) => {
@@ -4278,6 +4581,106 @@
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
+    }
+
+    function cariLokasiOtomatisWargaUMKM() {
+      const nama = document.getElementById('warga-umkm-nama').value.trim();
+      const produsen = document.getElementById('warga-umkm-produsen').value.trim();
+      const lokasi = document.getElementById('warga-umkm-lokasi').value.trim();
+      const query = lokasi || nama || produsen;
+
+      if (!query) {
+        alert('Ketik terlebih dahulu Nama Produk atau Alamat / Lokasi Tertulis di atas untuk mencari otomatis di peta.');
+        return;
+      }
+
+      const loader = document.getElementById('warga-umkm-map-loader');
+      if (loader) {
+        loader.classList.remove('hidden');
+        const span = loader.querySelector('span');
+        if (span) span.innerText = `Mencari lokasi: ${query}...`;
+      }
+
+      // 1. Cek SLS/RT lokal Desa jika tertera dalam teks alamat
+      const slsMap = {
+        'RT 001 RW 003': [-7.46832, 108.20620],
+        'RT 002 RW 003': [-7.47000, 108.20691],
+        'RT 002 RW 006': [-7.48672, 108.19814],
+        'RT 001 RW 006': [-7.49348, 108.19590],
+        'RT 003 RW 006': [-7.48930, 108.19487],
+        'RT 001 RW 002': [-7.46596, 108.20883],
+        'RT 002 RW 002': [-7.46699, 108.21113],
+        'RT 004 RW 002': [-7.46997, 108.21429],
+        'RT 003 RW 002': [-7.46643, 108.21008],
+        'RT 002 RW 004': [-7.48124, 108.20497],
+        'RT 001 RW 005': [-7.49057, 108.20506],
+        'RT 002 RW 005': [-7.49352, 108.20286],
+        'RT 003 RW 005': [-7.49357, 108.20081],
+        'RT 002 RW 001': [-7.46541, 108.20052],
+        'RT 002 RW 007': [-7.46462, 108.20651],
+        'RT 001 RW 007': [-7.46317, 108.20886],
+        'RT 005 RW 001': [-7.46572, 108.20288],
+        'RT 003 RW 008': [-7.47935, 108.20787],
+        'RT 002 RW 008': [-7.47708, 108.20932],
+        'RT 001 RW 008': [-7.47584, 108.20638],
+        'RT 004 RW 001': [-7.46183, 108.20099],
+        'RT 003 RW 001': [-7.46793, 108.20358],
+        'RT 001 RW 001': [-7.46273, 108.20337],
+        'RT 003 RW 004': [-7.48277, 108.20264],
+        'RT 001 RW 004': [-7.47930, 108.20479],
+        'RT 004 RW 005': [-7.49750, 108.20137]
+      };
+
+      const upperQ = query.toUpperCase();
+      for (const [rtKey, coords] of Object.entries(slsMap)) {
+        if (upperQ.includes(rtKey) || upperQ.includes(rtKey.replace(/ /g, ''))) {
+          if (loader) loader.classList.add('hidden');
+          if (wargaUmkmPickerMap && wargaUmkmPickerMarker) {
+            wargaUmkmPickerMap.setView(coords, 17);
+            wargaUmkmPickerMarker.setLatLng(coords);
+            setWargaUmkmCoord(coords[0], coords[1]);
+          }
+          return;
+        }
+      }
+
+      const namaDesa = (window.SERVER_DATA && window.SERVER_DATA.profil && window.SERVER_DATA.profil.nama_desa) ? window.SERVER_DATA.profil.nama_desa : 'Papayan';
+      const fullQuery = `${query}, ${namaDesa}, Kutai Kartanegara`;
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullQuery)}&limit=1`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            if (loader) loader.classList.add('hidden');
+            const lat = parseFloat(data[0].lat);
+            const lng = parseFloat(data[0].lon);
+            if (wargaUmkmPickerMap && wargaUmkmPickerMarker) {
+              wargaUmkmPickerMap.setView([lat, lng], 16);
+              wargaUmkmPickerMarker.setLatLng([lat, lng]);
+              setWargaUmkmCoord(lat, lng);
+            }
+          } else {
+            return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
+              .then(res => res.json())
+              .then(data2 => {
+                if (loader) loader.classList.add('hidden');
+                if (data2 && data2.length > 0) {
+                  const lat = parseFloat(data2[0].lat);
+                  const lng = parseFloat(data2[0].lon);
+                  if (wargaUmkmPickerMap && wargaUmkmPickerMarker) {
+                    wargaUmkmPickerMap.setView([lat, lng], 16);
+                    wargaUmkmPickerMarker.setLatLng([lat, lng]);
+                    setWargaUmkmCoord(lat, lng);
+                  }
+                } else {
+                  alert(`Lokasi "${query}" tidak ditemukan secara otomatis di peta. Cukup klik langsung pada peta mini untuk menentukan posisi.`);
+                }
+              });
+          }
+        })
+        .catch(() => {
+          if (loader) loader.classList.add('hidden');
+          alert('Layanan pencarian peta online tidak merespons. Silakan klik langsung titik lokasi pada peta mini.');
+        });
     }
 
     function bukaModalDaftarUmkmWarga() {
@@ -4315,6 +4718,12 @@
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim Pengajuan...';
 
         const formData = new FormData(formAjukanUmkmWarga);
+        if (!formData.get('alamat') && formData.get('lokasi')) {
+          formData.append('alamat', formData.get('lokasi'));
+        }
+        if (!formData.get('lokasi') && formData.get('alamat')) {
+          formData.append('lokasi', formData.get('alamat'));
+        }
 
         try {
           const resp = await fetch('/api/umkm/ajukan', {
@@ -4513,8 +4922,24 @@
       }
     };
 
-    function navigateToView(viewName) {
+    function navigateToView(viewName, subView) {
       if (!viewName || viewName === '') viewName = 'beranda';
+
+      if (viewName === 'galeri') {
+        viewName = 'berita';
+        if (typeof window.gantiSubmenuBerita === 'function') {
+          window.gantiSubmenuBerita('galeri');
+        }
+      } else if (viewName === 'penghargaan') {
+        viewName = 'berita';
+        if (typeof window.gantiSubmenuBerita === 'function') {
+          window.gantiSubmenuBerita('penghargaan');
+        }
+      } else if (viewName === 'berita' && subView) {
+        if (typeof window.gantiSubmenuBerita === 'function') {
+          window.gantiSubmenuBerita(subView);
+        }
+      }
 
       // Jika layanan surat sedang maintenance, munculkan popup notifikasi
       if (viewName === 'layanan-surat' && window.STATUS_MAINTENANCE_SURAT === 1) {
@@ -4535,14 +4960,13 @@
         viewName = 'beranda';
       }
 
-      // 3. Highlight desktop navigation item
-      document.querySelectorAll('[data-nav-view]').forEach(btn => {
-        btn.classList.remove('text-amber-200', 'text-amber-300', 'text-emerald-200', 'text-amber-100');
+      // 3. Highlight desktop navigation item (Sesuai Kapsul Hijau/Transparan Screenshot)
+      document.querySelectorAll('.nav-desktop-btn[data-nav-view]').forEach(btn => {
         if (btn.getAttribute('data-nav-view') === viewName) {
-          btn.classList.add('bg-white/20', 'text-white', 'font-bold');
+          btn.classList.add('bg-white/20', 'text-white', 'shadow-xs', 'ring-1', 'ring-white/25');
           btn.classList.remove('text-white/85');
         } else {
-          btn.classList.remove('bg-white/20', 'font-bold');
+          btn.classList.remove('bg-white/20', 'text-white', 'shadow-xs', 'ring-1', 'ring-white/25');
           btn.classList.add('text-white/85');
         }
       });
@@ -5040,6 +5464,7 @@
         satuan: {{ (prod.satuan or 'pcs')|tojson }},
         deskripsi: {{ (prod.deskripsi or '')|tojson }},
         kontak_wa: {{ (prod.kontak_wa or '')|tojson }},
+        alamat: {{ (prod.alamat or '')|tojson }},
         latitude: {{ prod.latitude if prod.latitude is not none else 'null' }},
         longitude: {{ prod.longitude if prod.longitude is not none else 'null' }},
         rating: {{ (prod.rating or '5.0')|tojson }},
@@ -5080,8 +5505,12 @@
       if (penjual) penjual.innerText = item.produsen || 'Warga Desa Papayan';
       
       if (koordinat) {
-        if (item.latitude && item.longitude) {
-          koordinat.innerHTML = `<span class="font-mono text-emerald-800">${item.latitude.toFixed(4)}, ${item.longitude.toFixed(4)}</span>`;
+        const lok = item.lokasi || item.alamat;
+        if (lok) {
+          koordinat.innerHTML = `<span class="text-slate-900 block font-bold text-xs sm:text-sm line-clamp-2">${lok}</span>` +
+            (item.latitude && item.longitude ? `<span class="text-[10px] font-mono text-emerald-800 block mt-0.5"><i class="fa-solid fa-crosshairs text-emerald-600 mr-1"></i>${item.latitude.toFixed(4)}, ${item.longitude.toFixed(4)}</span>` : '');
+        } else if (item.latitude && item.longitude) {
+          koordinat.innerHTML = `<span class="font-mono text-emerald-800"><i class="fa-solid fa-crosshairs text-emerald-600 mr-1"></i>${item.latitude.toFixed(4)}, ${item.longitude.toFixed(4)}</span>`;
         } else {
           koordinat.innerText = 'Desa Papayan, Kab. Tasikmalaya';
         }
@@ -5356,6 +5785,125 @@
       }
     };
 
+    // --- FUNGSI SUB-NAVIGASI & GALERI FRONTEND ---
+    window.gantiSubmenuBerita = function(tab) {
+      const panelWarta = document.getElementById('panel-sub-warta');
+      const panelGaleri = document.getElementById('panel-sub-galeri');
+      const panelPenghargaan = document.getElementById('panel-sub-penghargaan');
+
+      const btnWarta = document.getElementById('btn-sub-warta');
+      const btnGaleri = document.getElementById('btn-sub-galeri');
+      const btnPenghargaan = document.getElementById('btn-sub-penghargaan');
+
+      const inactiveClass = "subtab-berita-btn px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-emerald-900/60 hover:bg-emerald-700/60 text-emerald-100 border border-emerald-600/40";
+      const activeClass = "subtab-berita-btn px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-white text-emerald-900 shadow-md";
+
+      if (panelWarta) panelWarta.classList.add('hidden');
+      if (panelGaleri) panelGaleri.classList.add('hidden');
+      if (panelPenghargaan) panelPenghargaan.classList.add('hidden');
+
+      if (btnWarta) btnWarta.className = inactiveClass;
+      if (btnGaleri) btnGaleri.className = inactiveClass;
+      if (btnPenghargaan) btnPenghargaan.className = inactiveClass;
+
+      if (tab === 'galeri') {
+        if (panelGaleri) panelGaleri.classList.remove('hidden');
+        if (btnGaleri) btnGaleri.className = activeClass;
+      } else if (tab === 'penghargaan') {
+        if (panelPenghargaan) panelPenghargaan.classList.remove('hidden');
+        if (btnPenghargaan) btnPenghargaan.className = activeClass;
+      } else {
+        if (panelWarta) panelWarta.classList.remove('hidden');
+        if (btnWarta) btnWarta.className = activeClass;
+      }
+    };
+
+    window.filterGaleriFrontend = function(kategori) {
+      const cards = document.querySelectorAll('.galeri-item-card');
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-kategori');
+        if (kategori === 'semua' || cat === kategori) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      const btnSemua = document.getElementById('btn-flt-semua');
+      const btnPemdes = document.getElementById('btn-flt-pemdes');
+      const btnWarga = document.getElementById('btn-flt-warga');
+
+      const actClass = "btn-galeri-flt px-4 py-2 rounded-xl text-xs font-bold transition bg-emerald-700 text-white shadow-sm";
+      const inactClass = "btn-galeri-flt px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 hover:bg-slate-200 text-slate-700";
+
+      if (btnSemua) btnSemua.className = (kategori === 'semua') ? actClass : inactClass;
+      if (btnPemdes) btnPemdes.className = (kategori === 'Kegiatan Pemdes') ? actClass : inactClass;
+      if (btnWarga) btnWarga.className = (kategori === 'Kegiatan Warga') ? actClass : inactClass;
+    };
+
+    window.bukaModalPengajuanGaleriWarga = function() {
+      const modal = document.getElementById('modal-pengajuan-galeri-warga');
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      }
+    };
+
+    window.tutupModalPengajuanGaleriWarga = function() {
+      const modal = document.getElementById('modal-pengajuan-galeri-warga');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    };
+
+    window.previewPengajuanGaleri = function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const prev = document.getElementById('prev-pengajuan-galeri');
+          if (prev) {
+            prev.src = e.target.result;
+            prev.classList.remove('opacity-60');
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    window.bukaLightboxFrontend = function(imgSrc, judul, kategori, tanggal, pengunggah, deskripsi) {
+      const modal = document.getElementById('modal-lightbox-frontend');
+      const img = document.getElementById('lb-front-img');
+      const judulEl = document.getElementById('lb-front-judul');
+      const katEl = document.getElementById('lb-front-kategori-badge');
+      const tglEl = document.getElementById('lb-front-tanggal');
+      const pengEl = document.getElementById('lb-front-pengunggah');
+      const deskEl = document.getElementById('lb-front-deskripsi');
+      const openTabEl = document.getElementById('lb-front-open-tab');
+
+      if (img) img.src = imgSrc;
+      if (judulEl) judulEl.innerText = judul;
+      if (katEl) katEl.innerText = kategori;
+      if (tglEl) tglEl.innerText = tanggal || '';
+      if (pengEl) pengEl.innerHTML = `<i class="fa-solid fa-user text-emerald-600"></i> Sumber / Pengunggah: <strong>${pengunggah || 'Pemerintah Desa'}</strong>`;
+      if (deskEl) deskEl.innerText = deskripsi || 'Tidak ada deskripsi tambahan.';
+      if (openTabEl) openTabEl.href = imgSrc;
+
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      }
+    };
+
+    window.tutupLightboxFrontend = function() {
+      const modal = document.getElementById('modal-lightbox-frontend');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    };
+
     // Close all modals on Escape
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
@@ -5365,9 +5913,139 @@
         if (typeof tutupModalDetailBuku === 'function') tutupModalDetailBuku();
         if (typeof tutupModalMaintenanceSurat === 'function') tutupModalMaintenanceSurat();
         if (typeof tutupModalBaganFront === 'function') tutupModalBaganFront();
+        if (typeof tutupModalPengajuanGaleriWarga === 'function') tutupModalPengajuanGaleriWarga();
+        if (typeof tutupLightboxFrontend === 'function') tutupLightboxFrontend();
       }
     });
   </script>
+
+  <!-- MODAL PENGAJUAN FOTO DOKUMENTASI KEGIATAN OLEH WARGA -->
+  <div id="modal-pengajuan-galeri-warga" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto" onclick="if(event.target === this) tutupModalPengajuanGaleriWarga();">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl animate-fade-in border border-slate-200 my-auto">
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold shadow-md">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-slate-900 text-base sm:text-lg">Ajukan Foto Galeri Warga</h3>
+            <p class="text-[11px] text-slate-500">Kirim dokumentasi kegiatan warga untuk ditayangkan di website</p>
+          </div>
+        </div>
+        <button type="button" onclick="tutupModalPengajuanGaleriWarga()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-lg font-bold transition">&times;</button>
+      </div>
+
+      <div class="mb-5 p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-amber-900 text-xs flex items-start gap-2.5">
+        <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-sm shrink-0"></i>
+        <span>Foto yang diajukan akan melalui moderasi dan persetujuan Admin Desa sebelum tayang di galeri publik.</span>
+      </div>
+
+      <form action="{{ url_for('galeri_ajukan_warga') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Judul Foto / Kegiatan <span class="text-rose-500">*</span></label>
+          <input type="text" name="judul" required placeholder="Contoh: Kerja Bakti Pembersihan Saluran Air RT 04" 
+                 class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Kegiatan <span class="text-rose-500">*</span></label>
+            <select name="kategori" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium">
+              <option value="Kegiatan Warga" selected>Kegiatan Warga / RT / RW</option>
+              <option value="Kegiatan Pemdes">Kegiatan Bersama Pemdes</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Kegiatan</label>
+            <input type="date" name="tanggal" value="" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Pengunggah / Komunitas <span class="text-rose-500">*</span></label>
+            <input type="text" name="pengunggah" required placeholder="Contoh: Ahmad / Karang Taruna RW 02" 
+                   class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">No. WhatsApp / HP</label>
+            <input type="text" name="kontak_pengunggah" placeholder="Contoh: 08123456789" 
+                   class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" />
+          </div>
+        </div>
+
+        <!-- Unggah File Foto -->
+        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <label class="block text-xs font-bold text-slate-700 mb-2 flex items-center justify-between">
+            <span><i class="fa-solid fa-image text-emerald-600 mr-1"></i> File Foto Dokumentasi <span class="text-rose-500">*</span></span>
+            <span class="text-[10px] text-slate-400">JPG, PNG, WEBP (Maks 10MB)</span>
+          </label>
+          <div class="flex items-center gap-3">
+            <div class="w-16 h-16 rounded-xl overflow-hidden bg-white border border-slate-200 shrink-0 flex items-center justify-center shadow-inner">
+              <img id="prev-pengajuan-galeri" src="{{ url_for('static', filename='images/pantai_kersik.jpg') }}" class="w-full h-full object-cover opacity-60" />
+            </div>
+            <div class="flex-1 space-y-1">
+              <input type="file" name="gambar_file" id="input-pengajuan-galeri-file" required accept="image/*" onchange="previewPengajuanGaleri(event)"
+                     class="text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-100 file:text-emerald-800 hover:file:bg-emerald-200 cursor-pointer w-full" />
+              <p class="text-[10px] text-slate-400">Pilih foto dengan pencahayaan jelas.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Keterangan / Cerita Kegiatan</label>
+          <textarea name="deskripsi" rows="3" placeholder="Tuliskan keterangan singkat mengenai kegiatan, lokasi RT/RW, atau manfaat kegiatan tersebut..."
+                    class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"></textarea>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-2.5 border-t border-slate-100">
+          <button type="button" onclick="tutupModalPengajuanGaleriWarga()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md shadow-emerald-700/20 flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-paper-plane"></i> Kirim Pengajuan Foto
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL LIGHTBOX FULLSCREEN GALERI & PIAGAM FRONTEND -->
+  <div id="modal-lightbox-frontend" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto" onclick="if(event.target === this) tutupLightboxFrontend();">
+    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-fade-in my-auto border border-slate-200">
+      
+      <!-- Top Bar -->
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-slate-50">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span id="lb-front-kategori-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 shrink-0">
+            Kategori
+          </span>
+          <span id="lb-front-tanggal" class="text-xs text-slate-500 font-medium truncate"></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <a id="lb-front-open-tab" href="#" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-up-right-from-square text-[11px]"></i> Tab Baru
+          </a>
+          <button type="button" onclick="tutupLightboxFrontend()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center text-lg font-bold transition">&times;</button>
+        </div>
+      </div>
+
+      <!-- Preview Image -->
+      <div class="relative bg-slate-950 flex items-center justify-center min-h-[300px] max-h-[60vh] overflow-hidden">
+        <img id="lb-front-img" src="" alt="Foto Penuh" class="max-w-full max-h-[60vh] object-contain" />
+      </div>
+
+      <!-- Description & Metadata -->
+      <div class="p-5 sm:p-6 bg-white overflow-y-auto space-y-2">
+        <h3 id="lb-front-judul" class="text-lg sm:text-xl font-black text-slate-900 leading-snug">Judul Foto</h3>
+        <div class="flex items-center gap-3 text-xs text-slate-500 pb-2 border-b border-slate-100">
+          <span id="lb-front-pengunggah" class="flex items-center gap-1.5"><i class="fa-solid fa-user text-emerald-600"></i> Sumber / Pengunggah: <strong>-</strong></span>
+        </div>
+        <p id="lb-front-deskripsi" class="text-xs sm:text-sm text-slate-700 leading-relaxed pt-1"></p>
+      </div>
+
+    </div>
+  </div>
 
   <!-- MODAL LIGHTBOX FULLSCREEN BAGAN FRONTEND -->
   <div id="modalBaganFront" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6" onclick="if(event.target === this) tutupModalBaganFront();">

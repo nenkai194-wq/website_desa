@@ -124,12 +124,16 @@ window.goToSlide = function(index) {
 };
 
 window.nextSlide = function() {
-  currentSlide = (currentSlide + 1) % slides.length;
+  const allSlides = document.querySelectorAll('.carousel-slide');
+  const total = allSlides.length > 0 ? allSlides.length : slides.length;
+  currentSlide = (currentSlide + 1) % total;
   goToSlide(currentSlide);
 };
 
 window.prevSlide = function() {
-  currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+  const allSlides = document.querySelectorAll('.carousel-slide');
+  const total = allSlides.length > 0 ? allSlides.length : slides.length;
+  currentSlide = (currentSlide - 1 + total) % total;
   goToSlide(currentSlide);
 };
 
