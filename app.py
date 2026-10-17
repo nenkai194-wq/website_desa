@@ -123,11 +123,18 @@ def inject_global_data():
 
         cursor.execute("SELECT * FROM kategori_pengaduan ORDER BY urutan ASC, id ASC")
         data['kategori_pengaduan_global'] = [dict(r) for r in cursor.fetchall()]
+
+        # Popup Informasi Aktif (Tayang)
+        cursor.execute("SELECT * FROM popup_informasi WHERE status = 'Tayang' ORDER BY urutan ASC, id DESC LIMIT 1")
+        row_pop = cursor.fetchone()
+        data['popup_aktif_global'] = dict(row_pop) if row_pop else None
+
         conn.close()
     except Exception:
         data['profil_global'] = {}
         data['running_texts_global'] = []
         data['kategori_pengaduan_global'] = []
+        data['popup_aktif_global'] = None
 
     try:
         data['statistik_pengunjung'] = get_visitor_stats()
@@ -2614,6 +2621,214 @@ def admin_update_footer():
     )
     flash('Informasi dan pengaturan Footer Desa berhasil disimpan!', 'success')
     return redirect(url_for('admin_running_text', tab='footer'))
+
+# ==========================================
+# 12. MANAJEMEN POP-UP PENGUMUMAN & BANNER WEB
+# ==========================================
+
+@app.route('/admin/popup')
+@login_required
+def admin_popup():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM popup_informasi ORDER BY urutan ASC, id DESC")
+    popup_list = [dict(row) for row in cursor.fetchall()]
+
+    # Statistik Pop-up
+    total_popup = len(popup_list)
+    total_tayang = sum(1 for p in popup_list if p['status'] == 'Tayang')
+    total_draf = total_popup - total_tayang
+
+    # Active pop-up currently shown on frontend
+    active_popup = next((p for p in popup_list if p['status'] == 'Tayang'), None)
+
+    conn.close()
+    return render_template(
+        'admin/popup.html',
+        popup_list=popup_list,
+        total_popup=total_popup,
+        total_tayang=total_tayang,
+        total_draf=total_draf,
+        active_popup=active_popup
+    )
+
+@app.route('/admin/popup/tambah', methods=['POST'])
+@login_required
+def admin_popup_tambah():
+    judul = request.form.get('judul', '').strip()
+    subjudul = request.form.get('subjudul', '').strip()
+    kategori = request.form.get('kategori', 'Pengumuman Penting').strip() or 'Pengumuman Penting'
+    isi = request.form.get('isi', '').strip()
+    link_url = request.form.get('link_url', '').strip()
+    link_teks = request.form.get('link_teks', 'Lihat Selengkapnya').strip() or 'Lihat Selengkapnya'
+    tombol_sekunder_teks = request.form.get('tombol_sekunder_teks', 'Tutup').strip() or 'Tutup'
+    status = request.form.get('status', 'Tayang').strip()
+    tampil_sekali = 1 if request.form.get('tampil_sekali') == '1' else 0
+    urutan = request.form.get('urutan', type=int) or 1
+
+    if not judul:
+        flash('Judul pop-up pengumuman wajib diisi.', 'danger')
+        return redirect(url_for('admin_popup'))
+
+    # Upload Gambar / Banner Flyer
+    gambar = request.form.get('gambar_url', '').strip()
+    if 'gambar_file' in request.files:
+        file = request.files['gambar_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp', '.gif']:
+                filename = secure_filename(f"popup_{int(time.time())}_{random.randint(100,999)}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                gambar = f"static/images/uploads/{filename}"
+
+    conn = get_db()
+    cursor = conn.cursor()
+    # Jika admin memilih jadikan tayang tunggal, ubah pop-up lain menjadi tidak tayang
+    if status == 'Tayang' and request.form.get('jadikan_tunggal') == '1':
+        cursor.execute("UPDATE popup_informasi SET status = 'Tidak Tayang'")
+
+    cursor.execute('''
+    INSERT INTO popup_informasi (
+        judul, subjudul, kategori, isi, gambar, link_url, link_teks, tombol_sekunder_teks,
+        status, tampil_sekali, urutan
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (
+        judul, subjudul, kategori, isi, gambar, link_url, link_teks, tombol_sekunder_teks,
+        status, tampil_sekali, urutan
+    ))
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='TAMBAH_POPUP',
+        details=f'Menambahkan pop-up informasi baru: "{judul}" (Status: {status})',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+
+    flash('Pop-up banner informasi berhasil ditambahkan!', 'success')
+    return redirect(url_for('admin_popup'))
+
+@app.route('/admin/popup/<int:id>/edit', methods=['POST'])
+@login_required
+def admin_popup_edit(id):
+    judul = request.form.get('judul', '').strip()
+    subjudul = request.form.get('subjudul', '').strip()
+    kategori = request.form.get('kategori', 'Pengumuman Penting').strip() or 'Pengumuman Penting'
+    isi = request.form.get('isi', '').strip()
+    link_url = request.form.get('link_url', '').strip()
+    link_teks = request.form.get('link_teks', 'Lihat Selengkapnya').strip() or 'Lihat Selengkapnya'
+    tombol_sekunder_teks = request.form.get('tombol_sekunder_teks', 'Tutup').strip() or 'Tutup'
+    status = request.form.get('status', 'Tayang').strip()
+    tampil_sekali = 1 if request.form.get('tampil_sekali') == '1' else 0
+    urutan = request.form.get('urutan', type=int) or 1
+
+    if not judul:
+        flash('Judul pop-up pengumuman wajib diisi.', 'danger')
+        return redirect(url_for('admin_popup'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT gambar FROM popup_informasi WHERE id = ?", (id,))
+    row_old = cursor.fetchone()
+    gambar = row_old['gambar'] if row_old else ''
+
+    # Cek jika ada input gambar_url baru
+    gambar_url_input = request.form.get('gambar_url', '').strip()
+    if gambar_url_input:
+        gambar = gambar_url_input
+
+    # Cek jika ada upload file gambar baru
+    if 'gambar_file' in request.files:
+        file = request.files['gambar_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp', '.gif']:
+                filename = secure_filename(f"popup_{int(time.time())}_{random.randint(100,999)}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                gambar = f"static/images/uploads/{filename}"
+
+    if status == 'Tayang' and request.form.get('jadikan_tunggal') == '1':
+        cursor.execute("UPDATE popup_informasi SET status = 'Tidak Tayang' WHERE id != ?", (id,))
+
+    cursor.execute('''
+    UPDATE popup_informasi SET
+        judul = ?, subjudul = ?, kategori = ?, isi = ?, gambar = ?,
+        link_url = ?, link_teks = ?, tombol_sekunder_teks = ?,
+        status = ?, tampil_sekali = ?, urutan = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+    ''', (
+        judul, subjudul, kategori, isi, gambar, link_url, link_teks, tombol_sekunder_teks,
+        status, tampil_sekali, urutan, id
+    ))
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='EDIT_POPUP',
+        details=f'Memperbarui pop-up informasi ID {id}: "{judul}" (Status: {status})',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+
+    flash('Pop-up pengumuman informasi berhasil diperbarui!', 'success')
+    return redirect(url_for('admin_popup'))
+
+@app.route('/admin/popup/<int:id>/toggle-status', methods=['POST'])
+@login_required
+def admin_popup_toggle_status(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT status, judul FROM popup_informasi WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        flash('Data pop-up tidak ditemukan.', 'danger')
+        return redirect(url_for('admin_popup'))
+
+    current_status = row['status']
+    new_status = 'Tidak Tayang' if current_status == 'Tayang' else 'Tayang'
+
+    cursor.execute("UPDATE popup_informasi SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (new_status, id))
+    conn.commit()
+    conn.close()
+
+    pesan_status = 'ditayangkan di halaman depan website' if new_status == 'Tayang' else 'dinonaktifkan (dijadikan draf)'
+    flash(f'Pop-up "{row["judul"]}" berhasil {pesan_status}!', 'success')
+    return redirect(url_for('admin_popup'))
+
+@app.route('/admin/popup/<int:id>/hapus', methods=['POST'])
+@login_required
+def admin_popup_hapus(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT judul, gambar FROM popup_informasi WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    if row:
+        if row['gambar'] and row['gambar'].startswith('static/images/uploads/'):
+            try:
+                full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), row['gambar'].replace('/', os.sep))
+                if os.path.exists(full_path):
+                    os.remove(full_path)
+            except Exception:
+                pass
+        cursor.execute("DELETE FROM popup_informasi WHERE id = ?", (id,))
+        conn.commit()
+        record_activity_log(
+            action='HAPUS_POPUP',
+            details=f'Menghapus pop-up ID {id}: "{row["judul"]}"',
+            username=session.get('username'),
+            user_id=session.get('user_id'),
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        flash(f'Pop-up "{row["judul"]}" berhasil dihapus.', 'info')
+    conn.close()
+    return redirect(url_for('admin_popup'))
 
 # ==========================================
 # PUBLIC PUBLIKASI & PERPUSTAKAAN DIGITAL

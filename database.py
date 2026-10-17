@@ -691,7 +691,48 @@ def init_db():
     )
     ''')
 
+    # 12. Pop-up Pengumuman & Banner Informasi Frontend
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS popup_informasi (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        judul TEXT NOT NULL,
+        subjudul TEXT,
+        kategori TEXT DEFAULT 'Pengumuman Penting',
+        isi TEXT,
+        gambar TEXT,
+        link_url TEXT,
+        link_teks TEXT DEFAULT 'Lihat Selengkapnya',
+        tombol_sekunder_teks TEXT DEFAULT 'Tutup',
+        status TEXT DEFAULT 'Tayang',
+        tampil_sekali INTEGER DEFAULT 1,
+        urutan INTEGER DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
     conn.commit()
+
+    # Seed Default Pop-up if none exists
+    cursor.execute("SELECT COUNT(*) FROM popup_informasi")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute('''
+        INSERT INTO popup_informasi (
+            judul, subjudul, kategori, isi, gambar, link_url, link_teks, tombol_sekunder_teks, status, tampil_sekali, urutan
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            "Selamat Datang di Portal Resmi Desa Papayan",
+            "Penerima Penghargaan Kampung Iklim (Proklim) Utama KLHK RI",
+            "Pengumuman Resmi",
+            "Selamat datang di portal informasi dan pelayanan digital Desa Papayan, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara. Manfaatkan portal ini untuk mengajukan permohonan surat mandiri, mengakses transparansi APBDes, serta mengeksplorasi potensi wisata bahari dan produk UMKM warga desa.",
+            "static/images/pantai_kersik.jpg",
+            "#layanan",
+            "Jelajahi Layanan Desa",
+            "Tutup Pengumuman",
+            "Tayang",
+            1,
+            1
+        ))
+        conn.commit()
 
     # Seed Admin Users (Super Admin & Admin) if not exists
     cursor.execute("SELECT id FROM users WHERE username = 'admin'")

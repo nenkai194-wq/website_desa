@@ -1,0 +1,687 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Kelola Pop-up Pengumuman Web{% endblock %}
+{% block header_title %}Manajemen Pop-up Informasi & Banner Pengumuman{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- TOP BAR & ACTION BUTTONS -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+    <div>
+      <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+        <i class="fa-solid fa-window-restore text-amber-500"></i>
+        <span>Pop-up Pengumuman, Berita & Banner Informasi</span>
+      </h2>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Kelola jendela pop-up banner otomatis yang tampil di layar pengunjung saat pertama kali mengakses portal website desa.
+      </p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2.5">
+      <button type="button" onclick="bukaModalTambahPopup()" class="px-4 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold transition flex items-center gap-2 shadow-sm">
+        <i class="fa-solid fa-circle-plus"></i>
+        <span>Tambah Pop-up Baru</span>
+      </button>
+      <a href="{{ url_for('index') }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-2 shadow-sm">
+        <i class="fa-solid fa-external-link"></i>
+        <span>Cek di Web Frontend</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY CARDS -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Total Popup -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+      <div>
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Pop-up</span>
+        <span class="text-2xl font-black text-slate-900 block mt-1">{{ total_popup }}</span>
+        <span class="text-[11px] text-slate-500">Semua riwayat banner</span>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center text-xl">
+        <i class="fa-solid fa-layer-group"></i>
+      </div>
+    </div>
+
+    <!-- Sedang Tayang -->
+    <div class="bg-white p-5 rounded-2xl border border-emerald-300 ring-2 ring-emerald-50 shadow-sm flex items-center justify-between">
+      <div>
+        <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Sedang Tayang</span>
+        <span class="text-2xl font-black text-emerald-950 block mt-1">{{ total_tayang }}</span>
+        <span class="text-[11px] text-emerald-600 font-semibold">Aktif di layar pengunjung</span>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+    </div>
+
+    <!-- Draf / Tidak Tayang -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+      <div>
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Draf / Nonaktif</span>
+        <span class="text-2xl font-black text-slate-900 block mt-1">{{ total_draf }}</span>
+        <span class="text-[11px] text-slate-500">Disimpan tanpa tayang</span>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+        <i class="fa-solid fa-file-lines"></i>
+      </div>
+    </div>
+
+    <!-- Mode Tampilan -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+      <div>
+        <span class="text-[10px] font-bold text-sky-700 uppercase tracking-wider block">Mode Tampilan</span>
+        <span class="text-sm font-black text-sky-950 block mt-1">Smart Session</span>
+        <span class="text-[11px] text-sky-600 font-medium">Sekali per sesi kunjungan</span>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl">
+        <i class="fa-solid fa-user-clock"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE SIMULATOR: POP-UP YANG SEDANG AKTIF SAAT INI -->
+  {% if active_popup %}
+  <div class="bg-gradient-to-r from-emerald-900 to-slate-900 rounded-3xl p-6 sm:p-7 text-white shadow-lg relative overflow-hidden">
+    <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+        {% if active_popup.gambar %}
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-white/10 flex-shrink-0 border-2 border-white/20 shadow-md">
+          <img src="{{ active_popup.gambar }}" alt="{{ active_popup.judul }}" class="w-full h-full object-cover" onerror="this.src='/static/images/pantai_kersik.jpg'">
+        </div>
+        {% else %}
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-emerald-800/80 flex items-center justify-center flex-shrink-0 border-2 border-white/20 text-3xl text-emerald-200">
+          <i class="fa-solid fa-bullhorn"></i>
+        </div>
+        {% endif %}
+
+        <div class="space-y-1.5 max-w-2xl">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-3 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-black text-[10px] uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-950 animate-ping"></span> Sedang Tayang di Frontend
+            </span>
+            <span class="px-2.5 py-0.5 rounded-full bg-white/15 text-emerald-200 font-bold text-[10px]">
+              {{ active_popup.kategori }}
+            </span>
+          </div>
+          <h3 class="text-lg sm:text-xl font-black text-white leading-tight">
+            {{ active_popup.judul }}
+          </h3>
+          {% if active_popup.subjudul %}
+          <p class="text-xs text-emerald-200/90 font-medium">{{ active_popup.subjudul }}</p>
+          {% endif %}
+          <p class="text-xs text-slate-300 line-clamp-2 leading-relaxed pt-0.5 font-light">
+            {{ active_popup.isi or 'Tidak ada deskripsi tambahan.' }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap sm:flex-col lg:flex-row items-stretch sm:items-end gap-2 flex-shrink-0">
+        <button type="button" onclick="bukaModalPreviewPopup({{ active_popup.id }})" class="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold transition flex items-center justify-center gap-2 backdrop-blur-sm border border-white/20">
+          <i class="fa-solid fa-eye text-emerald-300"></i>
+          <span>Pratinjau Pop-up</span>
+        </button>
+        <button type="button" onclick="bukaModalEditPopup({{ active_popup.id }})" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black transition flex items-center justify-center gap-2 shadow-sm">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>Edit Pop-up</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6 text-amber-900 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl flex-shrink-0">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <div>
+        <h4 class="font-extrabold text-sm text-amber-950">Belum Ada Pop-up yang Sedang Tayang</h4>
+        <p class="text-xs text-amber-800/80 mt-0.5">Website frontend saat ini tidak memunculkan pop-up saat diakses pertama kali. Anda dapat mengaktifkan salah satu pop-up di bawah atau menambahkan baru.</p>
+      </div>
+    </div>
+    <button type="button" onclick="bukaModalTambahPopup()" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs whitespace-nowrap shadow-sm">
+      Tambah Pop-up
+    </button>
+  </div>
+  {% endif %}
+
+  <!-- TABEL DAFTAR SEMUA POP-UP INFORMASI -->
+  <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div>
+        <h3 class="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-table-list text-brand-600"></i>
+          <span>Daftar Pop-up Pengumuman & Banner Informasi</span>
+        </h3>
+        <p class="text-xs text-slate-500 mt-0.5">Kelola, sunting isi informasi, ganti gambar poster, atau ubah status tayang kapan saja.</p>
+      </div>
+      <span class="text-xs text-slate-500 font-medium">Total: <strong>{{ popup_list|length }}</strong> pop-up</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs border-collapse">
+        <thead>
+          <tr class="bg-slate-50 text-slate-700 font-extrabold uppercase text-[10px] tracking-wider border-b border-slate-200">
+            <th class="p-4 w-12 text-center">No</th>
+            <th class="p-4 w-28">Banner</th>
+            <th class="p-4 min-w-[220px]">Judul & Kategori</th>
+            <th class="p-4 whitespace-nowrap">Status Tayang</th>
+            <th class="p-4 min-w-[150px]">Tautan Aksi</th>
+            <th class="p-4 whitespace-nowrap">Frekuensi</th>
+            <th class="p-4 text-center min-w-[140px]">Aksi Pengelolaan</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          {% for p in popup_list %}
+          <tr class="hover:bg-slate-50/70 transition">
+            <!-- No -->
+            <td class="p-4 text-center font-bold text-slate-400">
+              {{ loop.index }}
+            </td>
+
+            <!-- Banner / Gambar -->
+            <td class="p-4">
+              {% if p.gambar %}
+              <div class="w-20 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 relative group cursor-pointer" onclick="bukaModalPreviewPopup({{ p.id }})">
+                <img src="{{ p.gambar }}" alt="{{ p.judul }}" class="w-full h-full object-cover group-hover:scale-105 transition" onerror="this.src='/static/images/pantai_kersik.jpg'">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
+                  <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+              </div>
+              {% else %}
+              <div class="w-20 h-14 rounded-xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-slate-400 text-[10px]">
+                <i class="fa-regular fa-image text-base mb-0.5"></i>
+                <span>Tanpa Banner</span>
+              </div>
+              {% endif %}
+            </td>
+
+            <!-- Judul & Kategori -->
+            <td class="p-4">
+              <span class="inline-block px-2.5 py-0.5 rounded-md bg-brand-50 text-brand-800 font-bold text-[10px] mb-1">
+                {{ p.kategori }}
+              </span>
+              <h4 class="font-extrabold text-slate-900 text-xs leading-snug">
+                {{ p.judul }}
+              </h4>
+              {% if p.subjudul %}
+              <p class="text-[11px] text-slate-500 mt-0.5">{{ p.subjudul }}</p>
+              {% endif %}
+              <span class="text-[10px] text-slate-400 block mt-1">
+                <i class="fa-regular fa-calendar mr-1"></i> {{ p.created_at }}
+              </span>
+            </td>
+
+            <!-- Status Tayang -->
+            <td class="p-4 whitespace-nowrap">
+              {% if p.status == 'Tayang' %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-extrabold text-xs border border-emerald-300 shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                Tayang (Aktif)
+              </span>
+              {% else %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-600 font-bold text-xs border border-slate-300">
+                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                Tidak Tayang (Draf)
+              </span>
+              {% endif %}
+            </td>
+
+            <!-- Tautan Aksi -->
+            <td class="p-4">
+              {% if p.link_url %}
+              <a href="{{ p.link_url }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 hover:text-brand-900 hover:underline">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                <span>{{ p.link_teks or 'Buka Tautan' }}</span>
+              </a>
+              <span class="block text-[10px] text-slate-400 truncate max-w-[180px]" title="{{ p.link_url }}">{{ p.link_url }}</span>
+              {% else %}
+              <span class="text-slate-400 italic text-[11px]">Hanya Tombol Tutup</span>
+              {% endif %}
+            </td>
+
+            <!-- Frekuensi Tampil -->
+            <td class="p-4 whitespace-nowrap">
+              {% if p.tampil_sekali == 1 %}
+              <span class="px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-bold" title="Tampil 1 kali per sesi kunjungan browser">
+                <i class="fa-solid fa-cookie-bite mr-1"></i> Sekali / Sesi
+              </span>
+              {% else %}
+              <span class="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold" title="Tampil setiap kali halaman dimuat ulang">
+                <i class="fa-solid fa-arrows-rotate mr-1"></i> Selalu Tampil
+              </span>
+              {% endif %}
+            </td>
+
+            <!-- Aksi -->
+            <td class="p-4 text-center">
+              <div class="flex items-center justify-center gap-1.5">
+                <!-- Toggle Tayang / Nonaktif -->
+                <form method="POST" action="{{ url_for('admin_popup_toggle_status', id=p.id) }}">
+                  {% if p.status == 'Tayang' %}
+                  <button type="submit" class="w-8 h-8 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition flex items-center justify-center text-xs" title="Nonaktifkan Pop-up">
+                    <i class="fa-solid fa-toggle-on text-base"></i>
+                  </button>
+                  {% else %}
+                  <button type="submit" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition flex items-center justify-center text-xs" title="Tayangkan Pop-up">
+                    <i class="fa-solid fa-toggle-off text-base"></i>
+                  </button>
+                  {% endif %}
+                </form>
+
+                <!-- Preview Modal -->
+                <button type="button" onclick="bukaModalPreviewPopup({{ p.id }})" class="w-8 h-8 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 transition flex items-center justify-center text-xs" title="Pratinjau Pop-up">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <!-- Edit -->
+                <button type="button" onclick="bukaModalEditPopup({{ p.id }})" class="w-8 h-8 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 transition flex items-center justify-center text-xs" title="Edit Pop-up">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+
+                <!-- Hapus -->
+                <form method="POST" action="{{ url_for('admin_popup_hapus', id=p.id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pop-up pengumuman ini?')">
+                  <button type="submit" class="w-8 h-8 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 transition flex items-center justify-center text-xs" title="Hapus Pop-up">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="p-12 text-center text-slate-400">
+              <i class="fa-solid fa-window-restore text-4xl mb-3 text-slate-300 block"></i>
+              Belum ada data pop-up informasi yang dibuat. Klik tombol <strong>Tambah Pop-up Baru</strong> di atas untuk membuat pengumuman pertama Anda.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- =======================================================
+     MODAL 1: TAMBAH POP-UP BARU
+     ======================================================= -->
+<div id="modal-tambah-popup" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 max-h-[92vh] overflow-y-auto shadow-2xl relative">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div>
+        <span class="text-[10px] font-bold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Form Baru</span>
+        <h3 class="font-bold text-lg text-slate-900 mt-1">Tambah Pop-up Pengumuman Web</h3>
+      </div>
+      <button type="button" onclick="tutupModalTambahPopup()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+    </div>
+
+    <form method="POST" action="{{ url_for('admin_popup_tambah') }}" enctype="multipart/form-data" class="space-y-4">
+      <!-- Judul Pop-up -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Pop-up Pengumuman <span class="text-red-500">*</span></label>
+        <input type="text" name="judul" required placeholder="Contoh: Penyaluran Bantuan Sosial & Beras CPP Tahap II" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+      </div>
+
+      <!-- Kategori & Subjudul -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Pop-up</label>
+          <select name="kategori" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="Pengumuman Resmi">📢 Pengumuman Resmi</option>
+            <option value="Sekilas Berita">📰 Sekilas Berita</option>
+            <option value="Banner Kegiatan">🎪 Banner Kegiatan / Event</option>
+            <option value="Himbauan Warga">⚠️ Himbauan Warga</option>
+            <option value="Layanan Publik">🏛️ Layanan Publik</option>
+            <option value="Pemberitahuan Khusus">📌 Pemberitahuan Khusus</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Subjudul / Keterangan Waktu</label>
+          <input type="text" name="subjudul" placeholder="Contoh: Berlaku s.d 30 Oktober 2026" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+      </div>
+
+      <!-- Upload Gambar / Banner Flyer -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Foto Banner / Poster Flyer Pop-up (Opsional)</label>
+        <div class="space-y-2">
+          <input type="file" name="gambar_file" accept="image/*" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" />
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-slate-400">Atau URL Gambar:</span>
+            <input type="text" name="gambar_url" placeholder="https://... atau static/images/..." class="flex-1 text-xs bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-1">Disarankan gambar berorientasi lanskap atau poster proporsional (JPG, PNG, WebP).</p>
+      </div>
+
+      <!-- Isi Pengumuman -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Uraian / Isi Informasi</label>
+        <textarea name="isi" rows="3" placeholder="Tuliskan uraian detail pengumuman yang ingin disampaikan kepada pengunjung portal desa..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium leading-relaxed"></textarea>
+      </div>
+
+      <!-- Tautan Aksi & Teks Tombol -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tautan Aksi (Link URL)</label>
+          <input type="text" name="link_url" placeholder="Contoh: #berita, /publikasi, atau link WhatsApp" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Teks Tombol Aksi</label>
+          <input type="text" name="link_teks" value="Lihat Selengkapnya" placeholder="Contoh: Baca Selengkapnya, Buka Pengumuman" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+      </div>
+
+      <!-- Status & Opsi Tampilan -->
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-bold text-slate-800">Status Publikasi</label>
+          <select name="status" class="text-xs bg-white border border-slate-300 rounded-xl px-3 py-1.5 font-extrabold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="Tayang">✅ Tayang (Langsung Aktif)</option>
+            <option value="Tidak Tayang">⏸️ Tidak Tayang (Simpan Draf)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" name="jadikan_tunggal" id="cb-tambah-tunggal" value="1" checked class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500" />
+          <label for="cb-tambah-tunggal" class="text-xs font-semibold text-slate-700 select-none">
+            Jadikan satu-satunya pop-up yang aktif tayang di frontend
+          </label>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" name="tampil_sekali" id="cb-tambah-sekali" value="1" checked class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500" />
+          <label for="cb-tambah-sekali" class="text-xs font-semibold text-slate-700 select-none">
+            Tampilkan hanya sekali per sesi kunjungan browser (Ramah Pengunjung)
+          </label>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+        <button type="button" onclick="tutupModalTambahPopup()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+          Batal
+        </button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan & Tayangkan
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- =======================================================
+     MODAL 2: EDIT POP-UP
+     ======================================================= -->
+<div id="modal-edit-popup" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 max-h-[92vh] overflow-y-auto shadow-2xl relative">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div>
+        <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Perbarui Pop-up</span>
+        <h3 class="font-bold text-lg text-slate-900 mt-1">Sunting Pop-up Pengumuman Web</h3>
+      </div>
+      <button type="button" onclick="tutupModalEditPopup()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+    </div>
+
+    <form id="form-edit-popup" method="POST" action="" enctype="multipart/form-data" class="space-y-4">
+      <!-- Judul Pop-up -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Pop-up Pengumuman <span class="text-red-500">*</span></label>
+        <input type="text" name="judul" id="edit-popup-judul" required class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+      </div>
+
+      <!-- Kategori & Subjudul -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Pop-up</label>
+          <select name="kategori" id="edit-popup-kategori" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="Pengumuman Resmi">📢 Pengumuman Resmi</option>
+            <option value="Sekilas Berita">📰 Sekilas Berita</option>
+            <option value="Banner Kegiatan">🎪 Banner Kegiatan / Event</option>
+            <option value="Himbauan Warga">⚠️ Himbauan Warga</option>
+            <option value="Layanan Publik">🏛️ Layanan Publik</option>
+            <option value="Pemberitahuan Khusus">📌 Pemberitahuan Khusus</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Subjudul / Keterangan Waktu</label>
+          <input type="text" name="subjudul" id="edit-popup-subjudul" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+      </div>
+
+      <!-- Upload Gambar / Banner Flyer -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Foto Banner / Poster Flyer Pop-up</label>
+        <div id="edit-popup-gambar-preview" class="mb-2 hidden">
+          <img id="edit-popup-gambar-thumb" src="" alt="Pratinjau Gambar" class="h-24 w-auto rounded-xl object-cover border border-slate-300 shadow-xs" />
+        </div>
+        <div class="space-y-2">
+          <input type="file" name="gambar_file" accept="image/*" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" />
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-slate-400">Atau URL Gambar:</span>
+            <input type="text" name="gambar_url" id="edit-popup-gambar-url" class="flex-1 text-xs bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Isi Pengumuman -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Uraian / Isi Informasi</label>
+        <textarea name="isi" id="edit-popup-isi" rows="3" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium leading-relaxed"></textarea>
+      </div>
+
+      <!-- Tautan Aksi & Teks Tombol -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tautan Aksi (Link URL)</label>
+          <input type="text" name="link_url" id="edit-popup-link-url" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Teks Tombol Aksi</label>
+          <input type="text" name="link_teks" id="edit-popup-link-teks" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+      </div>
+
+      <!-- Status & Opsi Tampilan -->
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-bold text-slate-800">Status Publikasi</label>
+          <select name="status" id="edit-popup-status" class="text-xs bg-white border border-slate-300 rounded-xl px-3 py-1.5 font-extrabold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="Tayang">✅ Tayang (Aktif di Web)</option>
+            <option value="Tidak Tayang">⏸️ Tidak Tayang (Simpan Draf)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" name="jadikan_tunggal" id="cb-edit-tunggal" value="1" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500" />
+          <label for="cb-edit-tunggal" class="text-xs font-semibold text-slate-700 select-none">
+            Jadikan satu-satunya pop-up yang aktif tayang di frontend
+          </label>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" name="tampil_sekali" id="edit-popup-tampil-sekali" value="1" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500" />
+          <label for="edit-popup-tampil-sekali" class="text-xs font-semibold text-slate-700 select-none">
+            Tampilkan hanya sekali per sesi kunjungan browser
+          </label>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+        <button type="button" onclick="tutupModalEditPopup()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+          Batal
+        </button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- =======================================================
+     MODAL 3: PRATINJAU SIMULASI POP-UP DI BACKEND
+     ======================================================= -->
+<div id="modal-preview-popup" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden" onclick="if(event.target === this) tutupModalPreviewPopup();">
+  <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] overflow-hidden shadow-2xl relative flex flex-col border border-slate-200 animate-fade-in">
+    <!-- Close button -->
+    <button type="button" onclick="tutupModalPreviewPopup()" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white flex items-center justify-center text-sm font-bold transition shadow-md">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <!-- Banner Image Preview -->
+    <div id="preview-popup-img-container" class="w-full h-48 sm:h-56 bg-slate-100 overflow-hidden relative hidden">
+      <img id="preview-popup-img" src="" alt="Banner Preview" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+      <div class="absolute bottom-3 left-4">
+        <span id="preview-popup-kategori" class="px-3 py-1 rounded-full bg-emerald-600 text-white font-extrabold text-[11px] uppercase tracking-wider shadow-sm">
+          PENGUMUMAN
+        </span>
+      </div>
+    </div>
+
+    <!-- Body Preview -->
+    <div class="p-6 space-y-3 overflow-y-auto max-h-[60vh]">
+      <div id="preview-popup-kategori-text-container">
+        <span id="preview-popup-kategori-text" class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-extrabold text-[10px] uppercase tracking-wider">
+          PENGUMUMAN
+        </span>
+      </div>
+      <h3 id="preview-popup-judul" class="text-lg sm:text-xl font-black text-slate-900 leading-tight">
+        Judul Pop-up Pengumuman
+      </h3>
+      <p id="preview-popup-subjudul" class="text-xs text-slate-500 font-semibold flex items-center gap-1.5">
+        <i class="fa-regular fa-calendar-check text-brand-600"></i>
+        <span>Keterangan Waktu</span>
+      </p>
+      <div id="preview-popup-isi" class="text-xs text-slate-700 leading-relaxed font-medium pt-1">
+        Deskripsi isi pengumuman akan ditampilkan di sini.
+      </div>
+    </div>
+
+    <!-- Footer Action Buttons -->
+    <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-3">
+      <span class="text-[11px] text-slate-400 font-medium">Pratinjau Layar Pengunjung</span>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="tutupModalPreviewPopup()" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs">
+          Tutup
+        </button>
+        <a id="preview-popup-link-btn" href="#" target="_blank" class="px-4 py-2 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow-sm flex items-center gap-1.5">
+          <span id="preview-popup-link-text">Lihat Selengkapnya</span>
+          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const popupDataMap = {
+    {% for p in popup_list %}
+    {{ p.id }}: {{ p | tojson }},
+    {% endfor %}
+  };
+
+  function bukaModalTambahPopup() {
+    document.getElementById('modal-tambah-popup').classList.remove('hidden');
+  }
+
+  function tutupModalTambahPopup() {
+    document.getElementById('modal-tambah-popup').classList.add('hidden');
+  }
+
+  function bukaModalEditPopup(id) {
+    const p = popupDataMap[id];
+    if (!p) return;
+
+    document.getElementById('edit-popup-judul').value = p.judul || '';
+    document.getElementById('edit-popup-subjudul').value = p.subjudul || '';
+    document.getElementById('edit-popup-kategori').value = p.kategori || 'Pengumuman Resmi';
+    document.getElementById('edit-popup-isi').value = p.isi || '';
+    document.getElementById('edit-popup-gambar-url').value = p.gambar || '';
+    document.getElementById('edit-popup-link-url').value = p.link_url || '';
+    document.getElementById('edit-popup-link-teks').value = p.link_teks || 'Lihat Selengkapnya';
+    document.getElementById('edit-popup-status').value = p.status || 'Tayang';
+    document.getElementById('edit-popup-tampil-sekali').checked = (p.tampil_sekali == 1);
+
+    const imgPreviewContainer = document.getElementById('edit-popup-gambar-preview');
+    const imgThumb = document.getElementById('edit-popup-gambar-thumb');
+    if (p.gambar) {
+      imgThumb.src = p.gambar;
+      imgPreviewContainer.classList.remove('hidden');
+    } else {
+      imgPreviewContainer.classList.add('hidden');
+    }
+
+    document.getElementById('form-edit-popup').action = '/admin/popup/' + p.id + '/edit';
+    document.getElementById('modal-edit-popup').classList.remove('hidden');
+  }
+
+  function tutupModalEditPopup() {
+    document.getElementById('modal-edit-popup').classList.add('hidden');
+  }
+
+  function bukaModalPreviewPopup(id) {
+    const p = popupDataMap[id];
+    if (!p) return;
+
+    document.getElementById('preview-popup-judul').textContent = p.judul || '';
+    
+    const subjudulEl = document.getElementById('preview-popup-subjudul');
+    if (p.subjudul) {
+      subjudulEl.innerHTML = '<i class="fa-regular fa-calendar-check text-brand-600 mr-1"></i> ' + p.subjudul;
+      subjudulEl.classList.remove('hidden');
+    } else {
+      subjudulEl.classList.add('hidden');
+    }
+
+    document.getElementById('preview-popup-isi').textContent = p.isi || '';
+
+    const katImg = document.getElementById('preview-popup-kategori');
+    const katText = document.getElementById('preview-popup-kategori-text');
+    const katTextContainer = document.getElementById('preview-popup-kategori-text-container');
+    const kategoriVal = p.kategori || 'PENGUMUMAN';
+    if (katImg) katImg.textContent = kategoriVal;
+    if (katText) katText.textContent = kategoriVal;
+
+    const imgContainer = document.getElementById('preview-popup-img-container');
+    const imgEl = document.getElementById('preview-popup-img');
+    if (p.gambar) {
+      imgEl.src = p.gambar;
+      imgContainer.classList.remove('hidden');
+      if (katTextContainer) katTextContainer.classList.add('hidden');
+    } else {
+      imgContainer.classList.add('hidden');
+      if (katTextContainer) katTextContainer.classList.remove('hidden');
+    }
+
+    const linkBtn = document.getElementById('preview-popup-link-btn');
+    const linkText = document.getElementById('preview-popup-link-text');
+    if (p.link_url) {
+      linkBtn.href = p.link_url;
+      linkText.textContent = p.link_teks || 'Lihat Selengkapnya';
+      linkBtn.classList.remove('hidden');
+    } else {
+      linkBtn.classList.add('hidden');
+    }
+
+    document.getElementById('modal-preview-popup').classList.remove('hidden');
+  }
+
+  function tutupModalPreviewPopup() {
+    document.getElementById('modal-preview-popup').classList.add('hidden');
+  }
+
+  // Close modals on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      tutupModalTambahPopup();
+      tutupModalEditPopup();
+      tutupModalPreviewPopup();
+    }
+  });
+</script>
+{% endblock %}

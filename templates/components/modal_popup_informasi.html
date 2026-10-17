@@ -1,0 +1,153 @@
+<!-- ========================================================================= -->
+<!-- MODAL POP-UP BANNER INFORMASI & PENGUMUMAN (FRONTEND FIRST VISIT)        -->
+<!-- ========================================================================= -->
+
+{% if popup_aktif_global %}
+<div id="modal-popup-informasi-front" class="fixed inset-0 z-[9999] bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0" onclick="if(event.target === this) tutupPopupInformasiFrontend();">
+  
+  <div id="modal-popup-informasi-card" class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] overflow-hidden shadow-2xl relative flex flex-col border border-slate-100 transform transition-all duration-300 scale-95">
+    
+    <!-- Tombol Tutup Silang (X) di Pojok Atas -->
+    <button type="button" onclick="tutupPopupInformasiFrontend()" 
+            class="absolute top-3.5 right-3.5 z-20 w-8 h-8 rounded-full bg-slate-950/60 hover:bg-slate-900 text-white flex items-center justify-center text-sm font-bold transition shadow-lg focus:outline-none" 
+            title="Tutup Pengumuman">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <!-- Banner Poster Gambar (Jika Ada) -->
+    {% if popup_aktif_global.gambar %}
+    <div class="w-full h-48 sm:h-56 bg-slate-100 overflow-hidden relative flex-shrink-0">
+      <img src="{{ popup_aktif_global.gambar }}" alt="{{ popup_aktif_global.judul }}" class="w-full h-full object-cover" onerror="this.parentElement.style.display='none'">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+      <div class="absolute bottom-3 left-4">
+        <span class="px-3 py-1 rounded-full bg-emerald-600 text-white font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider shadow-sm">
+          {{ popup_aktif_global.kategori or 'PENGUMUMAN RESMI' }}
+        </span>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Konten Isi Pengumuman -->
+    <div class="p-5 sm:p-6 space-y-3 overflow-y-auto max-h-[55vh]">
+      {% if not popup_aktif_global.gambar %}
+      <div>
+        <span class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-extrabold text-[10px] uppercase tracking-wider">
+          {{ popup_aktif_global.kategori or 'PENGUMUMAN RESMI' }}
+        </span>
+      </div>
+      {% endif %}
+
+      <h3 class="text-base sm:text-xl font-black text-slate-900 leading-tight">
+        {{ popup_aktif_global.judul }}
+      </h3>
+
+      {% if popup_aktif_global.subjudul %}
+      <p class="text-xs text-slate-500 font-semibold flex items-center gap-1.5">
+        <i class="fa-regular fa-calendar-check text-brand-600"></i>
+        <span>{{ popup_aktif_global.subjudul }}</span>
+      </p>
+      {% endif %}
+
+      {% if popup_aktif_global.isi %}
+      <div class="text-xs text-slate-700 leading-relaxed font-medium pt-1 space-y-2">
+        {% for para in popup_aktif_global.isi.split('\n') %}
+          {% if para.strip() %}
+          <p>{{ para.strip() }}</p>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Footer Tombol Aksi -->
+    <div class="p-4 sm:p-5 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
+      <!-- Opsi Jangan Tampilkan Lagi pada Sesi Ini -->
+      <label class="flex items-center gap-2 cursor-pointer select-none">
+        <input type="checkbox" id="cb-popup-jangan-tampil" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-slate-300" checked />
+        <span class="text-[11px] text-slate-500 font-medium">Jangan tampilkan lagi pada sesi ini</span>
+      </label>
+
+      <!-- Tombol Aksi -->
+      <div class="flex items-center gap-2 justify-end">
+        <button type="button" onclick="tutupPopupInformasiFrontend()" class="px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition">
+          {{ popup_aktif_global.tombol_sekunder_teks or 'Tutup' }}
+        </button>
+        {% if popup_aktif_global.link_url %}
+        <a href="{{ popup_aktif_global.link_url }}" onclick="tutupPopupInformasiFrontend(true)" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5">
+          <span>{{ popup_aktif_global.link_teks or 'Lihat Selengkapnya' }}</span>
+          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    const popupId = {{ popup_aktif_global.id }};
+    const tampilSekali = {{ popup_aktif_global.tampil_sekali }};
+    const modalEl = document.getElementById('modal-popup-informasi-front');
+    const cardEl = document.getElementById('modal-popup-informasi-card');
+
+    if (!modalEl || !cardEl) return;
+
+    // Cek apakah pop-up sudah pernah ditutup pada sesi ini
+    const keySession = 'desa_popup_seen_' + popupId;
+    const keyLocal = 'desa_popup_dont_show_' + popupId;
+
+    const isSeenSession = sessionStorage.getItem(keySession);
+    const isClosedLocal = localStorage.getItem(keyLocal);
+
+    // Jika tampil_sekali = 1, cek session storage & local storage
+    if (tampilSekali === 1 && (isSeenSession === '1' || isClosedLocal === '1')) {
+      return; // Jangan tampilkan
+    }
+
+    // Tampilkan pop-up setelah 600ms dari waktu halaman selesai dimuat
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        modalEl.classList.remove('hidden');
+        setTimeout(function() {
+          modalEl.classList.remove('opacity-0');
+          modalEl.classList.add('opacity-100');
+          cardEl.classList.remove('scale-95');
+          cardEl.classList.add('scale-100');
+        }, 20);
+      }, 600);
+    });
+
+    window.tutupPopupInformasiFrontend = function(isLinkClick) {
+      const cbJanganTampil = document.getElementById('cb-popup-jangan-tampil');
+      const isChecked = cbJanganTampil ? cbJanganTampil.checked : true;
+
+      if (isChecked || tampilSekali === 1) {
+        try {
+          sessionStorage.setItem(keySession, '1');
+          if (isChecked) {
+            localStorage.setItem(keyLocal, '1');
+          }
+        } catch (e) {}
+      }
+
+      cardEl.classList.remove('scale-100');
+      cardEl.classList.add('scale-95');
+      modalEl.classList.remove('opacity-100');
+      modalEl.classList.add('opacity-0');
+
+      setTimeout(function() {
+        modalEl.classList.add('hidden');
+      }, 250);
+    };
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !modalEl.classList.contains('hidden')) {
+        window.tutupPopupInformasiFrontend();
+      }
+    });
+  })();
+</script>
+{% endif %}
