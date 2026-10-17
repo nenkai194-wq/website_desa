@@ -2649,7 +2649,7 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {% for b in buku_publikasi %}
-        <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1">
+        <div onclick="bukaModalDetailBuku({{ b.id }})" class="cursor-pointer bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1">
           <div>
             <!-- Book Cover Preview -->
             <div class="relative bg-gradient-to-b from-slate-100 to-slate-200 p-5 flex items-center justify-center overflow-hidden">
@@ -2685,7 +2685,7 @@
                 <span class="text-blue-600 font-bold flex items-center gap-1" title="Diunduh"><i class="fa-solid fa-cloud-arrow-down text-[10px]"></i>{{ b.jumlah_unduh or 0 }}</span>
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 gap-2" onclick="event.stopPropagation();">
               <a href="{{ url_for('static', filename=b.file_pdf.replace('static/', '')) if b.file_pdf.startswith('static/') else b.file_pdf }}" target="_blank" 
                  onclick="fetch('{{ url_for('api_publikasi_baca', id=b.id) }}', {method: 'POST'}).catch(function(){});"
                  class="py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-1.5 border border-slate-200">
@@ -3563,6 +3563,123 @@
           </button>
         </div>
         <button type="button" onclick="tutupModalDetailBerita()" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL DETAIL BUKU PUBLIKASI (POPUP TAMPILAN BESAR) -->
+  <div id="modal-detail-buku" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto" onclick="if(event.target === this) tutupModalDetailBuku();">
+    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-fade-in my-auto border border-slate-200">
+      
+      <!-- Header Gambar & Identitas Buku -->
+      <div class="relative bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-900 text-white p-6 sm:p-8 flex flex-col md:flex-row items-center md:items-start gap-6 shrink-0 border-b border-emerald-800/40">
+        
+        <!-- Tombol Tutup X -->
+        <button type="button" onclick="tutupModalDetailBuku()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/80 text-white flex items-center justify-center text-xl font-bold transition shadow-lg z-20" title="Tutup">
+          &times;
+        </button>
+
+        <!-- Cover Buku 3D / Besar -->
+        <div class="shrink-0 relative">
+          <div class="w-36 sm:w-44 aspect-[3/4.2] overflow-hidden rounded-xl bg-slate-900 shadow-2xl border-2 border-white/20 transform hover:scale-105 transition duration-300">
+            <img id="modal-buku-cover" src="" alt="Cover Buku" class="w-full h-full object-cover">
+          </div>
+          <span class="absolute top-2 left-2 bg-red-600 text-white font-black text-[9px] px-2 py-0.5 rounded shadow">
+            <i class="fa-solid fa-file-pdf mr-1"></i>PDF
+          </span>
+          <span id="modal-buku-tahun-badge" class="absolute top-2 right-2 bg-white/95 text-slate-800 font-bold text-[10px] px-2 py-0.5 rounded shadow">
+            2026
+          </span>
+        </div>
+
+        <!-- Info Judul & Meta Buku -->
+        <div class="flex-1 text-center md:text-left space-y-3 min-w-0">
+          <div class="flex items-center justify-center md:justify-start gap-2 flex-wrap">
+            <span id="modal-buku-kategori" class="bg-emerald-500/30 text-emerald-200 font-bold text-xs px-3 py-1 rounded-full border border-emerald-400/30">
+              Kategori Dokumen
+            </span>
+            <span id="modal-buku-edisi" class="text-xs text-emerald-200/80 bg-white/10 px-3 py-1 rounded-full">
+              Edisi Resmi
+            </span>
+          </div>
+
+          <h2 id="modal-buku-judul" class="text-xl sm:text-2xl lg:text-3xl font-black text-white leading-tight">
+            Judul Buku Publikasi
+          </h2>
+
+          <div class="flex items-center justify-center md:justify-start gap-3 sm:gap-4 text-xs text-emerald-100/90 font-medium flex-wrap">
+            <span id="modal-buku-penulis"><i class="fa-solid fa-pen-nib text-amber-300 mr-1.5"></i> Penyusun</span>
+            <span>•</span>
+            <span id="modal-buku-tahun"><i class="fa-regular fa-calendar-check text-amber-300 mr-1.5"></i> Tahun</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Konten Rincian & Sinopsis Buku -->
+      <div class="p-6 sm:p-8 overflow-y-auto space-y-6 flex-1">
+        
+        <!-- Grid Ringkasan Spesifikasi Buku -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl text-center">
+            <span class="text-[11px] text-slate-400 font-bold uppercase block mb-1">
+              <i class="fa-solid fa-file-lines text-blue-600 mr-1"></i> Jumlah Halaman
+            </span>
+            <strong id="modal-buku-halaman" class="text-slate-900 font-black text-sm sm:text-base">0 Halaman</strong>
+          </div>
+          <div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl text-center">
+            <span class="text-[11px] text-slate-400 font-bold uppercase block mb-1">
+              <i class="fa-solid fa-hard-drive text-amber-600 mr-1"></i> Ukuran File
+            </span>
+            <strong id="modal-buku-ukuran" class="text-slate-900 font-black text-sm sm:text-base">0 MB</strong>
+          </div>
+          <div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl text-center">
+            <span class="text-[11px] text-slate-400 font-bold uppercase block mb-1">
+              <i class="fa-solid fa-book-open-reader text-emerald-600 mr-1"></i> Dibaca Online
+            </span>
+            <strong id="modal-buku-baca" class="text-emerald-700 font-black text-sm sm:text-base">0 Kali</strong>
+          </div>
+          <div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl text-center">
+            <span class="text-[11px] text-slate-400 font-bold uppercase block mb-1">
+              <i class="fa-solid fa-cloud-arrow-down text-indigo-600 mr-1"></i> Total Diunduh
+            </span>
+            <strong id="modal-buku-unduh" class="text-indigo-700 font-black text-sm sm:text-base">0 Kali</strong>
+          </div>
+        </div>
+
+        <!-- Sinopsis Lengkap -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-600 flex items-center gap-2">
+            <i class="fa-solid fa-align-left text-emerald-600"></i> Sinopsis &amp; Gambaran Publikasi
+          </h4>
+          <div class="bg-emerald-50/60 border-l-4 border-emerald-500 rounded-r-2xl p-4 sm:p-5">
+            <p id="modal-buku-sinopsis" class="text-sm sm:text-base text-slate-800 leading-relaxed font-normal">
+              Sinopsis buku...
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Modal & Tombol Aksi -->
+      <div class="px-6 sm:px-8 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <a id="modal-buku-btn-baca" href="#" target="_blank"
+             class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-book-open text-emerald-400"></i> Baca Dokumen (PDF)
+          </a>
+          <a id="modal-buku-btn-unduh" href="#" 
+             class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-download"></i> Unduh PDF Gratis
+          </a>
+          <button type="button" onclick="bagikanBukuModal()" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:border-emerald-600 text-slate-700 hover:text-emerald-700 font-bold text-xs transition flex items-center gap-2 shadow-xs">
+            <i class="fa-solid fa-share-nodes text-emerald-600"></i> Bagikan
+          </button>
+        </div>
+        <button type="button" onclick="tutupModalDetailBuku()" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition">
           Tutup
         </button>
       </div>
@@ -4802,6 +4919,107 @@
       } else {
         navigator.clipboard.writeText(`${item.judul} - ${shareUrl}`);
         alert('Tautan berita berhasil disalin ke clipboard!');
+      }
+    };
+
+    // --- DATA & POPUP MODAL BUKU PUBLIKASI ---
+    const bukuDataMap = {
+      {% for b in buku_publikasi %}
+      {{ b.id }}: {
+        id: {{ b.id }},
+        judul: {{ (b.judul or '')|tojson }},
+        kategori: {{ (b.kategori or 'Publikasi Desa')|tojson }},
+        penulis: {{ (b.penulis or 'Pemerintah Desa Papayan')|tojson }},
+        tahun: {{ (b.tahun or '')|tojson }},
+        edisi: {{ (b.edisi or 'Edisi Resmi')|tojson }},
+        jumlah_halaman: {{ b.jumlah_halaman or 0 }},
+        ukuran_file: {{ (b.ukuran_file or 'PDF')|tojson }},
+        sinopsis: {{ (b.sinopsis or '')|tojson }},
+        jumlah_unduh: {{ b.jumlah_unduh or 0 }},
+        jumlah_baca: {{ b.jumlah_baca or 0 }},
+        cover_buku: {{ (url_for('static', filename=b.cover_buku.replace('static/', '')) if b.cover_buku and b.cover_buku.startswith('static/') else (b.cover_buku or url_for('static', filename='images/kantor_desa.jpg')))|tojson }},
+        file_pdf: {{ (url_for('static', filename=b.file_pdf.replace('static/', '')) if b.file_pdf and b.file_pdf.startswith('static/') else b.file_pdf)|tojson }},
+        url_unduh: {{ url_for('unduh_publikasi', id=b.id)|tojson }},
+        url_baca: {{ url_for('api_publikasi_baca', id=b.id)|tojson }}
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    };
+
+    window.bukaModalDetailBuku = function(id) {
+      const item = bukuDataMap[id];
+      if (!item) return;
+
+      const modal = document.getElementById('modal-detail-buku');
+      const cover = document.getElementById('modal-buku-cover');
+      const tahunBadge = document.getElementById('modal-buku-tahun-badge');
+      const kategori = document.getElementById('modal-buku-kategori');
+      const edisi = document.getElementById('modal-buku-edisi');
+      const judul = document.getElementById('modal-buku-judul');
+      const penulis = document.getElementById('modal-buku-penulis');
+      const tahun = document.getElementById('modal-buku-tahun');
+      const halaman = document.getElementById('modal-buku-halaman');
+      const ukuran = document.getElementById('modal-buku-ukuran');
+      const baca = document.getElementById('modal-buku-baca');
+      const unduh = document.getElementById('modal-buku-unduh');
+      const sinopsis = document.getElementById('modal-buku-sinopsis');
+      const btnBaca = document.getElementById('modal-buku-btn-baca');
+      const btnUnduh = document.getElementById('modal-buku-btn-unduh');
+
+      if (cover) {
+        cover.src = item.cover_buku || '/static/images/kantor_desa.jpg';
+        cover.alt = item.judul;
+      }
+      if (tahunBadge) tahunBadge.innerText = item.tahun || '2026';
+      if (kategori) kategori.innerText = item.kategori || 'Publikasi Desa';
+      if (edisi) edisi.innerText = item.edisi || 'Edisi Resmi';
+      if (judul) judul.innerText = item.judul;
+      if (penulis) penulis.innerHTML = `<i class="fa-solid fa-pen-nib text-amber-300 mr-1.5"></i> ${item.penulis || 'Pemerintah Desa Papayan'}`;
+      if (tahun) tahun.innerHTML = `<i class="fa-regular fa-calendar-check text-amber-300 mr-1.5"></i> Tahun ${item.tahun || '2026'}`;
+      if (halaman) halaman.innerText = `${item.jumlah_halaman} Halaman`;
+      if (ukuran) ukuran.innerText = item.ukuran_file || 'PDF';
+      if (baca) baca.innerText = `${item.jumlah_baca} Kali`;
+      if (unduh) unduh.innerText = `${item.jumlah_unduh} Kali`;
+      if (sinopsis) sinopsis.innerText = item.sinopsis || 'Publikasi resmi desa dalam format PDF.';
+
+      if (btnBaca) {
+        btnBaca.href = item.file_pdf;
+        btnBaca.onclick = function() {
+          if (item.url_baca) fetch(item.url_baca, { method: 'POST' }).catch(() => {});
+        };
+      }
+      if (btnUnduh) {
+        btnUnduh.href = item.url_unduh;
+      }
+
+      window.currentBukuActive = item;
+
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      }
+    };
+
+    window.tutupModalDetailBuku = function() {
+      const modal = document.getElementById('modal-detail-buku');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    };
+
+    window.bagikanBukuModal = function() {
+      const item = window.currentBukuActive;
+      if (!item) return;
+      const shareUrl = window.location.origin + '/publikasi';
+      if (navigator.share) {
+        navigator.share({
+          title: item.judul,
+          text: `Buku Publikasi Desa Papayan: ${item.judul}`,
+          url: shareUrl
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(`${item.judul} - ${shareUrl}`);
+        alert('Tautan informasi buku berhasil disalin!');
       }
     };
   </script>
