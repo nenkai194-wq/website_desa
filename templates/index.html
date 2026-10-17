@@ -3082,7 +3082,7 @@
             </div>
           </div>
           <p class="text-slate-400 leading-relaxed text-xs">
-            Desa {{ profil.nama_desa }} terletak di Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}, {{ profil.provinsi }}. {{ profil.tagline_website }}. {{ profil.subtagline_website }}.
+            {{ profil.teks_footer_deskripsi or ('Desa ' ~ profil.nama_desa ~ ' terletak di Kecamatan ' ~ profil.kecamatan ~ ', Kabupaten ' ~ profil.kabupaten ~ ', ' ~ (profil.provinsi or 'Jawa Barat') ~ '. ' ~ (profil.tagline_website or '') ~ '. ' ~ (profil.subtagline_website or '')) }}
           </p>
           <div class="mt-4 text-[11px] space-y-1 text-slate-500">
             <p><strong>Kode Wilayah:</strong> {{ profil.kode_wilayah }}</p>
@@ -3151,8 +3151,8 @@
       </div>
 
       <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px]">
-        <p>© 2026 Pemerintah Desa {{ profil.nama_desa }}, Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}.</p>
-        <p class="text-slate-500">Portal Resmi Informasi Publik & Layanan Administrasi Desa {{ profil.nama_desa }}.</p>
+        <p>{{ profil.teks_footer_copyright or ('© 2026 Pemerintah Desa ' ~ profil.nama_desa ~ ', Kecamatan ' ~ profil.kecamatan ~ ', Kabupaten ' ~ profil.kabupaten ~ '.') }}</p>
+        <p class="text-slate-500">{{ profil.teks_footer_portal or ('Portal Resmi Informasi Publik & Layanan Administrasi Desa ' ~ profil.nama_desa ~ '.') }}</p>
       </div>
 
     </div>

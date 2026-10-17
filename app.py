@@ -2134,8 +2134,11 @@ def admin_running_text():
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM running_texts ORDER BY urutan ASC, id ASC")
     items = [dict(row) for row in cursor.fetchall()]
+    cursor.execute("SELECT * FROM profil_desa WHERE id = 1")
+    profil = dict(cursor.fetchone() or {})
     conn.close()
-    return render_template('admin/running_text.html', items=items)
+    tab = request.args.get('tab', 'running-text')
+    return render_template('admin/running_text.html', items=items, profil=profil, active_tab=tab)
 
 @app.route('/admin/running-text/tambah', methods=['POST'])
 @login_required
@@ -2272,6 +2275,58 @@ def admin_reorder_running_text():
         user_agent=request.headers.get('User-Agent')
     )
     return jsonify({'status': 'success', 'message': 'Urutan running text berhasil disimpan!'})
+
+@app.route('/admin/footer/update', methods=['POST'])
+@login_required
+def admin_update_footer():
+    alamat = request.form.get('alamat', '').strip()
+    telepon = request.form.get('telepon', '').strip()
+    email = request.form.get('email', '').strip()
+    jam_pelayanan = request.form.get('jam_pelayanan', '').strip()
+    provinsi = request.form.get('provinsi', '').strip() or 'Jawa Barat'
+    kabupaten = request.form.get('kabupaten', '').strip() or 'Tasikmalaya'
+    kecamatan = request.form.get('kecamatan', '').strip() or 'Jatiwaras'
+    kode_wilayah = request.form.get('kode_wilayah', '').strip()
+    kode_pos = request.form.get('kode_pos', '').strip()
+    tagline_website = request.form.get('tagline_website', '').strip()
+    subtagline_website = request.form.get('subtagline_website', '').strip()
+    teks_footer_deskripsi = request.form.get('teks_footer_deskripsi', '').strip()
+    teks_footer_copyright = request.form.get('teks_footer_copyright', '').strip()
+    teks_footer_portal = request.form.get('teks_footer_portal', '').strip()
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+    UPDATE profil_desa SET
+        alamat = ?,
+        telepon = ?,
+        email = ?,
+        jam_pelayanan = ?,
+        provinsi = ?,
+        kabupaten = ?,
+        kecamatan = ?,
+        kode_wilayah = ?,
+        kode_pos = ?,
+        tagline_website = ?,
+        subtagline_website = ?,
+        teks_footer_deskripsi = ?,
+        teks_footer_copyright = ?,
+        teks_footer_portal = ?
+    WHERE id = 1
+    ''', (alamat, telepon, email, jam_pelayanan, provinsi, kabupaten, kecamatan, kode_wilayah, kode_pos, tagline_website, subtagline_website, teks_footer_deskripsi, teks_footer_copyright, teks_footer_portal))
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='UPDATE_FOOTER_INFO',
+        details='Memperbarui informasi kontak, alamat, dan teks footer desa',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+    flash('Informasi dan pengaturan Footer Desa berhasil disimpan!', 'success')
+    return redirect(url_for('admin_running_text', tab='footer'))
 
 # ==========================================
 # PUBLIC PUBLIKASI & PERPUSTAKAAN DIGITAL

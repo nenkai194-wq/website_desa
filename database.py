@@ -106,6 +106,17 @@ def init_db():
     )
     ''')
 
+    # Migration profil_desa: tambahkan kolom footer jika belum ada
+    cursor.execute("PRAGMA table_info(profil_desa)")
+    cols_profil = [col[1] for col in cursor.fetchall()]
+    if 'teks_footer_deskripsi' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN teks_footer_deskripsi TEXT")
+    if 'teks_footer_copyright' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN teks_footer_copyright TEXT")
+    if 'teks_footer_portal' not in cols_profil:
+        cursor.execute("ALTER TABLE profil_desa ADD COLUMN teks_footer_portal TEXT")
+    conn.commit()
+
     # 3. Perangkat Desa (SOTK)
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS perangkat_desa (
