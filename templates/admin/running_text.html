@@ -1,0 +1,358 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Manajemen Running Text & Pengumuman Bergerak{% endblock %}
+{% block header_title %}Manajemen Running Text (Teks Berjalan){% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- TOP BAR & ACTION BUTTONS -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+    <div>
+      <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+        <i class="fa-solid fa-bullhorn text-emerald-600"></i>
+        <span>Pengaturan Running Text (Teks Berjalan)</span>
+      </h2>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Kelola pengumuman, jam pelayanan, dan informasi penting yang berjalan otomatis di bawah navigasi utama website publik.
+      </p>
+    </div>
+
+    <button type="button" onclick="bukaModalTambah()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-2 shadow-sm">
+      <i class="fa-solid fa-plus"></i>
+      <span>Tambah Running Text Baru</span>
+    </button>
+  </div>
+
+  <!-- LIVE PREVIEW RUNNING TEXT -->
+  <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-md">
+    <div class="flex items-center justify-between text-xs text-slate-400 mb-2 px-1">
+      <span class="flex items-center gap-2 font-bold text-emerald-400">
+        <i class="fa-solid fa-eye"></i> Live Preview Tampilan di Website Publik
+      </span>
+      <span class="text-[11px] text-slate-400">Otomatis berjalan & berhenti saat kursor diarahkan</span>
+    </div>
+    
+    <!-- Simulation Bar -->
+    <div class="bg-gradient-to-r from-[#0d2a07] via-[#143a0c] to-[#0a2305] text-emerald-100 text-xs py-2 px-4 rounded-xl border border-emerald-500/25 flex items-center gap-3 overflow-hidden shadow-inner">
+      <span class="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shrink-0 shadow-sm flex items-center gap-1.5">
+        <i class="fa-solid fa-bullhorn text-[9px]"></i> Info Desa
+      </span>
+      <div class="overflow-hidden flex-1 relative text-[11px] font-medium text-emerald-100">
+        <marquee onmouseover="this.stop();" onmouseout="this.start();" scrollamount="5" class="py-0.5">
+          {% set ada_aktif = false %}
+          {% for it in items %}
+            {% if it.is_active == 1 %}
+              {% set ada_aktif = true %}
+              <span>{{ it.teks }}</span>
+              <span class="mx-5 text-emerald-400 font-bold">•</span>
+            {% endif %}
+          {% endfor %}
+          {% if not ada_aktif %}
+            <span class="text-amber-300 italic">Belum ada running text yang berstatus aktif. Silakan tambahkan atau aktifkan minimal satu pengumuman.</span>
+          {% endif %}
+        </marquee>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY CARDS -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center">
+      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Pengumuman</span>
+      <span class="text-2xl font-black text-slate-900 block mt-1">{{ items|length }} Item</span>
+      <span class="text-[10px] text-slate-500">Tersimpan di database</span>
+    </div>
+
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center">
+      <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Status Aktif (Tayang)</span>
+      {% set aktif_count = [] %}
+      {% for it in items %}{% if it.is_active == 1 %}{% if aktif_count.append(1) %}{% endif %}{% endif %}{% endfor %}
+      <span class="text-2xl font-black text-emerald-600 block mt-1">{{ aktif_count|length }} Item</span>
+      <span class="text-[10px] text-emerald-700 font-bold">Sedang tampil di web</span>
+    </div>
+
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center">
+      <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Status Nonaktif</span>
+      {% set nonaktif_count = [] %}
+      {% for it in items %}{% if it.is_active == 0 %}{% if nonaktif_count.append(1) %}{% endif %}{% endif %}{% endfor %}
+      <span class="text-2xl font-black text-slate-600 block mt-1">{{ nonaktif_count|length }} Item</span>
+      <span class="text-[10px] text-slate-500">Disimpan sementara</span>
+    </div>
+
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center">
+      <span class="text-[10px] font-bold text-brand-700 uppercase tracking-wider block">Kecepatan Gerak</span>
+      <span class="text-2xl font-black text-brand-600 block mt-1">Standar (5)</span>
+      <span class="text-[10px] text-brand-700 font-bold">Otomatis jeda saat hover</span>
+    </div>
+  </div>
+
+  <!-- TABEL DAFTAR RUNNING TEXT -->
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div>
+        <h3 class="font-bold text-slate-900 text-sm">Daftar Kalimat Running Text</h3>
+        <p class="text-[11px] text-slate-500">Urutan tampil diatur berdasarkan nomor urutan (angka terkecil tampil lebih dulu).</p>
+      </div>
+      <div class="text-xs text-slate-500">
+        Total: <span class="font-bold text-slate-900">{{ items|length }} baris</span>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr class="bg-slate-50 text-slate-600 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
+            <th class="py-3.5 px-4 w-16 text-center">Urutan</th>
+            <th class="py-3.5 px-4">Isi Teks Pengumuman</th>
+            <th class="py-3.5 px-4 w-32 text-center">Status</th>
+            <th class="py-3.5 px-4 w-36 text-center">Dibuat</th>
+            <th class="py-3.5 px-4 w-32 text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          {% if items %}
+            {% for it in items %}
+            <tr class="hover:bg-slate-50/70 transition">
+              <!-- Urutan -->
+              <td class="py-3.5 px-4 text-center">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 text-slate-800 font-black text-xs">
+                  {{ it.urutan }}
+                </span>
+              </td>
+
+              <!-- Isi Teks -->
+              <td class="py-3.5 px-4">
+                <div class="font-medium text-slate-800 text-xs leading-relaxed max-w-xl">
+                  {{ it.teks }}
+                </div>
+              </td>
+
+              <!-- Status & Toggle -->
+              <td class="py-3.5 px-4 text-center">
+                <form action="{{ url_for('admin_running_text_toggle', id=it.id) }}" method="POST" class="inline-block">
+                  {% if it.is_active == 1 %}
+                    <button type="submit" title="Klik untuk menonaktifkan" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 hover:bg-emerald-200 text-[11px] font-bold transition">
+                      <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span> Aktif
+                    </button>
+                  {% else %}
+                    <button type="submit" title="Klik untuk mengaktifkan" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 text-[11px] font-bold transition">
+                      <span class="w-2 h-2 rounded-full bg-slate-400"></span> Nonaktif
+                    </button>
+                  {% endif %}
+                </form>
+              </td>
+
+              <!-- Tanggal Dibuat -->
+              <td class="py-3.5 px-4 text-center text-slate-500 text-[11px]">
+                {{ it.created_at[:10] if it.created_at else '-' }}
+              </td>
+
+              <!-- Tombol Aksi -->
+              <td class="py-3.5 px-4 text-center">
+                <div class="flex items-center justify-center gap-1.5">
+                  <!-- Tombol Edit -->
+                  <button type="button" 
+                          onclick="bukaModalEdit({{ it.id }}, {{ it.teks|tojson }}, {{ it.urutan }}, {{ it.is_active }})"
+                          title="Edit Teks"
+                          class="p-2 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+
+                  <!-- Tombol Hapus -->
+                  <form action="{{ url_for('admin_running_text_hapus', id=it.id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus baris running text ini?');" class="inline-block">
+                    <button type="submit" title="Hapus" class="p-2 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="5" class="py-8 text-center text-slate-400">
+                <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-300 block"></i>
+                Belum ada data running text. Silakan klik tombol "Tambah Running Text Baru" di atas.
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TIPS & SARAN PENGISIAN -->
+  <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-200 text-xs text-emerald-900 space-y-2">
+    <div class="font-bold flex items-center gap-2 text-emerald-950">
+      <i class="fa-solid fa-lightbulb text-emerald-600"></i> Tips Penulisan Running Text:
+    </div>
+    <ul class="list-disc list-inside space-y-1 text-emerald-800 pl-1 text-[11px]">
+      <li>Gunakan awalan emoji (🕒, 🏛️, 📄, 📢, 🚨, ✨) untuk menarik perhatian pembaca.</li>
+      <li>Tuliskan pengumuman penting secara padat dan jelas (contoh: Jam Buka Kantor Desa, Jadwal Posyandu, Pengajuan Surat Online).</li>
+      <li>Atur nomor <strong>Urutan</strong> (1, 2, 3...) untuk menentukan posisi teks mana yang berjalan lebih dahulu.</li>
+      <li>Anda bisa menonaktifkan sementara suatu pengumuman tanpa harus menghapusnya dengan mengklik tombol status <strong>Aktif / Nonaktif</strong>.</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL TAMBAH RUNNING TEXT                  -->
+<!-- ========================================== -->
+<div id="modalTambah" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 transform transition-all">
+    <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+      <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+        <i class="fa-solid fa-plus-circle text-emerald-600"></i> Tambah Running Text Baru
+      </h3>
+      <button type="button" onclick="tutupModalTambah()" class="text-slate-400 hover:text-slate-600 p-1">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <form action="{{ url_for('admin_running_text_tambah') }}" method="POST" class="mt-4 space-y-4 text-xs">
+      <div>
+        <label class="block font-bold text-slate-700 mb-1">Isi Teks Pengumuman <span class="text-rose-500">*</span></label>
+        <textarea name="teks" rows="3" required placeholder="Contoh: 🕒 Jam Pelayanan: Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00) WIB" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 leading-relaxed"></textarea>
+        <!-- Emoji Shortcuts -->
+        <div class="flex items-center gap-1.5 mt-2 text-[11px] text-slate-500">
+          <span>Sisipkan emoji:</span>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalTambah')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">🕒</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalTambah')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">🏛️</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalTambah')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">📄</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalTambah')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">📢</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalTambah')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">🚨</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalTambah')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">✨</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalTambah')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">ℹ️</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nomor Urutan Tampil</label>
+          <input type="number" name="urutan" value="{{ (items|length) + 1 }}" min="1" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 font-bold" />
+          <span class="text-[10px] text-slate-400 mt-1 block">Angka kecil tampil di awal</span>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Status Publikasi</label>
+          <select name="is_active" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 font-semibold">
+            <option value="1" selected>✅ Aktif (Langsung Tayang)</option>
+            <option value="0">⏸️ Nonaktif (Disimpan Sementara)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+        <button type="button" onclick="tutupModalTambah()" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold transition">
+          Batal
+        </button>
+        <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center gap-2 shadow-sm">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan Teks
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL EDIT RUNNING TEXT                    -->
+<!-- ========================================== -->
+<div id="modalEdit" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 transform transition-all">
+    <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+      <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+        <i class="fa-solid fa-pen-to-square text-amber-600"></i> Edit Running Text
+      </h3>
+      <button type="button" onclick="tutupModalEdit()" class="text-slate-400 hover:text-slate-600 p-1">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <form id="formEdit" action="" method="POST" class="mt-4 space-y-4 text-xs">
+      <div>
+        <label class="block font-bold text-slate-700 mb-1">Isi Teks Pengumuman <span class="text-rose-500">*</span></label>
+        <textarea id="editTeks" name="teks" rows="3" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-800 leading-relaxed"></textarea>
+        <!-- Emoji Shortcuts -->
+        <div class="flex items-center gap-1.5 mt-2 text-[11px] text-slate-500">
+          <span>Sisipkan emoji:</span>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalEdit')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">🕒</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalEdit')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">🏛️</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalEdit')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">📄</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalEdit')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">📢</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalEdit')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">🚨</button>
+          <button type="button" onclick="sisipkanEmoji(this.innerText, 'modalEdit')" class="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-xs">✨</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nomor Urutan Tampil</label>
+          <input type="number" id="editUrutan" name="urutan" min="1" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-800 font-bold" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Status Publikasi</label>
+          <select id="editStatus" name="is_active" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-800 font-semibold">
+            <option value="1">✅ Aktif (Tayang)</option>
+            <option value="0">⏸️ Nonaktif (Disimpan Sementara)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+        <button type="button" onclick="tutupModalEdit()" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold transition">
+          Batal
+        </button>
+        <button type="submit" class="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold transition flex items-center gap-2 shadow-sm">
+          <i class="fa-solid fa-check"></i> Simpan Perubahan
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function bukaModalTambah() {
+    document.getElementById('modalTambah').classList.remove('hidden');
+  }
+
+  function tutupModalTambah() {
+    document.getElementById('modalTambah').classList.add('hidden');
+  }
+
+  function bukaModalEdit(id, teks, urutan, isActive) {
+    document.getElementById('formEdit').action = '/admin/running-text/' + id + '/edit';
+    document.getElementById('editTeks').value = teks;
+    document.getElementById('editUrutan').value = urutan;
+    document.getElementById('editStatus').value = isActive;
+    document.getElementById('modalEdit').classList.remove('hidden');
+  }
+
+  function tutupModalEdit() {
+    document.getElementById('modalEdit').classList.add('hidden');
+  }
+
+  function sisipkanEmoji(emoji, modalId) {
+    var modal = document.getElementById(modalId);
+    var textarea = modal.querySelector('textarea');
+    if (textarea) {
+      var start = textarea.selectionStart;
+      var end = textarea.selectionEnd;
+      var text = textarea.value;
+      textarea.value = text.substring(0, start) + emoji + ' ' + text.substring(end);
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length + 1;
+    }
+  }
+
+  // Close modals when clicking outside
+  window.addEventListener('click', function(e) {
+    var mt = document.getElementById('modalTambah');
+    var me = document.getElementById('modalEdit');
+    if (e.target === mt) tutupModalTambah();
+    if (e.target === me) tutupModalEdit();
+  });
+</script>
+{% endblock %}

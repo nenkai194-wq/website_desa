@@ -1308,6 +1308,29 @@ def init_db():
         ''', sample_buku)
         conn.commit()
 
+    # 13. Running Text (Teks Berjalan / Pengumuman Bergerak)
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS running_texts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        teks TEXT NOT NULL,
+        urutan INTEGER DEFAULT 1,
+        is_active INTEGER DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+    conn.commit()
+
+    cursor.execute("SELECT COUNT(*) FROM running_texts")
+    if cursor.fetchone()[0] == 0:
+        default_running = [
+            ("🕒 Jam Pelayanan: Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00) WIB", 1, 1),
+            ("🏛️ Selamat Datang di Portal Resmi Informasi & Layanan Mandiri Pemerintah Desa", 2, 1),
+            ("📄 Urus surat keterangan resmi (SKU, SKD, SKTM, dll.) secara online mandiri 24 jam melalui menu Layanan Surat", 3, 1),
+            ("📢 Sampaikan aspirasi & aduan masyarakat melalui tombol Pengaduan di sudut kiri bawah website", 4, 1)
+        ]
+        cursor.executemany("INSERT INTO running_texts (teks, urutan, is_active) VALUES (?, ?, ?)", default_running)
+        conn.commit()
+
     conn.close()
 
 def record_activity_log(action, details=None, username=None, user_id=None, ip_address=None, user_agent=None):

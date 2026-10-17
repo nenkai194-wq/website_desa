@@ -116,10 +116,14 @@ def inject_global_data():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM profil_desa WHERE id = 1")
         row = cursor.fetchone()
-        conn.close()
         data['profil_global'] = dict(row or {})
+
+        cursor.execute("SELECT * FROM running_texts WHERE is_active = 1 ORDER BY urutan ASC, id ASC")
+        data['running_texts_global'] = [dict(r) for r in cursor.fetchall()]
+        conn.close()
     except Exception:
         data['profil_global'] = {}
+        data['running_texts_global'] = []
     return data
 
 # Decorator Hak Akses 1: Login Required (Admin & Super Admin)
@@ -2117,6 +2121,128 @@ def admin_hapus_kategori_publikasi(id):
     conn.close()
     flash('Kategori publikasi berhasil dihapus.', 'info')
     return redirect(url_for('admin_publikasi'))
+
+# ==========================================
+# ADMIN RUNNING TEXT (PENGUMUMAN BERJALAN)
+# ==========================================
+
+@app.route('/admin/running-text')
+@login_required
+def admin_running_text():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM running_texts ORDER BY urutan ASC, id ASC")
+    items = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return render_template('admin/running_text.html', items=items)
+
+@app.route('/admin/running-text/tambah', methods=['POST'])
+@login_required
+def admin_running_text_tambah():
+    teks = request.form.get('teks', '').strip()
+    urutan = request.form.get('urutan', '1').strip()
+    is_active = 1 if request.form.get('is_active') == '1' else 0
+    try:
+        urutan = int(urutan)
+    except ValueError:
+        urutan = 1
+
+    if not teks:
+        flash('Isi teks pengumuman berjalan tidak boleh kosong.', 'danger')
+        return redirect(url_for('admin_running_text'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO running_texts (teks, urutan, is_active) VALUES (?, ?, ?)",
+        (teks, urutan, is_active)
+    )
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='TAMBAH_RUNNING_TEXT',
+        details=f'Menambahkan teks berjalan baru: "{teks[:50]}..." (Urutan: {urutan}, Status: {"Aktif" if is_active else "Nonaktif"})',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+    flash('Teks berjalan berhasil ditambahkan!', 'success')
+    return redirect(url_for('admin_running_text'))
+
+@app.route('/admin/running-text/<int:id>/edit', methods=['POST'])
+@login_required
+def admin_running_text_edit(id):
+    teks = request.form.get('teks', '').strip()
+    urutan = request.form.get('urutan', '1').strip()
+    is_active = 1 if request.form.get('is_active') == '1' else 0
+    try:
+        urutan = int(urutan)
+    except ValueError:
+        urutan = 1
+
+    if not teks:
+        flash('Isi teks pengumuman berjalan tidak boleh kosong.', 'danger')
+        return redirect(url_for('admin_running_text'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE running_texts SET teks = ?, urutan = ?, is_active = ? WHERE id = ?",
+        (teks, urutan, is_active, id)
+    )
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='EDIT_RUNNING_TEXT',
+        details=f'Mengedit teks berjalan ID {id}: "{teks[:50]}..."',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+    flash('Teks berjalan berhasil diperbarui!', 'success')
+    return redirect(url_for('admin_running_text'))
+
+@app.route('/admin/running-text/<int:id>/hapus', methods=['POST'])
+@login_required
+def admin_running_text_hapus(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT teks FROM running_texts WHERE id = ?", (id,))
+    item = cursor.fetchone()
+    teks_lama = item[0] if item else ''
+    cursor.execute("DELETE FROM running_texts WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+
+    record_activity_log(
+        action='HAPUS_RUNNING_TEXT',
+        details=f'Menghapus teks berjalan ID {id}: "{teks_lama[:50]}..."',
+        username=session.get('username'),
+        user_id=session.get('user_id'),
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent')
+    )
+    flash('Teks berjalan berhasil dihapus.', 'info')
+    return redirect(url_for('admin_running_text'))
+
+@app.route('/admin/running-text/<int:id>/toggle', methods=['POST'])
+@login_required
+def admin_running_text_toggle(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE running_texts SET is_active = CASE WHEN is_active = 1 THEN 0 ELSE 1 END WHERE id = ?", (id,))
+    conn.commit()
+    cursor.execute("SELECT is_active, teks FROM running_texts WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    conn.close()
+
+    status_str = 'Diaktifkan' if (row and row[0] == 1) else 'Dinonaktifkan'
+    flash(f'Status teks berjalan berhasil {status_str.lower()}.', 'success')
+    return redirect(url_for('admin_running_text'))
 
 # ==========================================
 # PUBLIC PUBLIKASI & PERPUSTAKAAN DIGITAL

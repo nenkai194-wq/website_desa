@@ -132,13 +132,16 @@
           </span>
           <div class="overflow-hidden flex-1 relative text-[11px] font-medium text-emerald-100">
             <marquee onmouseover="this.stop();" onmouseout="this.start();" scrollamount="5" class="py-0.5">
-              <span>🕒 <strong>Jam Pelayanan:</strong> {{ profil.jam_pelayanan or "Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00) WIB" }}</span>
-              <span class="mx-5 text-emerald-400 font-bold">•</span>
-              <span>🏛️ Selamat Datang di Portal Resmi Informasi & Layanan Mandiri Pemerintah Desa {{ profil.nama_desa }}, Kec. {{ profil.kecamatan }}, Kab. {{ profil.kabupaten }}</span>
-              <span class="mx-5 text-emerald-400 font-bold">•</span>
-              <span>📄 Urus surat keterangan resmi (SKU, SKD, SKTM, dll.) secara online mandiri 24 jam melalui menu Layanan Surat</span>
-              <span class="mx-5 text-emerald-400 font-bold">•</span>
-              <span>📢 Sampaikan aspirasi & aduan masyarakat melalui tombol Pengaduan di sudut kiri bawah website</span>
+              {% if running_texts_global %}
+                {% for item in running_texts_global %}
+                  <span>{{ item.teks }}</span>
+                  {% if not loop.last %}<span class="mx-5 text-emerald-400 font-bold">•</span>{% endif %}
+                {% endfor %}
+              {% else %}
+                <span>🕒 <strong>Jam Pelayanan:</strong> {{ profil.jam_pelayanan or "Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00) WIB" }}</span>
+                <span class="mx-5 text-emerald-400 font-bold">•</span>
+                <span>🏛️ Selamat Datang di Portal Resmi Informasi & Layanan Mandiri Pemerintah Desa {{ profil.nama_desa }}, Kec. {{ profil.kecamatan }}, Kab. {{ profil.kabupaten }}</span>
+              {% endif %}
             </marquee>
           </div>
         </div>
