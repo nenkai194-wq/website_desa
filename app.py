@@ -2452,8 +2452,102 @@ def admin_aparatur():
     aparatur_list = [dict(row) for row in cursor.fetchall()]
     cursor.execute("SELECT * FROM jabatan_struktural ORDER BY urutan ASC, nama_jabatan ASC")
     jabatan_list = [dict(row) for row in cursor.fetchall()]
+    cursor.execute("SELECT * FROM profil_desa WHERE id = 1")
+    row_profil = cursor.fetchone()
+    profil = dict(row_profil) if row_profil else {}
     conn.close()
-    return render_template('admin/aparatur.html', aparatur_list=aparatur_list, jabatan_list=jabatan_list)
+    return render_template('admin/aparatur.html', aparatur_list=aparatur_list, jabatan_list=jabatan_list, profil=profil)
+
+@app.route('/admin/aparatur/bagan/upload', methods=['POST'])
+@login_required
+def admin_upload_bagan_aparatur():
+    jenis = request.form.get('jenis_bagan', 'all')
+    keterangan_desa = request.form.get('keterangan_bagan_desa')
+    keterangan_bpd = request.form.get('keterangan_bagan_bpd')
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT bagan_struktur_desa, bagan_struktur_bpd FROM profil_desa WHERE id = 1")
+    row = cursor.fetchone()
+    new_bagan_desa = row['bagan_struktur_desa'] if row else None
+    new_bagan_bpd = row['bagan_struktur_bpd'] if row else None
+
+    # 1. Upload Bagan Struktur Organisasi Pemerintah Desa
+    if 'bagan_desa_file' in request.files:
+        f_desa = request.files['bagan_desa_file']
+        if f_desa and f_desa.filename != '':
+            ext = os.path.splitext(f_desa.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp', '.svg']:
+                filename = secure_filename(f"bagan_pemdes_{int(time.time())}_{random.randint(100,999)}{ext}")
+                f_desa.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                new_bagan_desa = f"static/images/uploads/{filename}"
+
+    # 2. Upload Bagan Struktur Organisasi BPD
+    if 'bagan_bpd_file' in request.files:
+        f_bpd = request.files['bagan_bpd_file']
+        if f_bpd and f_bpd.filename != '':
+            ext = os.path.splitext(f_bpd.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp', '.svg']:
+                filename = secure_filename(f"bagan_bpd_{int(time.time())}_{random.randint(100,999)}{ext}")
+                f_bpd.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                new_bagan_bpd = f"static/images/uploads/{filename}"
+
+    # Dukungan URL eksternal / path langsung jika diinput
+    bagan_desa_url = (request.form.get('bagan_desa_url') or '').strip()
+    if bagan_desa_url:
+        new_bagan_desa = bagan_desa_url
+
+    bagan_bpd_url = (request.form.get('bagan_bpd_url') or '').strip()
+    if bagan_bpd_url:
+        new_bagan_bpd = bagan_bpd_url
+
+    cursor.execute('''
+        UPDATE profil_desa 
+        SET bagan_struktur_desa = ?, 
+            bagan_struktur_bpd = ?,
+            keterangan_bagan_desa = COALESCE(?, keterangan_bagan_desa),
+            keterangan_bagan_bpd = COALESCE(?, keterangan_bagan_bpd)
+        WHERE id = 1
+    ''', (new_bagan_desa, new_bagan_bpd, keterangan_desa, keterangan_bpd))
+    conn.commit()
+    conn.close()
+
+    try:
+        record_activity_log(
+            'UPLOAD_BAGAN_SOTK',
+            f"Memperbarui berkas bagan struktur organisasi Pemerintah Desa & BPD"
+        )
+    except Exception:
+        pass
+
+    flash('Bagan Struktur Organisasi Pemerintah Desa dan BPD berhasil disimpan!', 'success')
+    return redirect(url_for('admin_aparatur'))
+
+@app.route('/admin/aparatur/bagan/reset/<jenis>', methods=['POST'])
+@login_required
+def admin_reset_bagan_aparatur(jenis):
+    conn = get_db()
+    cursor = conn.cursor()
+    if jenis == 'desa':
+        cursor.execute("UPDATE profil_desa SET bagan_struktur_desa = NULL WHERE id = 1")
+        msg = "Bagan Struktur Organisasi Pemerintah Desa berhasil direset ke diagram sistem default."
+    elif jenis == 'bpd':
+        cursor.execute("UPDATE profil_desa SET bagan_struktur_bpd = NULL WHERE id = 1")
+        msg = "Bagan Struktur Organisasi BPD berhasil direset ke diagram sistem default."
+    else:
+        cursor.execute("UPDATE profil_desa SET bagan_struktur_desa = NULL, bagan_struktur_bpd = NULL WHERE id = 1")
+        msg = "Semua Bagan Struktur Organisasi berhasil direset ke diagram sistem default."
+    conn.commit()
+    conn.close()
+
+    try:
+        record_activity_log('RESET_BAGAN_SOTK', f"Mereset bagan struktur {jenis} ke diagram default")
+    except Exception:
+        pass
+
+    flash(msg, 'info')
+    return redirect(url_for('admin_aparatur'))
+
 
 @app.route('/admin/aparatur/jabatan/list', methods=['GET'])
 @login_required

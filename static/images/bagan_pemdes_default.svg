@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 850" width="100%" height="100%">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="kadesGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#047857" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="sekdesGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+    <linearGradient id="kasiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <linearGradient id="kaurGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#14b8a6" />
+    </linearGradient>
+    <linearGradient id="kadusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="125%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="850" fill="#f8fafc" rx="16" />
+  <rect x="15" y="15" width="1170" height="820" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,6" rx="12" />
+
+  <!-- Title Header -->
+  <rect x="40" y="35" width="1120" height="90" rx="16" fill="url(#headerGrad)" filter="url(#cardShadow)" />
+  <text x="600" y="70" text-anchor="middle" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" letter-spacing="1">BAGAN STRUKTUR ORGANISASI PEMERINTAH DESA</text>
+  <text x="600" y="100" text-anchor="middle" fill="#a7f3d0" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" letter-spacing="0.5">DESA PAPAYAN • KECAMATAN JATIWARAS • KABUPATEN TASIKMALAYA</text>
+
+  <!-- Connecting Lines -->
+  <!-- Kades to Sekdes Vertical -->
+  <line x1="600" y1="230" x2="600" y2="280" stroke="#047857" stroke-width="3" stroke-linecap="round" />
+  <!-- Sekdes to Kaur Bus (Horizontal & Vertical) -->
+  <line x1="600" y1="360" x2="600" y2="390" stroke="#0284c7" stroke-width="3" />
+  <!-- Horizontal line for Kaur (Right branch) -->
+  <line x1="600" y1="390" x2="880" y2="390" stroke="#0284c7" stroke-width="3" />
+  <line x1="880" y1="390" x2="880" y2="430" stroke="#0284c7" stroke-width="3" />
+  <!-- Horizontal line for Kasi (Left branch) -->
+  <line x1="600" y1="390" x2="320" y2="390" stroke="#4f46e5" stroke-width="3" />
+  <line x1="320" y1="390" x2="320" y2="430" stroke="#4f46e5" stroke-width="3" />
+
+  <!-- Kades to Dusun Direct Line -->
+  <line x1="600" y1="360" x2="600" y2="670" stroke="#64748b" stroke-width="2.5" stroke-dasharray="4,4" />
+
+  <!-- 1. KEPALA DESA CARD -->
+  <g filter="url(#cardShadow)">
+    <rect x="460" y="150" width="280" height="80" rx="14" fill="#ffffff" stroke="#059669" stroke-width="2" />
+    <rect x="460" y="150" width="280" height="32" rx="12" fill="url(#kadesGrad)" />
+    <text x="600" y="171" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="12" font-weight="800" letter-spacing="1">KEPALA DESA</text>
+    <text x="600" y="202" text-anchor="middle" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" font-weight="700">Pimpinan Pemerintahan Desa</text>
+    <text x="600" y="220" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Masa Bakti 2021 - 2027</text>
+  </g>
+
+  <!-- 2. SEKRETARIS DESA CARD -->
+  <g filter="url(#cardShadow)">
+    <rect x="465" y="280" width="270" height="80" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="2" />
+    <rect x="465" y="280" width="270" height="30" rx="12" fill="url(#sekdesGrad)" />
+    <text x="600" y="300" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="12" font-weight="800" letter-spacing="1">SEKRETARIS DESA</text>
+    <text x="600" y="330" text-anchor="middle" fill="#0f172a" font-family="system-ui, sans-serif" font-size="14" font-weight="700">Sekretariat &amp; Administrasi</text>
+    <text x="600" y="348" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Koordinator Teknis Perangkat</text>
+  </g>
+
+  <!-- 3. KELOMPOK KEPALA SEKSI (PELAKSANA TEKNIS) - LEFT SIDE -->
+  <!-- Header Kasi -->
+  <rect x="100" y="420" width="440" height="36" rx="8" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.5" />
+  <text x="320" y="443" text-anchor="middle" fill="#3730a3" font-family="system-ui, sans-serif" font-size="12" font-weight="800">SEKSI PELAKSANA TEKNIS (KASI)</text>
+  
+  <!-- Bus line under Kasi header -->
+  <line x1="170" y1="456" x2="470" y2="456" stroke="#6366f1" stroke-width="2" />
+  <line x1="170" y1="456" x2="170" y2="480" stroke="#6366f1" stroke-width="2" />
+  <line x1="320" y1="456" x2="320" y2="480" stroke="#6366f1" stroke-width="2" />
+  <line x1="470" y1="456" x2="470" y2="480" stroke="#6366f1" stroke-width="2" />
+
+  <!-- Kasi Pemerintahan -->
+  <g filter="url(#cardShadow)">
+    <rect x="90" y="480" width="160" height="95" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="90" y="480" width="160" height="24" rx="8" fill="url(#kasiGrad)" />
+    <text x="170" y="496" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="9" font-weight="800">KASI PEMERINTAHAN</text>
+    <text x="170" y="525" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Administrasi &amp;</text>
+    <text x="170" y="540" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Ketentraman Warga</text>
+    <text x="170" y="562" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="9">Pelaksana Kewilayahan</text>
+  </g>
+
+  <!-- Kasi Kesejahteraan -->
+  <g filter="url(#cardShadow)">
+    <rect x="260" y="480" width="160" height="95" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="260" y="480" width="160" height="24" rx="8" fill="url(#kasiGrad)" />
+    <text x="340" y="496" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="9" font-weight="800">KASI KESEJAHTERAAN</text>
+    <text x="340" y="525" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Pembangunan &amp;</text>
+    <text x="340" y="540" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Pemberdayaan</text>
+    <text x="340" y="562" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="9">Sosial &amp; Ekonomi</text>
+  </g>
+
+  <!-- Kasi Pelayanan -->
+  <g filter="url(#cardShadow)">
+    <rect x="430" y="480" width="160" height="95" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="430" y="480" width="160" height="24" rx="8" fill="url(#kasiGrad)" />
+    <text x="510" y="496" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="9" font-weight="800">KASI PELAYANAN</text>
+    <text x="510" y="525" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Layanan Masyarakat</text>
+    <text x="510" y="540" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">&amp; Nikah/Talak</text>
+    <text x="510" y="562" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="9">Keagamaan &amp; Budaya</text>
+  </g>
+
+  <!-- 4. KELOMPOK KEPALA URUSAN (STAF TATA USAHA) - RIGHT SIDE -->
+  <!-- Header Kaur -->
+  <rect x="660" y="420" width="440" height="36" rx="8" fill="#ccfbf1" stroke="#14b8a6" stroke-width="1.5" />
+  <text x="880" y="443" text-anchor="middle" fill="#115e59" font-family="system-ui, sans-serif" font-size="12" font-weight="800">URUSAN TATA USAHA &amp; UMUM (KAUR)</text>
+
+  <!-- Bus line under Kaur header -->
+  <line x1="730" y1="456" x2="1030" y2="456" stroke="#14b8a6" stroke-width="2" />
+  <line x1="730" y1="456" x2="730" y2="480" stroke="#14b8a6" stroke-width="2" />
+  <line x1="880" y1="456" x2="880" y2="480" stroke="#14b8a6" stroke-width="2" />
+  <line x1="1030" y1="456" x2="1030" y2="480" stroke="#14b8a6" stroke-width="2" />
+
+  <!-- Kaur Tata Usaha & Umum -->
+  <g filter="url(#cardShadow)">
+    <rect x="650" y="480" width="160" height="95" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="650" y="480" width="160" height="24" rx="8" fill="url(#kaurGrad)" />
+    <text x="730" y="496" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="9" font-weight="800">KAUR TU &amp; UMUM</text>
+    <text x="730" y="525" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Persuratan &amp;</text>
+    <text x="730" y="540" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Inventaris Barang</text>
+    <text x="730" y="562" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="9">Sarana Prasarana</text>
+  </g>
+
+  <!-- Kaur Keuangan -->
+  <g filter="url(#cardShadow)">
+    <rect x="820" y="480" width="160" height="95" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="820" y="480" width="160" height="24" rx="8" fill="url(#kaurGrad)" />
+    <text x="900" y="496" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="9" font-weight="800">KAUR KEUANGAN</text>
+    <text x="900" y="525" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Bendahara Desa &amp;</text>
+    <text x="900" y="540" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Pembukuan APBDes</text>
+    <text x="900" y="562" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="9">Penatausahaan Kas</text>
+  </g>
+
+  <!-- Kaur Perencanaan -->
+  <g filter="url(#cardShadow)">
+    <rect x="990" y="480" width="160" height="95" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="990" y="480" width="160" height="24" rx="8" fill="url(#kaurGrad)" />
+    <text x="1070" y="496" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="9" font-weight="800">KAUR PERENCANAAN</text>
+    <text x="1070" y="525" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">RPJMDes &amp; RKPDes</text>
+    <text x="1070" y="540" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Data Pembangunan</text>
+    <text x="1070" y="562" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="9">Perencanaan Anggaran</text>
+  </g>
+
+  <!-- 5. UNSUR KEWILAYAHAN (KEPALA DUSUN) - BOTTOM -->
+  <!-- Horizontal Bus for Dusun -->
+  <line x1="200" y1="670" x2="1000" y2="670" stroke="#f59e0b" stroke-width="2.5" />
+  <line x1="250" y1="670" x2="250" y2="700" stroke="#f59e0b" stroke-width="2" />
+  <line x1="483" y1="670" x2="483" y2="700" stroke="#f59e0b" stroke-width="2" />
+  <line x1="716" y1="670" x2="716" y2="700" stroke="#f59e0b" stroke-width="2" />
+  <line x1="950" y1="670" x2="950" y2="700" stroke="#f59e0b" stroke-width="2" />
+
+  <g filter="url(#cardShadow)">
+    <rect x="150" y="700" width="200" height="75" rx="10" fill="#ffffff" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="150" y="700" width="200" height="24" rx="8" fill="url(#kadusGrad)" />
+    <text x="250" y="716" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="10" font-weight="800">KEPALA DUSUN I</text>
+    <text x="250" y="742" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Wilayah Dusun 1</text>
+    <text x="250" y="760" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="10">Pelaksana Kewilayahan</text>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="383" y="700" width="200" height="75" rx="10" fill="#ffffff" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="383" y="700" width="200" height="24" rx="8" fill="url(#kadusGrad)" />
+    <text x="483" y="716" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="10" font-weight="800">KEPALA DUSUN II</text>
+    <text x="483" y="742" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Wilayah Dusun 2</text>
+    <text x="483" y="760" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="10">Pelaksana Kewilayahan</text>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="616" y="700" width="200" height="75" rx="10" fill="#ffffff" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="616" y="700" width="200" height="24" rx="8" fill="url(#kadusGrad)" />
+    <text x="716" y="716" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="10" font-weight="800">KEPALA DUSUN III</text>
+    <text x="716" y="742" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Wilayah Dusun 3</text>
+    <text x="716" y="760" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="10">Pelaksana Kewilayahan</text>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="850" y="700" width="200" height="75" rx="10" fill="#ffffff" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="850" y="700" width="200" height="24" rx="8" fill="url(#kadusGrad)" />
+    <text x="950" y="716" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="10" font-weight="800">KEPALA DUSUN IV</text>
+    <text x="950" y="742" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Wilayah Dusun 4</text>
+    <text x="950" y="760" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="10">Pelaksana Kewilayahan</text>
+  </g>
+
+  <!-- Footer Watermark / Signature -->
+  <text x="600" y="810" text-anchor="middle" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Pemerintah Desa Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya • Permendagri No. 84 Tahun 2015 tentang SOTK Pemerintah Desa</text>
+</svg>

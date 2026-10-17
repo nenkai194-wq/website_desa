@@ -22,6 +22,179 @@
     </div>
   </div>
 
+  <!-- ======================================================== -->
+  <!-- BAGIAN UPLOAD BAGAN STRUKTUR ORGANISASI PEMDES & BPD     -->
+  <!-- ======================================================== -->
+  <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg shrink-0">
+          <i class="fa-solid fa-sitemap"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+            Upload Bagan Struktur Organisasi (Pemdes & BPD)
+            <span class="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">Frontend Terkoneksi</span>
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">Unggah gambar diagram/bagan struktur hierarki Pemerintah Desa dan Badan Permusyawaratan Desa (BPD) untuk ditampilkan pada halaman Profil Desa di frontend.</p>
+        </div>
+      </div>
+      <button type="button" onclick="toggleBaganSection()" id="btn-toggle-bagan" class="text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 self-start sm:self-auto">
+        <i class="fa-solid fa-chevron-up transition-transform duration-200" id="icon-toggle-bagan"></i>
+        <span id="text-toggle-bagan">Sembunyikan Panel</span>
+      </button>
+    </div>
+
+    <!-- Container Grid 2 Kolom Bagan -->
+    <div id="container-panel-bagan" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-5">
+      
+      <!-- 1. BAGAN STRUKTUR ORGANISASI PEMERINTAH DESA -->
+      <div class="bg-slate-50/70 rounded-2xl border border-slate-200 p-5 flex flex-col justify-between hover:border-emerald-300 transition duration-300">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-emerald-700 text-white flex items-center justify-center text-xs font-bold shadow-xs">1</span>
+              <h4 class="font-bold text-slate-900 text-sm">Bagan SOTK Pemerintah Desa</h4>
+            </div>
+            {% if profil.bagan_struktur_desa %}
+              <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <i class="fa-solid fa-check-circle text-emerald-600"></i> Kustom Terupload
+              </span>
+            {% else %}
+              <span class="text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <i class="fa-solid fa-diagram-project text-amber-600"></i> Diagram Default
+              </span>
+            {% endif %}
+          </div>
+          
+          <p class="text-xs text-slate-500 mb-3 leading-relaxed">
+            Diagram hierarki Kepala Desa, Sekretaris Desa, Kepala Seksi (Kasi), Kepala Urusan (Kaur), dan Kepala Dusun (Kadus).
+          </p>
+
+          <!-- Preview Bagan Pemdes -->
+          {% set pemdes_src = url_for('static', filename=profil.bagan_struktur_desa.replace('static/', '')) if profil.bagan_struktur_desa and profil.bagan_struktur_desa.startswith('static/') else (profil.bagan_struktur_desa or url_for('static', filename='images/bagan_pemdes_default.svg')) %}
+          <div class="relative bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs group mb-4">
+            <div class="h-52 w-full flex items-center justify-center bg-slate-100/60 p-2 overflow-hidden">
+              <img id="preview-img-desa" src="{{ pemdes_src }}" alt="Bagan Organisasi Pemdes" class="max-h-full max-w-full object-contain transition duration-300 group-hover:scale-105" onerror="this.src='{{ url_for('static', filename='images/bagan_pemdes_default.svg') }}'" />
+            </div>
+            <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-200 flex items-center justify-center gap-2">
+              <button type="button" onclick="bukaLightboxBagan('{{ pemdes_src }}', 'Bagan Struktur Organisasi Pemerintah Desa Papayan')" class="px-3 py-1.5 rounded-lg bg-white/95 text-slate-800 font-bold text-xs shadow-md hover:bg-white flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-magnifying-glass-plus text-emerald-700"></i> Perbesar Bagan
+              </button>
+            </div>
+          </div>
+
+          <!-- Form Upload Pemdes -->
+          <form method="POST" action="{{ url_for('admin_upload_bagan_aparatur') }}" enctype="multipart/form-data" class="space-y-3">
+            <input type="hidden" name="jenis_bagan" value="desa">
+            
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                Pilih Berkas Gambar Bagan Baru <span class="text-slate-400 font-normal">(PNG, JPG, WEBP, SVG)</span>
+              </label>
+              <input type="file" name="bagan_desa_file" id="file-bagan-desa" accept="image/png, image/jpeg, image/webp, image/svg+xml" onchange="previewBaganLocal(this, 'preview-img-desa')" class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-800 hover:file:bg-emerald-100 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                Keterangan / Nomor SK SOTK <span class="text-slate-400 font-normal">(Opsional)</span>
+              </label>
+              <input type="text" name="keterangan_bagan_desa" value="{{ profil.keterangan_bagan_desa or '' }}" placeholder="Contoh: Berdasarkan Peraturan Desa Papayan No. 03 Tahun 2021 tentang SOTK" class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 placeholder-slate-400" />
+            </div>
+
+            <div class="flex items-center justify-between gap-2 pt-2">
+              <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm hover:shadow transition flex items-center gap-1.5">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload & Simpan Bagan Desa
+              </button>
+              {% if profil.bagan_struktur_desa %}
+              <button type="submit" form="form-reset-desa" class="px-3 py-2 rounded-xl bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs shadow-xs transition flex items-center gap-1" title="Reset ke bagan standar">
+                <i class="fa-solid fa-rotate-left"></i> Reset Standar
+              </button>
+              {% endif %}
+            </div>
+          </form>
+
+          {% if profil.bagan_struktur_desa %}
+          <form id="form-reset-desa" method="POST" action="{{ url_for('admin_reset_bagan_aparatur', jenis='desa') }}" onsubmit="return confirm('Apakah Anda yakin ingin mereset bagan struktur Pemdes ke diagram default sistem?');" class="hidden"></form>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- 2. BAGAN STRUKTUR ORGANISASI BPD (BADAN PERMUSYAWARATAN DESA) -->
+      <div class="bg-slate-50/70 rounded-2xl border border-slate-200 p-5 flex flex-col justify-between hover:border-indigo-300 transition duration-300">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-indigo-700 text-white flex items-center justify-center text-xs font-bold shadow-xs">2</span>
+              <h4 class="font-bold text-slate-900 text-sm">Bagan Struktur Organisasi BPD</h4>
+            </div>
+            {% if profil.bagan_struktur_bpd %}
+              <span class="text-[10px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-300 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <i class="fa-solid fa-check-circle text-indigo-600"></i> Kustom Terupload
+              </span>
+            {% else %}
+              <span class="text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <i class="fa-solid fa-diagram-project text-amber-600"></i> Diagram Default
+              </span>
+            {% endif %}
+          </div>
+          
+          <p class="text-xs text-slate-500 mb-3 leading-relaxed">
+            Diagram hierarki Badan Permusyawaratan Desa: Ketua BPD, Wakil Ketua, Sekretaris, serta Ketua Bidang &amp; Anggota BPD.
+          </p>
+
+          <!-- Preview Bagan BPD -->
+          {% set bpd_src = url_for('static', filename=profil.bagan_struktur_bpd.replace('static/', '')) if profil.bagan_struktur_bpd and profil.bagan_struktur_bpd.startswith('static/') else (profil.bagan_struktur_bpd or url_for('static', filename='images/bagan_bpd_default.svg')) %}
+          <div class="relative bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs group mb-4">
+            <div class="h-52 w-full flex items-center justify-center bg-slate-100/60 p-2 overflow-hidden">
+              <img id="preview-img-bpd" src="{{ bpd_src }}" alt="Bagan Organisasi BPD" class="max-h-full max-w-full object-contain transition duration-300 group-hover:scale-105" onerror="this.src='{{ url_for('static', filename='images/bagan_bpd_default.svg') }}'" />
+            </div>
+            <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-200 flex items-center justify-center gap-2">
+              <button type="button" onclick="bukaLightboxBagan('{{ bpd_src }}', 'Bagan Struktur Organisasi Badan Permusyawaratan Desa (BPD) Papayan')" class="px-3 py-1.5 rounded-lg bg-white/95 text-slate-800 font-bold text-xs shadow-md hover:bg-white flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-magnifying-glass-plus text-indigo-700"></i> Perbesar Bagan
+              </button>
+            </div>
+          </div>
+
+          <!-- Form Upload BPD -->
+          <form method="POST" action="{{ url_for('admin_upload_bagan_aparatur') }}" enctype="multipart/form-data" class="space-y-3">
+            <input type="hidden" name="jenis_bagan" value="bpd">
+            
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                Pilih Berkas Gambar Bagan Baru <span class="text-slate-400 font-normal">(PNG, JPG, WEBP, SVG)</span>
+              </label>
+              <input type="file" name="bagan_bpd_file" id="file-bagan-bpd" accept="image/png, image/jpeg, image/webp, image/svg+xml" onchange="previewBaganLocal(this, 'preview-img-bpd')" class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-800 hover:file:bg-indigo-100 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                Keterangan / Nomor SK BPD <span class="text-slate-400 font-normal">(Opsional)</span>
+              </label>
+              <input type="text" name="keterangan_bagan_bpd" value="{{ profil.keterangan_bagan_bpd or '' }}" placeholder="Contoh: Berdasarkan SK Bupati Tasikmalaya tentang Penetapan Anggota BPD Papayan" class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 placeholder-slate-400" />
+            </div>
+
+            <div class="flex items-center justify-between gap-2 pt-2">
+              <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-700 hover:bg-indigo-800 text-white font-bold text-xs shadow-sm hover:shadow transition flex items-center gap-1.5">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload & Simpan Bagan BPD
+              </button>
+              {% if profil.bagan_struktur_bpd %}
+              <button type="submit" form="form-reset-bpd" class="px-3 py-2 rounded-xl bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs shadow-xs transition flex items-center gap-1" title="Reset ke bagan standar">
+                <i class="fa-solid fa-rotate-left"></i> Reset Standar
+              </button>
+              {% endif %}
+            </div>
+          </form>
+
+          {% if profil.bagan_struktur_bpd %}
+          <form id="form-reset-bpd" method="POST" action="{{ url_for('admin_reset_bagan_aparatur', jenis='bpd') }}" onsubmit="return confirm('Apakah Anda yakin ingin mereset bagan struktur BPD ke diagram default sistem?');" class="hidden"></form>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Grid Cards Aparatur -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     {% for a in aparatur_list %}
@@ -827,9 +1000,83 @@
     }
   });
 
+  // --- FUNGSI MANAJEMEN BAGAN STRUKTUR SOTK & BPD ---
+  function toggleBaganSection() {
+    const container = document.getElementById('container-panel-bagan');
+    const icon = document.getElementById('icon-toggle-bagan');
+    const text = document.getElementById('text-toggle-bagan');
+    if (!container) return;
+
+    if (container.classList.contains('hidden')) {
+      container.classList.remove('hidden');
+      icon.style.transform = 'rotate(0deg)';
+      text.innerText = 'Sembunyikan Panel';
+    } else {
+      container.classList.add('hidden');
+      icon.style.transform = 'rotate(180deg)';
+      text.innerText = 'Tampilkan Panel';
+    }
+  }
+
+  function previewBaganLocal(input, targetImgId) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = document.getElementById(targetImgId);
+        if (img) {
+          img.src = e.target.result;
+        }
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function bukaLightboxBagan(src, title) {
+    const modal = document.getElementById('modal-lightbox-bagan');
+    const img = document.getElementById('lightbox-bagan-img');
+    const titleEl = document.getElementById('lightbox-bagan-title');
+    if (modal && img) {
+      img.src = src;
+      if (titleEl) titleEl.innerText = title || 'Bagan Struktur Organisasi';
+      modal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+  }
+
+  function tutupLightboxBagan() {
+    const modal = document.getElementById('modal-lightbox-bagan');
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+  }
+
   // Load initial jabatan list into memory on page load
   document.addEventListener('DOMContentLoaded', function() {
     loadJabatanData();
   });
 </script>
+
+<!-- MODAL LIGHTBOX FULLSCREEN PREVIEW BAGAN -->
+<div id="modal-lightbox-bagan" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden" onclick="if(event.target === this) tutupLightboxBagan();">
+  <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-fade-in">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
+      <div class="flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm">
+          <i class="fa-solid fa-sitemap"></i>
+        </span>
+        <h3 id="lightbox-bagan-title" class="font-extrabold text-slate-800 text-sm sm:text-base">Bagan Struktur Organisasi</h3>
+      </div>
+      <div class="flex items-center gap-2">
+        <a id="lightbox-bagan-download" href="#" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold transition flex items-center gap-1.5" onclick="this.href=document.getElementById('lightbox-bagan-img').src;">
+          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Buka Tab Baru
+        </a>
+        <button type="button" onclick="tutupLightboxBagan()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center text-lg font-bold transition">&times;</button>
+      </div>
+    </div>
+    <div class="p-4 sm:p-6 overflow-auto flex items-center justify-center bg-slate-900/5 max-h-[calc(92vh-80px)]">
+      <img id="lightbox-bagan-img" src="" alt="Pratinjau Bagan Penuh" class="max-w-full max-h-[75vh] object-contain rounded-xl shadow-md bg-white border border-slate-200" />
+    </div>
+  </div>
+</div>
 {% endblock %}

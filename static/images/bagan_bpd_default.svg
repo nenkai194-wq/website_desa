@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bpdHeaderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#312e81" />
+    </linearGradient>
+    <linearGradient id="ketuaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4338ca" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <linearGradient id="wakilGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0369a1" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="sekretarisGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f766e" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+    <linearGradient id="bidangGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <filter id="bpdCardShadow" x="-10%" y="-10%" width="120%" height="125%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8fafc" rx="16" />
+  <rect x="15" y="15" width="1170" height="770" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,6" rx="12" />
+
+  <!-- Title Header -->
+  <rect x="40" y="35" width="1120" height="90" rx="16" fill="url(#bpdHeaderGrad)" filter="url(#bpdCardShadow)" />
+  <text x="600" y="70" text-anchor="middle" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" letter-spacing="1">BAGAN STRUKTUR ORGANISASI BADAN PERMUSYAWARATAN DESA (BPD)</text>
+  <text x="600" y="100" text-anchor="middle" fill="#c7d2fe" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" letter-spacing="0.5">DESA PAPAYAN • KECAMATAN JATIWARAS • KABUPATEN TASIKMALAYA</text>
+
+  <!-- Connecting Lines -->
+  <!-- Ketua to Level 2 (Wakil Ketua & Sekretaris) -->
+  <line x1="600" y1="230" x2="600" y2="265" stroke="#4338ca" stroke-width="3" />
+  <line x1="390" y1="265" x2="810" y2="265" stroke="#4338ca" stroke-width="3" />
+  <line x1="390" y1="265" x2="390" y2="295" stroke="#0284c7" stroke-width="3" />
+  <line x1="810" y1="265" x2="810" y2="295" stroke="#0d9488" stroke-width="3" />
+
+  <!-- Level 2 to Level 3 (Bidang-bidang) -->
+  <line x1="600" y1="265" x2="600" y2="445" stroke="#4338ca" stroke-width="2.5" />
+  <line x1="240" y1="445" x2="960" y2="445" stroke="#b45309" stroke-width="3" />
+  <line x1="240" y1="445" x2="240" y2="480" stroke="#b45309" stroke-width="3" />
+  <line x1="600" y1="445" x2="600" y2="480" stroke="#b45309" stroke-width="3" />
+  <line x1="960" y1="445" x2="960" y2="480" stroke="#b45309" stroke-width="3" />
+
+  <!-- 1. KETUA BPD CARD -->
+  <g filter="url(#bpdCardShadow)">
+    <rect x="450" y="150" width="300" height="80" rx="14" fill="#ffffff" stroke="#4f46e5" stroke-width="2" />
+    <rect x="450" y="150" width="300" height="32" rx="12" fill="url(#ketuaGrad)" />
+    <text x="600" y="171" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="12" font-weight="800" letter-spacing="1">KETUA BPD</text>
+    <text x="600" y="202" text-anchor="middle" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" font-weight="700">Pimpinan Permusyawaratan Desa</text>
+    <text x="600" y="220" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Masa Bakti 2021 - 2027</text>
+  </g>
+
+  <!-- 2. WAKIL KETUA BPD CARD -->
+  <g filter="url(#bpdCardShadow)">
+    <rect x="250" y="295" width="280" height="80" rx="14" fill="#ffffff" stroke="#0284c7" stroke-width="2" />
+    <rect x="250" y="295" width="280" height="30" rx="12" fill="url(#wakilGrad)" />
+    <text x="390" y="315" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="12" font-weight="800" letter-spacing="1">WAKIL KETUA BPD</text>
+    <text x="390" y="345" text-anchor="middle" fill="#0f172a" font-family="system-ui, sans-serif" font-size="14" font-weight="700">Wakil Pimpinan Permusyawaratan</text>
+    <text x="390" y="363" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Membidangi Koordinasi Internal</text>
+  </g>
+
+  <!-- 3. SEKRETARIS BPD CARD -->
+  <g filter="url(#bpdCardShadow)">
+    <rect x="670" y="295" width="280" height="80" rx="14" fill="#ffffff" stroke="#0d9488" stroke-width="2" />
+    <rect x="670" y="295" width="280" height="30" rx="12" fill="url(#sekretarisGrad)" />
+    <text x="810" y="315" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="12" font-weight="800" letter-spacing="1">SEKRETARIS BPD</text>
+    <text x="810" y="345" text-anchor="middle" fill="#0f172a" font-family="system-ui, sans-serif" font-size="14" font-weight="700">Administrasi &amp; Notulensi Sidang</text>
+    <text x="810" y="363" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Dokumentasi &amp; Arsip Regulasi</text>
+  </g>
+
+  <!-- 4. BIDANG-BIDANG KERJA BPD -->
+  <!-- Bidang 1: Penyelenggaraan Pemerintahan Desa -->
+  <g filter="url(#bpdCardShadow)">
+    <rect x="70" y="480" width="340" height="175" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="70" y="480" width="340" height="28" rx="10" fill="url(#bidangGrad)" />
+    <text x="240" y="498" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="11" font-weight="800">BIDANG PENYELENGGARAAN PEMERINTAHAN</text>
+    <text x="240" y="528" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Pengawasan Kinerja Pemdes &amp; Peraturan Desa</text>
+    <line x1="90" y1="545" x2="390" y2="545" stroke="#f1f5f9" stroke-width="1.5" />
+    <text x="100" y="570" fill="#475569" font-family="system-ui, sans-serif" font-size="11" font-weight="600">• Ketua Bidang: Anggota BPD 1</text>
+    <text x="100" y="595" fill="#475569" font-family="system-ui, sans-serif" font-size="11" font-weight="500">• Anggota: Unsur Keterwakilan Wilayah Dusun</text>
+    <text x="100" y="620" fill="#64748b" font-family="system-ui, sans-serif" font-size="10" font-style="italic">Tupoksi: Legislasi Perdes &amp; Evaluasi LKPJ</text>
+  </g>
+
+  <!-- Bidang 2: Pembangunan Desa & Pemberdayaan Masyarakat -->
+  <g filter="url(#bpdCardShadow)">
+    <rect x="430" y="480" width="340" height="175" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="430" y="480" width="340" height="28" rx="10" fill="url(#bidangGrad)" />
+    <text x="600" y="498" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="11" font-weight="800">BIDANG PEMBANGUNAN &amp; PEMBERDAYAAN</text>
+    <text x="600" y="528" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Pengawasan Fisik &amp; Program Pemberdayaan</text>
+    <line x1="450" y1="545" x2="750" y2="545" stroke="#f1f5f9" stroke-width="1.5" />
+    <text x="460" y="570" fill="#475569" font-family="system-ui, sans-serif" font-size="11" font-weight="600">• Ketua Bidang: Anggota BPD 2</text>
+    <text x="460" y="595" fill="#475569" font-family="system-ui, sans-serif" font-size="11" font-weight="500">• Anggota: Unsur Keterwakilan Wilayah Dusun</text>
+    <text x="460" y="620" fill="#64748b" font-family="system-ui, sans-serif" font-size="10" font-style="italic">Tupoksi: Monitoring Proyek APBDes &amp; Ketahanan Warga</text>
+  </g>
+
+  <!-- Bidang 3: Pembinaan Kemasyarakatan & Aspirasi Warga -->
+  <g filter="url(#bpdCardShadow)">
+    <rect x="790" y="480" width="340" height="175" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="790" y="480" width="340" height="28" rx="10" fill="url(#bidangGrad)" />
+    <text x="960" y="498" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="11" font-weight="800">BIDANG KEMASYARAKATAN &amp; ASPIRASI</text>
+    <text x="960" y="528" text-anchor="middle" fill="#1e293b" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Penyerapan &amp; Penyaluran Aspirasi Masyarakat</text>
+    <line x1="810" y1="545" x2="1110" y2="545" stroke="#f1f5f9" stroke-width="1.5" />
+    <text x="820" y="570" fill="#475569" font-family="system-ui, sans-serif" font-size="11" font-weight="600">• Ketua Bidang: Anggota BPD 3 / Keterwakilan Perempuan</text>
+    <text x="820" y="595" fill="#475569" font-family="system-ui, sans-serif" font-size="11" font-weight="500">• Anggota: Unsur Keterwakilan Tokoh Warga</text>
+    <text x="820" y="620" fill="#64748b" font-family="system-ui, sans-serif" font-size="10" font-style="italic">Tupoksi: Musyawarah Desa &amp; Penampungan Saran Warga</text>
+  </g>
+
+  <!-- Footer Info -->
+  <text x="600" y="720" text-anchor="middle" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Badan Permusyawaratan Desa (BPD) Desa Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya • Permendagri No. 110 Tahun 2016 tentang BPD</text>
+</svg>
