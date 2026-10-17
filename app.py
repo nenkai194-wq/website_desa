@@ -999,12 +999,28 @@ def admin_surat():
 @app.route('/admin/surat/toggle-maintenance', methods=['POST'])
 @login_required
 def admin_toggle_maintenance_surat():
-    action = request.form.get('action')  # 'lock' or 'unlock'
+    action = request.form.get('action')  # 'lock', 'unlock', or 'update_message'
     pesan = request.form.get('pesan_maintenance_surat', '').strip()
-    new_status = 1 if action == 'lock' else 0
 
     conn = get_db()
     cursor = conn.cursor()
+
+    if action == 'update_message':
+        if pesan:
+            cursor.execute("UPDATE profil_desa SET pesan_maintenance_surat = ? WHERE id = 1", (pesan,))
+            conn.commit()
+            record_activity_log(
+                'UPDATE_PESAN_MAINTENANCE_SURAT',
+                f"Mengubah kalimat permohonan maaf pemeliharaan layanan surat: {pesan}",
+                username=session.get('username')
+            )
+            flash('Kalimat permohonan maaf pemeliharaan layanan surat berhasil disimpan & diperbarui!', 'success')
+        else:
+            flash('Pesan permohonan maaf tidak boleh kosong.', 'danger')
+        conn.close()
+        return redirect(url_for('admin_surat'))
+
+    new_status = 1 if action == 'lock' else 0
     if pesan:
         cursor.execute("UPDATE profil_desa SET status_maintenance_surat = ?, pesan_maintenance_surat = ? WHERE id = 1", (new_status, pesan))
     else:
@@ -1013,8 +1029,10 @@ def admin_toggle_maintenance_surat():
     conn.close()
 
     if new_status == 1:
+        record_activity_log('LOCK_LAYANAN_SURAT', f"Mengunci layanan surat dengan pesan: {pesan}", username=session.get('username'))
         flash('Layanan surat mandiri BERHASIL DIKUNCI (Mode Maintenance Aktif). Warga di frontend tidak dapat membuat surat sementara waktu.', 'warning')
     else:
+        record_activity_log('UNLOCK_LAYANAN_SURAT', "Membuka kembali kunci layanan surat mandiri", username=session.get('username'))
         flash('Layanan surat mandiri BERHASIL DIBUKA KEMBALI (Mode Normal Aktif). Warga dapat mengajukan permohonan surat secara daring.', 'success')
     return redirect(url_for('admin_surat'))
 
