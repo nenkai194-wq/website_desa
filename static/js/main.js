@@ -1,5 +1,5 @@
 /**
- * Main Interactive Logic untuk Website Resmi Desa Kersik
+ * Main Interactive Logic untuk Website Resmi Desa Papayan
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -268,7 +268,7 @@ window.bukaModalWisata = function(id) {
       </div>` : ''}
 
       <div class="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-100">
-        <span><i class="fa-solid fa-map-pin mr-1 text-emerald-600"></i> ${w.lokasi || 'Desa Kersik'}</span>
+        <span><i class="fa-solid fa-map-pin mr-1 text-emerald-600"></i> ${w.lokasi || 'Desa Papayan'}</span>
         <div class="flex items-center gap-2">
           ${(lat && lng) ? `
           <a href="#peta" onclick="tutupModal(); fokusKePetaWisata(${lat}, ${lng}, '${safeNama}');" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1.5 transition shadow-sm">

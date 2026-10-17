@@ -340,7 +340,7 @@
     <form id="form-wisata" method="POST" action="{{ url_for('admin_tambah_wisata') }}" enctype="multipart/form-data" class="space-y-4">
       <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">Nama Tempat Wisata <span class="text-red-500">*</span></label>
-        <input type="text" name="nama" id="input-wisata-nama" required placeholder="Contoh: Pantai Biru Kersik" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        <input type="text" name="nama" id="input-wisata-nama" required placeholder="Contoh: Pantai Biru Papayan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -375,7 +375,7 @@
       <!-- Alamat Tertulis -->
       <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">Alamat / Lokasi Tertulis <span class="text-red-500">*</span></label>
-        <input type="text" name="lokasi" id="input-wisata-lokasi" required placeholder="Contoh: Pesisir Selat Makassar, Dusun Kersik" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
+        <input type="text" name="lokasi" id="input-wisata-lokasi" required placeholder="Contoh: Pesisir Selat Makassar, Dusun Papayan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium" />
       </div>
 
       <!-- PENENTUAN TITIK KOORDINAT OTOMATIS DENGAN PETA INTERAKTIF -->
@@ -467,7 +467,7 @@
   const defaultFotoWisata = "{{ url_for('static', filename='images/pantai_kersik.jpg') }}";
   const defaultVillageLat = {{ profil_global.koordinat_lat or -0.0682 }};
   const defaultVillageLng = {{ profil_global.koordinat_lng or 117.3854 }};
-  const namaDesa = "{{ profil_global.nama_desa or 'Kersik' }}";
+  const namaDesa = "{{ profil_global.nama_desa or 'Papayan' }}";
 
   let pickerMap = null;
   let pickerMarker = null;

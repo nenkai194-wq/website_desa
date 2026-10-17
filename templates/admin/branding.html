@@ -61,13 +61,13 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 border-t border-slate-100">
       <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">Nama Desa <span class="text-red-500">*</span></label>
-        <input type="text" name="nama_desa" id="input-nama-desa" value="{{ profil.nama_desa }}" required placeholder="Contoh: Kersik" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-900" />
+        <input type="text" name="nama_desa" id="input-nama-desa" value="{{ profil.nama_desa }}" required placeholder="Contoh: Papayan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-900" />
         <p class="text-[10px] text-slate-400 mt-0.5">Ditampilkan di header navbar utama dan logo.</p>
       </div>
 
       <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">Judul Lengkap Website <span class="text-red-500">*</span></label>
-        <input type="text" name="judul_website" id="input-judul-website" value="{{ profil.judul_website or 'Website Resmi Desa Kersik' }}" required placeholder="Contoh: Website Resmi Desa Kersik" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-900" />
+        <input type="text" name="judul_website" id="input-judul-website" value="{{ profil.judul_website or 'Website Resmi Desa Papayan' }}" required placeholder="Contoh: Website Resmi Desa Papayan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold text-slate-900" />
         <p class="text-[10px] text-slate-400 mt-0.5">Judul yang muncul pada tab browser dan pencarian Google.</p>
       </div>
 
@@ -123,11 +123,11 @@
       </div>
       <div>
         <label class="block text-[11px] font-bold text-slate-600 mb-1">Judul Banner 1</label>
-        <input type="text" name="banner_title_1" value="{{ profil.banner_title_1 or 'Selamat Datang di Website Resmi Desa Kersik' }}" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-800" />
+        <input type="text" name="banner_title_1" value="{{ profil.banner_title_1 or 'Selamat Datang di Website Resmi Desa Papayan' }}" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-800" />
       </div>
       <div>
         <label class="block text-[11px] font-bold text-slate-600 mb-1">Deskripsi Singkat Banner 1</label>
-        <textarea name="banner_desc_1" rows="2" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-700">{{ profil.banner_desc_1 or 'Menjelajahi pesona Pantai Biru Kersik, kelestarian mangrove pesisir, dan kemajuan masyarakat.' }}</textarea>
+        <textarea name="banner_desc_1" rows="2" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-700">{{ profil.banner_desc_1 or 'Menjelajahi pesona Pantai Biru Papayan, kelestarian mangrove pesisir, dan kemajuan masyarakat.' }}</textarea>
       </div>
     </div>
 
@@ -154,7 +154,7 @@
       </div>
       <div>
         <label class="block text-[11px] font-bold text-slate-600 mb-1">Deskripsi Singkat Banner 2</label>
-        <textarea name="banner_desc_2" rows="2" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-700">{{ profil.banner_desc_2 or 'Komitmen nyata masyarakat Desa Kersik dalam menjaga kelestarian lingkungan pesisir.' }}</textarea>
+        <textarea name="banner_desc_2" rows="2" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-700">{{ profil.banner_desc_2 or 'Komitmen nyata masyarakat Desa Papayan dalam menjaga kelestarian lingkungan pesisir.' }}</textarea>
       </div>
     </div>
 

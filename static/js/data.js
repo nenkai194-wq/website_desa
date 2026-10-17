@@ -1,12 +1,12 @@
 /**
- * Data Lengkap Desa Kersik, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara
+ * Data Lengkap Desa Papayan, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara
  * Diadopsi dari identitas resmi https://kersik.desa.id/
  */
 
 const desaData = {
   identitas: {
-    namaDesa: "Kersik",
-    sebutan: "Desa Kersik",
+    namaDesa: "Papayan",
+    sebutan: "Desa Papayan",
     tagline: "Desa Wisata Pesisir Marang Kayu - Menuju Desa Maju & Berkelanjutan",
     subtagline: "Penerima Penghargaan Kampung Iklim (Proklim) Utama KLHK Republik Indonesia",
     kecamatan: "Marang Kayu",
@@ -14,7 +14,7 @@ const desaData = {
     provinsi: "Kalimantan Timur",
     kodePos: "75385",
     kodeWilayah: "64.02.17.2005",
-    alamatKantor: "Jalan Langaseng Dusun Empang RT.003, Desa Kersik",
+    alamatKantor: "Jalan Langaseng Dusun Empang RT.003, Desa Papayan",
     telepon: "0821-5020-8664",
     email: "pemdes@kersik.desa.id",
     jamPelayanan: "Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00)",
@@ -97,9 +97,9 @@ const desaData = {
   perangkatDesa: [
     {
       nama: "Jumadi, S.Sos",
-      jabatan: "Kepala Desa Kersik",
+      jabatan: "Kepala Desa Papayan",
       foto: "/static/images/kades.jpg",
-      sambutanSingkat: "Mewujudkan Desa Kersik yang Maju, Sejahtera, Transparan, Berbasis Wisata Bahari dan Lingkungan Berkelanjutan.",
+      sambutanSingkat: "Mewujudkan Desa Papayan yang Maju, Sejahtera, Transparan, Berbasis Wisata Bahari dan Lingkungan Berkelanjutan.",
       kontak: "0821-5020-8664"
     },
     {
@@ -158,7 +158,7 @@ const desaData = {
       id: "pantai-biru-kersik",
       nama: "Pantai Biru Kersik (Pantai Kersik)",
       kategori: "Wisata Bahari Unggulan",
-      deskripsi: "Ikon pariwisata bahari Desa Kersik yang berbatasan langsung dengan Selat Makassar. Menampilkan bentangan pasir bersih, ombak tenang, deretan cemara laut rindang, dan jembatan kayu estetik yang menjorok ke laut.",
+      deskripsi: "Ikon pariwisata bahari Desa Papayan yang berbatasan langsung dengan Selat Makassar. Menampilkan bentangan pasir bersih, ombak tenang, deretan cemara laut rindang, dan jembatan kayu estetik yang menjorok ke laut.",
       fasilitas: ["Jembatan Foto Laut", "Camping Ground", "Saung / Gazebo Santai", "Warung Kuliner Pesisir", "Toilet & Kamar Bilas", "Homestay Warga"],
       gambar: "/static/images/pantai_kersik.jpg",
       lokasi: "Pesisir Selat Makassar, Dusun Kersik",
@@ -168,10 +168,10 @@ const desaData = {
       id: "mangrove-kersik",
       nama: "Ekowisata & Konservasi Mangrove Kersik",
       kategori: "Ekowisata & Lingkungan (Proklim)",
-      deskripsi: "Kawasan hutan bakau rimbun penahan abrasi pantai yang dikelola swadaya oleh Pokdarwis dan Pemdes Kersik. Menghantarkan Desa Kersik meraih penghargaan Kampung Iklim (Proklim) Utama dari KLHK RI.",
+      deskripsi: "Kawasan hutan bakau rimbun penahan abrasi pantai yang dikelola swadaya oleh Pokdarwis dan Pemdes Kersik. Menghantarkan Desa Papayan meraih penghargaan Kampung Iklim (Proklim) Utama dari KLHK RI.",
       fasilitas: ["Track Kayu Susur Mangrove", "Pusat Pembibitan Bakau", "Spot Bird Watching", "Edukasi Adopsi Pohon Mangrove", "Pondok Edukasi"],
       gambar: "/static/images/mangrove.jpg",
-      lokasi: "Kawasan Pesisir Muara, Desa Kersik",
+      lokasi: "Kawasan Pesisir Muara, Desa Papayan",
       tiket: "Gratis / Donasi Bibit Mangrove"
     },
     {
@@ -196,7 +196,7 @@ const desaData = {
       rating: 4.9,
       terjual: 450,
       gambar: "/static/images/produk_terasi.jpg",
-      deskripsi: "Dibuat dari 100% udang rebon tangkapan nelayan Desa Kersik, diolah secara alami tanpa bahan pengawet kimia, harum gurih dan sangat legit untuk sambal.",
+      deskripsi: "Dibuat dari 100% udang rebon tangkapan nelayan Desa Papayan, diolah secara alami tanpa bahan pengawet kimia, harum gurih dan sangat legit untuk sambal.",
       kontakWa: "6282150208664"
     },
     {
@@ -246,7 +246,7 @@ const desaData = {
       penulis: "Humas Pemdes Kersik",
       gambar: "/static/images/mangrove.jpg",
       ringkasan: "Sebagai peraih penghargaan Proklim Utama KLHK, warga bersama Pokdarwis dan pelajar menanam 1.000 bibit mangrove di pesisir Selat Makassar.",
-      isi: "Desa Kersik kembali menegaskan komitmennya dalam menjaga kelestarian ekosistem bahari. Pada Minggu pagi, Pemerintah Desa Kersik bersama Dinas Lingkungan Hidup Kabupaten Kutai Kartanegara dan ratusan warga Dusun Empang menggelar aksi penanaman 1.000 bibit mangrove jenis Rhizophora di area bibir pantai. Kepala Desa Kersik, Jumadi S.Sos, menyatakan bahwa gerakan ini menjaga keberlanjutan penghargaan Kampung Iklim (Proklim) Utama sekaligus mencegah bahaya abrasi bagi pemukiman nelayan."
+      isi: "Desa Papayan kembali menegaskan komitmennya dalam menjaga kelestarian ekosistem bahari. Pada Minggu pagi, Pemerintah Desa Papayan bersama Dinas Lingkungan Hidup Kabupaten Kutai Kartanegara dan ratusan warga Dusun Empang menggelar aksi penanaman 1.000 bibit mangrove jenis Rhizophora di area bibir pantai. Kepala Desa Papayan, Jumadi S.Sos, menyatakan bahwa gerakan ini menjaga keberlanjutan penghargaan Kampung Iklim (Proklim) Utama sekaligus mencegah bahaya abrasi bagi pemukiman nelayan."
     },
     {
       id: "berita-2",
@@ -266,17 +266,17 @@ const desaData = {
       penulis: "Kasi Kesejahteraan",
       gambar: "/static/images/kantor_desa.jpg",
       ringkasan: "Sebanyak 65 KPM menerima BLT triwulan ketiga dan 20 kelompok nelayan menerima jaring ramah lingkungan di Balai Pertemuan Desa.",
-      isi: "Transparansi dan ketepatan sasaran penyaluran bantuan sosial senantiasa menjadi prioritas utama Pemdes Kersik. Bertempat di Balai Pertemuan Kantor Desa Kersik, BPD dan Pendamping Desa turut mengawasi penyerahan bantuan tunai bersumber dari Dana Desa tahun 2026 serta alat kelengkapan keselamatan bagi nelayan tangkap tradisional."
+      isi: "Transparansi dan ketepatan sasaran penyaluran bantuan sosial senantiasa menjadi prioritas utama Pemdes Kersik. Bertempat di Balai Pertemuan Kantor Desa Papayan, BPD dan Pendamping Desa turut mengawasi penyerahan bantuan tunai bersumber dari Dana Desa tahun 2026 serta alat kelengkapan keselamatan bagi nelayan tangkap tradisional."
     }
   ],
 
   titikPeta: [
     {
-      nama: "Kantor Desa Kersik",
+      nama: "Kantor Desa Papayan",
       lat: -0.0682,
       lng: 117.3854,
       kategori: "Pemerintahan",
-      deskripsi: "Pusat pelayanan administrasi & pemerintahan Desa Kersik.",
+      deskripsi: "Pusat pelayanan administrasi & pemerintahan Desa Papayan.",
       alamat: "Jl. Langaseng Dusun Empang RT.003",
       icon: "building-columns"
     },
@@ -313,7 +313,7 @@ const desaData = {
       lng: 117.3830,
       kategori: "Kesehatan",
       deskripsi: "Pelayanan kesehatan dasar, ibu dan anak, serta pengobatan warga.",
-      alamat: "Jl. Poros Desa Kersik",
+      alamat: "Jl. Poros Desa Papayan",
       icon: "heart-pulse"
     },
     {
@@ -321,7 +321,7 @@ const desaData = {
       lat: -0.0675,
       lng: 117.3860,
       kategori: "Ibadah",
-      deskripsi: "Pusat ibadah dan kegiatan keagamaan masyarakat Desa Kersik.",
+      deskripsi: "Pusat ibadah dan kegiatan keagamaan masyarakat Desa Papayan.",
       alamat: "Dusun Empang",
       icon: "mosque"
     }
@@ -341,7 +341,7 @@ const desaData = {
     { judul: "Kawasan Hutan Mangrove Lestari Kersik", url: "/static/images/mangrove.jpg", kategori: "Lingkungan" },
     { judul: "Aktivitas Perahu Nelayan Selat Makassar", url: "/static/images/nelayan.jpg", kategori: "Masyarakat" },
     { judul: "Hamparan Tambak Budidaya Udang & Bandeng", url: "/static/images/tambak.jpg", kategori: "Potensi" },
-    { judul: "Gedung Balai & Kantor Desa Kersik", url: "/static/images/kantor_desa.jpg", kategori: "Pemerintahan" },
+    { judul: "Gedung Balai & Kantor Desa Papayan", url: "/static/images/kantor_desa.jpg", kategori: "Pemerintahan" },
     { judul: "Produk Olahan Terasi Rebon & Kerupuk UMKM", url: "/static/images/produk_terasi.jpg", kategori: "UMKM" }
   ]
 };

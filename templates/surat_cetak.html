@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cetak Surat {{ surat.no_reg }} - Desa Kersik</title>
+  <title>Cetak Surat {{ surat.no_reg }} - Desa Papayan</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -60,10 +60,10 @@
       <div class="flex-1 text-center px-4">
         <h3 class="text-base sm:text-lg font-bold tracking-wider uppercase">Pemerintah Kabupaten Kutai Kartanegara</h3>
         <h3 class="text-base sm:text-lg font-bold tracking-wider uppercase">Kecamatan Marang Kayu</h3>
-        <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase mt-0.5">Pemerintah Desa Kersik</h2>
+        <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase mt-0.5">Pemerintah Desa Papayan</h2>
         <p class="text-xs mt-1 text-slate-800 font-sans">
-          Alamat: {{ profil.alamat or 'Jalan Langaseng Dusun Empang RT.003, Desa Kersik, Marang Kayu 75385' }}<br />
-          Email: {{ profil.email or 'pemdes@kersik.desa.id' }} | Kode Pos: {{ profil.kode_pos or '75385' }}
+          Alamat: {{ profil.alamat or 'Jalan Langaseng Dusun Empang RT.003, Desa Papayan, Marang Kayu 75385' }}<br />
+          Email: {{ profil.email or 'pemdes@papayan.desa.id' }} | Kode Pos: {{ profil.kode_pos or '75385' }}
         </p>
       </div>
     </div>
@@ -77,7 +77,7 @@
     <!-- CONTENT BODY -->
     <div class="text-sm leading-relaxed space-y-4 text-justify">
       <p>
-        Yang bertanda tangan di bawah ini, Kepala Desa Kersik, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara, Provinsi Kalimantan Timur, dengan ini menerangkan dengan sebenarnya bahwa:
+        Yang bertanda tangan di bawah ini, Kepala Desa Papayan, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara, Provinsi Kalimantan Timur, dengan ini menerangkan dengan sebenarnya bahwa:
       </p>
 
       <table class="w-full my-4 text-sm font-sans">
@@ -95,7 +95,7 @@
           <tr>
             <td class="py-1 font-semibold">Tempat / Tinggal</td>
             <td>:</td>
-            <td>{{ surat.dusun }}, RT.{{ surat.rt }}, Desa Kersik</td>
+            <td>{{ surat.dusun }}, RT.{{ surat.rt }}, Desa Papayan</td>
           </tr>
           <tr>
             <td class="py-1 font-semibold">Kecamatan</td>
@@ -126,7 +126,7 @@
       </table>
 
       <p>
-        Orang tersebut di atas adalah benar-benar penduduk yang bertempat tinggal di wilayah Desa Kersik, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara dan berdasarkan catatan administrasi desa berkelakuan baik.
+        Orang tersebut di atas adalah benar-benar penduduk yang bertempat tinggal di wilayah Desa Papayan, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara dan berdasarkan catatan administrasi desa berkelakuan baik.
       </p>
 
       <p>
@@ -148,8 +148,8 @@
 
       <!-- Kades Signature -->
       <div class="text-center w-64">
-        <p>Kersik, {{ surat.created_at[:10] if surat.created_at else '17 Oktober 2026' }}</p>
-        <p class="font-bold mt-1">Kepala Desa Kersik,</p>
+        <p>Papayan, {{ surat.created_at[:10] if surat.created_at else '17 Oktober 2026' }}</p>
+        <p class="font-bold mt-1">Kepala Desa Papayan,</p>
         
         <!-- Stempel & Signature Space -->
         <div class="h-20 flex items-center justify-center relative">
@@ -159,7 +159,7 @@
         </div>
 
         <p class="font-bold uppercase text-sm underline">{{ profil.nama_kades or 'Jumadi, S.Sos' }}</p>
-        <p class="text-[11px] text-slate-600">Pemerintah Desa Kersik</p>
+        <p class="text-[11px] text-slate-600">Pemerintah Desa Papayan</p>
       </div>
 
     </div>

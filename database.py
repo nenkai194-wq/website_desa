@@ -70,7 +70,7 @@ def init_db():
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS profil_desa (
         id INTEGER PRIMARY KEY,
-        judul_website TEXT DEFAULT 'Website Resmi Desa Kersik',
+        judul_website TEXT DEFAULT 'Website Resmi Desa Papayan',
         nama_desa TEXT NOT NULL,
         tagline_website TEXT DEFAULT 'Desa Wisata Pesisir Marang Kayu',
         subtagline_website TEXT DEFAULT 'Penerima Penghargaan Kampung Iklim (Proklim) Utama KLHK RI',
@@ -95,11 +95,11 @@ def init_db():
         koordinat_lat REAL,
         koordinat_lng REAL,
         banner_hero_1 TEXT DEFAULT 'static/images/banner1.png',
-        banner_title_1 TEXT DEFAULT 'Selamat Datang di Website Resmi Desa Kersik',
+        banner_title_1 TEXT DEFAULT 'Selamat Datang di Website Resmi Desa Papayan',
         banner_desc_1 TEXT DEFAULT 'Menjelajahi pesona Pantai Biru Kersik, kelestarian mangrove pesisir, dan kemajuan masyarakat.',
         banner_hero_2 TEXT DEFAULT 'static/images/banner2.png',
         banner_title_2 TEXT DEFAULT 'Penerima Sertifikat Proklim Utama KLHK RI',
-        banner_desc_2 TEXT DEFAULT 'Komitmen nyata masyarakat Desa Kersik dalam menjaga kelestarian lingkungan pesisir.',
+        banner_desc_2 TEXT DEFAULT 'Komitmen nyata masyarakat Desa Papayan dalam menjaga kelestarian lingkungan pesisir.',
         banner_hero_3 TEXT DEFAULT 'static/images/pantai_kersik.jpg',
         banner_title_3 TEXT DEFAULT 'Pelayanan Publik Cepat, Transparan dan Akuntabel',
         banner_desc_3 TEXT DEFAULT 'Nikmati kemudahan layanan pengajuan surat online mandiri dan keterbukaan informasi.'
@@ -637,12 +637,12 @@ def init_db():
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             1, "Kersik", "Marang Kayu", "Kutai Kartanegara", "Kalimantan Timur",
-            "75385", "64.02.17.2005", "Jalan Langaseng Dusun Empang RT.003, Desa Kersik",
+            "75385", "64.02.17.2005", "Jalan Langaseng Dusun Empang RT.003, Desa Papayan",
             "0821-5020-8664", "pemdes@kersik.desa.id",
             "Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00) WITA",
             "Jumadi, S.Sos", "2021 - 2027", "static/images/kades.jpg",
-            "Selamat Datang di Portal Resmi Informasi & Pelayanan Publik Desa Kersik. Kami berkomitmen mewujudkan keterbukaan informasi, pelayanan cepat bebas calo, dan optimalisasi potensi wisata Pantai Biru Kersik serta konservasi mangrove berkelanjutan.",
-            "Terwujudnya Desa Kersik yang Maju, Sejahtera, Transparan, Berbasis Wisata Bahari dan Lingkungan Hidup Lestari.",
+            "Selamat Datang di Portal Resmi Informasi & Pelayanan Publik Desa Papayan. Kami berkomitmen mewujudkan keterbukaan informasi, pelayanan cepat bebas calo, dan optimalisasi potensi wisata Pantai Biru Kersik serta konservasi mangrove berkelanjutan.",
+            "Terwujudnya Desa Papayan yang Maju, Sejahtera, Transparan, Berbasis Wisata Bahari dan Lingkungan Hidup Lestari.",
             "1. Meningkatkan pelayanan publik prima berbasis teknologi digital.\n2. Mengembangkan potensi pariwisata bahari Pantai Biru Kersik dan ekonomi kreatif pesisir.\n3. Menjaga kelestarian ekosistem mangrove dan prestasi Program Kampung Iklim (Proklim).\n4. Meningkatkan kapasitas ekonomi nelayan dan pemberdayaan UMKM lokal.",
             "42,85 km²", -0.0682, 117.3854
         ))
@@ -652,7 +652,7 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM perangkat_desa")
     if cursor.fetchone()[0] == 0:
         aparaturs = [
-            ("Jumadi, S.Sos", "Kepala Desa Kersik", "static/images/kades.jpg", "0821-5020-8664", "Mewujudkan Desa Kersik yang Maju, Sejahtera, Transparan, Berbasis Wisata Bahari.", 1),
+            ("Jumadi, S.Sos", "Kepala Desa Papayan", "static/images/kades.jpg", "0821-5020-8664", "Mewujudkan Desa Papayan yang Maju, Sejahtera, Transparan, Berbasis Wisata Bahari.", 1),
             ("Rahmat Hidayat, S.P", "Sekretaris Desa", "static/images/sekdes.jpg", "0812-4455-8899", "Mendukung tata kelola administrasi pemerintahan desa yang akuntabel dan cepat.", 2),
             ("Siti Aminah, A.Md", "Kaur Keuangan", "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&auto=format&fit=crop&q=80", "0823-1122-3344", "Menjaga transparansi dan akuntabilitas pengelolaan APBDes demi pembangunan nyata.", 3),
             ("Muhammad Yusuf", "Kasi Pemerintahan", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80", "0852-3344-5566", "Melayani tertib administrasi kependudukan dan pertanahan secara ramah dan profesional.", 4),
@@ -702,13 +702,13 @@ def init_db():
     if cursor.fetchone()[0] == 0:
         destinasi = [
             ("Pantai Biru Kersik (Pantai Kersik)", "Wisata Bahari Unggulan",
-             "Ikon pariwisata bahari Desa Kersik yang berbatasan langsung dengan Selat Makassar. Menampilkan bentangan pasir bersih, deretan cemara laut rindang, dan jembatan kayu estetik yang menjorok ke laut.",
+             "Ikon pariwisata bahari Desa Papayan yang berbatasan langsung dengan Selat Makassar. Menampilkan bentangan pasir bersih, deretan cemara laut rindang, dan jembatan kayu estetik yang menjorok ke laut.",
              "Jembatan Foto Laut, Camping Ground, Saung Santai, Warung Kuliner, Toilet, Homestay",
              "Rp 5.000 / orang", "Pesisir Selat Makassar, Dusun Kersik", "static/images/pantai_kersik.jpg", 1),
             ("Ekowisata & Konservasi Mangrove Kersik", "Ekowisata Lingkungan (Proklim)",
-             "Kawasan hutan bakau rimbun penahan abrasi pantai yang dikelola swadaya oleh Pokdarwis dan Pemdes Kersik. Menghantarkan Desa Kersik meraih penghargaan Kampung Iklim (Proklim) Utama dari KLHK RI.",
+             "Kawasan hutan bakau rimbun penahan abrasi pantai yang dikelola swadaya oleh Pokdarwis dan Pemdes Papayan. Menghantarkan Desa Papayan meraih penghargaan Kampung Iklim (Proklim) Utama dari KLHK RI.",
              "Track Kayu Susur Mangrove, Pusat Pembibitan Bakau, Spot Bird Watching, Edukasi Adopsi Mangrove",
-             "Gratis / Donasi Bibit", "Kawasan Pesisir Muara, Desa Kersik", "static/images/mangrove.jpg", 2),
+             "Gratis / Donasi Bibit", "Kawasan Pesisir Muara, Desa Papayan", "static/images/mangrove.jpg", 2),
             ("Kampung Nelayan & Wisata Tambak", "Wisata Budidaya & Pemancingan",
              "Menyajikan pengalaman memancing air payau, melihat budidaya udang windu dan ikan bandeng, serta proses tradisional pembuatan ikan asin dan terasi khas pesisir Kutai Kartanegara.",
              "Spot Pemancingan, Sewa Perahu Nelayan, Warung Ikan Bakar Segar, Pusat Pengolahan Ikan",
@@ -725,7 +725,7 @@ def init_db():
     if cursor.fetchone()[0] == 0:
         produk = [
             ("Terasi Udang Rebon Asli Kersik (Khas Marang Kayu)", "KWT Melati Pesisir Kersik", 25000, "Pack 250gr",
-             "Dibuat dari 100% udang rebon tangkapan nelayan Desa Kersik, diolah alami tanpa bahan kimia, harum gurih dan legit.", "6282150208664", "static/images/produk_terasi.jpg", 4.9, 450),
+             "Dibuat dari 100% udang rebon tangkapan nelayan Desa Papayan, diolah alami tanpa bahan kimia, harum gurih dan legit.", "6282150208664", "static/images/produk_terasi.jpg", 4.9, 450),
             ("Kerupuk Ikan Tenggiri Gurih Renyah", "UMKM Pesisir Berkah Kersik", 20000, "Bungkus 200gr",
              "Olahan ikan tenggiri segar hasil laut Selat Makassar. Renyah, gurih nikmat untuk oleh-oleh khas Kukar.", "6282150208664", "static/images/produk_kerupuk.jpg", 4.8, 380),
             ("Ikan Asin Kering Super (Tenggiri & Biawan)", "Kelompok Nelayan Dusun Empang", 45000, "Pack 500gr",
@@ -743,15 +743,15 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM berita")
     if cursor.fetchone()[0] == 0:
         news = [
-            ("Pemdes Kersik Gelar Gerakan Tanam 1.000 Mangrove Perkuat Ketahanan Proklim Pesisir", "Lingkungan & Wisata", "Humas Pemdes Kersik", "12 Oktober 2026", "static/images/mangrove.jpg",
+            ("Pemdes Papayan Gelar Gerakan Tanam 1.000 Mangrove Perkuat Ketahanan Proklim Pesisir", "Lingkungan & Wisata", "Humas Pemdes Papayan", "12 Oktober 2026", "static/images/mangrove.jpg",
              "Sebagai peraih penghargaan Proklim Utama KLHK, warga bersama Pokdarwis dan pelajar menanam 1.000 bibit mangrove di pesisir Selat Makassar.",
-             "Desa Kersik kembali menegaskan komitmennya dalam menjaga kelestarian ekosistem bahari. Pada Minggu pagi, Pemerintah Desa Kersik bersama Dinas Lingkungan Hidup Kabupaten Kutai Kartanegara dan ratusan warga Dusun Empang menggelar aksi penanaman 1.000 bibit mangrove jenis Rhizophora di area bibir pantai. Kepala Desa Kersik, Jumadi S.Sos, menyatakan bahwa gerakan ini menjaga keberlanjutan penghargaan Kampung Iklim (Proklim) Utama sekaligus mencegah bahaya abrasi bagi pemukiman nelayan."),
+             "Desa Papayan kembali menegaskan komitmennya dalam menjaga kelestarian ekosistem bahari. Pada Minggu pagi, Pemerintah Desa Papayan bersama Dinas Lingkungan Hidup Kabupaten Kutai Kartanegara dan ratusan warga Dusun Empang menggelar aksi penanaman 1.000 bibit mangrove jenis Rhizophora di area bibir pantai. Kepala Desa Papayan, Jumadi S.Sos, menyatakan bahwa gerakan ini menjaga keberlanjutan penghargaan Kampung Iklim (Proklim) Utama sekaligus mencegah bahaya abrasi bagi pemukiman nelayan."),
             ("Kunjungan Wisatawan Pantai Biru Kersik Meningkat Pesat pada Akhir Pekan", "Pariwisata Desa", "Pokdarwis Kersik", "04 Oktober 2026", "static/images/pantai_kersik.jpg",
              "Pantai Biru Kersik menjadi primadona wisata keluarga asal Samarinda dan Bontang berkat jembatan laut dan suasana cemara yang asri.",
              "Pantai Biru Kersik terus menarik animo pelancong dari berbagai kabupaten/kota di Kalimantan Timur. Akses jalan yang semakin mulus dari simpang Marang Kayu membuat wisatawan dari Bontang, Samarinda, dan Tenggarong berbondong-bondong datang berkemah dan menikmati kuliner laut bakar segar di saung-saung Pokdarwis. Pihak Pemdes juga terus melengkapi fasilitas sanitasi dan tempat ibadah di kawasan pantai."),
             ("Penyaluran BLT Dana Desa dan Bantuan Alat Tangkap Nelayan Berjalan Lancar", "Pemerintahan & Sosial", "Kasi Kesejahteraan", "25 September 2026", "static/images/kantor_desa.jpg",
              "Sebanyak 65 KPM menerima BLT triwulan ketiga dan 20 kelompok nelayan menerima jaring ramah lingkungan di Balai Pertemuan Desa.",
-             "Transparansi dan ketepatan sasaran penyaluran bantuan sosial senantiasa menjadi prioritas utama Pemdes Kersik. Bertempat di Balai Pertemuan Kantor Desa Kersik, BPD dan Pendamping Desa turut mengawasi penyerahan bantuan tunai bersumber dari Dana Desa tahun 2026 serta alat kelengkapan keselamatan bagi nelayan tangkap tradisional.")
+             "Transparansi dan ketepatan sasaran penyaluran bantuan sosial senantiasa menjadi prioritas utama Pemdes Papayan. Bertempat di Balai Pertemuan Kantor Desa Papayan, BPD dan Pendamping Desa turut mengawasi penyerahan bantuan tunai bersumber dari Dana Desa tahun 2026 serta alat kelengkapan keselamatan bagi nelayan tangkap tradisional.")
         ]
         cursor.executemany('''
         INSERT INTO berita (judul, kategori, penulis, tanggal, gambar, ringkasan, isi)
@@ -869,7 +869,7 @@ def init_db():
         ''', sample_umur_2026)
         conn.commit()
 
-    # Seed Statistik Penduduk Berdasarkan Tingkat Pendidikan (2026) dari data resmi Pemerintah Desa Kersik
+    # Seed Statistik Penduduk Berdasarkan Tingkat Pendidikan (2026) dari data resmi Pemerintah Desa Papayan
     sample_pendidikan_2026 = [
         (2026, 1, 'RT 001 RW 001', 17, 62, 0, 0, 0, 0, 23, 2, 0, 0, 0, 44, 4, 0, 0, 0, 0, 0, 1, 17, 0, 0, 0, 170),
         (2026, 2, 'RT 002 RW 001', 24, 52, 0, 0, 0, 0, 30, 1, 0, 2, 0, 59, 11, 1, 0, 0, 1, 0, 3, 27, 0, 0, 0, 211),
@@ -1225,14 +1225,14 @@ def init_db():
     if cursor.fetchone()[0] == 0:
         sample_buku = [
             (
-                "Buku Profil Desa Kersik 2026",
+                "Buku Profil Desa Papayan 2026",
                 "Profil Desa",
                 "Tim Penyusun Profil Desa",
                 "2026",
                 "Edisi Khusus Pemekaran & Wisata",
                 68,
                 "2.4 MB",
-                "Buku dokumentasi komprehensif mengenai gambaran umum Desa Kersik, sejarah kepemimpinan, demografi, potensi pariwisata pesisir Pantai Biru, serta prestasi peraih Program Kampung Iklim (Proklim) Utama KLHK RI.",
+                "Buku dokumentasi komprehensif mengenai gambaran umum Desa Papayan, sejarah kepemimpinan, demografi, potensi pariwisata pesisir Pantai Biru, serta prestasi peraih Program Kampung Iklim (Proklim) Utama KLHK RI.",
                 "static/images/kantor_desa.jpg",
                 "static/docs/publikasi/buku_profil_desa_kersik_2026.pdf",
                 142,
@@ -1240,9 +1240,9 @@ def init_db():
                 1
             ),
             (
-                "Desa Kersik Dalam Angka 2026",
+                "Desa Papayan Dalam Angka 2026",
                 "Desa Dalam Angka",
-                "Pemerintah Desa Kersik",
+                "Pemerintah Desa Papayan",
                 "2026",
                 "Kompilasi Data Tahunan",
                 54,
@@ -1349,5 +1349,5 @@ def record_activity_log(action, details=None, username=None, user_id=None, ip_ad
 
 if __name__ == '__main__':
     init_db()
-    print("Database Desa Kersik berhasil diinisialisasi dan disiapkan.")
+    print("Database Desa Papayan berhasil diinisialisasi dan disiapkan.")
 

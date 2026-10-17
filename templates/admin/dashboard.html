@@ -1,6 +1,6 @@
 {% extends "base_admin.html" %}
 
-{% block title %}Dashboard Ikhtisar - Desa {{ profil_global.nama_desa or 'Kersik' }}{% endblock %}
+{% block title %}Dashboard Ikhtisar - Desa {{ profil_global.nama_desa or 'Papayan' }}{% endblock %}
 {% block header_title %}Ringkasan Pelayanan & Pusat Kendali Desa{% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@
           <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
           <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-300">Pusat Kendali Administrasi Terpadu</span>
           <span class="text-slate-400">•</span>
-          <span class="text-xs font-semibold text-slate-300">Pemerintah Desa {{ profil_global.nama_desa or 'Kersik' }}, Kec. {{ profil_global.kecamatan or 'Marang Kayu' }}</span>
+          <span class="text-xs font-semibold text-slate-300">Pemerintah Desa {{ profil_global.nama_desa or 'Papayan' }}, Kec. {{ profil_global.kecamatan or 'Marang Kayu' }}</span>
         </div>
         <h2 class="text-xl sm:text-2xl font-black text-white">Selamat Datang, {{ session.get('nama') or 'Administrator' }}</h2>
         <p class="text-xs text-slate-300 max-w-2xl mt-1 leading-relaxed">

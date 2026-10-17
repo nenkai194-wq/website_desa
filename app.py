@@ -464,7 +464,7 @@ def api_ajukan_surat():
 
     return jsonify({
         'success': True,
-        'message': 'Permohonan surat berhasil dikirim ke Kantor Desa Kersik.',
+        'message': 'Permohonan surat berhasil dikirim ke Kantor Desa Papayan.',
         'no_reg': no_reg,
         'cetak_url': url_for('cetak_surat', no_reg=no_reg)
     })
@@ -6132,5 +6132,5 @@ def admin_keamanan():
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get('PORT', 8080))
-    print(f"=== Menjalankan Website Desa Kersik di http://127.0.0.1:{port} ===")
+    print(f"=== Menjalankan Website Desa Papayan di http://127.0.0.1:{port} ===")
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
