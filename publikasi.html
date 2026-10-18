@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perpustakaan Digital & Buku Publikasi Desa Papayan</title>
+  <meta name="description" content="Koleksi buku publikasi resmi Pemerintah Desa Papayan, seperti Profil Desa, Desa Dalam Angka, Laporan Transparansi APBDes, dan panduan warga dalam format PDF gratis." />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="static/images/logo_tasikmalaya.png" />
+
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#2b6d08',
+              800: '#1f5306',
+              900: '#174004',
+              950: '#0b2401',
+            }
+          },
+          fontFamily: {
+            outfit: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 3D Realistic Book Styling */
+    .book-3d-wrapper {
+      perspective: 1000px;
+    }
+    .book-3d-cover {
+      transform-style: preserve-3d;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      box-shadow: -6px 8px 18px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.08);
+      border-radius: 4px 10px 10px 4px;
+      position: relative;
+    }
+    .book-3d-cover::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 14px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.3) 100%);
+      z-index: 10;
+      border-radius: 4px 0 0 4px;
+      box-shadow: inset 1px 0 2px rgba(255,255,255,0.6);
+    }
+    .book-3d-cover:hover {
+      transform: rotateY(-8deg) translateY(-6px);
+      box-shadow: -12px 16px 28px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+
+<script>
+// GitHub Pages Mock Handler for API endpoints
+(function() {
+  if (window.location.hostname.includes('github.io')) {
+    const originalFetch = window.fetch;
+    window.fetch = async function(url, options) {
+      if (typeof url === 'string') {
+        if (url.includes('/api/surat/ajukan')) {
+          const fakeReg = 'REG-DESA-' + Math.floor(100000 + Math.random() * 900000);
+          return new Response(JSON.stringify({
+            success: true,
+            no_reg: fakeReg,
+            cetak_url: '#',
+            message: 'Permohonan surat berhasil disimulasikan di GitHub Pages.'
+          }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+        }
+        if (url.includes('/api/pengaduan/kirim')) {
+          const fakeTiket = 'PPD-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+          return new Response(JSON.stringify({
+            success: true,
+            nomor_tiket: fakeTiket,
+            message: 'Pengaduan berhasil dicatat dalam mode online.'
+          }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+        }
+        if (url.includes('/api/feedback/kirim')) {
+          return new Response(JSON.stringify({
+            success: true,
+            message: 'Terima kasih atas penilaian kepuasan Anda!'
+          }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+        }
+        if (url.includes('/api/umkm/ajukan') || url.includes('/api/wisata/ajukan') || url.includes('/galeri/ajukan')) {
+          return new Response(JSON.stringify({
+            success: true,
+            message: 'Pengajuan data berhasil diterima.'
+          }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+        }
+        if (url.includes('/api/pengaduan/tracking/')) {
+          const parts = url.split('/api/pengaduan/tracking/');
+          const tiket = parts[1] || 'DEMO';
+          return new Response(JSON.stringify({
+            success: true,
+            aduan: {
+              nomor_tiket: decodeURIComponent(tiket),
+              status: 'Sedang Diproses',
+              kategori: 'Pelayanan Publik',
+              perihal: 'Pengecekan Berkas Online',
+              created_at: new Date().toLocaleDateString('id-ID'),
+              tanggapan: 'Pengaduan Anda telah masuk antrean verifikasi tim administrasi desa.'
+            }
+          }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+        }
+      }
+      return originalFetch.apply(this, arguments);
+    };
+  }
+})();
+</script>
+
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 font-outfit antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- MAIN HEADER / NAVBAR -->
+  <header class="sticky top-0 z-50 bg-gradient-to-r from-[#174e0d] via-[#246b15] to-[#123e0a] text-white shadow-lg shadow-black/10 transition-all duration-300 border-b border-emerald-500/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-2 sm:py-2.5 min-h-[84px]">
+        
+        <!-- Logo & Village Identity (Proporsional & Tulisan Besar) -->
+        <a href="index.html" class="flex items-center gap-3.5 group shrink-0">
+          <div class="shrink-0 flex items-center justify-center">
+            <img src="static/images/logo_tasikmalaya.png" 
+                 alt="Logo Papayan" 
+                 class="h-14 sm:h-16 w-auto max-w-[62px] object-contain drop-shadow-md transition-transform duration-200 group-hover:scale-105" 
+                 onerror="this.src='static/images/logo_tasikmalaya.png'" />
+          </div>
+          <div class="flex flex-col justify-center">
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-black uppercase tracking-tight text-white block leading-none">
+              PEMDES PAPAYAN
+            </h1>
+            <span class="text-[11px] sm:text-xs text-emerald-100/90 font-semibold block leading-tight mt-1.5">
+              Kecamatan Jatiwaras, Kabupaten Tasikmalaya
+            </span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-1 text-xs font-bold text-white/90">
+          <a href="index.html" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
+            <i class="fa-solid fa-house text-[11px]"></i> Beranda
+          </a>
+          <a href="index.html#profil" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
+            <i class="fa-solid fa-landmark text-[11px]"></i> Profil
+          </a>
+          <a href="index.html#infografis" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
+            <i class="fa-solid fa-chart-pie text-[11px]"></i> Infografis
+          </a>
+          <a href="index.html#peta" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-emerald-200 hover:text-white">
+            <i class="fa-solid fa-map-location-dot text-[11px]"></i> Peta Desa
+          </a>
+          <a href="index.html#wisata" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
+            <i class="fa-solid fa-umbrella-beach text-[11px]"></i> Wisata
+          </a>
+          <a href="index.html#umkm" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
+            <i class="fa-solid fa-basket-shopping text-[11px]"></i> UMKM
+          </a>
+          <a href="index.html#berita" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
+            <i class="fa-solid fa-newspaper text-[11px]"></i> Berita
+          </a>
+          <a href="publikasi.html" class="px-2.5 py-1.5 rounded-xl transition bg-white/20 text-white font-bold flex items-center gap-1.5">
+            <i class="fa-solid fa-book-bookmark text-[11px]"></i> Publikasi
+          </a>
+        </nav>
+
+        <!-- CTA & Mobile Burger -->
+        <div class="flex items-center gap-3">
+          <button type="button" onclick="handleKlikLayananSurat()" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-300 via-amber-200 to-yellow-300 text-black font-black px-4 py-2 rounded-xl text-xs hover:brightness-105 transition shadow-md shadow-amber-400/20 border border-amber-300 hover:scale-105" style="color: #000000 !important;">
+            <i class="fa-solid fa-file-pen text-black" style="color: #000000 !important;"></i>
+            <span class="text-black font-black" style="color: #000000 !important;">Layanan Surat</span>
+          </button>
+
+          <!-- Mobile Toggle Button -->
+          <button id="mobile-menu-toggle" onclick="document.getElementById('mobile-menu-dropdown').classList.toggle('hidden')" type="button" class="lg:hidden p-2.5 rounded-xl text-white hover:bg-white/10 transition" aria-label="Menu Navigasi">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RUNNING TEXT TICKER (Di Bawah Menu Utama - Sejajar Logo) -->
+    <div class="bg-gradient-to-r from-[#0d2a07] via-[#143a0c] to-[#0a2305] text-emerald-100 text-xs py-2 border-t border-emerald-500/25 shadow-inner">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+        
+        <!-- Running text marquee -->
+        <div class="flex items-center gap-2.5 overflow-hidden flex-1 min-w-0">
+          <span class="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 font-black text-[10px] sm:text-xs px-3 py-0.5 rounded-full uppercase tracking-wider shrink-0 shadow-md shadow-emerald-400/30 flex items-center gap-1.5">
+            <i class="fa-solid fa-bullhorn text-[9px] sm:text-[10px]"></i> Info Desa
+          </span>
+          <div class="overflow-hidden flex-1 relative text-[11px] font-medium text-emerald-100">
+            <marquee onmouseover="this.stop();" onmouseout="this.start();" scrollamount="5" class="py-0.5">
+              
+                
+                  <span>🏛️ Selamat Datang di Portal Resmi Informasi &amp; Layanan Mandiri Pemerintah Desa</span>
+                  <span class="mx-5 text-emerald-400 font-bold">•</span>
+                
+                  <span>🕒 Jam Pelayanan: Senin - Kamis (08.00 - 16.00) &amp; Jum&#39;at (08.00 - 16.30) WIB</span>
+                  <span class="mx-5 text-emerald-400 font-bold">•</span>
+                
+                  <span>📄 Urus surat keterangan resmi (SKU, SKD, SKTM, dll.) secara online mandiri 24 jam melalui menu Layanan Surat</span>
+                  <span class="mx-5 text-emerald-400 font-bold">•</span>
+                
+                  <span>📢 Sampaikan aspirasi &amp; aduan masyarakat melalui tombol Pengaduan di sudut kiri bawah website</span>
+                  
+                
+              
+            </marquee>
+          </div>
+        </div>
+
+        <!-- Right side: Kontak Telepon -->
+        <div class="flex items-center gap-2 text-[11px] shrink-0">
+          <a href="tel:0821-1991-8783" class="hover:text-white flex items-center gap-1.5 text-emerald-200 font-bold bg-white/10 hover:bg-white/20 px-3 py-1 rounded-xl border border-white/10 transition shadow-sm">
+            <i class="fa-solid fa-phone text-emerald-300 text-[10px]"></i>
+            <span>0821-1991-8783</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobile-menu-dropdown" class="hidden lg:hidden bg-brand-900/98 backdrop-blur-lg border-t border-brand-800 px-4 pt-3 pb-6 text-white text-xs font-semibold space-y-1 shadow-2xl">
+      <a href="index.html" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-house w-4 text-emerald-300"></i> Beranda
+      </a>
+      <a href="index.html#profil" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-landmark w-4 text-emerald-300"></i> Profil Desa & SOTK
+      </a>
+      <a href="index.html#infografis" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-chart-pie w-4 text-emerald-300"></i> Infografis & APBDes
+      </a>
+      <a href="index.html#peta" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-map-location-dot w-4 text-emerald-300"></i> Peta Wilayah SLS (26 RT)
+      </a>
+      <a href="index.html#wisata" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-umbrella-beach w-4 text-emerald-300"></i> Wisata & Potensi Desa
+      </a>
+      <a href="index.html#umkm" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-basket-shopping w-4 text-emerald-300"></i> Belanja Produk UMKM
+      </a>
+      <a href="index.html#berita" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-newspaper w-4 text-emerald-300"></i> Berita & Kabar Desa
+      </a>
+      <a href="publikasi.html" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white/20 text-white font-bold hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-book-bookmark w-4 text-emerald-300"></i> Buku Publikasi Desa (PDF)
+      </a>
+      <button type="button" onclick="handleKlikLayananSurat()" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white text-black font-black hover:bg-emerald-100 flex items-center gap-2.5 shadow-sm" style="color: #000000 !important;">
+        <i class="fa-solid fa-file-pen w-4 text-black" style="color: #000000 !important;"></i>
+        <span class="text-black font-black" style="color: #000000 !important;">Layanan Surat Mandiri</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- HERO SECTION: PERPUSTAKAAN DIGITAL -->
+  <section class="relative bg-gradient-to-b from-[#1b4e05] via-[#245e07] to-[#2b6d08] text-white py-16 sm:py-20 overflow-hidden">
+    <!-- Decorative Glow Circles -->
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-400/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+      
+      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 text-xs font-semibold text-brand-200 mb-6 shadow-inner">
+        <i class="fa-solid fa-book-open-reader text-brand-300"></i>
+        <span>Pusat Literasi & Dokumen Transparansi Publik</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl font-black tracking-tight max-w-4xl mx-auto leading-tight text-white drop-shadow-sm">
+        Perpustakaan Digital & Buku Publikasi Desa
+      </h1>
+      <p class="text-emerald-100 text-sm sm:text-base max-w-2xl mx-auto mt-4 font-light leading-relaxed">
+        Jelajahi, baca secara online, dan unduh gratis seluruh terbitan resmi Pemerintah Desa Papayan, mulai dari <strong>Buku Profil Desa</strong>, <strong>Desa Dalam Angka</strong>, laporan akuntabilitas, hingga regulasi desa.
+      </p>
+
+      <!-- Search Bar Publikasi -->
+      <form action="/publikasi" method="GET" class="max-w-xl mx-auto mt-8 relative">
+        <div class="relative flex items-center">
+          <input type="text" name="q" value="" placeholder="Cari judul buku, topik, kategori, atau tahun..." 
+                 class="w-full bg-white/95 backdrop-blur text-slate-800 text-xs sm:text-sm pl-11 pr-28 py-3.5 rounded-2xl shadow-xl focus:outline-none focus:ring-4 focus:ring-brand-400 font-medium" />
+          <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 text-sm"></i>
+          
+          <button type="submit" class="absolute right-2 px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs transition shadow flex items-center gap-1.5">
+            <span>Cari Buku</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto mt-10">
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 text-center">
+          <span class="block text-2xl font-black text-white">4</span>
+          <span class="text-[11px] text-brand-200">Judul Tersedia</span>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 text-center">
+          <span class="block text-2xl font-black text-blue-300">415</span>
+          <span class="text-[11px] text-brand-200">Total Diunduh</span>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 text-center">
+          <span class="block text-2xl font-black text-emerald-300">1023</span>
+          <span class="text-[11px] text-brand-200">Total Dibaca Online</span>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 text-center">
+          <span class="block text-2xl font-black text-amber-300">100%</span>
+          <span class="text-[11px] text-brand-200">Gratis & Terbuka</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- FEATURED SHOWCASE: BUKU PUBLIKASI UNGGULAN TERBARU                         -->
+  <!-- ========================================================================= -->
+  
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
+    <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden relative">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Left: 3D Book Display -->
+        <div class="lg:col-span-4 flex justify-center">
+          <div onclick="bukaModalDetailBuku(4)" class="book-3d-wrapper w-52 sm:w-60 cursor-pointer" title="Klik untuk melihat detail lengkap">
+            <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border-2 border-white/80">
+              <img src="static/images/mangrove.jpg" 
+                   alt="Buku Saku Panduan Wisata &amp; Ekologi Pesisir" 
+                   class="w-full h-full object-cover" 
+                   onerror="this.src='static/images/kantor_desa.jpg'" />
+              
+              <!-- Subtle gold badge on book -->
+              <div class="absolute top-3 right-3 bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 font-black text-[9px] px-2 py-0.5 rounded shadow flex items-center gap-1">
+                <i class="fa-solid fa-crown text-[8px]"></i> UNGGULAN
+              </div>
+              <div class="absolute bottom-3 left-3 bg-red-600 text-white font-black text-[10px] px-2 py-0.5 rounded shadow">
+                PDF DOKUMEN
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Book Synopsis & Actions -->
+        <div class="lg:col-span-8 space-y-4">
+          
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="bg-amber-100 text-amber-900 font-extrabold text-xs px-3 py-1 rounded-full border border-amber-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-star text-amber-500"></i> Terbitan Utama 2026
+            </span>
+            <span class="bg-brand-50 text-brand-800 font-bold text-xs px-3 py-1 rounded-full border border-brand-200">
+              <i class="fa-solid fa-bookmark text-brand-600 mr-1"></i> Panduan &amp; Edukasi Warga
+            </span>
+            <span class="text-xs text-slate-400 font-medium">
+              Cetakan I / 2026
+            </span>
+          </div>
+
+          <h2 onclick="bukaModalDetailBuku(4)" class="text-2xl sm:text-3xl font-black text-slate-900 leading-tight cursor-pointer hover:text-brand-700 transition" title="Klik untuk melihat detail lengkap">
+            Buku Saku Panduan Wisata &amp; Ekologi Pesisir
+          </h2>
+
+          <div class="flex items-center gap-4 text-xs text-slate-500 font-medium pb-2 border-b border-slate-100 flex-wrap">
+            <span><i class="fa-solid fa-pen-nib text-brand-600 mr-1.5"></i>Pokdarwis &amp; Pengelola Proklim</span>
+            <span><i class="fa-solid fa-calendar-check text-brand-600 mr-1.5"></i>Tahun 2026</span>
+            <span><i class="fa-solid fa-file-lines text-brand-600 mr-1.5"></i>32 Halaman</span>
+            <span><i class="fa-solid fa-hard-drive text-brand-600 mr-1.5"></i>1.8 MB</span>
+            <span class="text-blue-700 font-bold"><i class="fa-solid fa-cloud-arrow-down mr-1"></i>116 Diunduh</span>
+            <span class="text-emerald-700 font-bold"><i class="fa-solid fa-book-open-reader mr-1"></i>265 Dibaca Online</span>
+          </div>
+
+          <p class="text-slate-600 text-sm leading-relaxed">
+            Buku panduan saku praktis bagi wisatawan, pegiat lingkungan, dan pelajar mengenai rute wisata bahari Pantai Biru Papayan, tata cara adopsi bibit mangrove, serta etika menjaga kelestarian ekosistem pantai.
+          </p>
+
+          <!-- Action Buttons -->
+          <div class="pt-4 flex flex-col sm:flex-row items-center gap-3">
+            <a href="static/docs/publikasi/buku_saku_panduan_wisata_pesisir.pdf" 
+               class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-brand-700 to-emerald-600 hover:from-brand-800 hover:to-emerald-700 text-white font-extrabold text-sm shadow-lg shadow-brand-700/25 flex items-center justify-center gap-2.5 transition transform hover:-translate-y-0.5">
+              <i class="fa-solid fa-circle-down text-base"></i>
+              <span>Unduh Dokumen PDF Gratis (1.8 MB)</span>
+            </a>
+
+            <button onclick="bukaModalBacaPDF('static/docs/publikasi/buku_saku_panduan_wisata_pesisir.pdf', 'Buku Saku Panduan Wisata &amp; Ekologi Pesisir', 4)" 
+                    class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm transition flex items-center justify-center gap-2 border border-slate-200">
+              <i class="fa-solid fa-book-open text-brand-700"></i>
+              <span>Baca Online (Pratinjau)</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+  
+
+  <!-- ========================================================================= -->
+  <!-- MAIN CATALOG & DIGITAL BOOKSHELF                                          -->
+  <!-- ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div>
+        <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 uppercase tracking-wider mb-1">
+          <i class="fa-solid fa-shapes"></i>
+          <span>Katalog Dokumen Desa</span>
+        </div>
+        <h3 class="text-2xl font-black text-slate-900 tracking-tight">Koleksi Buku Publikasi Resmi</h3>
+        <p class="text-xs text-slate-500 mt-1">Gunakan filter kategori di bawah untuk menemukan dokumen yang Anda butuhkan.</p>
+      </div>
+
+      <!-- Total count -->
+      <div class="text-xs text-slate-500">
+        Menampilkan <strong class="text-slate-800">4</strong> dokumen publikasi
+      </div>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+      <a href="/publikasi?q=" 
+         class="px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 border bg-brand-700 text-white border-brand-700 shadow-sm">
+        <i class="fa-solid fa-layer-group text-[11px]"></i>
+        <span>Semua Kategori</span>
+      </a>
+
+      
+      <a href="/publikasi?kategori=Profil+Desa&amp;q=" 
+         class="px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 border bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+        <i class="fa-solid fa-bookmark text-[11px] opacity-70"></i>
+        <span>Profil Desa</span>
+      </a>
+      
+      <a href="/publikasi?kategori=Desa+Dalam+Angka&amp;q=" 
+         class="px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 border bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+        <i class="fa-solid fa-bookmark text-[11px] opacity-70"></i>
+        <span>Desa Dalam Angka</span>
+      </a>
+      
+      <a href="/publikasi?kategori=Laporan+%26+Transparansi+APBDes&amp;q=" 
+         class="px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 border bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+        <i class="fa-solid fa-bookmark text-[11px] opacity-70"></i>
+        <span>Laporan &amp; Transparansi APBDes</span>
+      </a>
+      
+      <a href="/publikasi?kategori=Regulasi+%26+Kebijakan+Desa&amp;q=" 
+         class="px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 border bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+        <i class="fa-solid fa-bookmark text-[11px] opacity-70"></i>
+        <span>Regulasi &amp; Kebijakan Desa</span>
+      </a>
+      
+      <a href="/publikasi?kategori=Panduan+%26+Edukasi+Warga&amp;q=" 
+         class="px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 border bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+        <i class="fa-solid fa-bookmark text-[11px] opacity-70"></i>
+        <span>Panduan &amp; Edukasi Warga</span>
+      </a>
+      
+      <a href="/publikasi?kategori=Majalah+%26+Warta+Desa&amp;q=" 
+         class="px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 border bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+        <i class="fa-solid fa-bookmark text-[11px] opacity-70"></i>
+        <span>Majalah &amp; Warta Desa</span>
+      </a>
+      
+      <a href="/publikasi?kategori=Peraturan+Pemerintah&amp;q=" 
+         class="px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 border bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+        <i class="fa-solid fa-bookmark text-[11px] opacity-70"></i>
+        <span>Peraturan Pemerintah</span>
+      </a>
+      
+    </div>
+
+    <!-- Book Grid Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      
+      <div onclick="bukaModalDetailBuku(4)" class="cursor-pointer bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1">
+        
+        <div>
+          <!-- Book Cover Container -->
+          <div class="relative bg-gradient-to-b from-slate-100 to-slate-200 p-5 flex items-center justify-center overflow-hidden">
+            
+            <div class="book-3d-wrapper w-36 sm:w-40 py-2">
+              <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border border-slate-300">
+                <img src="static/images/mangrove.jpg" 
+                     alt="Buku Saku Panduan Wisata &amp; Ekologi Pesisir" 
+                     class="w-full h-full object-cover" 
+                     onerror="this.src='static/images/kantor_desa.jpg'" />
+              </div>
+            </div>
+
+            <!-- Badges overlay -->
+            <span class="absolute top-3 left-3 bg-red-600 text-white font-black text-[9px] px-2 py-0.5 rounded shadow">
+              <i class="fa-solid fa-file-pdf mr-1"></i>PDF
+            </span>
+
+            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-slate-700 font-bold text-[10px] px-2 py-0.5 rounded shadow border border-slate-200">
+              2026
+            </span>
+          </div>
+
+          <!-- Book Info -->
+          <div class="p-5 space-y-2.5">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 font-medium">
+              <span class="bg-brand-50 text-brand-800 font-bold px-2 py-0.5 rounded-md border border-brand-200 truncate max-w-[170px]">
+                Panduan &amp; Edukasi Warga
+              </span>
+              <span><i class="fa-solid fa-file-lines mr-1"></i>32 Hal</span>
+            </div>
+
+            <h4 class="font-bold text-slate-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-700 transition" title="Buku Saku Panduan Wisata &amp; Ekologi Pesisir">
+              Buku Saku Panduan Wisata &amp; Ekologi Pesisir
+            </h4>
+
+            <p class="text-[11px] text-slate-500 font-normal">
+              Penyusun: <strong class="text-slate-700">Pokdarwis &amp; Pengelola Proklim</strong>
+            </p>
+
+            <p class="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+              Buku panduan saku praktis bagi wisatawan, pegiat lingkungan, dan pelajar mengenai rute wisata bahari Pantai Biru Papayan, tata cara adopsi bibit mangrove, serta etika menjaga kelestarian ekosistem pantai.
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer Card: Download & Read Buttons -->
+        <div class="p-5 pt-0">
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] mb-3">
+            <span class="text-blue-700 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-cloud-arrow-down text-blue-500"></i> 116 unduh
+            </span>
+            <span class="text-emerald-700 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-book-open-reader text-emerald-500"></i> 265 dibaca
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2" onclick="event.stopPropagation();">
+            <button onclick="bukaModalBacaPDF('static/docs/publikasi/buku_saku_panduan_wisata_pesisir.pdf', 'Buku Saku Panduan Wisata &amp; Ekologi Pesisir', 4)" 
+                    class="py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-1.5 border border-slate-200" title="Baca Online">
+              <i class="fa-solid fa-eye"></i>
+              <span>Pratinjau</span>
+            </button>
+
+            <a href="static/docs/publikasi/buku_saku_panduan_wisata_pesisir.pdf" 
+               class="py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm" title="Unduh File PDF">
+              <i class="fa-solid fa-download"></i>
+              <span>Unduh PDF</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+      
+      <div onclick="bukaModalDetailBuku(1)" class="cursor-pointer bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1">
+        
+        <div>
+          <!-- Book Cover Container -->
+          <div class="relative bg-gradient-to-b from-slate-100 to-slate-200 p-5 flex items-center justify-center overflow-hidden">
+            
+            <div class="book-3d-wrapper w-36 sm:w-40 py-2">
+              <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border border-slate-300">
+                <img src="static/images/kantor_desa.jpg" 
+                     alt="Buku Profil Desa Papayan 2026" 
+                     class="w-full h-full object-cover" 
+                     onerror="this.src='static/images/kantor_desa.jpg'" />
+              </div>
+            </div>
+
+            <!-- Badges overlay -->
+            <span class="absolute top-3 left-3 bg-red-600 text-white font-black text-[9px] px-2 py-0.5 rounded shadow">
+              <i class="fa-solid fa-file-pdf mr-1"></i>PDF
+            </span>
+
+            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-slate-700 font-bold text-[10px] px-2 py-0.5 rounded shadow border border-slate-200">
+              2026
+            </span>
+          </div>
+
+          <!-- Book Info -->
+          <div class="p-5 space-y-2.5">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 font-medium">
+              <span class="bg-brand-50 text-brand-800 font-bold px-2 py-0.5 rounded-md border border-brand-200 truncate max-w-[170px]">
+                Profil Desa
+              </span>
+              <span><i class="fa-solid fa-file-lines mr-1"></i>68 Hal</span>
+            </div>
+
+            <h4 class="font-bold text-slate-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-700 transition" title="Buku Profil Desa Papayan 2026">
+              Buku Profil Desa Papayan 2026
+            </h4>
+
+            <p class="text-[11px] text-slate-500 font-normal">
+              Penyusun: <strong class="text-slate-700">Tim Penyusun Profil Desa</strong>
+            </p>
+
+            <p class="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+              Buku dokumentasi komprehensif mengenai gambaran umum Desa Papayan.
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer Card: Download & Read Buttons -->
+        <div class="p-5 pt-0">
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] mb-3">
+            <span class="text-blue-700 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-cloud-arrow-down text-blue-500"></i> 145 unduh
+            </span>
+            <span class="text-emerald-700 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-book-open-reader text-emerald-500"></i> 331 dibaca
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2" onclick="event.stopPropagation();">
+            <button onclick="bukaModalBacaPDF('static/docs/publikasi/buku_profil_desa_kersik_2026.pdf', 'Buku Profil Desa Papayan 2026', 1)" 
+                    class="py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-1.5 border border-slate-200" title="Baca Online">
+              <i class="fa-solid fa-eye"></i>
+              <span>Pratinjau</span>
+            </button>
+
+            <a href="static/docs/publikasi/buku_profil_desa_kersik_2026.pdf" 
+               class="py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm" title="Unduh File PDF">
+              <i class="fa-solid fa-download"></i>
+              <span>Unduh PDF</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+      
+      <div onclick="bukaModalDetailBuku(3)" class="cursor-pointer bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1">
+        
+        <div>
+          <!-- Book Cover Container -->
+          <div class="relative bg-gradient-to-b from-slate-100 to-slate-200 p-5 flex items-center justify-center overflow-hidden">
+            
+            <div class="book-3d-wrapper w-36 sm:w-40 py-2">
+              <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border border-slate-300">
+                <img src="static/images/tambak.jpg" 
+                     alt="Laporan Akuntabilitas &amp; Realisasi APBDes 2025/2026" 
+                     class="w-full h-full object-cover" 
+                     onerror="this.src='static/images/kantor_desa.jpg'" />
+              </div>
+            </div>
+
+            <!-- Badges overlay -->
+            <span class="absolute top-3 left-3 bg-red-600 text-white font-black text-[9px] px-2 py-0.5 rounded shadow">
+              <i class="fa-solid fa-file-pdf mr-1"></i>PDF
+            </span>
+
+            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-slate-700 font-bold text-[10px] px-2 py-0.5 rounded shadow border border-slate-200">
+              2026
+            </span>
+          </div>
+
+          <!-- Book Info -->
+          <div class="p-5 space-y-2.5">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 font-medium">
+              <span class="bg-brand-50 text-brand-800 font-bold px-2 py-0.5 rounded-md border border-brand-200 truncate max-w-[170px]">
+                Laporan &amp; Transparansi APBDes
+              </span>
+              <span><i class="fa-solid fa-file-lines mr-1"></i>42 Hal</span>
+            </div>
+
+            <h4 class="font-bold text-slate-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-700 transition" title="Laporan Akuntabilitas &amp; Realisasi APBDes 2025/2026">
+              Laporan Akuntabilitas &amp; Realisasi APBDes 2025/2026
+            </h4>
+
+            <p class="text-[11px] text-slate-500 font-normal">
+              Penyusun: <strong class="text-slate-700">Kaur Keuangan &amp; Sekretariat Desa</strong>
+            </p>
+
+            <p class="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+              Laporan pertanggungjawaban realisasi penerimaan Dana Desa (APBN), Alokasi Dana Desa (ADD Kukar), dan Belanja Desa untuk pembangunan jalan pesisir, dermaga nelayan, dan program ketahanan pangan.
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer Card: Download & Read Buttons -->
+        <div class="p-5 pt-0">
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] mb-3">
+            <span class="text-blue-700 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-cloud-arrow-down text-blue-500"></i> 65 unduh
+            </span>
+            <span class="text-emerald-700 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-book-open-reader text-emerald-500"></i> 187 dibaca
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2" onclick="event.stopPropagation();">
+            <button onclick="bukaModalBacaPDF('static/docs/publikasi/laporan_transparansi_apbdes_2025_2026.pdf', 'Laporan Akuntabilitas &amp; Realisasi APBDes 2025/2026', 3)" 
+                    class="py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-1.5 border border-slate-200" title="Baca Online">
+              <i class="fa-solid fa-eye"></i>
+              <span>Pratinjau</span>
+            </button>
+
+            <a href="static/docs/publikasi/laporan_transparansi_apbdes_2025_2026.pdf" 
+               class="py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm" title="Unduh File PDF">
+              <i class="fa-solid fa-download"></i>
+              <span>Unduh PDF</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+      
+      <div onclick="bukaModalDetailBuku(2)" class="cursor-pointer bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1">
+        
+        <div>
+          <!-- Book Cover Container -->
+          <div class="relative bg-gradient-to-b from-slate-100 to-slate-200 p-5 flex items-center justify-center overflow-hidden">
+            
+            <div class="book-3d-wrapper w-36 sm:w-40 py-2">
+              <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border border-slate-300">
+                <img src="static/images/nelayan.jpg" 
+                     alt="Desa Papayan Dalam Angka 2026" 
+                     class="w-full h-full object-cover" 
+                     onerror="this.src='static/images/kantor_desa.jpg'" />
+              </div>
+            </div>
+
+            <!-- Badges overlay -->
+            <span class="absolute top-3 left-3 bg-red-600 text-white font-black text-[9px] px-2 py-0.5 rounded shadow">
+              <i class="fa-solid fa-file-pdf mr-1"></i>PDF
+            </span>
+
+            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-slate-700 font-bold text-[10px] px-2 py-0.5 rounded shadow border border-slate-200">
+              2026
+            </span>
+          </div>
+
+          <!-- Book Info -->
+          <div class="p-5 space-y-2.5">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 font-medium">
+              <span class="bg-brand-50 text-brand-800 font-bold px-2 py-0.5 rounded-md border border-brand-200 truncate max-w-[170px]">
+                Desa Dalam Angka
+              </span>
+              <span><i class="fa-solid fa-file-lines mr-1"></i>54 Hal</span>
+            </div>
+
+            <h4 class="font-bold text-slate-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-700 transition" title="Desa Papayan Dalam Angka 2026">
+              Desa Papayan Dalam Angka 2026
+            </h4>
+
+            <p class="text-[11px] text-slate-500 font-normal">
+              Penyusun: <strong class="text-slate-700">Pemerintah Desa Papayan</strong>
+            </p>
+
+            <p class="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+              Publikasi statistik resmi tahunan yang memuat data sektoral kependudukan, kelompok nelayan tangkap, produksi perikanan &amp; budidaya tambak udang, sarana pendidikan, dan peta perekonomian desa pesisir.
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer Card: Download & Read Buttons -->
+        <div class="p-5 pt-0">
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] mb-3">
+            <span class="text-blue-700 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-cloud-arrow-down text-blue-500"></i> 89 unduh
+            </span>
+            <span class="text-emerald-700 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-book-open-reader text-emerald-500"></i> 240 dibaca
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2" onclick="event.stopPropagation();">
+            <button onclick="bukaModalBacaPDF('static/docs/publikasi/buku_desa_kersik_dalam_angka_2026.pdf', 'Desa Papayan Dalam Angka 2026', 2)" 
+                    class="py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-1.5 border border-slate-200" title="Baca Online">
+              <i class="fa-solid fa-eye"></i>
+              <span>Pratinjau</span>
+            </button>
+
+            <a href="static/docs/publikasi/buku_desa_kersik_dalam_angka_2026.pdf" 
+               class="py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm" title="Unduh File PDF">
+              <i class="fa-solid fa-download"></i>
+              <span>Unduh PDF</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+      
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL DETAIL BUKU PUBLIKASI (POPUP TAMPILAN BESAR)                         -->
+  <!-- ========================================================================= -->
+  <div id="modal-detail-buku" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto" onclick="if(event.target === this) tutupModalDetailBuku();">
+    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-fade-in my-auto border border-slate-200">
+      
+      <!-- Header Gambar & Identitas Buku -->
+      <div class="relative bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-900 text-white p-6 sm:p-8 flex flex-col md:flex-row items-center md:items-start gap-6 shrink-0 border-b border-emerald-800/40">
+        
+        <!-- Tombol Tutup X -->
+        <button type="button" onclick="tutupModalDetailBuku()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/80 text-white flex items-center justify-center text-xl font-bold transition shadow-lg z-20" title="Tutup">
+          &times;
+        </button>
+
+        <!-- Cover Buku 3D / Besar -->
+        <div class="shrink-0 relative">
+          <div class="w-36 sm:w-44 aspect-[3/4.2] overflow-hidden rounded-xl bg-slate-900 shadow-2xl border-2 border-white/20 transform hover:scale-105 transition duration-300">
+            <img id="modal-buku-cover" src="" alt="Cover Buku" class="w-full h-full object-cover">
+          </div>
+          <span class="absolute top-2 left-2 bg-red-600 text-white font-black text-[9px] px-2 py-0.5 rounded shadow">
+            <i class="fa-solid fa-file-pdf mr-1"></i>PDF
+          </span>
+          <span id="modal-buku-tahun-badge" class="absolute top-2 right-2 bg-white/95 text-slate-800 font-bold text-[10px] px-2 py-0.5 rounded shadow">
+            2026
+          </span>
+        </div>
+
+        <!-- Info Judul & Meta Buku -->
+        <div class="flex-1 text-center md:text-left space-y-3 min-w-0">
+          <div class="flex items-center justify-center md:justify-start gap-2 flex-wrap">
+            <span id="modal-buku-kategori" class="bg-emerald-500/30 text-emerald-200 font-bold text-xs px-3 py-1 rounded-full border border-emerald-400/30">
+              Kategori Dokumen
+            </span>
+            <span id="modal-buku-edisi" class="text-xs text-emerald-200/80 bg-white/10 px-3 py-1 rounded-full">
+              Edisi Resmi
+            </span>
+          </div>
+
+          <h2 id="modal-buku-judul" class="text-xl sm:text-2xl lg:text-3xl font-black text-white leading-tight">
+            Judul Buku Publikasi
+          </h2>
+
+          <div class="flex items-center justify-center md:justify-start gap-3 sm:gap-4 text-xs text-emerald-100/90 font-medium flex-wrap">
+            <span id="modal-buku-penulis"><i class="fa-solid fa-pen-nib text-amber-300 mr-1.5"></i> Penyusun</span>
+            <span>•</span>
+            <span id="modal-buku-tahun"><i class="fa-regular fa-calendar-check text-amber-300 mr-1.5"></i> Tahun</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Konten Rincian & Sinopsis Buku -->
+      <div class="p-6 sm:p-8 overflow-y-auto space-y-6 flex-1">
+        
+        <!-- Grid Ringkasan Spesifikasi Buku -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl text-center">
+            <span class="text-[11px] text-slate-400 font-bold uppercase block mb-1">
+              <i class="fa-solid fa-file-lines text-blue-600 mr-1"></i> Jumlah Halaman
+            </span>
+            <strong id="modal-buku-halaman" class="text-slate-900 font-black text-sm sm:text-base">0 Halaman</strong>
+          </div>
+          <div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl text-center">
+            <span class="text-[11px] text-slate-400 font-bold uppercase block mb-1">
+              <i class="fa-solid fa-hard-drive text-amber-600 mr-1"></i> Ukuran File
+            </span>
+            <strong id="modal-buku-ukuran" class="text-slate-900 font-black text-sm sm:text-base">0 MB</strong>
+          </div>
+          <div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl text-center">
+            <span class="text-[11px] text-slate-400 font-bold uppercase block mb-1">
+              <i class="fa-solid fa-book-open-reader text-emerald-600 mr-1"></i> Dibaca Online
+            </span>
+            <strong id="modal-buku-baca" class="text-emerald-700 font-black text-sm sm:text-base">0 Kali</strong>
+          </div>
+          <div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl text-center">
+            <span class="text-[11px] text-slate-400 font-bold uppercase block mb-1">
+              <i class="fa-solid fa-cloud-arrow-down text-indigo-600 mr-1"></i> Total Diunduh
+            </span>
+            <strong id="modal-buku-unduh" class="text-indigo-700 font-black text-sm sm:text-base">0 Kali</strong>
+          </div>
+        </div>
+
+        <!-- Sinopsis Lengkap -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-600 flex items-center gap-2">
+            <i class="fa-solid fa-align-left text-emerald-600"></i> Sinopsis &amp; Gambaran Publikasi
+          </h4>
+          <div class="bg-emerald-50/60 border-l-4 border-emerald-500 rounded-r-2xl p-4 sm:p-5">
+            <p id="modal-buku-sinopsis" class="text-sm sm:text-base text-slate-800 leading-relaxed font-normal">
+              Sinopsis buku...
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Modal & Tombol Aksi -->
+      <div class="px-6 sm:px-8 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <button id="modal-buku-btn-baca" type="button"
+                  class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-book-open text-emerald-400"></i> Pratinjau / Baca PDF
+          </button>
+          <a id="modal-buku-btn-unduh" href="#" 
+             class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-download"></i> Unduh PDF Gratis
+          </a>
+          <button type="button" onclick="bagikanBukuModal()" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:border-emerald-600 text-slate-700 hover:text-emerald-700 font-bold text-xs transition flex items-center gap-2 shadow-xs">
+            <i class="fa-solid fa-share-nodes text-emerald-600"></i> Bagikan
+          </button>
+        </div>
+        <button type="button" onclick="tutupModalDetailBuku()" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL NOTIFIKASI MAINTENANCE LAYANAN SURAT -->
+  <div id="modal-maintenance-surat" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden" onclick="if(event.target === this) tutupModalMaintenanceSurat();">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl animate-fade-in text-center border border-amber-300 relative overflow-hidden my-auto">
+      <!-- Glow background -->
+      <div class="absolute -top-12 -right-12 w-32 h-32 bg-amber-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Icon -->
+      <div class="w-16 h-16 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-amber-500/30">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+
+      <!-- Badge -->
+      <span class="inline-block bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-[11px] px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+        Pemberitahuan Layanan
+      </span>
+
+      <!-- Pesan Utama Sesuai Instruksi User -->
+      <h3 class="text-lg sm:text-xl font-black text-slate-900 leading-snug">
+        Mohon maaf, layanan permohonan surat online sedang dalam masa pemeliharaan sistem. Silakan coba beberapa saat lagi.
+      </h3>
+
+      <p class="text-xs text-slate-600 mt-2.5 leading-relaxed">
+        Fitur pembuatan surat mandiri daring sedang dalam proses pemeliharaan sistem oleh Pemerintah Desa Papayan. Pelayanan administrasi tetap dapat dilayani secara langsung di Kantor Desa pada jam kerja.
+      </p>
+
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-2.5">
+        <a href="tel:0821-1991-8783" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-sm">
+          <i class="fa-solid fa-phone"></i> Kontak Kantor Desa
+        </a>
+        <button type="button" onclick="tutupModalMaintenanceSurat()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL BACA ONLINE / PRATINJAU PDF                                          -->
+  <!-- ========================================================================= -->
+  <div id="modal-baca-pdf" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-md hidden flex flex-col items-center justify-center p-2 sm:p-6">
+    <div class="bg-white rounded-3xl w-full max-w-5xl h-[92vh] flex flex-col shadow-2xl overflow-hidden border border-slate-700">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-3 truncate pr-4">
+          <div class="w-8 h-8 rounded-lg bg-red-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+            PDF
+          </div>
+          <div class="truncate">
+            <h4 id="pdf-modal-title" class="font-bold text-sm truncate">Pratinjau Dokumen</h4>
+            <p class="text-[10px] text-slate-400">Perpustakaan Digital Desa Papayan</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <a id="pdf-modal-download-btn" href="#" 
+             class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-download"></i>
+            <span class="hidden sm:inline">Unduh PDF</span>
+          </a>
+          <button onclick="tutupModalBacaPDF()" class="p-2 text-slate-400 hover:text-white rounded-xl transition">
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Iframe Viewer Container -->
+      <div class="flex-1 bg-slate-100 relative">
+        <iframe id="pdf-modal-frame" src="" class="w-full h-full border-0"></iframe>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 text-slate-300 pt-16 pb-8 border-t border-slate-800 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <img src="static/images/logo_tasikmalaya.png" alt="Logo Papayan" class="w-10 h-10 object-contain brightness-110" />
+            <div>
+              <h3 class="text-white font-bold text-sm">Pemerintah Desa Papayan</h3>
+              <p class="text-[11px] text-brand-400">Tasikmalaya, Jawa Barat</p>
+            </div>
+          </div>
+          <p class="text-slate-400 leading-relaxed text-xs">
+            Desa Papayan terletak di Kecamatan Jatiwaras, Kabupaten Tasikmalaya, Jawa Barat. .
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-building-columns text-brand-500"></i> Kontak Kantor Desa
+          </h4>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-location-dot text-brand-500 mt-1"></i>
+              <span>Jalan Raya Papayan No. 1, Desa Papayan, Kecamatan Jatiwaras</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i class="fa-solid fa-phone text-brand-500"></i>
+              <a href="tel:0821-1991-8783" class="hover:text-white">0821-1991-8783</a>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i class="fa-solid fa-envelope text-brand-500"></i>
+              <a href="mailto:pemdes@papayan.desa.id" class="hover:text-white">pemdes@papayan.desa.id</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-link text-brand-500"></i> Navigasi Portal
+          </h4>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="hover:text-brand-300 transition">Beranda Utama</a></li>
+            <li><a href="publikasi.html" class="text-emerald-400 font-bold hover:underline">Perpustakaan Digital Desa</a></li>
+            <li><a href="index.html#wisata" class="hover:text-brand-300 transition">Wisata & Potensi Desa</a></li>
+            <li><a href="index.html#umkm" class="hover:text-brand-300 transition">Produk UMKM Warga</a></li>
+            <li><a href="#admin-modal" onclick="alert('Panel Admin CMS berbasis server Python Flask. Pada hosting statis GitHub Pages, silakan jalankan website di komputer lokal atau deploy ke server cloud backend untuk mengakses Dashboard CMS Admin.'); return false;" class="text-slate-400 hover:underline">Masuk Panel Admin</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-brand-500"></i> Komitmen Keterbukaan
+          </h4>
+          <p class="text-slate-400 leading-relaxed text-xs">
+            Seluruh publikasi dalam perpustakaan digital ini dipublikasikan untuk keterbukaan informasi publik dan akuntabilitas penyelenggaraan pemerintahan desa.
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px]">
+        <p>© 2026 Pemerintah Desa Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya.</p>
+        <p class="text-slate-500">Dokumen dan buku publikasi dilindungi untuk edukasi masyarakat.</p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- SCRIPT MODAL PRATINJAU PDF & DETAIL BUKU -->
+  <script>
+    // --- DATA MAP UNTUK MODAL DETAIL BUKU ---
+    const bukuDataMap = {
+      
+      4: {
+        id: 4,
+        judul: "Buku Saku Panduan Wisata \u0026 Ekologi Pesisir",
+        kategori: "Panduan \u0026 Edukasi Warga",
+        penulis: "Pokdarwis \u0026 Pengelola Proklim",
+        tahun: "2026",
+        edisi: "Cetakan I / 2026",
+        jumlah_halaman: 32,
+        ukuran_file: "1.8 MB",
+        sinopsis: "Buku panduan saku praktis bagi wisatawan, pegiat lingkungan, dan pelajar mengenai rute wisata bahari Pantai Biru Papayan, tata cara adopsi bibit mangrove, serta etika menjaga kelestarian ekosistem pantai.",
+        jumlah_unduh: 116,
+        jumlah_baca: 265,
+        cover_buku: "static/images/mangrove.jpg",
+        file_pdf: "static/docs/publikasi/buku_saku_panduan_wisata_pesisir.pdf",
+        url_unduh: "static/docs/publikasi/buku_saku_panduan_wisata_pesisir.pdf"
+      },
+      
+      
+      4: {
+        id: 4,
+        judul: "Buku Saku Panduan Wisata \u0026 Ekologi Pesisir",
+        kategori: "Panduan \u0026 Edukasi Warga",
+        penulis: "Pokdarwis \u0026 Pengelola Proklim",
+        tahun: "2026",
+        edisi: "Cetakan I / 2026",
+        jumlah_halaman: 32,
+        ukuran_file: "1.8 MB",
+        sinopsis: "Buku panduan saku praktis bagi wisatawan, pegiat lingkungan, dan pelajar mengenai rute wisata bahari Pantai Biru Papayan, tata cara adopsi bibit mangrove, serta etika menjaga kelestarian ekosistem pantai.",
+        jumlah_unduh: 116,
+        jumlah_baca: 265,
+        cover_buku: "static/images/mangrove.jpg",
+        file_pdf: "static/docs/publikasi/buku_saku_panduan_wisata_pesisir.pdf",
+        url_unduh: "static/docs/publikasi/buku_saku_panduan_wisata_pesisir.pdf"
+      },
+      
+      1: {
+        id: 1,
+        judul: "Buku Profil Desa Papayan 2026",
+        kategori: "Profil Desa",
+        penulis: "Tim Penyusun Profil Desa",
+        tahun: "2026",
+        edisi: "Edisi Khusus Pemekaran \u0026 Wisata",
+        jumlah_halaman: 68,
+        ukuran_file: "2.4 MB",
+        sinopsis: "Buku dokumentasi komprehensif mengenai gambaran umum Desa Papayan.",
+        jumlah_unduh: 145,
+        jumlah_baca: 331,
+        cover_buku: "static/images/kantor_desa.jpg",
+        file_pdf: "static/docs/publikasi/buku_profil_desa_kersik_2026.pdf",
+        url_unduh: "static/docs/publikasi/buku_profil_desa_kersik_2026.pdf"
+      },
+      
+      3: {
+        id: 3,
+        judul: "Laporan Akuntabilitas \u0026 Realisasi APBDes 2025/2026",
+        kategori: "Laporan \u0026 Transparansi APBDes",
+        penulis: "Kaur Keuangan \u0026 Sekretariat Desa",
+        tahun: "2026",
+        edisi: "Laporan Resmi Transparansi",
+        jumlah_halaman: 42,
+        ukuran_file: "3.1 MB",
+        sinopsis: "Laporan pertanggungjawaban realisasi penerimaan Dana Desa (APBN), Alokasi Dana Desa (ADD Kukar), dan Belanja Desa untuk pembangunan jalan pesisir, dermaga nelayan, dan program ketahanan pangan.",
+        jumlah_unduh: 65,
+        jumlah_baca: 187,
+        cover_buku: "static/images/tambak.jpg",
+        file_pdf: "static/docs/publikasi/laporan_transparansi_apbdes_2025_2026.pdf",
+        url_unduh: "static/docs/publikasi/laporan_transparansi_apbdes_2025_2026.pdf"
+      },
+      
+      2: {
+        id: 2,
+        judul: "Desa Papayan Dalam Angka 2026",
+        kategori: "Desa Dalam Angka",
+        penulis: "Pemerintah Desa Papayan",
+        tahun: "2026",
+        edisi: "Kompilasi Data Tahunan",
+        jumlah_halaman: 54,
+        ukuran_file: "1.9 MB",
+        sinopsis: "Publikasi statistik resmi tahunan yang memuat data sektoral kependudukan, kelompok nelayan tangkap, produksi perikanan \u0026 budidaya tambak udang, sarana pendidikan, dan peta perekonomian desa pesisir.",
+        jumlah_unduh: 89,
+        jumlah_baca: 240,
+        cover_buku: "static/images/nelayan.jpg",
+        file_pdf: "static/docs/publikasi/buku_desa_kersik_dalam_angka_2026.pdf",
+        url_unduh: "static/docs/publikasi/buku_desa_kersik_dalam_angka_2026.pdf"
+      }
+      
+    };
+
+    window.bukaModalDetailBuku = function(id) {
+      const item = bukuDataMap[id];
+      if (!item) return;
+
+      const modal = document.getElementById('modal-detail-buku');
+      const cover = document.getElementById('modal-buku-cover');
+      const tahunBadge = document.getElementById('modal-buku-tahun-badge');
+      const kategori = document.getElementById('modal-buku-kategori');
+      const edisi = document.getElementById('modal-buku-edisi');
+      const judul = document.getElementById('modal-buku-judul');
+      const penulis = document.getElementById('modal-buku-penulis');
+      const tahun = document.getElementById('modal-buku-tahun');
+      const halaman = document.getElementById('modal-buku-halaman');
+      const ukuran = document.getElementById('modal-buku-ukuran');
+      const baca = document.getElementById('modal-buku-baca');
+      const unduh = document.getElementById('modal-buku-unduh');
+      const sinopsis = document.getElementById('modal-buku-sinopsis');
+      const btnBaca = document.getElementById('modal-buku-btn-baca');
+      const btnUnduh = document.getElementById('modal-buku-btn-unduh');
+
+      if (cover) {
+        cover.src = item.cover_buku || 'static/images/kantor_desa.jpg';
+        cover.alt = item.judul;
+      }
+      if (tahunBadge) tahunBadge.innerText = item.tahun || '2026';
+      if (kategori) kategori.innerText = item.kategori || 'Publikasi Desa';
+      if (edisi) edisi.innerText = item.edisi || 'Edisi Resmi';
+      if (judul) judul.innerText = item.judul;
+      if (penulis) penulis.innerHTML = `<i class="fa-solid fa-pen-nib text-amber-300 mr-1.5"></i> ${item.penulis || 'Pemerintah Desa Papayan'}`;
+      if (tahun) tahun.innerHTML = `<i class="fa-regular fa-calendar-check text-amber-300 mr-1.5"></i> Tahun ${item.tahun || '2026'}`;
+      if (halaman) halaman.innerText = `${item.jumlah_halaman} Halaman`;
+      if (ukuran) ukuran.innerText = item.ukuran_file || 'PDF';
+      if (baca) baca.innerText = `${item.jumlah_baca} Kali`;
+      if (unduh) unduh.innerText = `${item.jumlah_unduh} Kali`;
+      if (sinopsis) sinopsis.innerText = item.sinopsis || 'Publikasi resmi desa dalam format PDF.';
+
+      if (btnBaca) {
+        btnBaca.onclick = function() {
+          bukaModalBacaPDF(item.file_pdf, item.judul, item.id);
+          tutupModalDetailBuku();
+        };
+      }
+      if (btnUnduh) {
+        btnUnduh.href = item.url_unduh;
+      }
+
+      window.currentBukuActive = item;
+
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      }
+    };
+
+    window.tutupModalDetailBuku = function() {
+      const modal = document.getElementById('modal-detail-buku');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    };
+
+    window.bagikanBukuModal = function() {
+      const item = window.currentBukuActive;
+      if (!item) return;
+      const shareUrl = window.location.origin + window.location.pathname;
+      if (navigator.share) {
+        navigator.share({
+          title: item.judul,
+          text: `Buku Publikasi Desa Papayan: ${item.judul}`,
+          url: shareUrl
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(`${item.judul} - ${shareUrl}`);
+        alert('Tautan informasi buku berhasil disalin!');
+      }
+    };
+
+    // --- LOGIKA MODAL BACA PDF ONLINE ---
+    function bukaModalBacaPDF(pdfUrl, title, bookId) {
+      document.getElementById('pdf-modal-title').textContent = title;
+      document.getElementById('pdf-modal-frame').src = pdfUrl;
+      document.getElementById('pdf-modal-download-btn').href = `/publikasi/unduh/${bookId}`;
+      document.getElementById('modal-baca-pdf').classList.remove('hidden');
+
+      // Async update online reading counter
+      try {
+        fetch(`/api/publikasi/${bookId}/baca`, { method: 'POST' });
+      } catch (err) {}
+    }
+
+    function tutupModalBacaPDF() {
+      document.getElementById('modal-baca-pdf').classList.add('hidden');
+      document.getElementById('pdf-modal-frame').src = '';
+    }
+
+    // --- LOGIKA MAINTENANCE LAYANAN SURAT ---
+    window.STATUS_MAINTENANCE_SURAT = 1;
+
+    window.bukaModalMaintenanceSurat = function() {
+      const modal = document.getElementById('modal-maintenance-surat');
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      } else {
+        alert("Layanan Sedang Maintenace. Mohon maaf atas ketidaknyamananya !!!");
+      }
+    };
+
+    window.tutupModalMaintenanceSurat = function() {
+      const modal = document.getElementById('modal-maintenance-surat');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    };
+
+    window.handleKlikLayananSurat = function() {
+      if (window.STATUS_MAINTENANCE_SURAT === 1) {
+        window.bukaModalMaintenanceSurat();
+      } else {
+        window.location.href = "/#layanan-surat";
+      }
+    };
+
+    // Close modals on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        tutupModalDetailBuku();
+        tutupModalBacaPDF();
+        tutupModalMaintenanceSurat();
+      }
+    });
+  </script>
+
+  <!-- FLOATING WIDGETS -->
+  <!-- KIRI: STATISTIK KUNJUNGAN (HARI INI, MINGGU INI, BULAN INI, TOTAL) -->
+  <!-- ========================================================================= -->
+<!-- FLOATING WIDGET STATISTIK KUNJUNGAN WEBSITE (SUDUT KIRI BAWAH)            -->
+<!-- ========================================================================= -->
+
+<!-- BACKDROP (Menutup popup saat klik di luar) -->
+<div id="floating-stats-backdrop" class="fixed inset-0 z-40 bg-slate-950/30 backdrop-blur-[1px] hidden transition-opacity" onclick="toggleFloatingStats(false)"></div>
+
+<!-- FLOATING POPUP STATISTIK CARD (Mengambang di Atas Tombol Kiri Bawah) -->
+<div id="floating-stats-popup" class="hidden fixed bottom-28 sm:bottom-20 left-3 sm:left-6 z-50 w-[90vw] sm:w-[320px] max-w-[320px] bg-slate-950/95 backdrop-blur-xl text-white rounded-3xl shadow-2xl border border-slate-800 p-5 transition-all duration-300 transform scale-95 opacity-0">
+  
+  <!-- Header Bar -->
+  <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800/80">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm border border-emerald-500/30">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+      <div>
+        <h4 class="font-extrabold text-xs sm:text-sm text-white leading-tight">Statistik Kunjungan</h4>
+        <p class="text-[10px] text-slate-400">Pengunjung Portal Desa Papayan</p>
+      </div>
+    </div>
+    <button type="button" onclick="toggleFloatingStats(false)" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-xs transition" title="Tutup">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- Grid 4 Statistik (Hari Ini, Minggu Ini, Bulan Ini, Total Kunjungan) -->
+  <div class="grid grid-cols-2 gap-2.5 text-xs">
+    
+    <!-- Hari Ini -->
+    <div class="bg-gradient-to-br from-blue-950/50 to-slate-900/60 p-3 rounded-2xl border border-blue-500/25">
+      <div class="flex items-center justify-between text-blue-400 mb-1">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Hari Ini</span>
+        <i class="fa-solid fa-user-check text-xs"></i>
+      </div>
+      <div class="text-xl font-black text-blue-300" id="stat-val-today">
+        306
+      </div>
+      <span class="text-[9px] text-slate-400">Pengunjung</span>
+    </div>
+
+    <!-- Minggu Ini -->
+    <div class="bg-gradient-to-br from-amber-950/50 to-slate-900/60 p-3 rounded-2xl border border-amber-500/25">
+      <div class="flex items-center justify-between text-amber-400 mb-1">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Minggu Ini</span>
+        <i class="fa-solid fa-calendar-week text-xs"></i>
+      </div>
+      <div class="text-xl font-black text-amber-300" id="stat-val-week">
+        1.198
+      </div>
+      <span class="text-[9px] text-slate-400">7 hari terakhir</span>
+    </div>
+
+    <!-- Bulan Ini -->
+    <div class="bg-gradient-to-br from-emerald-950/50 to-slate-900/60 p-3 rounded-2xl border border-emerald-500/25">
+      <div class="flex items-center justify-between text-emerald-400 mb-1">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Bulan Ini</span>
+        <i class="fa-solid fa-calendar-days text-xs"></i>
+      </div>
+      <div class="text-xl font-black text-emerald-300" id="stat-val-month">
+        4.052
+      </div>
+      <span class="text-[9px] text-slate-400">Bulan berjalan</span>
+    </div>
+
+    <!-- Total Kunjungan -->
+    <div class="bg-gradient-to-br from-purple-950/50 to-slate-900/60 p-3 rounded-2xl border border-purple-500/25">
+      <div class="flex items-center justify-between text-purple-400 mb-1">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total</span>
+        <i class="fa-solid fa-globe text-xs"></i>
+      </div>
+      <div class="text-xl font-black text-purple-300" id="stat-val-total">
+        28.731
+      </div>
+      <span class="text-[9px] text-slate-400">Total Kunjungan</span>
+    </div>
+
+  </div>
+
+  <!-- Footer Info -->
+  <div class="mt-3.5 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
+    <div class="flex items-center gap-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span>Pelacak Aktif Desa Papayan</span>
+    </div>
+    <span class="text-emerald-400 font-semibold">Real-time</span>
+  </div>
+
+</div>
+
+<!-- TOMBOL MENGAMBANG DI SUDUT KIRI BAWAH (Floating Trigger Button) -->
+<div class="fixed bottom-16 sm:bottom-6 left-4 sm:left-6 z-40">
+  <button type="button" id="btn-toggle-floating-stats" onclick="toggleFloatingStats()" 
+          class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-slate-900/90 hover:bg-slate-950 text-white text-xs sm:text-sm font-bold shadow-xl hover:shadow-2xl transition-all duration-200 border border-slate-700/80 backdrop-blur-md group hover:-translate-y-0.5 active:translate-y-0 focus:outline-none"
+          title="Lihat Statistik Kunjungan Website (Hari Ini, Minggu Ini, Bulan Ini, Total)">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+    <i class="fa-solid fa-chart-simple text-emerald-400 text-sm"></i>
+    <span class="hidden sm:inline text-slate-200">Kunjungan:</span>
+    <span class="text-emerald-300 font-black" id="pill-stat-today">
+      306
+    </span>
+    <span class="text-slate-400 text-[10px] hidden sm:inline">Hari Ini</span>
+    <i class="fa-solid fa-chevron-up text-[9px] text-slate-400 group-hover:text-white transition transform group-hover:-translate-y-0.5"></i>
+  </button>
+</div>
+
+<!-- JAVASCRIPT LOGIKA FLOATING STATISTIK -->
+<script>
+  let isFloatingStatsOpen = false;
+
+  function toggleFloatingStats(forceState) {
+    const popup = document.getElementById('floating-stats-popup');
+    const backdrop = document.getElementById('floating-stats-backdrop');
+
+    if (typeof forceState === 'boolean') {
+      isFloatingStatsOpen = forceState;
+    } else {
+      isFloatingStatsOpen = !isFloatingStatsOpen;
+    }
+
+    if (isFloatingStatsOpen) {
+      popup.classList.remove('hidden');
+      backdrop.classList.remove('hidden');
+      setTimeout(() => {
+        popup.classList.remove('scale-95', 'opacity-0');
+        popup.classList.add('scale-100', 'opacity-100');
+      }, 10);
+      refreshVisitorStatsData();
+    } else {
+      popup.classList.remove('scale-100', 'opacity-100');
+      popup.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        popup.classList.add('hidden');
+        backdrop.classList.add('hidden');
+      }, 200);
+    }
+  }
+
+  async function refreshVisitorStatsData() {
+    try {
+      const res = await fetch('/api/statistik-kunjungan');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          const d = json.data;
+          const elToday = document.getElementById('stat-val-today');
+          const elWeek = document.getElementById('stat-val-week');
+          const elMonth = document.getElementById('stat-val-month');
+          const elTotal = document.getElementById('stat-val-total');
+          const elPill = document.getElementById('pill-stat-today');
+
+          if (elToday) elToday.innerText = d.hari_ini_fmt;
+          if (elWeek) elWeek.innerText = d.minggu_ini_fmt;
+          if (elMonth) elMonth.innerText = d.bulan_ini_fmt;
+          if (elTotal) elTotal.innerText = d.total_fmt;
+          if (elPill) elPill.innerText = d.hari_ini_fmt;
+        }
+      }
+    } catch (e) {}
+  }
+</script>
+
+  <!-- KANAN: FORM PENGADUAN & ASPIRASI WARGA -->
+  <!-- ========================================================================= -->
+<!-- FLOATING WIDGET PENGADUAN & ASPIRASI MASYARAKAT (SUDUT KANAN BAWAH)       -->
+<!-- ========================================================================= -->
+
+<!-- BACKDROP CLICKEABLE (Untuk menutup popup saat klik di luar) -->
+<div id="floating-pengaduan-backdrop" class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-[2px] hidden transition-opacity" onclick="toggleFloatingPengaduan(false)"></div>
+
+<!-- FLOATING POPUP DIALOG FORM (Mengambang di Atas Tombol Pemicu di Kanan Bawah) -->
+<div id="floating-pengaduan-popup" class="hidden fixed bottom-28 sm:bottom-20 right-3 sm:right-6 z-50 w-[93vw] sm:w-[360px] max-w-[360px] bg-white rounded-3xl shadow-2xl border border-slate-200/90 overflow-hidden transition-all duration-300 transform scale-95 opacity-0">
+  
+  <!-- Header Bar -->
+  <div class="px-5 pt-3.5 pb-2.5 flex items-center justify-between border-b border-slate-100 bg-slate-50/70">
+    <div class="flex items-center gap-2">
+      <span class="w-7 h-7 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-xs shadow-2xs">
+        <i class="fa-solid fa-headset"></i>
+      </span>
+      <div>
+        <h4 class="font-bold text-xs sm:text-sm text-slate-800 leading-tight">Form Pengaduan Warga</h4>
+        <p class="text-[10px] text-slate-500">Tersambung ke Humas Desa Papayan</p>
+      </div>
+    </div>
+    <button type="button" onclick="toggleFloatingPengaduan(false)" class="w-7 h-7 rounded-full bg-slate-200/70 hover:bg-slate-300 text-slate-500 hover:text-slate-800 flex items-center justify-center text-xs transition" title="Tutup Form">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- Form Body -->
+  <form id="form-floating-pengaduan" onsubmit="submitFloatingPengaduan(event)" enctype="multipart/form-data" class="p-4 sm:p-5 space-y-3 text-xs max-h-[75vh] overflow-y-auto">
+    
+    <!-- Nama -->
+    <div>
+      <label class="block font-bold text-slate-800 mb-1">
+        Nama <span class="text-rose-500 font-black">*</span>
+      </label>
+      <input type="text" name="nama" id="float_nama" required 
+             placeholder="Masukkan nama Anda" 
+             class="w-full bg-white border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl px-3.5 py-2 text-xs text-slate-800 font-medium placeholder-slate-400 focus:outline-none transition shadow-2xs" />
+    </div>
+
+    <!-- Nomor Telepon/WA -->
+    <div>
+      <label class="block font-bold text-slate-800 mb-1">
+        Nomor Telepon/WA <span class="text-rose-500 font-black">*</span>
+      </label>
+      <input type="tel" name="kontak" id="float_kontak" required 
+             placeholder="Masukkan nomor HP/WhatsApp" 
+             class="w-full bg-slate-50/70 border border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl px-3.5 py-2 text-xs text-slate-800 font-medium placeholder-slate-400 focus:outline-none transition shadow-2xs" />
+    </div>
+
+    <!-- Kategori Pengaduan -->
+    <div>
+      <label class="block font-bold text-slate-800 mb-1">
+        Kategori Pengaduan <span class="text-rose-500 font-black">*</span>
+      </label>
+      <div class="relative">
+        <select name="kategori" id="float_kategori" required 
+                class="w-full appearance-none bg-slate-50/70 border border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl px-3.5 py-2 text-xs text-slate-700 font-medium focus:outline-none transition cursor-pointer pr-8 shadow-2xs">
+          <option value="" disabled selected>Pilih kategori pengaduan</option>
+          
+          
+            
+              <option value="Umum">Umum</option>
+            
+              <option value="Sosial">Sosial</option>
+            
+              <option value="Keamanan">Keamanan</option>
+            
+              <option value="Kesehatan">Kesehatan</option>
+            
+              <option value="Kebersihan">Kebersihan</option>
+            
+              <option value="Infrastruktur">Infrastruktur</option>
+            
+          
+        </select>
+        <div class="absolute right-3 top-2.5 pointer-events-none text-slate-400 text-[10px]">
+          <i class="fa-solid fa-up-down"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pengaduan -->
+    <div>
+      <label class="block font-bold text-slate-800 mb-1">
+        Pengaduan <span class="text-rose-500 font-black">*</span>
+      </label>
+      <textarea name="pesan" id="float_pesan" rows="3" required 
+                placeholder="Masukkan kesan, informasi, atau detail aduan Anda" 
+                class="w-full bg-slate-50/70 border border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl px-3.5 py-2 text-xs text-slate-800 font-medium placeholder-slate-400 focus:outline-none transition resize-none shadow-2xs"></textarea>
+    </div>
+
+    <!-- Lampiran -->
+    <div>
+      <label class="block font-bold text-slate-800 mb-1">
+        Lampiran
+      </label>
+      <label for="float_lampiran" class="flex items-center gap-2.5 w-full bg-slate-50/70 hover:bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-500 font-medium cursor-pointer transition shadow-2xs">
+        <i class="fa-regular fa-file-lines text-slate-400 text-sm"></i>
+        <span id="float_lampiran_text" class="truncate">Unggah foto/PDF jika ada</span>
+      </label>
+      <input type="file" id="float_lampiran" name="lampiran" accept=".jpg,.jpeg,.png,.pdf,.webp" class="hidden" onchange="updateFloatLampiranText(this)">
+    </div>
+
+    <!-- Cloudflare Turnstile / Verification Badge -->
+    <div class="bg-white border border-slate-200 rounded-xl p-2.5 flex items-center justify-between shadow-2xs">
+      <div class="flex items-center gap-2">
+        <div class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px]">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <span class="font-bold text-slate-800 text-xs">Berhasil!</span>
+      </div>
+      <div class="flex flex-col items-end text-right">
+        <div class="flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+          </svg>
+          <span class="font-extrabold text-[9px] tracking-wider text-slate-800">CLOUDFLARE</span>
+        </div>
+        <div class="text-[8px] text-slate-400">
+          <span class="hover:underline cursor-pointer">Privasi</span> • <span class="hover:underline cursor-pointer">Bantuan</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tombol Kirim -->
+    <div class="pt-1 flex items-center justify-end">
+      <button type="submit" id="btn-submit-float-aduan" class="px-5 py-2 rounded-xl bg-[#7cd343] hover:bg-[#6ebd37] text-white font-extrabold text-xs transition flex items-center gap-1.5 shadow-md shadow-lime-500/20 hover:scale-105 active:scale-95">
+        <i class="fa-solid fa-paper-plane text-[10px]"></i>
+        <span>Kirim</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Sukses Feedback Box -->
+  <div id="float-aduan-sukses-box" class="hidden p-6 text-center space-y-3">
+    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-sm">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <h4 class="font-black text-base text-slate-900">Pengaduan Berhasil Dikirim!</h4>
+    <p class="text-xs text-slate-600 leading-relaxed">
+      Aspirasi Anda telah masuk ke sistem kami dan akan segera ditindaklanjuti oleh aparat desa terkait.
+    </p>
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs">
+      <span class="text-slate-500 block text-[11px] mb-0.5">Nomor Tiket Anda:</span>
+      <span id="float-aduan-no-tiket" class="font-mono font-black text-sm text-brand-700 tracking-wider">ADUAN-00000</span>
+    </div>
+    <div class="pt-2 flex items-center justify-center gap-2">
+      <button type="button" onclick="resetFloatingAduanForm()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+        Kirim Lainnya
+      </button>
+      <button type="button" onclick="toggleFloatingPengaduan(false)" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition">
+        Tutup
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOMBOL MENGAMBANG DI SUDUT KANAN BAWAH (Floating Trigger Button) -->
+<div class="fixed bottom-16 sm:bottom-6 right-4 sm:right-6 z-40">
+  <button type="button" id="btn-toggle-floating-pengaduan" onclick="toggleFloatingPengaduan()" 
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#fca5a5] hover:bg-[#f87171] text-white font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none border border-white/30"
+          title="Sampaikan Pengaduan atau Aspirasi Warga">
+    <i class="fa-solid fa-headset text-sm sm:text-base"></i>
+    <span>Pengaduan</span>
+  </button>
+</div>
+
+<!-- JAVASCRIPT LOGIKA FLOATING PENGADUAN -->
+<script>
+  let isFloatingPengaduanOpen = false;
+
+  function toggleFloatingPengaduan(forceState) {
+    const popup = document.getElementById('floating-pengaduan-popup');
+    const backdrop = document.getElementById('floating-pengaduan-backdrop');
+    const btn = document.getElementById('btn-toggle-floating-pengaduan');
+
+    if (typeof forceState === 'boolean') {
+      isFloatingPengaduanOpen = forceState;
+    } else {
+      isFloatingPengaduanOpen = !isFloatingPengaduanOpen;
+    }
+
+    if (isFloatingPengaduanOpen) {
+      popup.classList.remove('hidden');
+      backdrop.classList.remove('hidden');
+      setTimeout(() => {
+        popup.classList.remove('scale-95', 'opacity-0');
+        popup.classList.add('scale-100', 'opacity-100');
+      }, 10);
+      const inputNama = document.getElementById('float_nama');
+      if (inputNama) inputNama.focus();
+    } else {
+      popup.classList.remove('scale-100', 'opacity-100');
+      popup.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        popup.classList.add('hidden');
+        backdrop.classList.add('hidden');
+      }, 200);
+    }
+  }
+
+  function updateFloatLampiranText(input) {
+    const textLabel = document.getElementById('float_lampiran_text');
+    if (input.files && input.files.length > 0) {
+      textLabel.innerText = input.files[0].name;
+      textLabel.classList.add('text-slate-800', 'font-semibold');
+    } else {
+      textLabel.innerText = 'Unggah foto/PDF jika ada';
+      textLabel.classList.remove('text-slate-800', 'font-semibold');
+    }
+  }
+
+  async function submitFloatingPengaduan(e) {
+    e.preventDefault();
+    const btnSubmit = document.getElementById('btn-submit-float-aduan');
+    const originalText = btnSubmit.innerHTML;
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[10px]"></i> Mengirim...';
+
+    const form = document.getElementById('form-floating-pengaduan');
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/api/pengaduan/kirim', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        form.classList.add('hidden');
+        const suksesBox = document.getElementById('float-aduan-sukses-box');
+        suksesBox.classList.remove('hidden');
+        document.getElementById('float-aduan-no-tiket').innerText = result.no_tiket || 'ADUAN-OK';
+        form.reset();
+        document.getElementById('float_lampiran_text').innerText = 'Unggah foto/PDF jika ada';
+      } else {
+        alert(result.message || 'Gagal mengirim pengaduan. Mohon lengkapi seluruh isian.');
+      }
+    } catch (err) {
+      alert('Terjadi kesalahan jaringan saat mengirimkan pengaduan. Silakan coba kembali.');
+    } finally {
+      btnSubmit.disabled = false;
+      btnSubmit.innerHTML = originalText;
+    }
+  }
+
+  function resetFloatingAduanForm() {
+    const form = document.getElementById('form-floating-pengaduan');
+    const suksesBox = document.getElementById('float-aduan-sukses-box');
+    suksesBox.classList.add('hidden');
+    form.classList.remove('hidden');
+    form.reset();
+    document.getElementById('float_lampiran_text').innerText = 'Unggah foto/PDF jika ada';
+    document.getElementById('float_nama').focus();
+  }
+</script>
+
+</body>
+</html>
