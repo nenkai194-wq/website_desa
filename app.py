@@ -78,6 +78,7 @@ app.secret_key = os.environ.get('SECRET_KEY', 'desa_kersik_secure_entropy_key_20
 
 # Inisialisasi Arsitektur Keamanan Modern 2026 (Anti-CSRF, Rate Limiting, Security Headers, Audit Monitoring)
 init_security(app)
+init_db()
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=3)
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'images', 'uploads')
