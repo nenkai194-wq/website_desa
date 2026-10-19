@@ -3246,9 +3246,9 @@
           </p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <a href="{{ url_for('halaman_pembangunan') }}" target="_blank" class="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 border border-white/15 transition shadow-sm">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Halaman Penuh
-          </a>
+          <span class="text-xs bg-white/10 text-emerald-300 font-bold px-3.5 py-2 rounded-2xl border border-white/15 flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-circle-check text-emerald-400"></i> Publik & Akuntabel
+          </span>
         </div>
       </div>
     </div>
@@ -3305,17 +3305,35 @@
       </div>
     </div>
 
-    <!-- Search & Filter Controls -->
+    <!-- Search & Filter Controls (Dengan Filter Tahun) -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-      <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        <!-- Input Pencarian -->
         <div class="relative flex-1">
           <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
           <input type="text" id="pencarianSpaPembangunan" onkeyup="filterSpaPembangunan()" placeholder="Cari nama kegiatan, dusun, atau lokasi proyek..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
         </div>
+
+        <!-- Filter Dropdown & Status Buttons -->
         <div class="flex flex-wrap items-center gap-2">
-          <button type="button" onclick="setSpaStatusFilter('Semua')" id="spa-filter-status-semua" class="spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-brand-700 text-white shadow-xs">Semua</button>
-          <button type="button" onclick="setSpaStatusFilter('Sedang Dikerjakan')" id="spa-filter-status-sedang" class="spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-slate-100 hover:bg-slate-200 text-slate-700">Sedang Dikerjakan</button>
-          <button type="button" onclick="setSpaStatusFilter('Selesai')" id="spa-filter-status-selesai" class="spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-slate-100 hover:bg-slate-200 text-slate-700">Sudah Selesai</button>
+          <!-- Filter Tahun -->
+          <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-2xl px-3 py-1.5 shadow-xs">
+            <i class="fa-solid fa-calendar-days text-brand-600 text-xs"></i>
+            <span class="text-xs font-bold text-slate-500 hidden sm:inline">Tahun:</span>
+            <select id="spaFilterTahun" onchange="filterSpaPembangunan()" class="bg-transparent text-slate-800 text-xs font-black py-1 focus:outline-none cursor-pointer">
+              <option value="Semua">Semua Tahun</option>
+              {% for th in (pembangunan_list or [])|map(attribute='tahun_anggaran')|unique|sort(reverse=True) %}
+              <option value="{{ th }}">TA {{ th }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Filter Status Tabs -->
+          <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl">
+            <button type="button" onclick="setSpaStatusFilter('Semua')" id="spa-filter-status-semua" class="spa-pemb-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-brand-700 text-white shadow-xs">Semua</button>
+            <button type="button" onclick="setSpaStatusFilter('Sedang Dikerjakan')" id="spa-filter-status-sedang" class="spa-pemb-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-black transition text-slate-600 hover:text-slate-900">Sedang Dikerjakan</button>
+            <button type="button" onclick="setSpaStatusFilter('Selesai')" id="spa-filter-status-selesai" class="spa-pemb-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-black transition text-slate-600 hover:text-slate-900">Sudah Selesai</button>
+          </div>
         </div>
       </div>
     </div>
@@ -3329,7 +3347,9 @@
              data-nama="{{ p.nama_kegiatan|lower }}"
              data-lokasi="{{ p.lokasi|lower }}"
              data-dusun="{{ p.dusun|lower }}"
-             data-status="{{ p.status_progres }}">
+             data-status="{{ p.status_progres }}"
+             data-tahun="{{ p.tahun_anggaran }}">
+
           
           <div>
             <!-- Header Card Info -->
@@ -3577,9 +3597,10 @@
             <span class="text-[11px] text-slate-400 flex items-center gap-1">
               <i class="fa-regular fa-calendar"></i> {{ p.tanggal_mulai or '-' }} s/d {{ p.tanggal_selesai or '-' }}
             </span>
-            <a href="{{ url_for('halaman_pembangunan') }}" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
-              <i class="fa-solid fa-eye text-[11px]"></i> Rincian Penuh
-            </a>
+            <button type="button" onclick="bukaModalDetailPembangunan({{ p.id }})" class="px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs transition flex items-center gap-1.5 border border-emerald-200 shadow-xs cursor-pointer">
+              <i class="fa-solid fa-layer-group text-[11px] text-emerald-600"></i> Rincian Penuh
+            </button>
+
           </div>
 
         </div>
@@ -4664,6 +4685,169 @@
     </div>
   </div>
 
+  <!-- MODAL DETAIL RINCIAN PENUH PEMBANGUNAN DESA (POPUP MULTI-FOTO & KETERANGAN LENGKAP) -->
+  <div id="modal-detail-pembangunan" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto" onclick="if(event.target === this) tutupModalDetailPembangunan();">
+    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-fade-in my-auto border border-slate-200">
+
+      <!-- Header Modal -->
+      <div class="p-5 sm:p-6 pb-4 border-b border-slate-100 flex items-start justify-between gap-4 bg-gradient-to-r from-slate-50 via-emerald-50/20 to-slate-50">
+        <div class="space-y-1.5 flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span id="modal-pemb-kategori" class="text-[11px] font-black uppercase tracking-wider text-brand-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">
+              Infrastruktur
+            </span>
+            <span id="modal-pemb-status-badge" class="px-3 py-1 rounded-full text-xs font-black bg-emerald-600 text-white shadow-sm flex items-center gap-1.5">
+              100% Selesai
+            </span>
+            <span id="modal-pemb-tahun-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+              TA 2026
+            </span>
+          </div>
+
+          <h2 id="modal-pemb-nama" class="text-lg sm:text-2xl font-black text-slate-900 leading-snug">
+            Nama Kegiatan Pembangunan
+          </h2>
+
+          <div id="modal-pemb-lokasi" class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 font-medium">
+            <i class="fa-solid fa-location-dot text-brand-600"></i> Lokasi Pembangunan
+          </div>
+        </div>
+
+        <button type="button" onclick="tutupModalDetailPembangunan()" class="w-9 h-9 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center text-lg font-bold transition shrink-0">
+          &times;
+        </button>
+      </div>
+
+      <!-- Body Modal: Scrollable Content -->
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1 text-slate-800">
+
+        <!-- Progress Bar & Transparency Metrics -->
+        <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200/80 space-y-3">
+          <div class="flex items-center justify-between text-xs font-bold">
+            <span class="text-slate-600">Realisasi Fisik Proyek:</span>
+            <span id="modal-pemb-progress-text" class="text-emerald-700 font-black">100% Selesai</span>
+          </div>
+          <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+            <div id="modal-pemb-progress-bar" class="h-full rounded-full transition-all duration-500 bg-emerald-600" style="width: 100%"></div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-[11px]">
+            <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs">
+              <span class="text-slate-400 block text-[9px] uppercase font-bold">Sumber Dana</span>
+              <span id="modal-pemb-sumber-dana" class="font-bold text-slate-900 truncate block">Dana Desa (DDS)</span>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs">
+              <span class="text-slate-400 block text-[9px] uppercase font-bold">Pagu Anggaran</span>
+              <span id="modal-pemb-anggaran" class="font-black text-emerald-700 truncate block">Rp 0</span>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs">
+              <span class="text-slate-400 block text-[9px] uppercase font-bold">Volume / Ukuran</span>
+              <span id="modal-pemb-volume" class="font-bold text-slate-900 truncate block">-</span>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs">
+              <span class="text-slate-400 block text-[9px] uppercase font-bold">Pelaksana</span>
+              <span id="modal-pemb-pelaksana" class="font-bold text-slate-900 truncate block">TPK Desa</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500 pt-1 border-t border-slate-200/60">
+            <div id="modal-pemb-manfaat-box" class="text-slate-700">
+              <span class="font-bold text-emerald-800"><i class="fa-solid fa-bullseye text-emerald-600 mr-1"></i> Manfaat:</span> 
+              <span id="modal-pemb-manfaat">-</span>
+            </div>
+            <div class="shrink-0 text-[11px] text-slate-400">
+              <i class="fa-regular fa-calendar-check mr-1"></i> Waktu: <strong id="modal-pemb-jadwal">-</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Dokumentasi 3 Fase: Komparasi Visual Lengkap -->
+        <div class="space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+            <h3 class="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-images text-brand-600"></i>
+              Dokumentasi Foto & Keterangan 3 Fase Pekerjaan
+            </h3>
+            <span class="text-[11px] text-slate-400 font-medium">Klik foto untuk perbesar (zoom)</span>
+          </div>
+
+          <!-- 1. FASE SEBELUM PEMBANGUNAN -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-slate-900 text-white font-black text-xs flex items-center justify-center">1</span>
+                <h4 class="text-xs sm:text-sm font-black text-slate-900">Fase 1: Kondisi Sebelum Pembangunan (0%)</h4>
+              </div>
+              <span class="text-[10px] font-bold bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full border border-slate-200">Kondisi Awal</span>
+            </div>
+
+            <div id="modal-pemb-foto-sebelum" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs leading-relaxed">
+              <span class="font-bold text-slate-800 block mb-1"><i class="fa-solid fa-align-left text-slate-500 mr-1"></i> Uraian Kondisi Awal:</span>
+              <p id="modal-pemb-uraian-sebelum" class="text-slate-600">-</p>
+            </div>
+          </div>
+
+          <!-- 2. FASE PROSES PEMBANGUNAN -->
+          <div class="bg-white rounded-2xl border border-amber-200 p-4 sm:p-5 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-amber-500 text-slate-950 font-black text-xs flex items-center justify-center">2</span>
+                <h4 class="text-xs sm:text-sm font-black text-amber-950">Fase 2: Proses Pengerjaan Fisik (Sedang Berjalan)</h4>
+              </div>
+              <span class="text-[10px] font-bold bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full border border-amber-300">Tahap Pelaksanaan</span>
+            </div>
+
+            <div id="modal-pemb-foto-proses" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="p-3.5 bg-amber-50/60 rounded-xl border border-amber-200 text-xs leading-relaxed">
+              <span class="font-bold text-amber-900 block mb-1"><i class="fa-solid fa-screwdriver-wrench text-amber-600 mr-1"></i> Uraian Tahap Pengerjaan:</span>
+              <p id="modal-pemb-uraian-proses" class="text-slate-700">-</p>
+            </div>
+          </div>
+
+          <!-- 3. FASE AKHIR PEMBANGUNAN -->
+          <div class="bg-white rounded-2xl border border-emerald-200 p-4 sm:p-5 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white font-black text-xs flex items-center justify-center">3</span>
+                <h4 class="text-xs sm:text-sm font-black text-emerald-950">Fase 3: Hasil Akhir Pembangunan (100% Selesai)</h4>
+              </div>
+              <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-300">Selesai 100%</span>
+            </div>
+
+            <div id="modal-pemb-foto-akhir" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-200 text-xs leading-relaxed">
+              <span class="font-bold text-emerald-900 block mb-1"><i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Uraian Capaian Hasil Akhir:</span>
+              <p id="modal-pemb-uraian-akhir" class="text-slate-700">-</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Footer Modal -->
+      <div class="px-5 sm:px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+        <span class="text-xs text-slate-500 font-medium hidden sm:inline">Transparansi Pembangunan Desa Papayan</span>
+        <button type="button" onclick="tutupModalDetailPembangunan()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition ml-auto shadow-sm">
+          Tutup Rincian
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+
   <!-- MODAL NOTIFIKASI MAINTENANCE LAYANAN SURAT -->
   <div id="modal-maintenance-surat" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden" onclick="if(event.target === this) tutupModalMaintenanceSurat();">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl animate-fade-in text-center border border-amber-300 relative overflow-hidden my-auto">
@@ -5580,8 +5764,41 @@
     });
 
     // ==========================================================
-    // LOGIKA PEMBANGUNAN DESA (3-FASE COMPARISON & FILTERING)
+    // LOGIKA PEMBANGUNAN DESA (POPUP RINCIAN & FILTER PER TAHUN)
     // ==========================================================
+    const pembangunanDataMap = {
+      {% for p in (pembangunan_list or []) %}
+      {{ p.id }}: {
+        id: {{ p.id }},
+        nama_kegiatan: {{ (p.nama_kegiatan or '')|tojson }},
+        kategori: {{ (p.kategori or '')|tojson }},
+        lokasi: {{ (p.lokasi or '')|tojson }},
+        dusun: {{ (p.dusun or '')|tojson }},
+        tahun_anggaran: {{ p.tahun_anggaran or 2026 }},
+        sumber_dana: {{ (p.sumber_dana or 'Dana Desa')|tojson }},
+        anggaran: {{ p.anggaran or 0 }},
+        volume: {{ (p.volume or '-')|tojson }},
+        pelaksana: {{ (p.pelaksana or '-')|tojson }},
+        progres_persen: {{ p.progres_persen or (100 if p.status_progres == 'Selesai' else 50) }},
+        status_progres: {{ (p.status_progres or 'Sedang Dikerjakan')|tojson }},
+        tanggal_mulai: {{ (p.tanggal_mulai or '-')|tojson }},
+        tanggal_selesai: {{ (p.tanggal_selesai or '-')|tojson }},
+        manfaat: {{ (p.manfaat or '')|tojson }},
+        uraian_singkat: {{ (p.uraian_singkat or '')|tojson }},
+        foto_sebelum_1: {{ (url_for('static', filename=p.foto_sebelum_1.replace('static/', '')) if p.foto_sebelum_1 and p.foto_sebelum_1.startswith('static/') else (p.foto_sebelum_1 or ''))|tojson }},
+        foto_sebelum_2: {{ (url_for('static', filename=p.foto_sebelum_2.replace('static/', '')) if p.foto_sebelum_2 and p.foto_sebelum_2.startswith('static/') else (p.foto_sebelum_2 or ''))|tojson }},
+        uraian_sebelum: {{ (p.uraian_sebelum or '')|tojson }},
+        foto_proses_1: {{ (url_for('static', filename=p.foto_proses_1.replace('static/', '')) if p.foto_proses_1 and p.foto_proses_1.startswith('static/') else (p.foto_proses_1 or ''))|tojson }},
+        foto_proses_2: {{ (url_for('static', filename=p.foto_proses_2.replace('static/', '')) if p.foto_proses_2 and p.foto_proses_2.startswith('static/') else (p.foto_proses_2 or ''))|tojson }},
+        uraian_proses: {{ (p.uraian_proses or '')|tojson }},
+        foto_akhir_1: {{ (url_for('static', filename=p.foto_akhir_1.replace('static/', '')) if p.foto_akhir_1 and p.foto_akhir_1.startswith('static/') else (p.foto_akhir_1 or ''))|tojson }},
+        foto_akhir_2: {{ (url_for('static', filename=p.foto_akhir_2.replace('static/', '')) if p.foto_akhir_2 and p.foto_akhir_2.startswith('static/') else (p.foto_akhir_2 or ''))|tojson }},
+        uraian_akhir: {{ (p.uraian_akhir or '')|tojson }}
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    };
+    window.pembangunanDataMap = pembangunanDataMap;
+
     let statusFilterSpaAktif = 'Semua';
 
     function gantiFaseSpaCard(proyekId, fase) {
@@ -5611,9 +5828,9 @@
         const el = document.getElementById(b.id);
         if (!el) return;
         if (b.val === status) {
-          el.className = 'spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-brand-700 text-white shadow-xs';
+          el.className = 'spa-pemb-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-brand-700 text-white shadow-xs';
         } else {
-          el.className = 'spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-slate-100 hover:bg-slate-200 text-slate-700';
+          el.className = 'spa-pemb-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-black transition text-slate-600 hover:text-slate-900';
         }
       });
       filterSpaPembangunan();
@@ -5622,23 +5839,188 @@
     function filterSpaPembangunan() {
       const qInput = document.getElementById('pencarianSpaPembangunan');
       const q = qInput ? qInput.value.toLowerCase().trim() : '';
+      const tahunSelect = document.getElementById('spaFilterTahun');
+      const selectedTahun = tahunSelect ? tahunSelect.value : 'Semua';
+
       const items = document.querySelectorAll('.spa-pembangunan-item');
       items.forEach(it => {
         const nama = it.getAttribute('data-nama') || '';
         const lokasi = it.getAttribute('data-lokasi') || '';
         const dusun = it.getAttribute('data-dusun') || '';
         const status = it.getAttribute('data-status') || '';
+        const tahun = it.getAttribute('data-tahun') || '';
 
         const cocokKeyword = !q || nama.includes(q) || lokasi.includes(q) || dusun.includes(q);
         const cocokStatus = (statusFilterSpaAktif === 'Semua') || (status === statusFilterSpaAktif);
+        const cocokTahun = (selectedTahun === 'Semua') || (tahun === selectedTahun);
 
-        if (cocokKeyword && cocokStatus) {
+        if (cocokKeyword && cocokStatus && cocokTahun) {
           it.style.display = '';
         } else {
           it.style.display = 'none';
         }
       });
     }
+
+    // Modal Rincian Penuh Pembangunan (Popup tanpa membuka halaman baru)
+    window.bukaModalDetailPembangunan = function(id) {
+      const item = (window.pembangunanDataMap || {})[id];
+      if (!item) return;
+
+      const modal = document.getElementById('modal-detail-pembangunan');
+      if (!modal) return;
+
+      // Header Info
+      const katEl = document.getElementById('modal-pemb-kategori');
+      if (katEl) katEl.innerText = item.kategori || 'Infrastruktur';
+      
+      const namaEl = document.getElementById('modal-pemb-nama');
+      if (namaEl) namaEl.innerText = item.nama_kegiatan;
+
+      const lokasiEl = document.getElementById('modal-pemb-lokasi');
+      if (lokasiEl) lokasiEl.innerHTML = `<i class="fa-solid fa-location-dot text-brand-600 mr-1.5"></i> ${item.lokasi} (${item.dusun})`;
+
+      const thBadge = document.getElementById('modal-pemb-tahun-badge');
+      if (thBadge) thBadge.innerText = 'TA ' + item.tahun_anggaran;
+
+      // Status Badge & Progress
+      const statusBadge = document.getElementById('modal-pemb-status-badge');
+      const progressBar = document.getElementById('modal-pemb-progress-bar');
+      const progressText = document.getElementById('modal-pemb-progress-text');
+
+      if (item.status_progres === 'Selesai') {
+        if (statusBadge) {
+          statusBadge.className = 'px-3 py-1 rounded-full text-xs font-black bg-emerald-600 text-white shadow-sm flex items-center gap-1.5';
+          statusBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> 100% Selesai';
+        }
+        if (progressBar) {
+          progressBar.className = 'h-full rounded-full transition-all duration-500 bg-emerald-600';
+          progressBar.style.width = '100%';
+        }
+        if (progressText) {
+          progressText.className = 'text-emerald-700 font-black';
+          progressText.innerText = '100% Selesai';
+        }
+      } else if (item.status_progres === 'Sedang Dikerjakan') {
+        const pct = item.progres_persen || 50;
+        if (statusBadge) {
+          statusBadge.className = 'px-3 py-1 rounded-full text-xs font-black bg-amber-500 text-slate-950 shadow-sm flex items-center gap-1.5 animate-pulse';
+          statusBadge.innerHTML = `<i class="fa-solid fa-screwdriver-wrench"></i> ${pct}% Berjalan`;
+        }
+        if (progressBar) {
+          progressBar.className = 'h-full rounded-full transition-all duration-500 bg-amber-500';
+          progressBar.style.width = `${pct}%`;
+        }
+        if (progressText) {
+          progressText.className = 'text-amber-600 font-black';
+          progressText.innerText = `${pct}% Berjalan`;
+        }
+      } else {
+        if (statusBadge) {
+          statusBadge.className = 'px-3 py-1 rounded-full text-xs font-black bg-blue-600 text-white shadow-sm flex items-center gap-1.5';
+          statusBadge.innerHTML = '<i class="fa-solid fa-clock"></i> Rencana';
+        }
+        if (progressBar) {
+          progressBar.className = 'h-full rounded-full transition-all duration-500 bg-blue-500';
+          progressBar.style.width = '15%';
+        }
+        if (progressText) {
+          progressText.className = 'text-blue-600 font-black';
+          progressText.innerText = 'Rencana';
+        }
+      }
+
+      // Metrics & Financial Transparency
+      const danaEl = document.getElementById('modal-pemb-sumber-dana');
+      if (danaEl) danaEl.innerText = item.sumber_dana || 'Dana Desa';
+
+      const angEl = document.getElementById('modal-pemb-anggaran');
+      if (angEl) angEl.innerText = 'Rp ' + Number(item.anggaran || 0).toLocaleString('id-ID');
+
+      const volEl = document.getElementById('modal-pemb-volume');
+      if (volEl) volEl.innerText = item.volume || '-';
+
+      const pelEl = document.getElementById('modal-pemb-pelaksana');
+      if (pelEl) pelEl.innerText = item.pelaksana || '-';
+
+      const jadEl = document.getElementById('modal-pemb-jadwal');
+      if (jadEl) jadEl.innerText = (item.tanggal_mulai || '-') + ' s/d ' + (item.tanggal_selesai || '-');
+
+      // Manfaat
+      const manfaatBox = document.getElementById('modal-pemb-manfaat-box');
+      const manfaatEl = document.getElementById('modal-pemb-manfaat');
+      if (item.manfaat && item.manfaat.trim()) {
+        if (manfaatEl) manfaatEl.innerText = item.manfaat;
+        if (manfaatBox) manfaatBox.classList.remove('hidden');
+      } else {
+        if (manfaatBox) manfaatBox.classList.add('hidden');
+      }
+
+      // Helper to render photos and description for each phase
+      function renderModalFaseBlock(faseName, f1, f2, uraian, badgeLabel) {
+        const fotoBox = document.getElementById(`modal-pemb-foto-${faseName}`);
+        const uraianEl = document.getElementById(`modal-pemb-uraian-${faseName}`);
+
+        if (uraianEl) {
+          uraianEl.innerText = uraian || 'Belum ada uraian dokumentasi khusus untuk tahap ini.';
+        }
+
+        if (fotoBox) {
+          fotoBox.innerHTML = '';
+          const fotoList = [];
+          if (f1) fotoList.push({ url: f1, caption: `Foto 1 - ${badgeLabel}` });
+          if (f2) fotoList.push({ url: f2, caption: `Foto 2 - ${badgeLabel}` });
+
+          if (fotoList.length === 0) {
+            fotoBox.innerHTML = `
+              <div class="h-36 sm:h-44 rounded-2xl border border-dashed border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 text-xs italic col-span-2">
+                <i class="fa-solid fa-camera mr-2 text-slate-300"></i> Tidak ada dokumentasi foto untuk tahap ini.
+              </div>
+            `;
+          } else {
+            fotoList.forEach(ft => {
+              let cleanSrc = ft.url;
+              if (cleanSrc.startsWith('static/')) cleanSrc = '/' + cleanSrc;
+
+              const div = document.createElement('div');
+              div.className = 'relative h-44 sm:h-56 rounded-2xl overflow-hidden bg-slate-900 group cursor-pointer border border-slate-200 shadow-sm';
+              div.onclick = function() {
+                if (typeof window.bukaLightboxFrontend === 'function') {
+                  window.bukaLightboxFrontend(cleanSrc, `${item.nama_kegiatan} (${ft.caption})`, `Pembangunan Desa - ${badgeLabel}`, `TA ${item.tahun_anggaran}`, item.pelaksana || 'Pemerintah Desa', uraian || '');
+                }
+              };
+
+              div.innerHTML = `
+                <img src="${cleanSrc}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='/static/images/banner1.png'" alt="${ft.caption}">
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                <span class="absolute bottom-2 left-2 bg-black/75 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                  ${ft.caption}
+                </span>
+                <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/30 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition shadow">
+                  <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </span>
+              `;
+              fotoBox.appendChild(div);
+            });
+          }
+        }
+      }
+
+      // Render 3 Phases
+      renderModalFaseBlock('sebelum', item.foto_sebelum_1, item.foto_sebelum_2, item.uraian_sebelum, 'Sebelum Pembangunan');
+      renderModalFaseBlock('proses', item.foto_proses_1, item.foto_proses_2, item.uraian_proses, 'Proses Pembangunan');
+      renderModalFaseBlock('akhir', item.foto_akhir_1, item.foto_akhir_2, item.uraian_akhir, 'Hasil Akhir Pembangunan');
+
+      modal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    };
+
+    window.tutupModalDetailPembangunan = function() {
+      const modal = document.getElementById('modal-detail-pembangunan');
+      if (modal) modal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    };
+
 
     // ==========================================================
     // LOGIKA GRAFIK TREN DERET WAKTU & TABEL DINAMIS INFOGRAFIS
@@ -6538,6 +6920,7 @@
         if (typeof tutupModalDetailUmkm === 'function') tutupModalDetailUmkm();
         if (typeof tutupModalDetailBerita === 'function') tutupModalDetailBerita();
         if (typeof tutupModalDetailBuku === 'function') tutupModalDetailBuku();
+        if (typeof tutupModalDetailPembangunan === 'function') tutupModalDetailPembangunan();
         if (typeof tutupModalMaintenanceSurat === 'function') tutupModalMaintenanceSurat();
         if (typeof tutupModalBaganFront === 'function') tutupModalBaganFront();
         if (typeof tutupModalPengajuanGaleriWarga === 'function') tutupModalPengajuanGaleriWarga();
