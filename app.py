@@ -275,6 +275,19 @@ def index():
     cursor.execute("SELECT * FROM perangkat_desa ORDER BY urutan ASC")
     perangkat = [dict(row) for row in cursor.fetchall()]
 
+    # 2.1 Sejarah Desa (Hanya yang berstatus Tayang)
+    cursor.execute("SELECT * FROM sejarah_desa WHERE status = 'Tayang' ORDER BY urutan ASC, id ASC")
+    sejarah_list = [dict(row) for row in cursor.fetchall()]
+
+    # 2.2 Kepala Desa dari Masa ke Masa (Disusun mulai dari kades yang menjabat sekarang ke kades lampau)
+    cursor.execute("""
+        SELECT * FROM kades_masa_ke_masa 
+        WHERE status = 'Tayang'
+        ORDER BY CASE WHEN status_jabatan = 'Menjabat' THEN 0 ELSE 1 END,
+                 tahun_mulai DESC, urutan ASC, id DESC
+    """)
+    kades_riwayat_list = [dict(row) for row in cursor.fetchall()]
+
     # Otomatis ambil data Kepala Desa dari tabel SOTK (perangkat_desa)
     kades_sotk = None
     for p in perangkat:
@@ -444,6 +457,8 @@ def index():
         penghargaan_list=penghargaan_list,
         kades_sotk=kades_sotk,
         perangkat=perangkat,
+        sejarah_list=sejarah_list,
+        kades_riwayat_list=kades_riwayat_list,
         wisata=wisata,
         umkm=umkm,
         berita=berita,
@@ -3257,8 +3272,28 @@ def admin_aparatur():
     cursor.execute("SELECT * FROM profil_desa WHERE id = 1")
     row_profil = cursor.fetchone()
     profil = dict(row_profil) if row_profil else {}
+
+    # Ambil data Sejarah Desa
+    cursor.execute("SELECT * FROM sejarah_desa ORDER BY urutan ASC, id ASC")
+    sejarah_list = [dict(row) for row in cursor.fetchall()]
+
+    # Ambil data Kepala Desa dari Masa ke Masa (Mulai dari yang menjabat sekarang ke yang lampau)
+    cursor.execute("""
+        SELECT * FROM kades_masa_ke_masa 
+        ORDER BY CASE WHEN status_jabatan = 'Menjabat' THEN 0 ELSE 1 END,
+                 tahun_mulai DESC, urutan ASC, id DESC
+    """)
+    kades_riwayat_list = [dict(row) for row in cursor.fetchall()]
+
     conn.close()
-    return render_template('admin/aparatur.html', aparatur_list=aparatur_list, jabatan_list=jabatan_list, profil=profil)
+    return render_template(
+        'admin/aparatur.html',
+        aparatur_list=aparatur_list,
+        jabatan_list=jabatan_list,
+        profil=profil,
+        sejarah_list=sejarah_list,
+        kades_riwayat_list=kades_riwayat_list
+    )
 
 @app.route('/admin/aparatur/bagan/upload', methods=['POST'])
 @login_required
@@ -3587,6 +3622,240 @@ def admin_hapus_aparatur(id):
     conn.close()
     flash('Aparatur desa berhasil dihapus.', 'info')
     return redirect(url_for('admin_aparatur'))
+
+
+# ========================================================
+# MANAJEMEN SEJARAH DESA (CRUD & TAYANG / DRAF)
+# ========================================================
+@app.route('/admin/aparatur/sejarah/tambah', methods=['POST'])
+@login_required
+def admin_tambah_sejarah():
+    judul = (request.form.get('judul') or 'Sejarah Desa').strip()
+    periode_era = (request.form.get('periode_era') or '').strip()
+    konten = (request.form.get('konten') or '').strip()
+    urutan = int(request.form.get('urutan') or 1)
+    status = request.form.get('status') or 'Tayang'
+
+    foto = (request.form.get('foto') or '').strip() or 'static/images/banner1.png'
+    if 'foto_file' in request.files:
+        file = request.files['foto_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp']:
+                filename = secure_filename(f"sejarah_{int(time.time())}_{random.randint(100,999)}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                foto = f"static/images/uploads/{filename}"
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+    INSERT INTO sejarah_desa (judul, periode_era, konten, foto, urutan, status)
+    VALUES (?, ?, ?, ?, ?, ?)
+    ''', (judul, periode_era, konten, foto, urutan, status))
+    conn.commit()
+    conn.close()
+
+    try:
+        record_activity_log('TAMBAH_SEJARAH', f"Menambahkan bab/sejarah desa: {judul}")
+    except Exception:
+        pass
+
+    flash(f'Bab Sejarah "{judul}" berhasil disimpan.', 'success')
+    return redirect(url_for('admin_aparatur') + '#tab-sejarah')
+
+@app.route('/admin/aparatur/sejarah/<int:id>/edit', methods=['POST'])
+@login_required
+def admin_edit_sejarah(id):
+    judul = (request.form.get('judul') or 'Sejarah Desa').strip()
+    periode_era = (request.form.get('periode_era') or '').strip()
+    konten = (request.form.get('konten') or '').strip()
+    urutan = int(request.form.get('urutan') or 1)
+    status = request.form.get('status') or 'Tayang'
+
+    foto = request.form.get('foto_lama') or request.form.get('foto')
+    if 'foto_file' in request.files:
+        file = request.files['foto_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp']:
+                filename = secure_filename(f"sejarah_{int(time.time())}_{random.randint(100,999)}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                foto = f"static/images/uploads/{filename}"
+
+    conn = get_db()
+    cursor = conn.cursor()
+    if not foto:
+        cursor.execute("SELECT foto FROM sejarah_desa WHERE id = ?", (id,))
+        row = cursor.fetchone()
+        foto = row['foto'] if row and row['foto'] else 'static/images/banner1.png'
+
+    cursor.execute('''
+    UPDATE sejarah_desa 
+    SET judul = ?, periode_era = ?, konten = ?, foto = ?, urutan = ?, status = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+    ''', (judul, periode_era, konten, foto, urutan, status, id))
+    conn.commit()
+    conn.close()
+
+    try:
+        record_activity_log('EDIT_SEJARAH', f"Memperbarui bab sejarah: {judul}")
+    except Exception:
+        pass
+
+    flash('Data Sejarah Desa berhasil diperbarui.', 'success')
+    return redirect(url_for('admin_aparatur') + '#tab-sejarah')
+
+@app.route('/admin/aparatur/sejarah/<int:id>/toggle-status', methods=['POST'])
+@login_required
+def admin_toggle_status_sejarah(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT status, judul FROM sejarah_desa WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    if row:
+        curr = row['status']
+        new_status = 'Draf' if curr == 'Tayang' else 'Tayang'
+        cursor.execute("UPDATE sejarah_desa SET status = ? WHERE id = ?", (new_status, id))
+        conn.commit()
+        flash(f'Status "{row["judul"]}" berhasil diubah menjadi {new_status}.', 'success')
+    conn.close()
+    return redirect(url_for('admin_aparatur') + '#tab-sejarah')
+
+@app.route('/admin/aparatur/sejarah/<int:id>/hapus', methods=['POST'])
+@login_required
+def admin_hapus_sejarah(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM sejarah_desa WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    try:
+        record_activity_log('HAPUS_SEJARAH', f"Menghapus data sejarah ID #{id}")
+    except Exception:
+        pass
+    flash('Data Sejarah Desa berhasil dihapus.', 'info')
+    return redirect(url_for('admin_aparatur') + '#tab-sejarah')
+
+
+# ========================================================
+# MANAJEMEN KEPALA DESA DARI MASA KE MASA
+# ========================================================
+@app.route('/admin/aparatur/kades-riwayat/tambah', methods=['POST'])
+@login_required
+def admin_tambah_kades_riwayat():
+    nama = (request.form.get('nama') or '').strip()
+    periode = (request.form.get('periode') or '').strip()
+    tahun_mulai = int(request.form.get('tahun_mulai') or 2021)
+    tahun_selesai_val = request.form.get('tahun_selesai')
+    tahun_selesai = int(tahun_selesai_val) if tahun_selesai_val and tahun_selesai_val.strip().isdigit() else None
+    status_jabatan = request.form.get('status_jabatan') or 'Lampau'
+    keterangan = (request.form.get('keterangan') or '').strip()
+    urutan = int(request.form.get('urutan') or 1)
+    status = request.form.get('status') or 'Tayang'
+
+    foto = (request.form.get('foto') or '').strip() or 'static/images/kades.jpg'
+    if 'foto_file' in request.files:
+        file = request.files['foto_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp']:
+                filename = secure_filename(f"kades_riwayat_{int(time.time())}_{random.randint(100,999)}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                foto = f"static/images/uploads/{filename}"
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+    INSERT INTO kades_masa_ke_masa (nama, periode, tahun_mulai, tahun_selesai, status_jabatan, foto, keterangan, urutan, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (nama, periode, tahun_mulai, tahun_selesai, status_jabatan, foto, keterangan, urutan, status))
+    conn.commit()
+    conn.close()
+
+    try:
+        record_activity_log('TAMBAH_KADES_RIWAYAT', f"Menambahkan riwayat Kepala Desa: {nama} ({periode})")
+    except Exception:
+        pass
+
+    flash(f'Kepala Desa "{nama}" ({periode}) berhasil ditambahkan.', 'success')
+    return redirect(url_for('admin_aparatur') + '#tab-kades')
+
+@app.route('/admin/aparatur/kades-riwayat/<int:id>/edit', methods=['POST'])
+@login_required
+def admin_edit_kades_riwayat(id):
+    nama = (request.form.get('nama') or '').strip()
+    periode = (request.form.get('periode') or '').strip()
+    tahun_mulai = int(request.form.get('tahun_mulai') or 2021)
+    tahun_selesai_val = request.form.get('tahun_selesai')
+    tahun_selesai = int(tahun_selesai_val) if tahun_selesai_val and tahun_selesai_val.strip().isdigit() else None
+    status_jabatan = request.form.get('status_jabatan') or 'Lampau'
+    keterangan = (request.form.get('keterangan') or '').strip()
+    urutan = int(request.form.get('urutan') or 1)
+    status = request.form.get('status') or 'Tayang'
+
+    foto = request.form.get('foto_lama') or request.form.get('foto')
+    if 'foto_file' in request.files:
+        file = request.files['foto_file']
+        if file and file.filename != '':
+            ext = os.path.splitext(file.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp']:
+                filename = secure_filename(f"kades_riwayat_{int(time.time())}_{random.randint(100,999)}{ext}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                foto = f"static/images/uploads/{filename}"
+
+    conn = get_db()
+    cursor = conn.cursor()
+    if not foto:
+        cursor.execute("SELECT foto FROM kades_masa_ke_masa WHERE id = ?", (id,))
+        row = cursor.fetchone()
+        foto = row['foto'] if row and row['foto'] else 'static/images/kades.jpg'
+
+    cursor.execute('''
+    UPDATE kades_masa_ke_masa 
+    SET nama = ?, periode = ?, tahun_mulai = ?, tahun_selesai = ?, status_jabatan = ?, foto = ?, keterangan = ?, urutan = ?, status = ?
+    WHERE id = ?
+    ''', (nama, periode, tahun_mulai, tahun_selesai, status_jabatan, foto, keterangan, urutan, status, id))
+    conn.commit()
+    conn.close()
+
+    try:
+        record_activity_log('EDIT_KADES_RIWAYAT', f"Memperbarui riwayat Kepala Desa: {nama}")
+    except Exception:
+        pass
+
+    flash(f'Data Kepala Desa "{nama}" berhasil diperbarui.', 'success')
+    return redirect(url_for('admin_aparatur') + '#tab-kades')
+
+@app.route('/admin/aparatur/kades-riwayat/<int:id>/toggle-status', methods=['POST'])
+@login_required
+def admin_toggle_status_kades_riwayat(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT status, nama FROM kades_masa_ke_masa WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    if row:
+        curr = row['status']
+        new_status = 'Draf' if curr == 'Tayang' else 'Tayang'
+        cursor.execute("UPDATE kades_masa_ke_masa SET status = ? WHERE id = ?", (new_status, id))
+        conn.commit()
+        flash(f'Status Kepala Desa "{row["nama"]}" berhasil diubah menjadi {new_status}.', 'success')
+    conn.close()
+    return redirect(url_for('admin_aparatur') + '#tab-kades')
+
+@app.route('/admin/aparatur/kades-riwayat/<int:id>/hapus', methods=['POST'])
+@login_required
+def admin_hapus_kades_riwayat(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM kades_masa_ke_masa WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    try:
+        record_activity_log('HAPUS_KADES_RIWAYAT', f"Menghapus Kepala Desa Riwayat ID #{id}")
+    except Exception:
+        pass
+    flash('Data riwayat Kepala Desa berhasil dihapus.', 'info')
+    return redirect(url_for('admin_aparatur') + '#tab-kades')
 
 # --- 7. KELOLA STATISTIK & APBDES (DINAMIS SERIES & TEMPLATE UPLOAD/DOWNLOAD) ---
 @app.route('/admin/statistik', methods=['GET', 'POST'])

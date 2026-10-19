@@ -203,6 +203,38 @@ def init_db():
     )
     ''')
 
+    # 3.2 Sejarah Desa
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS sejarah_desa (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        judul TEXT NOT NULL DEFAULT 'Sejarah Desa Papayan',
+        periode_era TEXT DEFAULT 'Masa Berdiri & Pembentukan',
+        konten TEXT NOT NULL,
+        foto TEXT,
+        urutan INTEGER DEFAULT 1,
+        status TEXT DEFAULT 'Tayang',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+
+    # 3.3 Kepala Desa dari Masa ke Masa
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS kades_masa_ke_masa (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nama TEXT NOT NULL,
+        periode TEXT NOT NULL,
+        tahun_mulai INTEGER DEFAULT 2021,
+        tahun_selesai INTEGER,
+        status_jabatan TEXT DEFAULT 'Menjabat',
+        foto TEXT DEFAULT 'static/images/kades.jpg',
+        keterangan TEXT,
+        urutan INTEGER DEFAULT 1,
+        status TEXT DEFAULT 'Tayang',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+
     # 4. Berita & Informasi
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS berita (
@@ -829,6 +861,54 @@ def init_db():
 
         for nama_j, urut in default_jabatans:
             cursor.execute("INSERT OR IGNORE INTO jabatan_struktural (nama_jabatan, urutan) VALUES (?, ?)", (nama_j, urut))
+        conn.commit()
+
+    # Seed Sejarah Desa
+    cursor.execute("SELECT COUNT(*) FROM sejarah_desa")
+    if cursor.fetchone()[0] == 0:
+        sejarah_data = [
+            (
+                "Asal-Usul Nama & Berdirinya Desa Papayan",
+                "Masa Lampau & Pembentukan",
+                "Desa Papayan memiliki akar sejarah yang kuat dan sarat akan kearifan lokal Sunda di wilayah Tasikmalaya Selatan. Nama 'Papayan' menurut penuturan para sesepuh berasal dari kata bahasa Sunda 'Mayan' atau 'Papayan' yang merujuk pada kebiasaan menyusuri lembah dan perbukitan yang subur di tepian aliran sungai. Sejak era kepemimpinan adat terdahulu, masyarakat hidup dengan guyub rukun melalui tradisi gotong royong, mengolah sawah, kebun, dan melestarikan nilai-nilai keagamaan yang luhur.",
+                "static/images/banner1.png",
+                1,
+                "Tayang"
+            ),
+            (
+                "Era Transformasi Menuju Desa Mandiri Berkelanjutan",
+                "Era Modern (2000 - Sekarang)",
+                "Seiring perkembangan zaman dan penataan tata pemerintahan desa, Desa Papayan terus bertransformasi menjadi salah satu desa yang progresif di Kecamatan Jatiwaras. Pembangunan infrastruktur jalan poros desa, sarana air bersih, balai pelayanan umum, serta digitalisasi pelayanan administrasi desa kini terwujud nyata demi kemudahan akses dan kesejahteraan seluruh warga.",
+                "static/images/banner2.png",
+                2,
+                "Tayang"
+            )
+        ]
+        cursor.executemany('''
+        INSERT INTO sejarah_desa (judul, periode_era, konten, foto, urutan, status)
+        VALUES (?, ?, ?, ?, ?, ?)
+        ''', sejarah_data)
+        conn.commit()
+
+    # Seed Kepala Desa dari Masa ke Masa (Disusun dari yang menjabat sekarang ke yang lampau)
+    cursor.execute("SELECT COUNT(*) FROM kades_masa_ke_masa")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute("SELECT nama_kades, foto_kades, periode_kades FROM profil_desa WHERE id = 1")
+        pk = cursor.fetchone()
+        k_nama = pk[0] if pk and pk[0] else "Irwan Setiawan, S.Kom, M.T."
+        k_foto = pk[1] if pk and pk[1] else "static/images/kades.jpg"
+        k_periode = pk[2] if pk and pk[2] else "2021 - Sekarang"
+
+        kades_history = [
+            (k_nama, k_periode, 2021, None, "Menjabat", k_foto, "Transformasi digital sistem informasi desa, transparansi anggaran, modernisasi pelayanan publik, dan optimalisasi infrastruktur desa.", 1, "Tayang"),
+            ("H. Ahmad Sobari", "2015 - 2021", 2015, 2021, "Lampau", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80", "Pembangunan jalan lingkungan rabat beton, sarana fasilitas posyandu tiap dusun, dan penguatan kelembagaan BPD/LPM.", 2, "Tayang"),
+            ("Drs. H. Maman Suryaman", "2009 - 2015", 2009, 2015, "Lampau", "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80", "Pengembangan jaringan irigasi tersier persawahan warga, pembentukan BUMDes awal, serta tertib administrasi kependudukan.", 3, "Tayang"),
+            ("H. Didi Suhendar", "2001 - 2009", 2001, 2009, "Lampau", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=80", "Peletakan fondasi kelembagaan balai desa terpadu, penataan batas wilayah, dan swadaya gotong royong pembukaan jalan usaha tani.", 4, "Tayang")
+        ]
+        cursor.executemany('''
+        INSERT INTO kades_masa_ke_masa (nama, periode, tahun_mulai, tahun_selesai, status_jabatan, foto, keterangan, urutan, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', kades_history)
         conn.commit()
 
     # Seed Wisata

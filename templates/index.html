@@ -686,6 +686,68 @@
   </section>
 
   <!-- ======================================================== -->
+  <!-- SEJARAH & ASAL-USUL DESA                                 -->
+  <!-- ======================================================== -->
+  {% if sejarah_list %}
+  <section class="py-14 sm:py-20 bg-gradient-to-b from-amber-50/40 via-white to-slate-50 border-t border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-100 px-3.5 py-1 rounded-full border border-amber-300 shadow-xs">
+          <i class="fa-solid fa-landmark-dome mr-1"></i> Rekam Historis &amp; Asal-Usul
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-3">Sejarah Desa {{ profil.nama_desa }}</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-2 max-w-2xl mx-auto leading-relaxed">
+          Menelusuri jejak perjalanan luhur, kearifan lokal, dan tonggak perkembangan Desa {{ profil.nama_desa }} dari masa ke masa.
+        </p>
+      </div>
+
+      <div class="space-y-8">
+        {% for s in sejarah_list %}
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            
+            {% if s.foto %}
+            <div class="lg:col-span-5 h-64 sm:h-80 lg:h-full relative overflow-hidden bg-slate-100 min-h-[260px]">
+              {% set s_front_img = url_for('static', filename=s.foto.replace('static/', '')) if s.foto.startswith('static/') else s.foto %}
+              <img src="{{ s_front_img }}" alt="{{ s.judul }}" class="w-full h-full object-cover transition duration-500 hover:scale-105" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent flex items-end p-5">
+                <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                  <i class="fa-solid fa-camera-retro"></i> Dokumentasi &amp; Arsip Historis
+                </span>
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="{% if s.foto %}lg:col-span-7{% else %}lg:col-span-12{% endif %} p-6 sm:p-8 lg:p-10">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="w-7 h-7 rounded-lg bg-amber-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+                  {{ s.urutan }}
+                </span>
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+                  {{ s.periode_era or 'Era Sejarah Desa' }}
+                </span>
+              </div>
+
+              <h3 class="text-xl sm:text-2xl font-black text-slate-900 leading-snug mb-4">
+                {{ s.judul }}
+              </h3>
+
+              <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3 whitespace-pre-line font-normal">
+                {{ s.konten }}
+              </div>
+            </div>
+
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ======================================================== -->
   <!-- BAGAN STRUKTUR ORGANISASI PEMERINTAH DESA & BPD          -->
   <!-- ======================================================== -->
   <section class="py-12 sm:py-16 bg-gradient-to-b from-slate-50 to-white border-y border-slate-200/80">
@@ -830,6 +892,93 @@
       {% endfor %}
     </div>
   </section>
+
+  <!-- ======================================================== -->
+  <!-- KEPALA DESA DARI MASA KE MASA (DISUSUN DIJAJARKAN)      -->
+  <!-- ======================================================== -->
+  {% if kades_riwayat_list %}
+  <section class="py-16 sm:py-24 bg-gradient-to-b from-white via-slate-50 to-white border-t border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-bold uppercase tracking-widest text-blue-800 bg-blue-100 px-3.5 py-1 rounded-full border border-blue-300 shadow-xs">
+          <i class="fa-solid fa-users-viewfinder mr-1"></i> Rekam Jejak Kepemimpinan
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-3">Kepala Desa dari Masa ke Masa</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-2 max-w-2xl mx-auto leading-relaxed">
+          Apresiasi dan penghormatan atas dedikasi para Kepala Desa yang telah memimpin pembangunan dan mengayomi masyarakat Desa {{ profil.nama_desa }} dari waktu ke waktu.
+        </p>
+      </div>
+
+      <!-- Container Dijajarkan (Horizontal Responsive Grid) -->
+      <div class="relative">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+          {% for k in kades_riwayat_list %}
+          <div class="bg-white rounded-3xl overflow-hidden border {% if k.status_jabatan == 'Menjabat' %}border-2 border-emerald-500 shadow-xl ring-4 ring-emerald-100 relative transform lg:-translate-y-2{% else %}border-slate-200 shadow-md hover:shadow-xl{% endif %} transition duration-300 flex flex-col justify-between group">
+            
+            <div>
+              <!-- Foto Kepala Desa -->
+              <div class="relative h-72 sm:h-80 overflow-hidden bg-slate-100">
+                {% set k_front_img = url_for('static', filename=k.foto.replace('static/', '')) if k.foto.startswith('static/') else k.foto %}
+                <img src="{{ k_front_img }}" alt="{{ k.nama }}" class="w-full h-full object-cover object-top transition duration-500 group-hover:scale-105" onerror="this.src='{{ url_for('static', filename='images/kades.jpg') }}'">
+                
+                <!-- Status Badge di Atas Foto -->
+                <div class="absolute top-3 left-3 right-3 flex items-center justify-between">
+                  {% if k.status_jabatan == 'Menjabat' %}
+                  <span class="text-[11px] font-black bg-gradient-to-r from-emerald-600 to-teal-700 text-white px-3 py-1 rounded-full shadow-lg flex items-center gap-1.5 border border-emerald-400/40">
+                    <span class="w-2 h-2 rounded-full bg-amber-300 animate-ping"></span>
+                    <i class="fa-solid fa-crown text-amber-300 text-[10px]"></i> Menjabat Sekarang
+                  </span>
+                  {% else %}
+                  <span class="text-[11px] font-bold bg-slate-950/75 backdrop-blur-md text-slate-200 px-3 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-white/20">
+                    <i class="fa-solid fa-clock-rotate-left text-[9px] text-slate-400"></i> Purna Tugas
+                  </span>
+                  {% endif %}
+                </div>
+
+                <!-- Gradient Nama & Periode -->
+                <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-transparent p-4 sm:p-5 text-white">
+                  <span class="text-[11px] font-bold text-emerald-300 uppercase tracking-widest block">
+                    Periode {{ k.periode }}
+                  </span>
+                  <h3 class="font-black text-base sm:text-lg leading-snug mt-1 text-white">
+                    {{ k.nama }}
+                  </h3>
+                </div>
+              </div>
+
+              <!-- Narasi Prestasi / Keterangan -->
+              <div class="p-5 flex-1 flex flex-col justify-between">
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
+                  "{{ k.keterangan or 'Mendedikasikan segenap daya dan kepemimpinan demi kemajuan serta kesejahteraan seluruh warga desa.' }}"
+                </p>
+              </div>
+            </div>
+
+            <!-- Footer Badge Kronologis -->
+            <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span class="flex items-center gap-1.5 font-semibold text-slate-700">
+                <i class="fa-regular fa-calendar text-emerald-600"></i> {{ k.periode }}
+              </span>
+              {% if k.status_jabatan == 'Menjabat' %}
+              <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                Petahana
+              </span>
+              {% else %}
+              <span class="text-[10px] font-medium text-slate-400">
+                Masa Lalu
+              </span>
+              {% endif %}
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </section>
+  {% endif %}
 
   <!-- INFOGRAFIS KEPENDUDUKAN & DEMOGRAFI -->
   

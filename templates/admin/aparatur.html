@@ -6,6 +6,39 @@
 {% block content %}
 <div class="space-y-6">
 
+  <!-- Sub-Menu Navigasi SOTK, Sejarah & Kades -->
+  <div class="flex items-center gap-2 p-1.5 bg-slate-200/60 rounded-2xl border border-slate-200 overflow-x-auto shadow-inner">
+    <button type="button" 
+            onclick="switchTabAparatur('tab-aparatur')" 
+            id="btn-tab-aparatur"
+            class="tab-btn-sotk px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition bg-white text-brand-800 shadow-sm border border-slate-200">
+      <i class="fa-solid fa-sitemap text-emerald-600"></i>
+      <span>SOTK &amp; Aparatur Desa</span>
+      <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold">{{ aparatur_list|length }}</span>
+    </button>
+    <button type="button" 
+            onclick="switchTabAparatur('tab-sejarah')" 
+            id="btn-tab-sejarah"
+            class="tab-btn-sotk px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition text-slate-600 hover:text-slate-900 hover:bg-white/60">
+      <i class="fa-solid fa-scroll text-amber-600"></i>
+      <span>Sejarah Desa</span>
+      <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold">{{ sejarah_list|length }}</span>
+    </button>
+    <button type="button" 
+            onclick="switchTabAparatur('tab-kades')" 
+            id="btn-tab-kades"
+            class="tab-btn-sotk px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition text-slate-600 hover:text-slate-900 hover:bg-white/60">
+      <i class="fa-solid fa-users-viewfinder text-blue-600"></i>
+      <span>Kepala Desa dari Masa ke Masa</span>
+      <span class="px-2 py-0.5 rounded-full text-[10px] bg-blue-100 text-blue-800 font-bold">{{ kades_riwayat_list|length }}</span>
+    </button>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- TAB PANEL 1: SOTK & APARATUR DESA                        -->
+  <!-- ======================================================== -->
+  <div id="panel-tab-aparatur" class="tab-panel-sotk space-y-6">
+
   <!-- Header & Action Buttons -->
   <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
     <div>
@@ -249,9 +282,248 @@
       </div>
     </div>
     {% endfor %}
+  </div> <!-- /grid aparatur -->
+  </div> <!-- /panel-tab-aparatur -->
+
+  <!-- ======================================================== -->
+  <!-- TAB PANEL 2: SEJARAH DESA                                -->
+  <!-- ======================================================== -->
+  <div id="panel-tab-sejarah" class="tab-panel-sotk space-y-6 hidden">
+    
+    <!-- Header Bar Sejarah -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-lg shrink-0">
+          <i class="fa-solid fa-scroll"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-800 text-sm">Kelola Sejarah &amp; Asal-Usul Desa</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Kelola narasi, babak sejarah, dan arsip desa yang dapat diatur status tayang di portal utama publik.</p>
+        </div>
+      </div>
+      <button onclick="bukaModalTambahSejarah()" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-2 shadow-md hover:shadow-lg transition shrink-0">
+        <i class="fa-solid fa-plus"></i> Tambah Bab / Narasi Sejarah
+      </button>
+    </div>
+
+    <!-- Daftar Konten Sejarah -->
+    {% if sejarah_list %}
+    <div class="space-y-4">
+      {% for s in sejarah_list %}
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-amber-300 transition duration-200">
+        <div class="flex flex-col md:flex-row gap-5 items-start">
+          
+          <!-- Thumbnail Gambar Sejarah -->
+          <div class="w-full md:w-56 h-36 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 relative group">
+            {% set s_img = url_for('static', filename=s.foto.replace('static/', '')) if s.foto and s.foto.startswith('static/') else (s.foto or url_for('static', filename='images/banner1.png')) %}
+            <img src="{{ s_img }}" alt="{{ s.judul }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
+            <div class="absolute top-2 left-2">
+              <span class="text-[10px] font-bold bg-black/60 backdrop-blur-md text-amber-200 px-2.5 py-0.5 rounded-full border border-amber-400/30">
+                Urutan #{{ s.urutan }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Rincian Konten -->
+          <div class="flex-1 flex flex-col justify-between min-h-[144px]">
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                <span class="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  {{ s.periode_era or 'Era Sejarah Desa' }}
+                </span>
+                
+                <!-- Status Tayang Badge & Quick Toggle -->
+                <div class="flex items-center gap-2">
+                  {% if s.status == 'Tayang' %}
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Tayang di Website
+                  </span>
+                  {% else %}
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-300">
+                    <i class="fa-solid fa-eye-slash text-slate-400 text-[10px]"></i>
+                    Draf (Tidak Tayang)
+                  </span>
+                  {% endif %}
+
+                  <form method="POST" action="{{ url_for('admin_toggle_status_sejarah', id=s.id) }}" class="inline">
+                    <button type="submit" class="px-2.5 py-1 rounded-lg text-xs font-semibold border border-slate-200 hover:bg-slate-100 text-slate-700 transition" title="Ubah status tayang / draf">
+                      <i class="fa-solid fa-rotate text-slate-500"></i> Toggle Status
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              <h4 class="font-extrabold text-slate-900 text-base mb-2">{{ s.judul }}</h4>
+              <p class="text-xs text-slate-600 leading-relaxed line-clamp-3 sm:line-clamp-4 whitespace-pre-line">{{ s.konten }}</p>
+            </div>
+
+            <!-- Footer Card & Action Buttons -->
+            <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100 text-xs">
+              <span class="text-[11px] text-slate-400">
+                <i class="fa-regular fa-clock mr-1"></i> Terakhir diupdate: {{ s.updated_at or s.created_at }}
+              </span>
+              <div class="flex items-center gap-2">
+                <button type="button" 
+                        onclick="bukaModalEditSejarah({{ s.id }}, {{ s|tojson|forceescape }})" 
+                        class="px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 hover:bg-amber-100 font-bold text-xs flex items-center gap-1.5 transition">
+                  <i class="fa-solid fa-pen-to-square text-amber-700"></i> Edit
+                </button>
+                <form method="POST" action="{{ url_for('admin_hapus_sejarah', id=s.id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus bab sejarah ini: &quot;{{ s.judul }}&quot;?');" class="inline">
+                  <button type="submit" class="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-300 hover:bg-red-50 transition" title="Hapus Bab Sejarah">
+                    <i class="fa-solid fa-trash-can text-xs"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center">
+      <div class="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3 text-xl">
+        <i class="fa-solid fa-book-open"></i>
+      </div>
+      <h4 class="font-bold text-slate-800 text-sm">Belum Ada Narasi Sejarah Desa</h4>
+      <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">Silakan tambahkan babak sejarah atau narasi asal-usul desa untuk ditampilkan di portal informasi publik.</p>
+      <button onclick="bukaModalTambahSejarah()" class="mt-4 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow transition">
+        <i class="fa-solid fa-plus mr-1"></i> Tambah Sejarah Sekarang
+      </button>
+    </div>
+    {% endif %}
+
   </div>
 
-</div>
+  <!-- ======================================================== -->
+  <!-- TAB PANEL 3: KEPALA DESA DARI MASA KE MASA               -->
+  <!-- ======================================================== -->
+  <div id="panel-tab-kades" class="tab-panel-sotk space-y-6 hidden">
+    
+    <!-- Header Bar Kades -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center text-lg shrink-0">
+          <i class="fa-solid fa-users-viewfinder"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-800 text-sm">Kepala Desa dari Masa ke Masa</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Disusun dijajarkan berurutan mulai dari Kepala Desa yang menjabat sekarang hingga kepala desa terdahulu (lampau).</p>
+        </div>
+      </div>
+      <button onclick="bukaModalTambahKadesRiwayat()" class="px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs flex items-center gap-2 shadow-md hover:shadow-lg transition shrink-0">
+        <i class="fa-solid fa-user-plus"></i> Tambah Kepala Desa Riwayat
+      </button>
+    </div>
+
+    <!-- Alert / Petunjuk Urutan -->
+    <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-4 flex items-start gap-3">
+      <i class="fa-solid fa-circle-info text-blue-600 mt-0.5 text-sm shrink-0"></i>
+      <div class="text-xs text-blue-900 leading-relaxed">
+        <strong>Tampilan Berjajar Kronologis:</strong> Sistem otomatis menempatkan Kepala Desa dengan status <span class="font-bold text-emerald-700">"Menjabat Sekarang"</span> di posisi paling pertama (terkini), diikuti kepala desa periode lampau secara menurun (<span class="italic">descending</span> tahun menjabat).
+      </div>
+    </div>
+
+    <!-- Grid Kartu Berjajar (Horizontal Deck / Grid) -->
+    {% if kades_riwayat_list %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {% for k in kades_riwayat_list %}
+      <div class="bg-white rounded-2xl border {% if k.status_jabatan == 'Menjabat' %}border-2 border-emerald-500 shadow-md ring-2 ring-emerald-100{% else %}border-slate-200 shadow-sm{% endif %} overflow-hidden hover:shadow-lg transition flex flex-col justify-between group">
+        <div>
+          <!-- Foto Kepala Desa -->
+          <div class="h-64 overflow-hidden relative bg-slate-100">
+            {% set k_img = url_for('static', filename=k.foto.replace('static/', '')) if k.foto and k.foto.startswith('static/') else (k.foto or url_for('static', filename='images/kades.jpg')) %}
+            <img src="{{ k_img }}" alt="{{ k.nama }}" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/kades.jpg') }}'">
+            
+            <!-- Badges di Atas Foto -->
+            <div class="absolute top-2.5 inset-x-2.5 flex items-center justify-between gap-1.5">
+              {% if k.status_jabatan == 'Menjabat' %}
+              <span class="text-[10px] font-black bg-emerald-600 text-white px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+                <i class="fa-solid fa-crown text-amber-300 text-[10px]"></i> Menjabat Sekarang
+              </span>
+              {% else %}
+              <span class="text-[10px] font-bold bg-slate-900/80 backdrop-blur-sm text-slate-200 px-2.5 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                <i class="fa-solid fa-clock-rotate-left text-[9px] text-slate-400"></i> Purna Tugas
+              </span>
+              {% endif %}
+
+              <!-- Status Tayang -->
+              {% if k.status == 'Tayang' %}
+              <span class="text-[10px] font-bold bg-emerald-500/90 text-white px-2 py-0.5 rounded-full shadow-xs">
+                Tayang
+              </span>
+              {% else %}
+              <span class="text-[10px] font-bold bg-amber-500/90 text-white px-2 py-0.5 rounded-full shadow-xs">
+                Draf
+              </span>
+              {% endif %}
+            </div>
+
+            <!-- Overlay Nama & Periode -->
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-900/70 to-transparent p-3.5 text-white">
+              <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider block">
+                Periode {{ k.periode }}
+              </span>
+              <h4 class="font-extrabold text-sm leading-snug mt-0.5">{{ k.nama }}</h4>
+            </div>
+          </div>
+
+          <!-- Keterangan / Capaian Prestasi -->
+          <div class="p-4 text-xs">
+            <p class="text-slate-600 leading-relaxed min-h-[48px] italic line-clamp-3">
+              "{{ k.keterangan or 'Mendedikasikan kepemimpinan untuk kemajuan masyarakat Desa Papayan.' }}"
+            </p>
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+              <span>Tahun Mulai: <strong>{{ k.tahun_mulai }}</strong></span>
+              <span>Urutan #<strong>{{ k.urutan }}</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tombol Aksi -->
+        <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
+          <form method="POST" action="{{ url_for('admin_toggle_status_kades_riwayat', id=k.id) }}" class="inline">
+            <button type="submit" class="px-2 py-1 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-slate-900 text-[11px] font-medium transition" title="Toggle Tayang / Draf">
+              {% if k.status == 'Tayang' %}<i class="fa-solid fa-eye text-emerald-600 mr-1"></i>Tayang{% else %}<i class="fa-solid fa-eye-slash text-slate-400 mr-1"></i>Draf{% endif %}
+            </button>
+          </form>
+
+          <div class="flex items-center gap-1.5">
+            <button type="button" 
+                    onclick="bukaModalEditKadesRiwayat({{ k.id }}, {{ k|tojson|forceescape }})" 
+                    class="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-blue-700 hover:border-blue-400 font-bold text-xs shadow-xs transition flex items-center gap-1">
+              <i class="fa-solid fa-pen-to-square text-blue-600 text-xs"></i> Edit
+            </button>
+            <form method="POST" action="{{ url_for('admin_hapus_kades_riwayat', id=k.id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Kepala Desa {{ k.nama }} (Periode {{ k.periode }})?');" class="inline">
+              <button type="submit" class="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-300 shadow-xs transition" title="Hapus Data">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center">
+      <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3 text-xl">
+        <i class="fa-solid fa-users"></i>
+      </div>
+      <h4 class="font-bold text-slate-800 text-sm">Belum Ada Riwayat Kepala Desa</h4>
+      <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">Silakan tambahkan data Kepala Desa yang menjabat sekarang dan terdahulu untuk ditampilkan berurutan.</p>
+      <button onclick="bukaModalTambahKadesRiwayat()" class="mt-4 px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs rounded-xl shadow transition">
+        <i class="fa-solid fa-plus mr-1"></i> Tambah Kepala Desa Sekarang
+      </button>
+    </div>
+    {% endif %}
+
+  </div>
+
+</div> <!-- /space-y-6 wrapper -->
 
 <!-- ======================================================== -->
 <!-- MODAL 1: TAMBAH / EDIT APARATUR                          -->
@@ -437,6 +709,169 @@
       </button>
     </div>
 
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL 3: TAMBAH / EDIT SEJARAH DESA                      -->
+<!-- ======================================================== -->
+<div id="modal-sejarah" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 max-h-[92vh] overflow-y-auto shadow-2xl animate-fade-in">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div>
+        <h3 id="modal-sejarah-title" class="font-bold text-base text-slate-900">Tambah Bab Sejarah Desa</h3>
+        <p class="text-[11px] text-slate-400 mt-0.5">Kelola narasi dan dokumentasi asal-usul desa</p>
+      </div>
+      <button type="button" onclick="tutupModalSejarah()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold transition">&times;</button>
+    </div>
+
+    <form id="form-sejarah" method="POST" action="{{ url_for('admin_tambah_sejarah') }}" enctype="multipart/form-data" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Bab / Fase Sejarah <span class="text-red-500">*</span></label>
+        <input type="text" name="judul" id="input-sejarah-judul" required placeholder="Contoh: Asal-Usul Nama & Berdirinya Desa Papayan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium" />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Periode / Era</label>
+          <input type="text" name="periode_era" id="input-sejarah-era" placeholder="Contoh: Masa Lampau & Pembentukan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Status Tayang</label>
+          <select name="status" id="input-sejarah-status" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium">
+            <option value="Tayang">Tayang (Tampil di Website Publik)</option>
+            <option value="Draf">Draf (Sembunyikan / Tidak Tayang)</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Uraian / Narasi Lengkap Sejarah <span class="text-red-500">*</span></label>
+        <textarea name="konten" id="input-sejarah-konten" rows="6" required placeholder="Tuliskan cerita sejarah, tokoh pendiri, asal-usul penamaan desa, dan peristiwa penting..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium leading-relaxed"></textarea>
+      </div>
+
+      <!-- Upload Foto / Arsip -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Foto / Gambar Ilustrasi Arsip Sejarah</label>
+        <input type="hidden" name="foto_lama" id="input-sejarah-foto-lama" value="" />
+        <input type="hidden" name="foto" id="input-sejarah-foto" value="" />
+        
+        <div class="flex items-center gap-3">
+          <div class="w-16 h-16 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
+            <img id="preview-sejarah-img" src="" alt="Pratinjau" class="w-full h-full object-cover hidden" />
+            <i id="placeholder-sejarah-icon" class="fa-solid fa-image text-slate-300 text-2xl"></i>
+          </div>
+          <div class="flex-1">
+            <input type="file" name="foto_file" id="input-sejarah-file" accept="image/png, image/jpeg, image/jpg, image/webp" onchange="previewUploadFotoSejarah(this)" class="block w-full text-xs text-slate-500 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 file:cursor-pointer cursor-pointer" />
+            <p class="text-[10px] text-slate-400 mt-1">Format: JPG, PNG, WEBP. Kosongkan jika ingin memakai foto default.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-32">
+        <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Tampil</label>
+        <input type="number" name="urutan" id="input-sejarah-urutan" value="1" min="1" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium" />
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+        <button type="button" onclick="tutupModalSejarah()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition">Batal</button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+          <i class="fa-solid fa-check"></i> <span id="btn-submit-sejarah-label">Simpan Sejarah</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL 4: TAMBAH / EDIT KEPALA DESA RIWAYAT               -->
+<!-- ======================================================== -->
+<div id="modal-kades-riwayat" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 max-h-[92vh] overflow-y-auto shadow-2xl animate-fade-in">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div>
+        <h3 id="modal-kades-title" class="font-bold text-base text-slate-900">Tambah Riwayat Kepala Desa</h3>
+        <p class="text-[11px] text-slate-400 mt-0.5">Catat kepemimpinan kepala desa dari masa sekarang hingga lampau</p>
+      </div>
+      <button type="button" onclick="tutupModalKadesRiwayat()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold transition">&times;</button>
+    </div>
+
+    <form id="form-kades-riwayat" method="POST" action="{{ url_for('admin_tambah_kades_riwayat') }}" enctype="multipart/form-data" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kepala Desa (Beserta Gelar) <span class="text-red-500">*</span></label>
+        <input type="text" name="nama" id="input-kades-nama" required placeholder="Contoh: Irwan Setiawan, S.Kom, M.T." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium" />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Teks Periode Jabatan <span class="text-red-500">*</span></label>
+          <input type="text" name="periode" id="input-kades-periode" required placeholder="Contoh: 2021 - Sekarang atau 2015 - 2021" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Status Kepemimpinan</label>
+          <select name="status_jabatan" id="input-kades-status-jabatan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+            <option value="Menjabat">⭐ Menjabat Sekarang (Terkini)</option>
+            <option value="Lampau" selected>Purna Tugas / Sudah Lampau</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tahun Mulai Menjabat <span class="text-red-500">*</span></label>
+          <input type="number" name="tahun_mulai" id="input-kades-tahun-mulai" required value="2021" min="1900" max="2100" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium" />
+          <p class="text-[10px] text-slate-400 mt-0.5">Digunakan untuk urutan otomatis (paling baru ke lampau).</p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tahun Selesai Menjabat</label>
+          <input type="number" name="tahun_selesai" id="input-kades-tahun-selesai" placeholder="Kosongkan jika masih menjabat" min="1900" max="2100" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium" />
+        </div>
+      </div>
+
+      <!-- Upload Foto Variabel Kades -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Foto Kepala Desa</label>
+        <input type="hidden" name="foto_lama" id="input-kades-foto-lama" value="" />
+        <input type="hidden" name="foto" id="input-kades-foto" value="" />
+        
+        <div class="flex items-center gap-3">
+          <div class="w-16 h-20 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
+            <img id="preview-kades-img" src="" alt="Pratinjau" class="w-full h-full object-cover hidden" />
+            <i id="placeholder-kades-icon" class="fa-solid fa-user-tie text-slate-300 text-2xl"></i>
+          </div>
+          <div class="flex-1">
+            <input type="file" name="foto_file" id="input-kades-file" accept="image/png, image/jpeg, image/jpg, image/webp" onchange="previewUploadFotoKades(this)" class="block w-full text-xs text-slate-500 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-700 file:text-white hover:file:bg-blue-800 file:cursor-pointer cursor-pointer" />
+            <p class="text-[10px] text-slate-400 mt-1">Upload foto formal / dokumentasi kades (JPG, PNG, WEBP).</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Keterangan / Capaian Prestasi Masa Jabatan</label>
+        <textarea name="keterangan" id="input-kades-keterangan" rows="3" placeholder="Pembangunan infrastruktur, pemekaran dusun, program unggulan desa..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Status Tayang</label>
+          <select name="status" id="input-kades-status" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+            <option value="Tayang">Tayang (Tampil di Website)</option>
+            <option value="Draf">Draf (Sembunyikan)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Urutan Tambahan</label>
+          <input type="number" name="urutan" id="input-kades-urutan" value="1" min="1" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium" />
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+        <button type="button" onclick="tutupModalKadesRiwayat()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition">Batal</button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+          <i class="fa-solid fa-check"></i> <span id="btn-submit-kades-label">Simpan Riwayat Kades</span>
+        </button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -1051,9 +1486,172 @@
     }
   }
 
-  // Load initial jabatan list into memory on page load
+  // --- TAB SUB-MENU SWITCHER (APARATUR, SEJARAH, KADES) ---
+  function switchTabAparatur(tabId) {
+    document.querySelectorAll('.tab-panel-sotk').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.tab-btn-sotk').forEach(btn => {
+      btn.className = 'tab-btn-sotk px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition text-slate-600 hover:text-slate-900 hover:bg-white/60';
+    });
+
+    const activePanel = document.getElementById('panel-' + tabId);
+    if (activePanel) activePanel.classList.remove('hidden');
+
+    const activeBtn = document.getElementById('btn-' + tabId);
+    if (activeBtn) {
+      activeBtn.className = 'tab-btn-sotk px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition bg-white text-brand-800 shadow-sm border border-slate-200';
+    }
+
+    if (history.replaceState) {
+      history.replaceState(null, null, '#' + tabId);
+    } else {
+      window.location.hash = tabId;
+    }
+  }
+
+  // --- MODAL SEJARAH DESA ---
+  function bukaModalTambahSejarah() {
+    const modal = document.getElementById('modal-sejarah');
+    const form = document.getElementById('form-sejarah');
+    document.getElementById('modal-sejarah-title').innerText = 'Tambah Bab Sejarah Desa';
+    document.getElementById('btn-submit-sejarah-label').innerText = 'Simpan Sejarah';
+    form.action = "{{ url_for('admin_tambah_sejarah') }}";
+    form.reset();
+    document.getElementById('input-sejarah-foto-lama').value = '';
+    document.getElementById('input-sejarah-foto').value = '';
+    document.getElementById('preview-sejarah-img').classList.add('hidden');
+    document.getElementById('placeholder-sejarah-icon').classList.remove('hidden');
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  }
+
+  function bukaModalEditSejarah(id, data) {
+    const modal = document.getElementById('modal-sejarah');
+    const form = document.getElementById('form-sejarah');
+    document.getElementById('modal-sejarah-title').innerText = 'Edit Bab Sejarah Desa';
+    document.getElementById('btn-submit-sejarah-label').innerText = 'Perbarui Sejarah';
+    form.action = "/admin/aparatur/sejarah/" + id + "/edit";
+    
+    document.getElementById('input-sejarah-judul').value = data.judul || '';
+    document.getElementById('input-sejarah-era').value = data.periode_era || '';
+    document.getElementById('input-sejarah-status').value = data.status || 'Tayang';
+    document.getElementById('input-sejarah-konten').value = data.konten || '';
+    document.getElementById('input-sejarah-urutan').value = data.urutan || 1;
+    document.getElementById('input-sejarah-foto-lama').value = data.foto || '';
+    document.getElementById('input-sejarah-foto').value = data.foto || '';
+
+    const preview = document.getElementById('preview-sejarah-img');
+    const placeholder = document.getElementById('placeholder-sejarah-icon');
+    if (data.foto) {
+      const src = data.foto.startsWith('static/') ? '/' + data.foto : data.foto;
+      preview.src = src;
+      preview.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+    } else {
+      preview.classList.add('hidden');
+      placeholder.classList.remove('hidden');
+    }
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  }
+
+  function tutupModalSejarah() {
+    const modal = document.getElementById('modal-sejarah');
+    if (modal) modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  function previewUploadFotoSejarah(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('preview-sejarah-img');
+        const placeholder = document.getElementById('placeholder-sejarah-icon');
+        preview.src = e.target.result;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  // --- MODAL KEPALA DESA DARI MASA KE MASA ---
+  function bukaModalTambahKadesRiwayat() {
+    const modal = document.getElementById('modal-kades-riwayat');
+    const form = document.getElementById('form-kades-riwayat');
+    document.getElementById('modal-kades-title').innerText = 'Tambah Riwayat Kepala Desa';
+    document.getElementById('btn-submit-kades-label').innerText = 'Simpan Riwayat Kades';
+    form.action = "{{ url_for('admin_tambah_kades_riwayat') }}";
+    form.reset();
+    document.getElementById('input-kades-foto-lama').value = '';
+    document.getElementById('input-kades-foto').value = '';
+    document.getElementById('preview-kades-img').classList.add('hidden');
+    document.getElementById('placeholder-kades-icon').classList.remove('hidden');
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  }
+
+  function bukaModalEditKadesRiwayat(id, data) {
+    const modal = document.getElementById('modal-kades-riwayat');
+    const form = document.getElementById('form-kades-riwayat');
+    document.getElementById('modal-kades-title').innerText = 'Edit Riwayat Kepala Desa';
+    document.getElementById('btn-submit-kades-label').innerText = 'Perbarui Data Kades';
+    form.action = "/admin/aparatur/kades-riwayat/" + id + "/edit";
+    
+    document.getElementById('input-kades-nama').value = data.nama || '';
+    document.getElementById('input-kades-periode').value = data.periode || '';
+    document.getElementById('input-kades-tahun-mulai').value = data.tahun_mulai || 2021;
+    document.getElementById('input-kades-tahun-selesai').value = (data.tahun_selesai !== null && data.tahun_selesai !== undefined) ? data.tahun_selesai : '';
+    document.getElementById('input-kades-status-jabatan').value = data.status_jabatan || 'Lampau';
+    document.getElementById('input-kades-status').value = data.status || 'Tayang';
+    document.getElementById('input-kades-keterangan').value = data.keterangan || '';
+    document.getElementById('input-kades-urutan').value = data.urutan || 1;
+    document.getElementById('input-kades-foto-lama').value = data.foto || '';
+    document.getElementById('input-kades-foto').value = data.foto || '';
+
+    const preview = document.getElementById('preview-kades-img');
+    const placeholder = document.getElementById('placeholder-kades-icon');
+    if (data.foto) {
+      const src = data.foto.startsWith('static/') ? '/' + data.foto : data.foto;
+      preview.src = src;
+      preview.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+    } else {
+      preview.classList.add('hidden');
+      placeholder.classList.remove('hidden');
+    }
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  }
+
+  function tutupModalKadesRiwayat() {
+    const modal = document.getElementById('modal-kades-riwayat');
+    if (modal) modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  function previewUploadFotoKades(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('preview-kades-img');
+        const placeholder = document.getElementById('placeholder-kades-icon');
+        preview.src = e.target.result;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  // Load initial jabatan list into memory on page load & activate tab from hash
   document.addEventListener('DOMContentLoaded', function() {
     loadJabatanData();
+    const hash = (window.location.hash || '').replace('#', '');
+    if (hash === 'tab-sejarah' || hash === 'tab-kades' || hash === 'tab-aparatur') {
+      switchTabAparatur(hash);
+    }
   });
 </script>
 
