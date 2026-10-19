@@ -90,7 +90,7 @@
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
         {% if active_popup.gambar %}
         <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-white/10 flex-shrink-0 border-2 border-white/20 shadow-md">
-          <img src="{{ active_popup.gambar }}" alt="{{ active_popup.judul }}" class="w-full h-full object-cover" onerror="this.src='/static/images/pantai_kersik.jpg'">
+          <img src="{{ active_popup.gambar }}" alt="{{ active_popup.judul }}" class="w-full h-full object-cover" onerror="this.src='/static/images/banner1.png'">
         </div>
         {% else %}
         <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-emerald-800/80 flex items-center justify-center flex-shrink-0 border-2 border-white/20 text-3xl text-emerald-200">
@@ -186,7 +186,7 @@
             <td class="p-4">
               {% if p.gambar %}
               <div class="w-20 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 relative group cursor-pointer" onclick="bukaModalPreviewPopup({{ p.id }})">
-                <img src="{{ p.gambar }}" alt="{{ p.judul }}" class="w-full h-full object-cover group-hover:scale-105 transition" onerror="this.src='/static/images/pantai_kersik.jpg'">
+                <img src="{{ p.gambar }}" alt="{{ p.judul }}" class="w-full h-full object-cover group-hover:scale-105 transition" onerror="this.src='/static/images/banner1.png'">
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
                   <i class="fa-solid fa-magnifying-glass-plus"></i>
                 </div>

@@ -55,7 +55,7 @@
       <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition">
         <div>
           <div class="h-44 overflow-hidden relative group">
-            <img src="{{ url_for('static', filename=w.gambar.replace('static/', '')) if w.gambar and w.gambar.startswith('static/') else (w.gambar if w.gambar else url_for('static', filename='images/pantai_kersik.jpg')) }}" alt="{{ w.nama }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'" />
+            <img src="{{ url_for('static', filename=w.gambar.replace('static/', '')) if w.gambar and w.gambar.startswith('static/') else (w.gambar if w.gambar else url_for('static', filename='images/banner1.png')) }}" alt="{{ w.nama }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'" />
             <span class="absolute top-3 left-3 bg-brand-800/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">
               {{ w.kategori }}
             </span>
@@ -155,7 +155,7 @@
               <!-- Foto -->
               <td class="p-4">
                 <div class="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0 relative">
-                  <img src="{{ url_for('static', filename=req.gambar.replace('static/', '')) if req.gambar and req.gambar.startswith('static/') else (req.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" class="w-full h-full object-cover" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'" />
+                  <img src="{{ url_for('static', filename=req.gambar.replace('static/', '')) if req.gambar and req.gambar.startswith('static/') else (req.gambar or url_for('static', filename='images/banner1.png')) }}" class="w-full h-full object-cover" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'" />
                 </div>
               </td>
 
@@ -280,7 +280,7 @@
             <tr class="hover:bg-slate-50/70 transition">
               <td class="p-4">
                 <div class="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
-                  <img src="{{ url_for('static', filename=d.gambar.replace('static/', '')) if d.gambar and d.gambar.startswith('static/') else (d.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" class="w-full h-full object-cover" />
+                  <img src="{{ url_for('static', filename=d.gambar.replace('static/', '')) if d.gambar and d.gambar.startswith('static/') else (d.gambar or url_for('static', filename='images/banner1.png')) }}" class="w-full h-full object-cover" />
                 </div>
               </td>
               <td class="p-4">
@@ -362,7 +362,7 @@
         </label>
         <div class="flex items-center gap-3">
           <div class="w-20 h-20 rounded-xl overflow-hidden bg-white border border-slate-200 flex-shrink-0 flex items-center justify-center relative shadow-inner">
-            <img id="preview-wisata-gambar" src="{{ url_for('static', filename='images/pantai_kersik.jpg') }}" class="w-full h-full object-cover" />
+            <img id="preview-wisata-gambar" src="{{ url_for('static', filename='images/banner1.png') }}" class="w-full h-full object-cover" />
           </div>
           <div class="flex-1 space-y-1.5">
             <input type="file" name="gambar_file" id="input-wisata-file" accept="image/*" onchange="previewFotoWisata(event)" class="text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-100 file:text-brand-800 hover:file:bg-brand-200 cursor-pointer w-full" />
@@ -464,7 +464,7 @@
 </div>
 
 <script>
-  const defaultFotoWisata = "{{ url_for('static', filename='images/pantai_kersik.jpg') }}";
+  const defaultFotoWisata = "{{ url_for('static', filename='images/banner1.png') }}";
   const defaultVillageLat = {{ profil_global.koordinat_lat or -0.0682 }};
   const defaultVillageLng = {{ profil_global.koordinat_lng or 117.3854 }};
   const namaDesa = "{{ profil_global.nama_desa or 'Papayan' }}";

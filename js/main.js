@@ -1,5 +1,5 @@
 /**
- * Main Interactive Logic untuk Website Resmi Desa Kersik
+ * Main Interactive Logic untuk Website Resmi Desa Papayan
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,26 +21,28 @@ document.addEventListener('DOMContentLoaded', () => {
    1. HERO CAROUSEL
    ========================================================== */
 let currentSlide = 0;
+const defaultProf = (window.SERVER_DATA && window.SERVER_DATA.profil) || {};
 const slides = [
   {
-    image: "assets/images/banner1.png",
-    fallback: "assets/images/pantai_kersik.jpg",
-    tag: "Wisata Bahari Unggulan",
-    title: "Selamat Datang di Website Resmi Desa Kersik",
-    desc: "Menjelajahi pesona Pantai Biru Kersik, kelestarian mangrove pesisir, dan kemajuan masyarakat Marang Kayu, Kutai Kartanegara."
+    image: defaultProf.banner_hero_1 || "/static/images/banner1.png",
+    fallback: "/static/images/banner1.png",
+    tag: defaultProf.tagline_website || "Desa Wisata & Budaya",
+    title: defaultProf.banner_title_1 || `Selamat Datang di Website Resmi Desa ${defaultProf.nama_desa || 'Desa'}`,
+    desc: defaultProf.banner_desc_1 || `Menjelajahi pesona alam, potensi lokal, dan kemajuan masyarakat Desa ${defaultProf.nama_desa || 'Desa'}.`
   },
   {
-    image: "assets/images/banner2.png",
-    fallback: "assets/images/mangrove.jpg",
-    tag: "Penghargaan Lingkungan Hidup",
-    title: "Penerima Sertifikat Proklim Utama KLHK RI",
-    desc: "Komitmen nyata masyarakat Desa Kersik dalam menjaga kelestarian lingkungan pesisir dan ketahanan iklim terpadu."
+    image: defaultProf.banner_hero_2 || "/static/images/banner2.png",
+    fallback: "/static/images/banner2.png",
+    tag: defaultProf.subtagline_website || "Lingkungan Hidup & Budaya",
+    title: defaultProf.banner_title_2 || `Inovasi & Pembangunan Desa ${defaultProf.nama_desa || 'Desa'}`,
+    desc: defaultProf.banner_desc_2 || "Komitmen nyata masyarakat dan pemerintah desa dalam pembangunan berkelanjutan."
   },
   {
-    image: "assets/images/pantai_kersik.jpg",
-    tag: "Transformasi Digital 2026",
-    title: "Pelayanan Publik Cepat, Transparan & Akuntabel",
-    desc: "Nikmati kemudahan layanan pengajuan surat online mandiri, transparansi APBDes, dan keterbukaan informasi desa."
+    image: defaultProf.banner_hero_3 || "/static/images/banner1.png",
+    fallback: "/static/images/banner1.png",
+    tag: "Pelayanan Mandiri Online",
+    title: defaultProf.banner_title_3 || "Pelayanan Publik Cepat, Transparan & Akuntabel",
+    desc: defaultProf.banner_desc_3 || "Nikmati kemudahan layanan pengajuan surat online mandiri dan keterbukaan informasi desa."
   }
 ];
 
@@ -49,36 +51,42 @@ function initHeroCarousel() {
   const dotsContainer = document.getElementById('carousel-dots');
   if (!container) return;
 
-  container.innerHTML = slides.map((slide, index) => `
-    <div class="carousel-slide absolute inset-0 w-full h-full transition-opacity duration-1000 ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}" data-slide="${index}">
-      <img src="${slide.image}" onerror="this.src='${slide.fallback || 'assets/images/pantai_kersik.jpg'}'" class="w-full h-full object-cover brightness-[0.45]" alt="${slide.title}">
-      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30 flex items-center">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white pt-12 md:pt-16">
-          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-600/90 text-white backdrop-blur-md mb-4 border border-emerald-400/30">
-            <span class="w-2 h-2 rounded-full bg-emerald-300 animate-ping"></span>
-            ${slide.tag}
-          </span>
-          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold max-w-3xl leading-tight text-white drop-shadow-md">
-            ${slide.title}
-          </h1>
-          <p class="mt-4 text-base sm:text-xl text-gray-200 max-w-2xl leading-relaxed">
-            ${slide.desc}
-          </p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <a href="#layanan-surat" class="px-6 py-3.5 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
-              <i class="fa-solid fa-file-signature"></i> Layanan Surat Mandiri
-            </a>
-            <a href="#wisata" class="px-6 py-3.5 rounded-xl font-bold bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
-              <i class="fa-solid fa-compass"></i> Jelajahi Potensi Desa
-            </a>
+  const existingSlides = container.querySelectorAll('.carousel-slide');
+  const totalSlides = existingSlides.length > 0 ? existingSlides.length : slides.length;
+
+  // Only inject client-side default if container is completely empty
+  if (existingSlides.length === 0) {
+    container.innerHTML = slides.map((slide, index) => `
+      <div class="carousel-slide absolute inset-0 w-full h-full transition-opacity duration-1000 ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}" data-slide="${index}">
+        <img src="${slide.image}" onerror="this.src='${slide.fallback || 'static/images/banner1.png'}'" class="w-full h-full object-cover brightness-[0.45]" alt="${slide.title}">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30 flex items-center">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white pt-12 md:pt-16">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-600/90 text-white backdrop-blur-md mb-4 border border-emerald-400/30">
+              <span class="w-2 h-2 rounded-full bg-emerald-300 animate-ping"></span>
+              ${slide.tag}
+            </span>
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold max-w-3xl leading-tight text-white drop-shadow-md">
+              ${slide.title}
+            </h1>
+            <p class="mt-4 text-base sm:text-xl text-gray-200 max-w-2xl leading-relaxed">
+              ${slide.desc}
+            </p>
+            <div class="mt-8 flex flex-wrap gap-4">
+              <a href="#layanan-surat" class="px-6 py-3.5 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                <i class="fa-solid fa-file-signature"></i> Layanan Surat Mandiri
+              </a>
+              <a href="#wisata" class="px-6 py-3.5 rounded-xl font-bold bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                <i class="fa-solid fa-compass"></i> Jelajahi Potensi Desa
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    `).join('');
+  }
 
   if (dotsContainer) {
-    dotsContainer.innerHTML = slides.map((_, i) => `
+    dotsContainer.innerHTML = Array.from({ length: totalSlides }).map((_, i) => `
       <button onclick="goToSlide(${i})" class="w-3 h-3 rounded-full transition-all duration-300 ${i === 0 ? 'w-8 bg-emerald-400' : 'bg-white/60 hover:bg-white'}" aria-label="Slide ${i+1}"></button>
     `).join('');
   }
@@ -116,12 +124,16 @@ window.goToSlide = function(index) {
 };
 
 window.nextSlide = function() {
-  currentSlide = (currentSlide + 1) % slides.length;
+  const allSlides = document.querySelectorAll('.carousel-slide');
+  const total = allSlides.length > 0 ? allSlides.length : slides.length;
+  currentSlide = (currentSlide + 1) % total;
   goToSlide(currentSlide);
 };
 
 window.prevSlide = function() {
-  currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+  const allSlides = document.querySelectorAll('.carousel-slide');
+  const total = allSlides.length > 0 ? allSlides.length : slides.length;
+  currentSlide = (currentSlide - 1 + total) % total;
   goToSlide(currentSlide);
 };
 
@@ -211,34 +223,67 @@ function initWisataSection() {
 }
 
 window.bukaModalWisata = function(id) {
-  const w = desaData.wisata.find(item => item.id === id);
+  let w = null;
+  if (window.SERVER_DATA && window.SERVER_DATA.wisata) {
+    w = window.SERVER_DATA.wisata.find(item => item.id == id);
+  }
+  if (!w && typeof desaData !== 'undefined' && desaData.wisata) {
+    w = desaData.wisata.find(item => item.id == id);
+  }
   if (!w) return;
 
   const modal = document.getElementById('general-modal');
   const modalContent = document.getElementById('general-modal-content');
 
+  let fasilitasArray = [];
+  if (Array.isArray(w.fasilitas_list)) {
+    fasilitasArray = w.fasilitas_list;
+  } else if (Array.isArray(w.fasilitas)) {
+    fasilitasArray = w.fasilitas;
+  } else if (typeof w.fasilitas === 'string') {
+    fasilitasArray = w.fasilitas.split(',').map(f => f.trim()).filter(Boolean);
+  }
+
+  let fotoUrl = w.gambar || '/static/images/banner1.png';
+  if (fotoUrl.startsWith('static/')) fotoUrl = '/' + fotoUrl;
+
+  const lat = w.latitude || null;
+  const lng = w.longitude || null;
+  const safeNama = (w.nama || '').replace(/'/g, "\\'");
+
   modalContent.innerHTML = `
     <div class="p-6 sm:p-8">
       <div class="flex items-center justify-between pb-4 border-b border-gray-100 mb-4">
         <div>
-          <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">${w.kategori}</span>
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">${w.kategori || 'Destinasi Wisata'}</span>
           <h3 class="text-2xl font-bold text-gray-900">${w.nama}</h3>
         </div>
         <button onclick="tutupModal()" class="text-gray-400 hover:text-gray-600 p-2 text-xl font-bold">&times;</button>
       </div>
-      <img src="${w.gambar}" class="w-full h-72 object-cover rounded-xl mb-4" alt="${w.nama}">
+      <img src="${fotoUrl}" class="w-full h-72 object-cover rounded-xl mb-4" alt="${w.nama}" onerror="this.src='/static/images/banner1.png'">
       <p class="text-gray-700 leading-relaxed text-sm mb-4">${w.deskripsi}</p>
+      
+      ${fasilitasArray.length > 0 ? `
       <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 mb-4">
         <h4 class="font-bold text-emerald-900 text-sm mb-2"><i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Fasilitas & Layanan Wisatawan:</h4>
         <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-emerald-800">
-          ${w.fasilitas.map(f => `<li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> ${f}</li>`).join('')}
+          ${fasilitasArray.map(f => `<li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> ${f}</li>`).join('')}
         </ul>
-      </div>
-      <div class="flex items-center justify-between text-xs text-gray-500 pt-2">
-        <span><i class="fa-solid fa-map-pin mr-1 text-emerald-600"></i> ${w.lokasi}</span>
-        <a href="#peta" onclick="tutupModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1.5">
-          <i class="fa-solid fa-map"></i> Lihat di Peta Desa
-        </a>
+      </div>` : ''}
+
+      <div class="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-100">
+        <span><i class="fa-solid fa-map-pin mr-1 text-emerald-600"></i> ${w.lokasi || 'Desa Papayan'}</span>
+        <div class="flex items-center gap-2">
+          ${(lat && lng) ? `
+          <a href="#peta" onclick="tutupModal(); fokusKePetaWisata(${lat}, ${lng}, '${safeNama}');" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1.5 transition shadow-sm">
+            <i class="fa-solid fa-location-crosshairs"></i> Lihat di Peta Desa
+          </a>
+          ` : `
+          <a href="#peta" onclick="tutupModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-map"></i> Peta Desa
+          </a>
+          `}
+        </div>
       </div>
     </div>
   `;
@@ -249,6 +294,15 @@ window.bukaModalWisata = function(id) {
 /* ==========================================================
    5. UMKM & BELANJA DARI DESA
    ========================================================== */
+window.gantiPublicProdImg = function(prodId, path) {
+  const imgEl = document.getElementById(`public-prod-img-${prodId}`);
+  if (imgEl && path) {
+    if (path.startsWith('static/')) imgEl.src = '/' + path;
+    else if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/')) imgEl.src = path;
+    else imgEl.src = '/' + path;
+  }
+};
+
 function initUmkmSection() {
   const container = document.getElementById('umkm-grid');
   if (!container) return;
@@ -271,7 +325,7 @@ function initUmkmSection() {
             <p class="text-[11px] text-gray-400">Harga / ${prod.satuan}</p>
             <p class="text-lg font-black text-emerald-700">Rp ${prod.harga.toLocaleString('id-ID')}</p>
           </div>
-          <a href="https://wa.me/${prod.kontakWa}?text=Halo%20Admin%20Desa%20Kersik,%20saya%20tertarik%20membeli%20produk%20UMKM:%20${encodeURIComponent(prod.nama)}" target="_blank" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+          <a href="https://wa.me/${prod.kontakWa}?text=Halo%20Admin%20Desa%20${encodeURIComponent(defaultProf.nama_desa || 'Papayan')},%20saya%20tertarik%20membeli%20produk%20UMKM:%20${encodeURIComponent(prod.nama)}" target="_blank" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
             <i class="fa-brands fa-whatsapp text-sm"></i> Beli
           </a>
         </div>
@@ -340,7 +394,7 @@ window.bukaModalBerita = function(id) {
       <div class="prose text-gray-700 text-sm leading-relaxed space-y-4">
         <p class="font-semibold text-gray-800">${b.ringkasan}</p>
         <p>${b.isi}</p>
-        <p>Pemerintah Desa Kersik senantiasa berkomitmen untuk memberikan keterbukaan informasi dan pelayanan terbaik bagi segenap warga maupun pelancong.</p>
+        <p>Pemerintah Desa ${defaultProf.nama_desa || 'Papayan'} senantiasa berkomitmen untuk memberikan keterbukaan informasi dan pelayanan terbaik bagi segenap warga maupun pelancong.</p>
       </div>
       <div class="mt-8 pt-4 border-t border-gray-100 flex justify-end">
         <button onclick="tutupModal()" class="px-5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold">
@@ -396,43 +450,281 @@ window.tutupModal = function() {
 /* ==========================================================
    8. INTERACTIVE LEAFLET MAP
    ========================================================== */
+window.desaMap = null;
+window.desaMapMarkers = {};
+
+window.fokusKePetaWisata = function(lat, lng, nama) {
+  if (typeof navigateToView === 'function') {
+    navigateToView('peta');
+  }
+  if (window.desaMap && lat && lng) {
+    window.desaMap.flyTo([lat, lng], 16, { animate: true, duration: 1.2 });
+    if (window.desaMapMarkers[nama]) {
+      setTimeout(() => {
+        window.desaMapMarkers[nama].openPopup();
+      }, 1200);
+    }
+  }
+};
+
+window.fokusKePetaUMKM = function(lat, lng, nama, produsen) {
+  if (typeof navigateToView === 'function') {
+    navigateToView('peta');
+  }
+  if (window.desaMap && lat && lng) {
+    window.desaMap.flyTo([lat, lng], 16, { animate: true, duration: 1.2 });
+    if (window.desaMapMarkers['umkm_' + nama]) {
+      setTimeout(() => {
+        window.desaMapMarkers['umkm_' + nama].openPopup();
+      }, 1200);
+    } else {
+      setTimeout(() => {
+        L.popup().setLatLng([lat, lng]).setContent(`
+          <div style="font-family:'Outfit',sans-serif;min-width:200px;padding:4px;">
+            <span style="font-size:10px;text-transform:uppercase;color:#0284c7;font-weight:800;letter-spacing:0.5px;">Sentra UMKM Desa</span>
+            <h4 style="margin:2px 0 4px;font-size:14px;font-weight:800;color:#0f172a;">${nama}</h4>
+            <p style="margin:0 0 4px;font-size:11px;color:#0284c7;font-weight:700;">${produsen || 'Warga Papayan'}</p>
+          </div>
+        `).openOn(window.desaMap);
+      }, 1200);
+    }
+  }
+};
+
 function initLeafletMap() {
   const mapElement = document.getElementById('map');
   if (!mapElement || typeof L === 'undefined') return;
 
-  const kersikCoord = desaData.identitas.koordinat;
-  const map = L.map('map').setView(kersikCoord, 14);
+  const profil = (window.SERVER_DATA && window.SERVER_DATA.profil) ? window.SERVER_DATA.profil : {};
+  const lat = profil.koordinat_lat ? parseFloat(profil.koordinat_lat) : (desaData && desaData.identitas ? desaData.identitas.koordinat[0] : -7.4782);
+  const lng = profil.koordinat_lng ? parseFloat(profil.koordinat_lng) : (desaData && desaData.identitas ? desaData.identitas.koordinat[1] : 108.2055);
+  const desaName = profil.nama_desa || (desaData && desaData.identitas ? desaData.identitas.nama : 'Desa Papayan');
+  const papayanCoord = [lat, lng];
+
+  // Koordinat aman khusus Desa Papayan, Kab. Tasikmalaya
+  const isValidPapayanCoord = (cLat, cLng) => {
+    return !isNaN(cLat) && !isNaN(cLng) && cLat >= -7.65 && cLat <= -7.30 && cLng >= 108.05 && cLng <= 108.35;
+  };
+
+  const map = L.map('map').setView(papayanCoord, 14);
+  window.desaMap = map;
+  window.desaMapMarkers = {};
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Desa Kersik',
+    attribution: `&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | Desa ${desaName}`,
     maxZoom: 19
   }).addTo(map);
 
-  // Custom green marker icon
-  const customIcon = L.divIcon({
-    className: 'custom-map-pin',
-    html: `<div style="background-color:#3d920c;color:white;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.3);border:2px solid white;">
-            <i class="fa-solid fa-location-dot text-sm"></i>
-          </div>`,
-    iconSize: [34, 34],
-    iconAnchor: [17, 34],
-    popupAnchor: [0, -30]
-  });
+  // Icon Factory
+  const createMapPin = (bgColor, iconClass) => {
+    return L.divIcon({
+      className: 'custom-map-pin',
+      html: `<div style="background-color:${bgColor};color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.35);border:2.5px solid white;">
+              <i class="${iconClass} text-sm"></i>
+            </div>`,
+      iconSize: [36, 36],
+      iconAnchor: [18, 36],
+      popupAnchor: [0, -32]
+    });
+  };
 
-  // Render markers
-  desaData.titikPeta.forEach(pt => {
-    const marker = L.marker([pt.lat, pt.lng], { icon: customIcon }).addTo(map);
-    marker.bindPopup(`
-      <div style="font-family:'Outfit',sans-serif;min-width:180px;padding:4px;">
-        <span style="font-size:10px;text-transform:uppercase;color:#3d920c;font-weight:700;">${pt.kategori}</span>
-        <h4 style="margin:2px 0 4px;font-size:14px;font-weight:700;color:#0f172a;">${pt.nama}</h4>
-        <p style="margin:0 0 6px;font-size:12px;color:#475569;line-height:1.4;">${pt.deskripsi}</p>
-        <p style="margin:0;font-size:11px;color:#64748b;font-weight:500;">
-          <i class="fa-solid fa-map-pin" style="color:#3d920c;"></i> ${pt.alamat}
-        </p>
+  const kantorIcon = createMapPin('#1e40af', 'fa-solid fa-landmark-flag');
+  const wisataIcon = createMapPin('#15803d', 'fa-solid fa-mountain-sun');
+  const umkmIcon = createMapPin('#0284c7', 'fa-solid fa-store');
+
+  const allLatLngs = [];
+
+  // 1. Plot Kantor Desa
+  if (isValidPapayanCoord(lat, lng)) {
+    const kantorMarker = L.marker([lat, lng], { icon: kantorIcon }).addTo(map);
+    kantorMarker.bindPopup(`
+      <div style="font-family:'Outfit',sans-serif;min-width:210px;padding:4px;">
+        <span style="font-size:10px;text-transform:uppercase;color:#1e40af;font-weight:800;letter-spacing:0.5px;">Pusat Pemerintahan</span>
+        <h4 style="margin:2px 0 4px;font-size:14px;font-weight:800;color:#0f172a;">Kantor Desa ${desaName}</h4>
+        <p style="margin:0 0 6px;font-size:11px;color:#475569;line-height:1.4;">${profil.alamat || 'Kantor Pelayanan & Administrasi Desa Papayan'}</p>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:white;background:#1e40af;padding:5px 10px;border-radius:6px;text-decoration:none;">
+          <i class="fa-solid fa-diamond-turn-right"></i> Rute ke Kantor Desa
+        </a>
       </div>
     `);
-  });
+    allLatLngs.push([lat, lng]);
+  }
+
+  // 2. Plot Dynamic Wisata from window.SERVER_DATA.wisata
+  const wisataList = (window.SERVER_DATA && window.SERVER_DATA.wisata && window.SERVER_DATA.wisata.length > 0)
+    ? window.SERVER_DATA.wisata
+    : [];
+
+  if (wisataList.length > 0) {
+    wisataList.forEach(w => {
+      if (w.latitude && w.longitude) {
+        const wLat = parseFloat(w.latitude);
+        const wLng = parseFloat(w.longitude);
+        if (isValidPapayanCoord(wLat, wLng)) {
+          const marker = L.marker([wLat, wLng], { icon: wisataIcon }).addTo(map);
+
+          let fotoUrl = w.gambar || '/static/images/banner1.png';
+          if (fotoUrl.startsWith('static/')) fotoUrl = '/' + fotoUrl;
+
+          marker.bindPopup(`
+            <div style="font-family:'Outfit',sans-serif;min-width:220px;max-width:270px;padding:4px;">
+              <div style="width:100%;height:100px;border-radius:8px;overflow:hidden;margin-bottom:8px;background:#f1f5f9;">
+                <img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='/static/images/banner1.png'">
+              </div>
+              <span style="font-size:10px;text-transform:uppercase;color:#15803d;font-weight:800;letter-spacing:0.5px;">${w.kategori || 'Destinasi Wisata'}</span>
+              <h4 style="margin:2px 0 4px;font-size:14px;font-weight:800;color:#0f172a;">${w.nama}</h4>
+              <p style="margin:0 0 6px;font-size:11px;color:#475569;line-height:1.4;">${w.deskripsi ? w.deskripsi.substring(0, 95) + '...' : ''}</p>
+              
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid #e2e8f0;">
+                <span style="font-size:11px;background:#e0f8d4;color:#1c4e09;font-weight:700;padding:2px 8px;border-radius:6px;">${w.tiket || 'Gratis'}</span>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${wLat},${wLng}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:white;background:#15803d;padding:5px 8px;border-radius:6px;text-decoration:none;">
+                  <i class="fa-solid fa-diamond-turn-right"></i> Petunjuk Arah
+                </a>
+              </div>
+            </div>
+          `);
+
+          window.desaMapMarkers[w.nama] = marker;
+          allLatLngs.push([wLat, wLng]);
+        }
+      }
+    });
+  } else if (typeof desaData !== 'undefined' && desaData.titikPeta) {
+    // Fallback to static data
+    desaData.titikPeta.forEach(pt => {
+      if (isValidPapayanCoord(pt.lat, pt.lng)) {
+        const marker = L.marker([pt.lat, pt.lng], { icon: wisataIcon }).addTo(map);
+        marker.bindPopup(`
+          <div style="font-family:'Outfit',sans-serif;min-width:180px;padding:4px;">
+            <span style="font-size:10px;text-transform:uppercase;color:#15803d;font-weight:700;">${pt.kategori}</span>
+            <h4 style="margin:2px 0 4px;font-size:14px;font-weight:700;color:#0f172a;">${pt.nama}</h4>
+            <p style="margin:0 0 6px;font-size:12px;color:#475569;line-height:1.4;">${pt.deskripsi}</p>
+            <p style="margin:0;font-size:11px;color:#64748b;font-weight:500;">
+              <i class="fa-solid fa-map-pin" style="color:#15803d;"></i> ${pt.alamat}
+            </p>
+          </div>
+        `);
+        allLatLngs.push([pt.lat, pt.lng]);
+      }
+    });
+  }
+
+  // 2.1 Plot UMKM with coordinates from window.SERVER_DATA.umkm
+  const umkmList = (window.SERVER_DATA && window.SERVER_DATA.umkm && window.SERVER_DATA.umkm.length > 0)
+    ? window.SERVER_DATA.umkm
+    : [];
+
+  if (umkmList.length > 0) {
+    umkmList.forEach(u => {
+      if (u.latitude && u.longitude) {
+        const uLat = parseFloat(u.latitude);
+        const uLng = parseFloat(u.longitude);
+        if (isValidPapayanCoord(uLat, uLng)) {
+          const marker = L.marker([uLat, uLng], { icon: umkmIcon }).addTo(map);
+
+          let fotoUrl = u.gambar || '/static/images/banner2.png';
+          if (fotoUrl.startsWith('static/')) fotoUrl = '/' + fotoUrl;
+
+          marker.bindPopup(`
+            <div style="font-family:'Outfit',sans-serif;min-width:220px;max-width:270px;padding:4px;">
+              <div style="width:100%;height:100px;border-radius:8px;overflow:hidden;margin-bottom:8px;background:#f1f5f9;">
+                <img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='/static/images/banner2.png'">
+              </div>
+              <span style="font-size:10px;text-transform:uppercase;color:#0284c7;font-weight:800;letter-spacing:0.5px;">Sentra UMKM Desa</span>
+              <h4 style="margin:2px 0 2px;font-size:14px;font-weight:800;color:#0f172a;">${u.nama}</h4>
+              <p style="margin:0 0 6px;font-size:11px;color:#0284c7;font-weight:700;">${u.produsen || 'Warga Papayan'}</p>
+              
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid #e2e8f0;">
+                <span style="font-size:11px;background:#e0f2fe;color:#0369a1;font-weight:700;padding:2px 8px;border-radius:6px;">Rp ${(u.harga || 0).toLocaleString('id-ID')}</span>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${uLat},${uLng}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:white;background:#0284c7;padding:5px 8px;border-radius:6px;text-decoration:none;">
+                  <i class="fa-solid fa-diamond-turn-right"></i> Petunjuk Arah
+                </a>
+              </div>
+            </div>
+          `);
+
+          window.desaMapMarkers['umkm_' + u.nama] = marker;
+          allLatLngs.push([uLat, uLng]);
+        }
+      }
+    });
+  }
+
+  // 3. Load SLS RT Polygons from /api/peta/sls-geojson
+  fetch('/api/peta/sls-geojson')
+    .then(r => {
+      if (!r.ok) throw new Error('Network error');
+      return r.json();
+    })
+    .then(geojson => {
+      if (geojson && geojson.features && geojson.features.length > 0) {
+        const geojsonLayer = L.geoJSON(geojson, {
+          style: function(feat) {
+            const p = feat.properties || {};
+            return {
+              fillColor: p.fill_color || '#10b981',
+              weight: 2,
+              opacity: 0.9,
+              color: '#047857',
+              dashArray: '2',
+              fillOpacity: 0.35
+            };
+          },
+          onEachFeature: function(feat, layer) {
+            const p = feat.properties || {};
+            layer.bindPopup(`
+              <div style="font-family:'Outfit',sans-serif;min-width:200px;padding:4px;">
+                <span style="font-size:10px;text-transform:uppercase;color:#047857;font-weight:800;letter-spacing:0.5px;">${p.dusun || 'Batas RT'}</span>
+                <h4 style="margin:2px 0 6px;font-size:14px;font-weight:800;color:#0f172a;">${p.nama_sls || p.name}</h4>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#f8fafc;padding:6px;border-radius:8px;font-size:11px;margin-bottom:8px;">
+                  <div><span style="color:#64748b;">Penduduk:</span> <strong>${p.total_penduduk || 0}</strong></div>
+                  <div><span style="color:#64748b;">Keluarga:</span> <strong>${p.keluarga || 0}</strong></div>
+                  <div><span style="color:#64748b;">Laki-laki:</span> <strong>${p.laki_laki || 0}</strong></div>
+                  <div><span style="color:#64748b;">Perempuan:</span> <strong>${p.perempuan || 0}</strong></div>
+                </div>
+                <a href="/peta" style="display:block;text-align:center;font-size:11px;font-weight:700;color:white;background:#059669;padding:6px 10px;border-radius:6px;text-decoration:none;">
+                  <i class="fa-solid fa-map-location-dot"></i> Buka Peta SLS Lengkap
+                </a>
+              </div>
+            `);
+            layer.on({
+              mouseover: function(e) {
+                const l = e.target;
+                l.setStyle({ weight: 3, color: '#f59e0b', fillOpacity: 0.6 });
+                l.bringToFront();
+              },
+              mouseout: function(e) {
+                geojsonLayer.resetStyle(e.target);
+              }
+            });
+          }
+        }).addTo(map);
+
+        try {
+          map.fitBounds(geojsonLayer.getBounds(), { padding: [30, 30] });
+        } catch (e) {}
+      }
+    })
+    .catch(err => {
+      console.warn('Gagal memuat poligon SLS di beranda:', err);
+      // Auto fit bounds if multiple points exist
+      if (allLatLngs.length > 1) {
+        try {
+          const bounds = L.latLngBounds(allLatLngs);
+          map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+        } catch (e) {}
+      }
+    });
+
+  // Auto fit bounds fallback if geojson is still loading
+  if (allLatLngs.length > 1) {
+    try {
+      const bounds = L.latLngBounds(allLatLngs);
+      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+    } catch (e) {
+      // fallback
+    }
+  }
 }
 
 /* ==========================================================
@@ -441,16 +733,124 @@ function initLeafletMap() {
 function initCharts() {
   if (typeof Chart === 'undefined') return;
 
-  // Chart Kategori Usia
+  const dataUsia = (window.SERVER_DATA && window.SERVER_DATA.statistik && window.SERVER_DATA.statistik.usia && window.SERVER_DATA.statistik.usia.length > 0)
+    ? window.SERVER_DATA.statistik.usia
+    : desaData.statistik.rentangUsia;
+
+  const dataPekerjaan = (window.SERVER_DATA && window.SERVER_DATA.statistik && window.SERVER_DATA.statistik.pekerjaan && window.SERVER_DATA.statistik.pekerjaan.length > 0)
+    ? window.SERVER_DATA.statistik.pekerjaan
+    : desaData.statistik.kategoriPekerjaan;
+
+  const dataBelanja = (window.SERVER_DATA && window.SERVER_DATA.apbdes && window.SERVER_DATA.apbdes.belanja && window.SERVER_DATA.apbdes.belanja.length > 0)
+    ? window.SERVER_DATA.apbdes.belanja.map(b => ({ bidang: b.label, nominal: b.nominal }))
+    : desaData.apbdes.alokasiBelanja;
+
+  // Chart Piramida Penduduk
+  const ctxPiramida = document.getElementById('chartPiramida');
+  if (ctxPiramida) {
+    const rawUmur = (window.SERVER_DATA && window.SERVER_DATA.statistik_umur && window.SERVER_DATA.statistik_umur.length > 0)
+      ? window.SERVER_DATA.statistik_umur
+      : [
+          { kelompok_umur: "0 - 4", laki_laki: 121, perempuan: 138 },
+          { kelompok_umur: "5 - 9", laki_laki: 165, perempuan: 137 },
+          { kelompok_umur: "10 - 14", laki_laki: 191, perempuan: 166 },
+          { kelompok_umur: "15 - 19", laki_laki: 188, perempuan: 198 },
+          { kelompok_umur: "20 - 24", laki_laki: 204, perempuan: 162 },
+          { kelompok_umur: "25 - 29", laki_laki: 215, perempuan: 173 },
+          { kelompok_umur: "30 - 34", laki_laki: 162, perempuan: 183 },
+          { kelompok_umur: "35 - 39", laki_laki: 153, perempuan: 123 },
+          { kelompok_umur: "40 - 44", laki_laki: 143, perempuan: 150 },
+          { kelompok_umur: "45 - 49", laki_laki: 149, perempuan: 180 },
+          { kelompok_umur: "50 - 54", laki_laki: 192, perempuan: 166 },
+          { kelompok_umur: "54 - 59", laki_laki: 163, perempuan: 180 },
+          { kelompok_umur: "60 - 64", laki_laki: 174, perempuan: 143 },
+          { kelompok_umur: "65 - 69", laki_laki: 121, perempuan: 120 },
+          { kelompok_umur: "70 - 74", laki_laki: 66, perempuan: 81 },
+          { kelompok_umur: "75+", laki_laki: 97, perempuan: 94 }
+        ];
+
+    // Kelompok umur dibalik agar usia tertua (75+) berada di paling atas piramida dan usia termuda (0 - 4) di paling bawah
+    const reversedUmur = [...rawUmur].reverse();
+    const labels = reversedUmur.map(u => u.kelompok_umur);
+    const dataLaki = reversedUmur.map(u => -Math.abs(u.laki_laki));
+    const dataPerempuan = reversedUmur.map(u => Math.abs(u.perempuan));
+
+    new Chart(ctxPiramida, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Laki-laki',
+            data: dataLaki,
+            backgroundColor: '#2563eb',
+            borderRadius: 4,
+            barPercentage: 0.85
+          },
+          {
+            label: 'Perempuan',
+            data: dataPerempuan,
+            backgroundColor: '#ec4899',
+            borderRadius: 4,
+            barPercentage: 0.85
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            stacked: false,
+            ticks: {
+              callback: function(val) {
+                return Math.abs(val);
+              },
+              font: { size: 10, weight: 'bold' }
+            },
+            grid: {
+              color: function(ctx) {
+                return ctx.tick.value === 0 ? '#64748b' : '#f1f5f9';
+              },
+              lineWidth: function(ctx) {
+                return ctx.tick.value === 0 ? 2 : 1;
+              }
+            }
+          },
+          y: {
+            stacked: true,
+            grid: { display: false },
+            ticks: {
+              font: { size: 10, weight: 'bold' },
+              color: '#1e293b'
+            }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                return ` ${ctx.dataset.label}: ${Math.abs(ctx.raw)} Jiwa`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Chart Kategori Usia (Fallback / legacy)
   const ctxUsia = document.getElementById('chartUsia');
   if (ctxUsia) {
     new Chart(ctxUsia, {
       type: 'bar',
       data: {
-        labels: desaData.statistik.rentangUsia.map(u => u.label),
+        labels: dataUsia.map(u => u.label),
         datasets: [{
           label: 'Jumlah Jiwa',
-          data: desaData.statistik.rentangUsia.map(u => u.jumlah),
+          data: dataUsia.map(u => u.jumlah),
           backgroundColor: '#3d920c',
           borderRadius: 8
         }]
@@ -473,9 +873,9 @@ function initCharts() {
     new Chart(ctxPekerjaan, {
       type: 'doughnut',
       data: {
-        labels: desaData.statistik.kategoriPekerjaan.map(p => p.label),
+        labels: dataPekerjaan.map(p => p.label),
         datasets: [{
-          data: desaData.statistik.kategoriPekerjaan.map(p => p.jumlah),
+          data: dataPekerjaan.map(p => p.jumlah),
           backgroundColor: [
             '#3d920c', '#6bd731', '#0ea5e9', '#f59e0b', '#8b5cf6', '#94a3b8'
           ],
@@ -498,9 +898,9 @@ function initCharts() {
     new Chart(ctxApbdes, {
       type: 'pie',
       data: {
-        labels: desaData.apbdes.alokasiBelanja.map(b => b.bidang),
+        labels: dataBelanja.map(b => b.bidang),
         datasets: [{
-          data: desaData.apbdes.alokasiBelanja.map(b => b.nominal),
+          data: dataBelanja.map(b => b.nominal),
           backgroundColor: [
             '#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#6366f1'
           ],
@@ -576,14 +976,21 @@ function initLayananSurat() {
       const modal = document.getElementById('general-modal');
       const modalContent = document.getElementById('general-modal-content');
 
+      const prof = (window.SERVER_DATA && window.SERVER_DATA.profil) || {};
+      const kab = prof.kabupaten || 'Tasikmalaya';
+      const kec = prof.kecamatan || 'Jatiwaras';
+      const desa = prof.nama_desa || 'Papayan';
+      const alamat = prof.alamat || 'Kantor Desa';
+      const email = prof.email || 'desa@desa.id';
+
       modalContent.innerHTML = `
         <div id="print-area" class="p-6 sm:p-8 bg-white rounded-2xl">
           <!-- Kop Surat Resmi -->
           <div class="text-center border-b-2 border-gray-800 pb-4 mb-6">
-            <h4 class="text-xs uppercase font-bold tracking-widest text-gray-600">Pemerintah Kabupaten Kutai Kartanegara</h4>
-            <h4 class="text-xs uppercase font-bold tracking-widest text-gray-600">Kecamatan Marang Kayu</h4>
-            <h3 class="text-xl sm:text-2xl font-black uppercase text-gray-900 mt-1">Pemerintah Desa Kersik</h3>
-            <p class="text-[11px] text-gray-500 mt-0.5">Alamat: Jl. Langaseng Dusun Empang RT.003, Desa Kersik, Marang Kayu 75385 | Email: pemdes@kersik.desa.id</p>
+            <h4 class="text-xs uppercase font-bold tracking-widest text-gray-600">Pemerintah Kabupaten ${kab}</h4>
+            <h4 class="text-xs uppercase font-bold tracking-widest text-gray-600">Kecamatan ${kec}</h4>
+            <h3 class="text-xl sm:text-2xl font-black uppercase text-gray-900 mt-1">Pemerintah Desa ${desa}</h3>
+            <p class="text-[11px] text-gray-500 mt-0.5">Alamat: ${alamat} | Email: ${email}</p>
           </div>
 
           <div class="text-center mb-6">
@@ -608,8 +1015,8 @@ function initLayananSurat() {
           <div class="p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-600 mb-6">
             <p class="font-bold text-gray-800 mb-1"><i class="fa-solid fa-circle-check text-emerald-600"></i> Petunjuk Pengambilan:</p>
             <p>1. Simpan bukti ini atau screenshot nomor registrasi Anda.</p>
-            <p>2. Petugas pelayanan Desa Kersik akan memverifikasi berkas dan mengirim notifikasi WhatsApp bila surat telah selesai ditandatangani.</p>
-            <p>3. Surat dapat diambil di Kantor Desa Kersik dengan membawa fotokopi dokumen persyaratan.</p>
+            <p>2. Petugas pelayanan Desa ${desa} akan memverifikasi berkas dan mengirim notifikasi WhatsApp bila surat telah selesai ditandatangani.</p>
+            <p>3. Surat dapat diambil di Kantor Desa ${desa} dengan membawa fotokopi dokumen persyaratan.</p>
           </div>
 
           <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100 no-print">
@@ -645,7 +1052,9 @@ function initPengaduanForm() {
 
     const noTiket = `ADUAN-${Math.floor(10000 + Math.random() * 90000)}`;
 
-    alert(`Terima kasih Bapak/Ibu ${nama}.\nAspirasi Anda mengenai [${kategori}] telah diterima oleh Humas Pemdes Kersik dengan Nomor Tiket: ${noTiket}.\nKami akan segera menindaklanjuti laporan Anda.`);
+    const prof = (window.SERVER_DATA && window.SERVER_DATA.profil) || {};
+    const desa = prof.nama_desa || 'Desa';
+    alert(`Terima kasih Bapak/Ibu ${nama}.\nAspirasi Anda mengenai [${kategori}] telah diterima oleh Humas Pemdes ${desa} dengan Nomor Tiket: ${noTiket}.\nKami akan segera menindaklanjuti laporan Anda.`);
     form.reset();
   });
 }

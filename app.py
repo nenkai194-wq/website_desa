@@ -707,8 +707,14 @@ def peta_desa():
     total_p = sum(r.get('perempuan', 0) for r in sls_list)
     total_kk = sum(r.get('keluarga', 0) for r in sls_list)
 
-    # Titik wisata / fasilitas
-    cursor.execute("SELECT id, nama, kategori, lokasi, latitude, longitude, gambar FROM wisata WHERE status = 'Disetujui'")
+    # Titik wisata / fasilitas (filter khusus koordinat wilayah Papayan)
+    cursor.execute("""
+        SELECT id, nama, kategori, lokasi, latitude, longitude, gambar 
+        FROM wisata 
+        WHERE (status = 'Disetujui' OR status IS NULL)
+          AND latitude BETWEEN -7.65 AND -7.30
+          AND longitude BETWEEN 108.05 AND 108.35
+    """)
     wisata_list = [dict(r) for r in cursor.fetchall()]
 
     conn.close()

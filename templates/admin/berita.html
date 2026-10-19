@@ -154,7 +154,7 @@
             <tr class="hover:bg-slate-50/70 transition">
               <td class="py-3.5 px-4">
                 <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 relative">
-                  <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar.startswith('static/') else b.gambar }}" class="w-full h-full object-cover" alt="{{ b.judul }}" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'" />
+                  <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar.startswith('static/') else b.gambar }}" class="w-full h-full object-cover" alt="{{ b.judul }}" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'" />
                 </div>
               </td>
               <td class="py-3.5 px-4 max-w-sm">
@@ -998,7 +998,7 @@
         </div>
         <div class="flex items-center gap-4">
           <div class="w-24 h-20 rounded-xl overflow-hidden bg-white border border-slate-200 flex-shrink-0 relative shadow-inner">
-            <img id="preview-berita-gambar" src="{{ url_for('static', filename='images/pantai_kersik.jpg') }}" class="w-full h-full object-cover" />
+            <img id="preview-berita-gambar" src="{{ url_for('static', filename='images/banner1.png') }}" class="w-full h-full object-cover" />
           </div>
           <div class="flex-1 space-y-1.5">
             <input type="file" name="gambar_file" id="input-berita-file" accept="image/*" onchange="previewFotoBerita(event)" class="text-xs text-slate-500 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-100 file:text-brand-800 hover:file:bg-brand-200 cursor-pointer w-full" />
@@ -1350,7 +1350,7 @@
 </div>
 
 <script>
-  const defaultFotoBerita = "{{ url_for('static', filename='images/pantai_kersik.jpg') }}";
+  const defaultFotoBerita = "{{ url_for('static', filename='images/banner1.png') }}";
 
   function previewFotoBerita(event) {
     const file = event.target.files[0];

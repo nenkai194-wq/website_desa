@@ -58,7 +58,7 @@ function initHeroCarousel() {
   if (existingSlides.length === 0) {
     container.innerHTML = slides.map((slide, index) => `
       <div class="carousel-slide absolute inset-0 w-full h-full transition-opacity duration-1000 ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}" data-slide="${index}">
-        <img src="${slide.image}" onerror="this.src='${slide.fallback || 'static/images/pantai_kersik.jpg'}'" class="w-full h-full object-cover brightness-[0.45]" alt="${slide.title}">
+        <img src="${slide.image}" onerror="this.src='${slide.fallback || 'static/images/banner1.png'}'" class="w-full h-full object-cover brightness-[0.45]" alt="${slide.title}">
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30 flex items-center">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white pt-12 md:pt-16">
             <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-600/90 text-white backdrop-blur-md mb-4 border border-emerald-400/30">
@@ -244,7 +244,7 @@ window.bukaModalWisata = function(id) {
     fasilitasArray = w.fasilitas.split(',').map(f => f.trim()).filter(Boolean);
   }
 
-  let fotoUrl = w.gambar || '/static/images/pantai_kersik.jpg';
+  let fotoUrl = w.gambar || '/static/images/banner1.png';
   if (fotoUrl.startsWith('static/')) fotoUrl = '/' + fotoUrl;
 
   const lat = w.latitude || null;
@@ -260,7 +260,7 @@ window.bukaModalWisata = function(id) {
         </div>
         <button onclick="tutupModal()" class="text-gray-400 hover:text-gray-600 p-2 text-xl font-bold">&times;</button>
       </div>
-      <img src="${fotoUrl}" class="w-full h-72 object-cover rounded-xl mb-4" alt="${w.nama}" onerror="this.src='/static/images/pantai_kersik.jpg'">
+      <img src="${fotoUrl}" class="w-full h-72 object-cover rounded-xl mb-4" alt="${w.nama}" onerror="this.src='/static/images/banner1.png'">
       <p class="text-gray-700 leading-relaxed text-sm mb-4">${w.deskripsi}</p>
       
       ${fasilitasArray.length > 0 ? `
@@ -496,12 +496,17 @@ function initLeafletMap() {
   if (!mapElement || typeof L === 'undefined') return;
 
   const profil = (window.SERVER_DATA && window.SERVER_DATA.profil) ? window.SERVER_DATA.profil : {};
-  const lat = profil.koordinat_lat ? parseFloat(profil.koordinat_lat) : (desaData && desaData.identitas ? desaData.identitas.koordinat[0] : -0.0682);
-  const lng = profil.koordinat_lng ? parseFloat(profil.koordinat_lng) : (desaData && desaData.identitas ? desaData.identitas.koordinat[1] : 117.3854);
-  const desaName = profil.nama_desa || (desaData && desaData.identitas ? desaData.identitas.nama : 'Desa');
-  const kersikCoord = [lat, lng];
+  const lat = profil.koordinat_lat ? parseFloat(profil.koordinat_lat) : (desaData && desaData.identitas ? desaData.identitas.koordinat[0] : -7.4782);
+  const lng = profil.koordinat_lng ? parseFloat(profil.koordinat_lng) : (desaData && desaData.identitas ? desaData.identitas.koordinat[1] : 108.2055);
+  const desaName = profil.nama_desa || (desaData && desaData.identitas ? desaData.identitas.nama : 'Desa Papayan');
+  const papayanCoord = [lat, lng];
 
-  const map = L.map('map').setView(kersikCoord, 14);
+  // Koordinat aman khusus Desa Papayan, Kab. Tasikmalaya
+  const isValidPapayanCoord = (cLat, cLng) => {
+    return !isNaN(cLat) && !isNaN(cLng) && cLat >= -7.65 && cLat <= -7.30 && cLng >= 108.05 && cLng <= 108.35;
+  };
+
+  const map = L.map('map').setView(papayanCoord, 14);
   window.desaMap = map;
   window.desaMapMarkers = {};
 
@@ -524,20 +529,19 @@ function initLeafletMap() {
   };
 
   const kantorIcon = createMapPin('#1e40af', 'fa-solid fa-landmark-flag');
-  const wisataIcon = createMapPin('#3d920c', 'fa-solid fa-umbrella-beach');
-  const mangroveIcon = createMapPin('#047857', 'fa-solid fa-tree');
+  const wisataIcon = createMapPin('#15803d', 'fa-solid fa-mountain-sun');
   const umkmIcon = createMapPin('#0284c7', 'fa-solid fa-store');
 
   const allLatLngs = [];
 
   // 1. Plot Kantor Desa
-  if (lat && lng) {
+  if (isValidPapayanCoord(lat, lng)) {
     const kantorMarker = L.marker([lat, lng], { icon: kantorIcon }).addTo(map);
     kantorMarker.bindPopup(`
       <div style="font-family:'Outfit',sans-serif;min-width:210px;padding:4px;">
         <span style="font-size:10px;text-transform:uppercase;color:#1e40af;font-weight:800;letter-spacing:0.5px;">Pusat Pemerintahan</span>
         <h4 style="margin:2px 0 4px;font-size:14px;font-weight:800;color:#0f172a;">Kantor Desa ${desaName}</h4>
-        <p style="margin:0 0 6px;font-size:11px;color:#475569;line-height:1.4;">${profil.alamat || 'Kantor Pelayanan & Administrasi Desa'}</p>
+        <p style="margin:0 0 6px;font-size:11px;color:#475569;line-height:1.4;">${profil.alamat || 'Kantor Pelayanan & Administrasi Desa Papayan'}</p>
         <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:white;background:#1e40af;padding:5px 10px;border-radius:6px;text-decoration:none;">
           <i class="fa-solid fa-diamond-turn-right"></i> Rute ke Kantor Desa
         </a>
@@ -556,26 +560,24 @@ function initLeafletMap() {
       if (w.latitude && w.longitude) {
         const wLat = parseFloat(w.latitude);
         const wLng = parseFloat(w.longitude);
-        if (!isNaN(wLat) && !isNaN(wLng)) {
-          const isMangrove = (w.nama && w.nama.toLowerCase().includes('mangrove')) || (w.kategori && w.kategori.toLowerCase().includes('konservasi'));
-          const pinIcon = isMangrove ? mangroveIcon : wisataIcon;
-          const marker = L.marker([wLat, wLng], { icon: pinIcon }).addTo(map);
+        if (isValidPapayanCoord(wLat, wLng)) {
+          const marker = L.marker([wLat, wLng], { icon: wisataIcon }).addTo(map);
 
-          let fotoUrl = w.gambar || '/static/images/pantai_kersik.jpg';
+          let fotoUrl = w.gambar || '/static/images/banner1.png';
           if (fotoUrl.startsWith('static/')) fotoUrl = '/' + fotoUrl;
 
           marker.bindPopup(`
             <div style="font-family:'Outfit',sans-serif;min-width:220px;max-width:270px;padding:4px;">
               <div style="width:100%;height:100px;border-radius:8px;overflow:hidden;margin-bottom:8px;background:#f1f5f9;">
-                <img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='/static/images/pantai_kersik.jpg'">
+                <img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='/static/images/banner1.png'">
               </div>
-              <span style="font-size:10px;text-transform:uppercase;color:#3d920c;font-weight:800;letter-spacing:0.5px;">${w.kategori || 'Destinasi Wisata'}</span>
+              <span style="font-size:10px;text-transform:uppercase;color:#15803d;font-weight:800;letter-spacing:0.5px;">${w.kategori || 'Destinasi Wisata'}</span>
               <h4 style="margin:2px 0 4px;font-size:14px;font-weight:800;color:#0f172a;">${w.nama}</h4>
               <p style="margin:0 0 6px;font-size:11px;color:#475569;line-height:1.4;">${w.deskripsi ? w.deskripsi.substring(0, 95) + '...' : ''}</p>
               
               <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid #e2e8f0;">
                 <span style="font-size:11px;background:#e0f8d4;color:#1c4e09;font-weight:700;padding:2px 8px;border-radius:6px;">${w.tiket || 'Gratis'}</span>
-                <a href="https://www.google.com/maps/dir/?api=1&destination=${wLat},${wLng}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:white;background:#3d920c;padding:5px 8px;border-radius:6px;text-decoration:none;">
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${wLat},${wLng}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:white;background:#15803d;padding:5px 8px;border-radius:6px;text-decoration:none;">
                   <i class="fa-solid fa-diamond-turn-right"></i> Petunjuk Arah
                 </a>
               </div>
@@ -590,18 +592,20 @@ function initLeafletMap() {
   } else if (typeof desaData !== 'undefined' && desaData.titikPeta) {
     // Fallback to static data
     desaData.titikPeta.forEach(pt => {
-      const marker = L.marker([pt.lat, pt.lng], { icon: wisataIcon }).addTo(map);
-      marker.bindPopup(`
-        <div style="font-family:'Outfit',sans-serif;min-width:180px;padding:4px;">
-          <span style="font-size:10px;text-transform:uppercase;color:#3d920c;font-weight:700;">${pt.kategori}</span>
-          <h4 style="margin:2px 0 4px;font-size:14px;font-weight:700;color:#0f172a;">${pt.nama}</h4>
-          <p style="margin:0 0 6px;font-size:12px;color:#475569;line-height:1.4;">${pt.deskripsi}</p>
-          <p style="margin:0;font-size:11px;color:#64748b;font-weight:500;">
-            <i class="fa-solid fa-map-pin" style="color:#3d920c;"></i> ${pt.alamat}
-          </p>
-        </div>
-      `);
-      allLatLngs.push([pt.lat, pt.lng]);
+      if (isValidPapayanCoord(pt.lat, pt.lng)) {
+        const marker = L.marker([pt.lat, pt.lng], { icon: wisataIcon }).addTo(map);
+        marker.bindPopup(`
+          <div style="font-family:'Outfit',sans-serif;min-width:180px;padding:4px;">
+            <span style="font-size:10px;text-transform:uppercase;color:#15803d;font-weight:700;">${pt.kategori}</span>
+            <h4 style="margin:2px 0 4px;font-size:14px;font-weight:700;color:#0f172a;">${pt.nama}</h4>
+            <p style="margin:0 0 6px;font-size:12px;color:#475569;line-height:1.4;">${pt.deskripsi}</p>
+            <p style="margin:0;font-size:11px;color:#64748b;font-weight:500;">
+              <i class="fa-solid fa-map-pin" style="color:#15803d;"></i> ${pt.alamat}
+            </p>
+          </div>
+        `);
+        allLatLngs.push([pt.lat, pt.lng]);
+      }
     });
   }
 
@@ -615,16 +619,16 @@ function initLeafletMap() {
       if (u.latitude && u.longitude) {
         const uLat = parseFloat(u.latitude);
         const uLng = parseFloat(u.longitude);
-        if (!isNaN(uLat) && !isNaN(uLng)) {
+        if (isValidPapayanCoord(uLat, uLng)) {
           const marker = L.marker([uLat, uLng], { icon: umkmIcon }).addTo(map);
 
-          let fotoUrl = u.gambar || '/static/images/produk_terasi.jpg';
+          let fotoUrl = u.gambar || '/static/images/banner2.png';
           if (fotoUrl.startsWith('static/')) fotoUrl = '/' + fotoUrl;
 
           marker.bindPopup(`
             <div style="font-family:'Outfit',sans-serif;min-width:220px;max-width:270px;padding:4px;">
               <div style="width:100%;height:100px;border-radius:8px;overflow:hidden;margin-bottom:8px;background:#f1f5f9;">
-                <img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='/static/images/produk_terasi.jpg'">
+                <img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='/static/images/banner2.png'">
               </div>
               <span style="font-size:10px;text-transform:uppercase;color:#0284c7;font-weight:800;letter-spacing:0.5px;">Sentra UMKM Desa</span>
               <h4 style="margin:2px 0 2px;font-size:14px;font-weight:800;color:#0f172a;">${u.nama}</h4>

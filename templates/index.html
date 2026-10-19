@@ -238,7 +238,7 @@
       {% if active_sliders %}
         {% for s in active_sliders %}
         <div class="carousel-slide absolute inset-0 w-full h-full transition-opacity duration-1000 {% if loop.first %}opacity-100 z-10{% else %}opacity-0 z-0{% endif %}" data-slide="{{ loop.index0 }}">
-          <img src="{{ url_for('static', filename=s.gambar.replace('static/', '')) if s.gambar and s.gambar.startswith('static/') else (s.gambar or url_for('static', filename='images/banner1.png')) }}" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'" class="w-full h-full object-cover brightness-[0.45]" alt="{{ s.judul }}">
+          <img src="{{ url_for('static', filename=s.gambar.replace('static/', '')) if s.gambar and s.gambar.startswith('static/') else (s.gambar or url_for('static', filename='images/banner1.png')) }}" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'" class="w-full h-full object-cover brightness-[0.45]" alt="{{ s.judul }}">
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30 flex items-center">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white pt-12 md:pt-16">
               <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold max-w-3xl leading-tight text-white drop-shadow-md">
@@ -2511,7 +2511,7 @@
              onclick="bukaModalDetailWisata({{ w.id }})"
              title="Klik untuk melihat foto besar & detail {{ w.nama }}">
           <div class="relative h-60 overflow-hidden bg-slate-900">
-            <img src="{{ url_for('static', filename=w.gambar.replace('static/', '')) if w.gambar and w.gambar.startswith('static/') else (w.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" alt="{{ w.nama }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'">
+            <img src="{{ url_for('static', filename=w.gambar.replace('static/', '')) if w.gambar and w.gambar.startswith('static/') else (w.gambar or url_for('static', filename='images/banner1.png')) }}" alt="{{ w.nama }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
             <div class="absolute top-3 left-3 bg-emerald-700/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
               {{ w.kategori }}
             </div>
@@ -2856,7 +2856,7 @@
                    onclick="bukaModalDetailBerita({{ b.id }})"
                    title="Klik untuk membaca berita lengkap & foto besar">
             <div class="relative h-56 overflow-hidden bg-slate-900">
-              <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar and b.gambar.startswith('static/') else (b.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" alt="{{ b.judul }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'">
+              <img src="{{ url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar and b.gambar.startswith('static/') else (b.gambar or url_for('static', filename='images/banner1.png')) }}" alt="{{ b.judul }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
               <span class="absolute top-3 left-3 bg-emerald-600/90 text-white text-[11px] font-bold px-3 py-1 rounded-full backdrop-blur-md shadow-md z-10">
                 {{ b.kategori }}
               </span>
@@ -2947,12 +2947,12 @@
           {% for g in galeri_list %}
           <div class="galeri-item-card bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col group cursor-pointer"
                data-kategori="{{ g.kategori }}"
-               onclick="bukaLightboxFrontend('{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar and g.gambar.startswith('static/') else (g.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}', '{{ g.judul|replace('\'', '\\\'') }}', '{{ g.kategori }}', '{{ g.tanggal }}', '{{ g.pengunggah|replace('\'', '\\\'') if g.pengunggah else 'Pemerintah Desa' }}', '{{ (g.deskripsi or '')|replace('\r', '')|replace('\n', ' ')|replace('\'', '\\\'') }}')">
+               onclick="bukaLightboxFrontend('{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar and g.gambar.startswith('static/') else (g.gambar or url_for('static', filename='images/banner1.png')) }}', '{{ g.judul|replace('\'', '\\\'') }}', '{{ g.kategori }}', '{{ g.tanggal }}', '{{ g.pengunggah|replace('\'', '\\\'') if g.pengunggah else 'Pemerintah Desa' }}', '{{ (g.deskripsi or '')|replace('\r', '')|replace('\n', ' ')|replace('\'', '\\\'') }}')">
             <div class="relative h-60 overflow-hidden bg-slate-900">
-              <img src="{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar and g.gambar.startswith('static/') else (g.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" 
+              <img src="{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar and g.gambar.startswith('static/') else (g.gambar or url_for('static', filename='images/banner1.png')) }}" 
                    alt="{{ g.judul }}" 
                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                   onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'">
+                   onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
               
               <!-- Badge Kategori -->
               <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-bold shadow-md z-10 backdrop-blur-md {% if g.kategori == 'Kegiatan Pemdes' %}bg-blue-600/90 text-white{% else %}bg-emerald-600/90 text-white{% endif %}">
@@ -3036,14 +3036,14 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {% for p in penghargaan_list %}
           <div class="bg-gradient-to-b from-amber-50/60 to-white rounded-3xl overflow-hidden border-2 border-amber-200/80 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col group cursor-pointer"
-               onclick="bukaLightboxFrontend('{{ url_for('static', filename=p.gambar.replace('static/', '')) if p.gambar and p.gambar.startswith('static/') else (p.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}', '{{ p.judul|replace('\'', '\\\'') }}', 'Piagam & Penghargaan', '{{ p.tanggal }}', '{{ (p.pemberi_penghargaan or 'Pemerintah / Instansi Resmi')|replace('\'', '\\\'') }}', '{{ (p.deskripsi or '')|replace('\r', '')|replace('\n', ' ')|replace('\'', '\\\'') }}')">
+               onclick="bukaLightboxFrontend('{{ url_for('static', filename=p.gambar.replace('static/', '')) if p.gambar and p.gambar.startswith('static/') else (p.gambar or url_for('static', filename='images/banner1.png')) }}', '{{ p.judul|replace('\'', '\\\'') }}', 'Piagam & Penghargaan', '{{ p.tanggal }}', '{{ (p.pemberi_penghargaan or 'Pemerintah / Instansi Resmi')|replace('\'', '\\\'') }}', '{{ (p.deskripsi or '')|replace('\r', '')|replace('\n', ' ')|replace('\'', '\\\'') }}')">
             
             <!-- Frame Piagam dengan aksen Gold Ribbon -->
             <div class="relative h-64 overflow-hidden bg-slate-900 border-b border-amber-200/70">
-              <img src="{{ url_for('static', filename=p.gambar.replace('static/', '')) if p.gambar and p.gambar.startswith('static/') else (p.gambar or url_for('static', filename='images/pantai_kersik.jpg')) }}" 
+              <img src="{{ url_for('static', filename=p.gambar.replace('static/', '')) if p.gambar and p.gambar.startswith('static/') else (p.gambar or url_for('static', filename='images/banner1.png')) }}" 
                    alt="{{ p.judul }}" 
                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                   onerror="this.src='{{ url_for('static', filename='images/pantai_kersik.jpg') }}'">
+                   onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
               
               <!-- Badge Tahun -->
               {% if p.tahun_penghargaan %}
@@ -4337,7 +4337,7 @@
           </label>
           <div class="flex items-center gap-3">
             <div class="w-20 h-20 rounded-xl overflow-hidden bg-white border border-slate-200 flex-shrink-0 flex items-center justify-center relative shadow-inner">
-              <img id="warga-prev-wisata" src="{{ url_for('static', filename='images/pantai_kersik.jpg') }}" class="w-full h-full object-cover" />
+              <img id="warga-prev-wisata" src="{{ url_for('static', filename='images/banner1.png') }}" class="w-full h-full object-cover" />
             </div>
             <div class="flex-1 space-y-1.5">
               <input type="file" name="gambar_file" id="warga-wisata-file" required accept="image/*" onchange="wargaPreviewWisata(event)" class="text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-100 file:text-brand-800 hover:file:bg-brand-200 cursor-pointer w-full" />
@@ -5496,7 +5496,7 @@
         fasilitas: {{ (w.fasilitas or '')|tojson }},
         tiket: {{ (w.tiket or 'Gratis / Sukarela')|tojson }},
         lokasi: {{ (w.lokasi or 'Desa Papayan')|tojson }},
-        gambar: {{ (url_for('static', filename=w.gambar.replace('static/', '')) if w.gambar and w.gambar.startswith('static/') else (w.gambar or url_for('static', filename='images/pantai_kersik.jpg')))|tojson }},
+        gambar: {{ (url_for('static', filename=w.gambar.replace('static/', '')) if w.gambar and w.gambar.startswith('static/') else (w.gambar or url_for('static', filename='images/banner1.png')))|tojson }},
         latitude: {{ w.latitude if w.latitude is not none else 'null' }},
         longitude: {{ w.longitude if w.longitude is not none else 'null' }}
       }{% if not loop.last %},{% endif %}
@@ -5520,7 +5520,7 @@
       const petaBtn = document.getElementById('modal-wisata-peta-btn');
 
       if (img) {
-        img.src = item.gambar || '/static/images/pantai_kersik.jpg';
+        img.src = item.gambar || '/static/images/banner1.png';
         img.alt = item.nama;
       }
       if (kategori) kategori.innerText = item.kategori || 'Destinasi Wisata';
@@ -5755,7 +5755,7 @@
         tanggal: {{ (b.tanggal or '')|tojson }},
         ringkasan: {{ (b.ringkasan or '')|tojson }},
         isi: {{ (b.isi or '')|tojson }},
-        gambar: {{ (url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar and b.gambar.startswith('static/') else (b.gambar or url_for('static', filename='images/pantai_kersik.jpg')))|tojson }}
+        gambar: {{ (url_for('static', filename=b.gambar.replace('static/', '')) if b.gambar and b.gambar.startswith('static/') else (b.gambar or url_for('static', filename='images/banner1.png')))|tojson }}
       }{% if not loop.last %},{% endif %}
       {% endfor %}
     };
@@ -5774,7 +5774,7 @@
       const isi = document.getElementById('modal-berita-isi');
 
       if (img) {
-        img.src = item.gambar || '/static/images/pantai_kersik.jpg';
+        img.src = item.gambar || '/static/images/banner1.png';
         img.alt = item.judul;
       }
       if (kategori) kategori.innerText = item.kategori || 'Kabar Desa';
@@ -6131,7 +6131,7 @@
           </label>
           <div class="flex items-center gap-3">
             <div class="w-16 h-16 rounded-xl overflow-hidden bg-white border border-slate-200 shrink-0 flex items-center justify-center shadow-inner">
-              <img id="prev-pengajuan-galeri" src="{{ url_for('static', filename='images/pantai_kersik.jpg') }}" class="w-full h-full object-cover opacity-60" />
+              <img id="prev-pengajuan-galeri" src="{{ url_for('static', filename='images/banner1.png') }}" class="w-full h-full object-cover opacity-60" />
             </div>
             <div class="flex-1 space-y-1">
               <input type="file" name="gambar_file" id="input-pengajuan-galeri-file" required accept="image/*" onchange="previewPengajuanGaleri(event)"

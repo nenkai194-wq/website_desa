@@ -12,10 +12,10 @@ def export_site():
     ]
     
     pub_docs = {
-        '1': 'static/docs/publikasi/buku_profil_desa_kersik_2026.pdf',
-        '2': 'static/docs/publikasi/buku_desa_kersik_dalam_angka_2026.pdf',
+        '1': 'static/docs/publikasi/buku_profil_desa_papayan_2026.pdf',
+        '2': 'static/docs/publikasi/buku_desa_papayan_dalam_angka_2026.pdf',
         '3': 'static/docs/publikasi/laporan_transparansi_apbdes_2025_2026.pdf',
-        '4': 'static/docs/publikasi/buku_saku_panduan_wisata_pesisir.pdf'
+        '4': 'static/docs/publikasi/buku_saku_panduan_wisata_papayan.pdf'
     }
 
     # Simulation script to handle form submissions gracefully on GitHub Pages

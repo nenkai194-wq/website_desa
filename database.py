@@ -802,15 +802,15 @@ def init_db():
             foto_kades, sambutan_kades, visi, misi, luas_wilayah, koordinat_lat, koordinat_lng
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            1, "Kersik", "Marang Kayu", "Kutai Kartanegara", "Kalimantan Timur",
-            "75385", "64.02.17.2005", "Jalan Langaseng Dusun Empang RT.003, Desa Papayan",
-            "0821-5020-8664", "pemdes@kersik.desa.id",
-            "Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00) WITA",
-            "Jumadi, S.Sos", "2021 - 2027", "static/images/kades.jpg",
-            "Selamat Datang di Portal Resmi Informasi & Pelayanan Publik Desa Papayan. Kami berkomitmen mewujudkan keterbukaan informasi, pelayanan cepat bebas calo, dan optimalisasi potensi wisata Pantai Biru Kersik serta konservasi mangrove berkelanjutan.",
-            "Terwujudnya Desa Papayan yang Maju, Sejahtera, Transparan, Berbasis Wisata Bahari dan Lingkungan Hidup Lestari.",
-            "1. Meningkatkan pelayanan publik prima berbasis teknologi digital.\n2. Mengembangkan potensi pariwisata bahari Pantai Biru Kersik dan ekonomi kreatif pesisir.\n3. Menjaga kelestarian ekosistem mangrove dan prestasi Program Kampung Iklim (Proklim).\n4. Meningkatkan kapasitas ekonomi nelayan dan pemberdayaan UMKM lokal.",
-            "42,85 km²", -0.0682, 117.3854
+            1, "Papayan", "Jatiwaras", "Tasikmalaya", "Jawa Barat",
+            "46192", "32.06.34.2001", "Jl. Raya Jatiwaras No. 01, Desa Papayan, Kec. Jatiwaras, Kab. Tasikmalaya, Jawa Barat 46192",
+            "0812-3456-7890", "pemdes@papayan.desa.id",
+            "Senin - Jumat (08.00 - 15.00) WIB",
+            "Irwan Setiawan, S.Kom, M.T.", "2021 - Sekarang", "static/images/kades.jpg",
+            "Selamat Datang di Portal Resmi Informasi & Pelayanan Publik Desa Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya. Kami berkomitmen mewujudkan transparansi tata kelola pemerintahan, pelayanan publik digital yang cepat dan akuntabel, serta optimalisasi potensi agrowisata, UMKM, dan kesejahteraan masyarakat Desa Papayan.",
+            "Terwujudnya Desa Papayan yang Mandiri, Religius, Maju, Sejahtera, dan Berdaya Saing Berbasis Agrowisata dan Tata Kelola Digital.",
+            "1. Meningkatkan pelayanan administrasi kependudukan dan perizinan berbasis digital.\n2. Mengembangkan potensi agrowisata desa, perkebunan, dan ekonomi kreatif UMKM lokal.\n3. Meningkatkan infrastruktur jalan desa, irigasi pertanian, dan sarana publik yang merata.\n4. Memperkuat kerukunan warga, nilai-nilai religius, serta transparansi pengelolaan APBDes.",
+            "14,85 km²", -7.4782, 108.2055
         ))
         conn.commit()
 
@@ -818,14 +818,16 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM perangkat_desa")
     if cursor.fetchone()[0] == 0:
         aparaturs = [
-            ("Jumadi, S.Sos", "Kepala Desa Papayan", "static/images/kades.jpg", "0821-5020-8664", "Mewujudkan Desa Papayan yang Maju, Sejahtera, Transparan, Berbasis Wisata Bahari.", 1),
+            ("Irwan Setiawan, S.Kom, M.T.", "Kepala Desa Papayan", "static/images/kades.jpg", "0812-3456-7890", "Mewujudkan Desa Papayan yang Mandiri, Religius, Maju, Sejahtera, dan Berdaya Saing.", 1),
             ("Rahmat Hidayat, S.P", "Sekretaris Desa", "static/images/sekdes.jpg", "0812-4455-8899", "Mendukung tata kelola administrasi pemerintahan desa yang akuntabel dan cepat.", 2),
             ("Siti Aminah, A.Md", "Kaur Keuangan", "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&auto=format&fit=crop&q=80", "0823-1122-3344", "Menjaga transparansi dan akuntabilitas pengelolaan APBDes demi pembangunan nyata.", 3),
             ("Muhammad Yusuf", "Kasi Pemerintahan", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80", "0852-3344-5566", "Melayani tertib administrasi kependudukan dan pertanahan secara ramah dan profesional.", 4),
             ("Fatimah Azzahra, S.Pd", "Kasi Kesejahteraan & Pelayanan", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80", "0813-7788-9900", "Mendorong pemberdayaan sosial, posyandu, dan layanan masyarakat umum.", 5),
-            ("Baharuddin, S.T", "Kaur Umum & Perencanaan", "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80", "0821-9988-7766", "Perencanaan infrastruktur fisik terpadu: jalan pesisir dan dermaga nelayan.", 6),
-            ("H. Syamsir", "Kepala Dusun Empang", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=80", "0813-1234-5678", "Mengawal keharmonisan warga dan pembangunan di kawasan Dusun Empang.", 7),
-            ("Rustam Efendi", "Kepala Dusun Kersik", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop&q=80", "0853-2233-4455", "Membangun gotong royong dan kemitraan kelompok nelayan pesisir Dusun Kersik.", 8)
+            ("Baharuddin, S.T", "Kaur Perencanaan", "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80", "0821-9988-7766", "Perencanaan infrastruktur fisik desa, jalan poros, dan fasilitas publik desa.", 6),
+            ("Agus Salim", "Kepala Dusun Demung Landung", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=80", "0813-1234-5678", "Mengawal keharmonisan warga dan pembangunan di kawasan Dusun Demung Landung.", 7),
+            ("Dedi Kusnadi", "Kepala Dusun Ranca Sari", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop&q=80", "0853-2233-4455", "Membangun gotong royong dan kemitraan warga di Dusun Ranca Sari.", 8),
+            ("Hendra Wijaya", "Kepala Dusun Margahayu", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80", "0852-1122-3344", "Mempererat guyub rukun dan kemajuan warga di wilayah Dusun Margahayu.", 9),
+            ("Yayan Suryana", "Kepala Dusun Cihaur", "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80", "0813-9988-1122", "Mengayomi dan memajukan potensi pertanian masyarakat Dusun Cihaur.", 10)
         ]
         cursor.executemany('''
         INSERT INTO perangkat_desa (nama, jabatan, foto, kontak, sambutan_singkat, urutan)
@@ -915,22 +917,22 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM wisata")
     if cursor.fetchone()[0] == 0:
         destinasi = [
-            ("Pantai Biru Kersik (Pantai Kersik)", "Wisata Bahari Unggulan",
-             "Ikon pariwisata bahari Desa Papayan yang berbatasan langsung dengan Selat Makassar. Menampilkan bentangan pasir bersih, deretan cemara laut rindang, dan jembatan kayu estetik yang menjorok ke laut.",
-             "Jembatan Foto Laut, Camping Ground, Saung Santai, Warung Kuliner, Toilet, Homestay",
-             "Rp 5.000 / orang", "Pesisir Selat Makassar, Dusun Kersik", "static/images/pantai_kersik.jpg", 1),
-            ("Ekowisata & Konservasi Mangrove Kersik", "Ekowisata Lingkungan (Proklim)",
-             "Kawasan hutan bakau rimbun penahan abrasi pantai yang dikelola swadaya oleh Pokdarwis dan Pemdes Papayan. Menghantarkan Desa Papayan meraih penghargaan Kampung Iklim (Proklim) Utama dari KLHK RI.",
-             "Track Kayu Susur Mangrove, Pusat Pembibitan Bakau, Spot Bird Watching, Edukasi Adopsi Mangrove",
-             "Gratis / Donasi Bibit", "Kawasan Pesisir Muara, Desa Papayan", "static/images/mangrove.jpg", 2),
-            ("Kampung Nelayan & Wisata Tambak", "Wisata Budidaya & Pemancingan",
-             "Menyajikan pengalaman memancing air payau, melihat budidaya udang windu dan ikan bandeng, serta proses tradisional pembuatan ikan asin dan terasi khas pesisir Kutai Kartanegara.",
-             "Spot Pemancingan, Sewa Perahu Nelayan, Warung Ikan Bakar Segar, Pusat Pengolahan Ikan",
-             "Sesuai aktivitas sewa", "Dusun Empang & Muara Kersik", "static/images/tambak.jpg", 3)
+            ("Agrowisata & Perkebunan Papayan", "Agrowisata Alam",
+             "Pusat perkebunan rakyat terpadu dengan panorama perbukitan hijau Jatiwaras, perkebunan buah-buahan lokal, dan suasana asri pedesaan Tasikmalaya.",
+             "Gazebo Pandang, Area Parkir Luas, Jalur Trekking Kebun, Warung Kuliner Tradisional, Toilet",
+             "Gratis / Sukarela", "Jl. Rancasari - Papayan, Dusun Ranca Sari", -7.4782, 108.2055, "static/images/banner1.png", 1),
+            ("Taman Rekreasi & Lapang Papayan", "Rekreasi Keluarga & Olahraga",
+             "Pusat kegiatan warga, sarana olahraga terbuka, dan ruang interaksi sosial masyarakat Desa Papayan dengan pemandangan pedesaan yang sejuk.",
+             "Lapang Sepakbola, Jogging Track, Taman Bermain Anak, Panggung Komunitas, Kios Jajanan",
+             "Gratis", "Jl. Raya Jatiwaras, Dusun Demung Landung", -7.4750, 108.2070, "static/images/banner2.png", 2),
+            ("Wisata Lembah & Curug Papayan", "Wisata Alam",
+             "Keindahan alam alami aliran sungai jernih dan perbukitan Papayan yang cocok untuk rekreasi air, santai akhir pekan, dan fotografi lanskap.",
+             "Spot Foto Alami, Saung Istirahat, Area Kemah, Jalur Setapak",
+             "Rp 5.000 / orang", "Dusun Cihaur, Desa Papayan", -7.4820, 108.2030, "static/images/banner3.png", 3)
         ]
         cursor.executemany('''
-        INSERT INTO wisata (nama, kategori, deskripsi, fasilitas, tiket, lokasi, gambar, urutan)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO wisata (nama, kategori, deskripsi, fasilitas, tiket, lokasi, latitude, longitude, gambar, urutan)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', destinasi)
         conn.commit()
 
@@ -938,18 +940,18 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM umkm")
     if cursor.fetchone()[0] == 0:
         produk = [
-            ("Terasi Udang Rebon Asli Kersik (Khas Marang Kayu)", "KWT Melati Pesisir Kersik", 25000, "Pack 250gr",
-             "Dibuat dari 100% udang rebon tangkapan nelayan Desa Papayan, diolah alami tanpa bahan kimia, harum gurih dan legit.", "6282150208664", "static/images/produk_terasi.jpg", 4.9, 450),
-            ("Kerupuk Ikan Tenggiri Gurih Renyah", "UMKM Pesisir Berkah Kersik", 20000, "Bungkus 200gr",
-             "Olahan ikan tenggiri segar hasil laut Selat Makassar. Renyah, gurih nikmat untuk oleh-oleh khas Kukar.", "6282150208664", "static/images/produk_kerupuk.jpg", 4.8, 380),
-            ("Ikan Asin Kering Super (Tenggiri & Biawan)", "Kelompok Nelayan Dusun Empang", 45000, "Pack 500gr",
-             "Ikan segar tangkapan harian yang dikeringkan di bawah sinar matahari alami pesisir. Tebal dan gurih.", "6282150208664", "static/images/nelayan.jpg", 4.9, 290),
-            ("Souvenir Kerajinan Kerang & Miniatur Perahu", "Karang Taruna Bahari Kersik", 35000, "Pcs",
-             "Karya seni tangan pemuda desa memanfaatkan limbah kerang pesisir menjadi hiasan rumah estetik.", "6282150208664", "https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80", 4.7, 120)
+            ("Madu Hutan Asli Murni Papayan", "KWT Mekar Wangi Papayan", 85000, "Botol 500ml",
+             "Madu murni alami hasil budidaya lebah hutan lereng perbukitan Papayan Jatiwaras tanpa campuran gula dan pemanis buatan.", "081234567890", -7.4760, 108.2065, "Dusun Ranca Sari, Desa Papayan", "static/images/banner1.png", 4.9, 450),
+            ("Keripik Tempe & Olahan Singkong Renyah", "Kelompok UMKM Berkah Papayan", 18000, "Bungkus 250gr",
+             "Camilan gurih renyah dibuat dari kedelai dan singkong pilihan hasil kebun petani lokal dengan racikan rempah khas Tasikmalaya.", "081234567890", -7.4770, 108.2045, "Dusun Demung Landung, Desa Papayan", "static/images/banner2.png", 4.8, 380),
+            ("Kopi Robusta & Gula Aren Asli Papayan", "Kelompok Tani Hutan Papayan", 35000, "Pack 200gr",
+             "Kopi robusta petik merah dengan paduan manis legit gula kawung aren murni khas pegunungan Jatiwaras.", "081234567890", -7.4790, 108.2080, "Dusun Margahayu, Desa Papayan", "static/images/banner3.png", 4.9, 290),
+            ("Kerajinan Anyaman Bambu Tradisional", "Pengrajin Anyaman Kreatif Papayan", 45000, "Pcs",
+             "Karya seni tangan warga berupa boboko, besek, dan kap lampu estetik berbahan bambu tali lokal berkualitas.", "081234567890", -7.4800, 108.2025, "Dusun Cihaur, Desa Papayan", "static/images/banner1.png", 4.7, 120)
         ]
         cursor.executemany('''
-        INSERT INTO umkm (nama, produsen, harga, satuan, deskripsi, kontak_wa, gambar, rating, terjual)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO umkm (nama, produsen, harga, satuan, deskripsi, kontak_wa, latitude, longitude, alamat, gambar, rating, terjual)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', produk)
         conn.commit()
 
@@ -957,15 +959,15 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM berita")
     if cursor.fetchone()[0] == 0:
         news = [
-            ("Pemdes Papayan Gelar Gerakan Tanam 1.000 Mangrove Perkuat Ketahanan Proklim Pesisir", "Lingkungan & Wisata", "Humas Pemdes Papayan", "12 Oktober 2026", "static/images/mangrove.jpg",
-             "Sebagai peraih penghargaan Proklim Utama KLHK, warga bersama Pokdarwis dan pelajar menanam 1.000 bibit mangrove di pesisir Selat Makassar.",
-             "Desa Papayan kembali menegaskan komitmennya dalam menjaga kelestarian ekosistem bahari. Pada Minggu pagi, Pemerintah Desa Papayan bersama Dinas Lingkungan Hidup Kabupaten Kutai Kartanegara dan ratusan warga Dusun Empang menggelar aksi penanaman 1.000 bibit mangrove jenis Rhizophora di area bibir pantai. Kepala Desa Papayan, Jumadi S.Sos, menyatakan bahwa gerakan ini menjaga keberlanjutan penghargaan Kampung Iklim (Proklim) Utama sekaligus mencegah bahaya abrasi bagi pemukiman nelayan."),
-            ("Kunjungan Wisatawan Pantai Biru Kersik Meningkat Pesat pada Akhir Pekan", "Pariwisata Desa", "Pokdarwis Kersik", "04 Oktober 2026", "static/images/pantai_kersik.jpg",
-             "Pantai Biru Kersik menjadi primadona wisata keluarga asal Samarinda dan Bontang berkat jembatan laut dan suasana cemara yang asri.",
-             "Pantai Biru Kersik terus menarik animo pelancong dari berbagai kabupaten/kota di Kalimantan Timur. Akses jalan yang semakin mulus dari simpang Marang Kayu membuat wisatawan dari Bontang, Samarinda, dan Tenggarong berbondong-bondong datang berkemah dan menikmati kuliner laut bakar segar di saung-saung Pokdarwis. Pihak Pemdes juga terus melengkapi fasilitas sanitasi dan tempat ibadah di kawasan pantai."),
-            ("Penyaluran BLT Dana Desa dan Bantuan Alat Tangkap Nelayan Berjalan Lancar", "Pemerintahan & Sosial", "Kasi Kesejahteraan", "25 September 2026", "static/images/kantor_desa.jpg",
-             "Sebanyak 65 KPM menerima BLT triwulan ketiga dan 20 kelompok nelayan menerima jaring ramah lingkungan di Balai Pertemuan Desa.",
-             "Transparansi dan ketepatan sasaran penyaluran bantuan sosial senantiasa menjadi prioritas utama Pemdes Papayan. Bertempat di Balai Pertemuan Kantor Desa Papayan, BPD dan Pendamping Desa turut mengawasi penyerahan bantuan tunai bersumber dari Dana Desa tahun 2026 serta alat kelengkapan keselamatan bagi nelayan tangkap tradisional.")
+            ("Pemdes Papayan Canangkan Program Pembinaan Desa Cantik 2026 Perkuat Data RT", "Pemerintahan & Statistik", "Humas Pemdes Papayan", "12 Oktober 2026", "static/images/banner1.png",
+             "Sebagai wujud tata kelola data presisi, Pemdes Papayan bersama BPS memperkuat pemutakhiran statistik di 26 RT dari 4 Dusun.",
+             "Pemerintah Desa Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya berkomitmen mewujudkan transparansi dan keakuratan data kependudukan hingga tingkat Satuan Lingkungan Setempat (SLS/RT). Melalui program pembinaan Desa Cantik 2026, seluruh ketua RT dibekali literasi data digital guna mendukung ketepatan sasaran program bantuan dan perencanaan pembangunan."),
+            ("Penyaluran BLT Dana Desa dan Bantuan Pertanian Berjalan Tertib di Balai Desa", "Pemerintahan & Sosial", "Kasi Kesejahteraan", "04 Oktober 2026", "static/images/banner2.png",
+             "Sebanyak 65 KPM menerima bantuan tunai dan kelompok tani menerima bantuan sarana bibit unggul di Balai Pelayanan Desa Papayan.",
+             "Transparansi penyaluran bantuan sosial senantiasa menjadi prioritas Pemdes Papayan. Bertempat di Balai Pertemuan Desa Papayan, penyerahan bantuan tunai bersumber dari Dana Desa tahun 2026 berjalan tertib dengan disaksikan BPD, Babinsa, dan Bhabinkamtibmas."),
+            ("Pemdes Papayan Gelar Musrenbangdes 2026 Rencanakan Peningkatan Jalan Poros Desa", "Pembangunan & Infrastruktur", "Kaur Perencanaan", "25 September 2026", "static/images/banner3.png",
+             "Musyawarah perencanaan pembangunan desa menyepakati fokus infrastruktur rabat beton dan perbaikan irigasi tersier.",
+             "Bertempat di aula kantor desa, Musrenbangdes Papayan menyepakati skala prioritas pembangunan tahun 2026 pada peningkatan jalan poros penghubung antar dusun dan sarana irigasi pertanian untuk mengoptimalkan mobilitas hasil panen warga.")
         ]
         cursor.executemany('''
         INSERT INTO berita (judul, kategori, penulis, tanggal, gambar, ringkasan, isi)
@@ -977,10 +979,10 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM kategori_berita")
     if cursor.fetchone()[0] == 0:
         default_kategori = [
-            ("Pemerintahan & Sosial", 1),
-            ("Lingkungan & Wisata", 2),
-            ("Pariwisata Desa", 3),
-            ("Pembangunan & Infrastruktur", 4),
+            ("Pemerintahan & Statistik", 1),
+            ("Pembangunan & Infrastruktur", 2),
+            ("Pemerintahan & Sosial", 3),
+            ("Agrowisata & Potensi Desa", 4),
             ("Ekonomi & UMKM", 5),
             ("Pengumuman & Agenda", 6),
         ]
@@ -999,17 +1001,17 @@ def init_db():
     if cursor.fetchone()[0] == 0:
         sumber = [
             {"sumber": "Dana Desa (APBN)", "nominal": 1120000000, "persen": 44.1},
-            {"sumber": "Alokasi Dana Desa (ADD Kukar)", "nominal": 980000000, "persen": 38.6},
+            {"sumber": "Alokasi Dana Desa (ADD Kab. Tasikmalaya)", "nominal": 980000000, "persen": 38.6},
             {"sumber": "Bagi Hasil Pajak & Retribusi Daerah", "nominal": 220000000, "persen": 8.7},
-            {"sumber": "Pendapatan Asli Desa (BUMDes & Wisata)", "nominal": 140000000, "persen": 5.5},
-            {"sumber": "Bantuan Keuangan Provinsi / CSR", "nominal": 80000000, "persen": 3.1}
+            {"sumber": "Pendapatan Asli Desa (BUMDes & Agrowisata)", "nominal": 140000000, "persen": 5.5},
+            {"sumber": "Bantuan Keuangan Provinsi Jawa Barat", "nominal": 80000000, "persen": 3.1}
         ]
         belanja = [
             {"bidang": "Penyelenggaraan Pemerintahan Desa", "nominal": 780000000, "persen": 31.3},
-            {"bidang": "Pelaksanaan Pembangunan Desa (Pesisir)", "nominal": 990000000, "persen": 39.8},
+            {"bidang": "Pelaksanaan Pembangunan Desa (Infrastruktur & Irigasi)", "nominal": 990000000, "persen": 39.8},
             {"bidang": "Pembinaan Kemasyarakatan Desa", "nominal": 260000000, "persen": 10.4},
-            {"bidang": "Pemberdayaan Masyarakat (Pelatihan Nelayan & UMKM)", "nominal": 340000000, "persen": 13.7},
-            {"bidang": "Penanggulangan Bencana & Darurat", "nominal": 120000000, "persen": 4.8}
+            {"bidang": "Pemberdayaan Masyarakat (Kelompok Tani & UMKM)", "nominal": 340000000, "persen": 13.7},
+            {"bidang": "Penanggulangan Bencana & Keadaan Darurat", "nominal": 120000000, "persen": 4.8}
         ]
         cursor.execute('''
         INSERT INTO apbdes (id, tahun, pendapatan_total, belanja_total, pembiayaan_netto, data_sumber_json, data_belanja_json)
@@ -1347,12 +1349,12 @@ def init_db():
         {"label": "> 60 Th (Lansia)", "jumlah": 356}
     ]
     pekerjaan = [
-        {"label": "Nelayan & Budidaya Laut", "jumlah": 1610},
-        {"label": "Petani & Perkebunan", "jumlah": 612},
-        {"label": "Pedagang & UMKM", "jumlah": 485},
-        {"label": "Pekerja Tambak/Jasa", "jumlah": 368},
-        {"label": "PNS/Guru/Perangkat", "jumlah": 158},
-        {"label": "Lainnya", "jumlah": 1665}
+        {"label": "Petani & Pekebun", "jumlah": 1540},
+        {"label": "Wiraswasta & Pedagang UMKM", "jumlah": 860},
+        {"label": "Buruh Tani / Harian Lepas", "jumlah": 980},
+        {"label": "Karyawan Swasta", "jumlah": 520},
+        {"label": "PNS / Guru / TNI-Polri", "jumlah": 185},
+        {"label": "Lainnya / Pelajar / Mahasiswa", "jumlah": 813}
     ]
 
     cursor.execute("SELECT COUNT(*) FROM statistik")
@@ -1382,8 +1384,8 @@ def init_db():
         cursor.execute('''
         INSERT INTO layanan_surat (no_reg, jenis_surat, nik, nama, wa, dusun, rt, keperluan, status, catatan_admin)
         VALUES 
-        ('KSK-2026-1082', 'Surat Keterangan Usaha (SKU)', '6402171203850001', 'Rusli Effendi', '081255443322', 'Dusun Empang', '003', 'Pengajuan Kredit Usaha Nelayan di Bank Kaltimtara', 'Diproses', 'Berkas KTP & Foto Tambak terverifikasi'),
-        ('KSK-2026-1045', 'Surat Keterangan Domisili (SKD)', '6402175508920003', 'Hj. Mardiana', '082199887766', 'Dusun Kersik', '002', 'Persyaratan Pendaftaran Anak Masuk Sekolah', 'Selesai', 'Surat sudah diambil oleh pemohon')
+        ('PPY-2026-1082', 'Surat Keterangan Usaha (SKU)', '3206341203850001', 'Rusli Effendi', '081255443322', 'Dusun Demung Landung', '003', 'Pengajuan Kredit Usaha Rakyat (KUR) BRI', 'Diproses', 'Berkas KTP & Keterangan Usaha Terverifikasi'),
+        ('PPY-2026-1045', 'Surat Keterangan Domisili (SKD)', '3206345508920003', 'Hj. Mardiana', '082199887766', 'Dusun Ranca Sari', '002', 'Persyaratan Pendaftaran Anak Masuk Sekolah', 'Selesai', 'Surat sudah diambil oleh pemohon')
         ''')
         conn.commit()
 
@@ -1443,12 +1445,12 @@ def init_db():
                 "Profil Desa",
                 "Tim Penyusun Profil Desa",
                 "2026",
-                "Edisi Khusus Pemekaran & Wisata",
+                "Edisi Khusus Pemekaran & Agrowisata",
                 68,
                 "2.4 MB",
-                "Buku dokumentasi komprehensif mengenai gambaran umum Desa Papayan, sejarah kepemimpinan, demografi, potensi pariwisata pesisir Pantai Biru, serta prestasi peraih Program Kampung Iklim (Proklim) Utama KLHK RI.",
-                "static/images/kantor_desa.jpg",
-                "static/docs/publikasi/buku_profil_desa_kersik_2026.pdf",
+                "Buku dokumentasi komprehensif mengenai gambaran umum Desa Papayan, sejarah kepemimpinan dari masa ke masa, demografi 4 dusun, potensi pertanian agrowisata, serta inovasi tata kelola desa digital.",
+                "static/images/banner1.png",
+                "static/docs/publikasi/buku_profil_desa_papayan_2026.pdf",
                 142,
                 "Tayang",
                 1
@@ -1461,9 +1463,9 @@ def init_db():
                 "Kompilasi Data Tahunan",
                 54,
                 "1.9 MB",
-                "Publikasi statistik resmi tahunan yang memuat data sektoral kependudukan, kelompok nelayan tangkap, produksi perikanan & budidaya tambak udang, sarana pendidikan, dan peta perekonomian desa pesisir.",
-                "static/images/nelayan.jpg",
-                "static/docs/publikasi/buku_desa_kersik_dalam_angka_2026.pdf",
+                "Publikasi statistik resmi tahunan yang memuat data sektoral kependudukan, kelompok tani, produksi pertanian & perkebunan, sarana pendidikan, dan peta perekonomian desa.",
+                "static/images/banner2.png",
+                "static/docs/publikasi/buku_desa_papayan_dalam_angka_2026.pdf",
                 89,
                 "Tayang",
                 0
@@ -1476,39 +1478,39 @@ def init_db():
                 "Laporan Resmi Transparansi",
                 42,
                 "3.1 MB",
-                "Laporan pertanggungjawaban realisasi penerimaan Dana Desa (APBN), Alokasi Dana Desa (ADD Kukar), dan Belanja Desa untuk pembangunan jalan pesisir, dermaga nelayan, dan program ketahanan pangan.",
-                "static/images/tambak.jpg",
+                "Laporan pertanggungjawaban realisasi penerimaan Dana Desa (APBN), Alokasi Dana Desa (ADD Kab. Tasikmalaya), dan Belanja Desa untuk pembangunan infrastruktur jalan, saluran irigasi, dan pemberdayaan masyarakat.",
+                "static/images/banner3.png",
                 "static/docs/publikasi/laporan_transparansi_apbdes_2025_2026.pdf",
                 64,
                 "Tayang",
                 0
             ),
             (
-                "Buku Saku Panduan Wisata & Ekologi Pesisir",
+                "Buku Saku Panduan Potensi Pertanian & Agrowisata Papayan",
                 "Panduan & Edukasi Warga",
-                "Pokdarwis & Pengelola Proklim",
+                "Pokdarwis & Kelompok Tani Papayan",
                 "2026",
                 "Cetakan I / 2026",
                 32,
                 "1.8 MB",
-                "Buku panduan saku praktis bagi wisatawan, pegiat lingkungan, dan pelajar mengenai rute wisata bahari Pantai Biru Kersik, tata cara adopsi bibit mangrove, serta etika menjaga kelestarian ekosistem pantai.",
-                "static/images/mangrove.jpg",
-                "static/docs/publikasi/buku_saku_panduan_wisata_pesisir.pdf",
+                "Buku panduan saku praktis bagi pengunjung, petani, dan pegiat UMKM mengenai rute agrowisata perbukitan Papayan, teknik budidaya ramah lingkungan, serta katalog produk unggulan lokal.",
+                "static/images/banner1.png",
+                "static/docs/publikasi/buku_saku_panduan_wisata_papayan.pdf",
                 115,
                 "Tayang",
                 0
             ),
             (
-                "Dokumen RKPDes Kersik Tahun 2026",
+                "Dokumen RKPDes Papayan Tahun 2026",
                 "Regulasi & Kebijakan Desa",
                 "BPD & Tim Perencana Desa",
                 "2026",
                 "Dokumen Rencana Kerja",
                 86,
                 "4.2 MB",
-                "Dokumen Rencana Kerja Pemerintah Desa (RKPDes) tahun anggaran 2026 yang memuat arah prioritas pembangunan fisik desa, penguatan ekonomi nelayan, dan program pemberdayaan UMKM lokal.",
-                "static/images/banner1.png",
-                "static/docs/publikasi/dokumen_rkpdes_kersik_2026.pdf",
+                "Dokumen Rencana Kerja Pemerintah Desa (RKPDes) tahun anggaran 2026 yang memuat arah prioritas pembangunan fisik desa, peningkatan jalan poros, dan program pemberdayaan UMKM lokal.",
+                "static/images/banner2.png",
+                "static/docs/publikasi/dokumen_rkpdes_papayan_2026.pdf",
                 37,
                 "Tayang",
                 0

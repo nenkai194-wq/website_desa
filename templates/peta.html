@@ -512,15 +512,21 @@
       if (WISATA_LIST && WISATA_LIST.length > 0) {
         WISATA_LIST.forEach(w => {
           if (w.latitude && w.longitude) {
+            const wLat = parseFloat(w.latitude);
+            const wLng = parseFloat(w.longitude);
+            // Validasi ketat batas koordinat Desa Papayan (Jatiwaras, Tasikmalaya)
+            if (isNaN(wLat) || isNaN(wLng) || wLat < -7.65 || wLat > -7.30 || wLng < 108.05 || wLng > 108.35) {
+              return;
+            }
             const fasIcon = L.divIcon({
               className: 'fas-pin',
-              html: `<div style="background-color:#0284c7;width:28px;height:28px;border-radius:50%;border:2px solid white;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.4);color:white;font-size:12px;">
-                      <i class="fa-solid fa-umbrella-beach"></i>
+              html: `<div style="background-color:#15803d;width:28px;height:28px;border-radius:50%;border:2px solid white;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.4);color:white;font-size:12px;">
+                      <i class="fa-solid fa-mountain-sun"></i>
                      </div>`,
               iconSize: [28, 28],
               iconAnchor: [14, 14]
             });
-            const m = L.marker([w.latitude, w.longitude], { icon: fasIcon });
+            const m = L.marker([wLat, wLng], { icon: fasIcon });
             m.bindPopup(`<strong>${w.nama}</strong><br><span class="text-xs text-slate-500">${w.kategori} - ${w.lokasi}</span>`);
             fasilitasLayerGroup.addLayer(m);
           }

@@ -1,63 +1,63 @@
 /**
- * Data Lengkap Desa Papayan, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara
- * Diadopsi dari identitas resmi https://kersik.desa.id/
+ * Data Lengkap Desa Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya, Jawa Barat
+ * Portal Resmi Informasi & Pelayanan Publik Pemerintah Desa Papayan
  */
 
 const desaData = {
   identitas: {
     namaDesa: "Papayan",
     sebutan: "Desa Papayan",
-    tagline: "Desa Wisata Pesisir Marang Kayu - Menuju Desa Maju & Berkelanjutan",
-    subtagline: "Penerima Penghargaan Kampung Iklim (Proklim) Utama KLHK Republik Indonesia",
-    kecamatan: "Marang Kayu",
-    kabupaten: "Kutai Kartanegara",
-    provinsi: "Kalimantan Timur",
-    kodePos: "75385",
-    kodeWilayah: "64.02.17.2005",
-    alamatKantor: "Jalan Langaseng Dusun Empang RT.003, Desa Papayan",
-    telepon: "0821-5020-8664",
-    email: "pemdes@kersik.desa.id",
-    jamPelayanan: "Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00)",
-    koordinat: [-0.0682, 117.3854], // Pesisir Marang Kayu Kutai Kartanegara
+    tagline: "Desa Digital, Mandiri, dan Berprestasi",
+    subtagline: "Pemerintah Desa Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya",
+    kecamatan: "Jatiwaras",
+    kabupaten: "Tasikmalaya",
+    provinsi: "Jawa Barat",
+    kodePos: "46197",
+    kodeWilayah: "32.06.39.2001",
+    alamatKantor: "Jalan Raya Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya, Jawa Barat 46197",
+    telepon: "0821-7991-8783",
+    email: "pemdes@papayan.desa.id",
+    jamPelayanan: "Senin - Kamis (08.00 - 15.00) & Jum'at (08.00 - 11.00) WIB",
+    koordinat: [-7.4782, 108.2055], // Pusat Pemerintahan Desa Papayan, Tasikmalaya
     tahunBerdiri: "1982",
-    luasWilayah: "42,85 km²",
+    luasWilayah: "28,45 km²",
     batasWilayah: {
-      utara: "Desa Sebuntal",
-      selatan: "Selat Makassar / Desa Santan Ulu",
-      barat: "Desa Semangko",
-      timur: "Selat Makassar"
+      utara: "Berbatasan dengan Desa Sukakerta / Desa Janggala",
+      selatan: "Berbatasan dengan Desa Kertarahayu / Desa Jatiwaras",
+      barat: "Berbatasan dengan Desa Sukaraja / Sungai Ciwulan",
+      timur: "Berbatasan dengan Desa Neglasari / Desa Setiawangi"
     }
   },
 
   statistik: {
-    totalPenduduk: 2486,
-    lakiLaki: 1278,
-    perempuan: 1208,
-    kepalaKeluarga: 742,
-    pendudukSementara: 84,
-    mutasiPenduduk: 27,
-    dusun: 3, // Dusun Empang, Dusun Kersik, Dusun Muara
-    rt: 10,
+    totalPenduduk: 4945,
+    lakiLaki: 2510,
+    perempuan: 2435,
+    kepalaKeluarga: 1735,
+    pendudukSementara: 45,
+    mutasiPenduduk: 18,
+    dusun: 4, // Dusun Demung Landung, Dusun Ranca Sari, Dusun Margahayu, Dusun Cihaur
+    rt: 26,
     kategoriPekerjaan: [
-      { label: "Nelayan & Budidaya Laut", jumlah: 820, persen: 48 },
-      { label: "Petani & Perkebunan", jumlah: 310, persen: 18 },
-      { label: "Pedagang & UMKM", jumlah: 245, persen: 14 },
-      { label: "Pekerja Tambak/Jasa", jumlah: 185, persen: 11 },
-      { label: "PNS/Guru/Perangkat", jumlah: 80, persen: 5 },
-      { label: "Lainnya", jumlah: 70, persen: 4 }
+      { label: "Petani & Buruh Tani", jumlah: 1820, persen: 45 },
+      { label: "Wiraswasta / Pedagang / UMKM", jumlah: 840, persen: 21 },
+      { label: "Karyawan Swasta / BUMN", jumlah: 612, persen: 15 },
+      { label: "Buruh Harian & Pertukangan", jumlah: 450, persen: 11 },
+      { label: "PNS / Guru / TNI / POLRI", jumlah: 185, persen: 5 },
+      { label: "Lainnya", jumlah: 120, persen: 3 }
     ],
     rentangUsia: [
-      { label: "0 - 14 Tahun (Anak)", jumlah: 590 },
-      { label: "15 - 24 Tahun (Pemuda)", jumlah: 480 },
-      { label: "25 - 45 Tahun (Dewasa)", jumlah: 860 },
-      { label: "46 - 60 Tahun (Lansia Awal)", jumlah: 376 },
-      { label: "> 60 Tahun (Lansia)", jumlah: 180 }
+      { label: "0 - 14 Tahun (Anak)", jumlah: 918 },
+      { label: "15 - 24 Tahun (Pemuda)", jumlah: 752 },
+      { label: "25 - 45 Tahun (Dewasa)", jumlah: 1720 },
+      { label: "46 - 60 Tahun (Lansia Awal)", jumlah: 948 },
+      { label: "> 60 Tahun (Lansia)", jumlah: 607 }
     ],
     pendidikan: [
-      { label: "SD / Sederajat", jumlah: 640 },
-      { label: "SMP / Sederajat", jumlah: 710 },
-      { label: "SMA / SMK", jumlah: 840 },
-      { label: "Diploma / Sarjana", jumlah: 296 }
+      { label: "SD / Sederajat", jumlah: 1240 },
+      { label: "SMP / Sederajat", jumlah: 1110 },
+      { label: "SMA / SMK", jumlah: 1680 },
+      { label: "Diploma / Sarjana", jumlah: 495 }
     ]
   },
 
@@ -68,39 +68,39 @@ const desaData = {
     pembiayaanNetto: 50000000,
     sumberPendapatan: [
       { sumber: "Dana Desa (APBN)", nominal: 1120000000, persen: 44.1 },
-      { sumber: "Alokasi Dana Desa (ADD Kukar)", nominal: 980000000, persen: 38.6 },
+      { sumber: "Alokasi Dana Desa (ADD Kab. Tasikmalaya)", nominal: 980000000, persen: 38.6 },
       { sumber: "Bagi Hasil Pajak & Retribusi Daerah", nominal: 220000000, persen: 8.7 },
-      { sumber: "Pendapatan Asli Desa (BUMDes & Wisata)", nominal: 140000000, persen: 5.5 },
-      { sumber: "Bantuan Keuangan Provinsi / CSR", nominal: 80000000, persen: 3.1 }
+      { sumber: "Pendapatan Asli Desa (BUMDes & Pasar)", nominal: 140000000, persen: 5.5 },
+      { sumber: "Bantuan Keuangan Provinsi Jawa Barat", nominal: 80000000, persen: 3.1 }
     ],
     alokasiBelanja: [
       { bidang: "Penyelenggaraan Pemerintahan Desa", nominal: 780000000, persen: 31.3 },
-      { bidang: "Pelaksanaan Pembangunan Desa (Infrastruktur & Pesisir)", nominal: 990000000, persen: 39.8 },
+      { bidang: "Pelaksanaan Pembangunan Infrastruktur Desa", nominal: 990000000, persen: 39.8 },
       { bidang: "Pembinaan Kemasyarakatan Desa", nominal: 260000000, persen: 10.4 },
-      { bidang: "Pemberdayaan Masyarakat (Pelatihan Nelayan & UMKM)", nominal: 340000000, persen: 13.7 },
-      { bidang: "Penanggulangan Bencana & Darurat", nominal: 120000000, persen: 4.8 }
+      { bidang: "Pemberdayaan Masyarakat & UMKM Pertanian", nominal: 340000000, persen: 13.7 },
+      { bidang: "Penanggulangan Bencana & Keadaan Mendesak", nominal: 120000000, persen: 4.8 }
     ]
   },
 
   idm: {
     tahun: 2026,
     status: "DESA MAJU (Menuju Mandiri)",
-    skorTotal: 0.7984,
+    skorTotal: 0.8124,
     target: "Desa Mandiri",
     dimensi: [
-      { nama: "Indeks Ketahanan Sosial (IKS)", skor: 0.8120, kategori: "Tinggi" },
-      { nama: "Indeks Ketahanan Ekonomi (IKE)", skor: 0.7740, kategori: "Sedang Menuju Maju" },
-      { nama: "Indeks Ketahanan Lingkungan (IKL)", skor: 0.8092, kategori: "Sangat Baik (Proklim)" }
+      { nama: "Indeks Ketahanan Sosial (IKS)", skor: 0.8250, kategori: "Tinggi" },
+      { nama: "Indeks Ketahanan Ekonomi (IKE)", skor: 0.7890, kategori: "Maju" },
+      { nama: "Indeks Ketahanan Lingkungan (IKL)", skor: 0.8232, kategori: "Sangat Baik" }
     ]
   },
 
   perangkatDesa: [
     {
-      nama: "Jumadi, S.Sos",
+      nama: "Irwan Setiawan, S.Kom, M.T.",
       jabatan: "Kepala Desa Papayan",
       foto: "/static/images/kades.jpg",
-      sambutanSingkat: "Mewujudkan Desa Papayan yang Maju, Sejahtera, Transparan, Berbasis Wisata Bahari dan Lingkungan Berkelanjutan.",
-      kontak: "0821-5020-8664"
+      sambutanSingkat: "Mewujudkan Desa Papayan yang Maju, Sejahtera, Transparan, Berbasis Transformasi Digital.",
+      kontak: "0821-7991-8783"
     },
     {
       nama: "Rahmat Hidayat, S.P",
@@ -127,203 +127,160 @@ const desaData = {
       nama: "Fatimah Azzahra, S.Pd",
       jabatan: "Kasi Kesejahteraan & Pelayanan",
       foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
-      sambutanSingkat: "Mendorong pemberdayaan sosial, posyandu, pendidikan anak nelayan, dan layanan masyarakat umum.",
+      sambutanSingkat: "Mendorong pemberdayaan sosial, posyandu, kesehatan balita & lansia, serta layanan masyarakat umum.",
       kontak: "0813-7788-9900"
     },
     {
       nama: "Baharuddin, S.T",
       jabatan: "Kaur Umum & Perencanaan",
       foto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80",
-      sambutanSingkat: "Perencanaan infrastruktur fisik terpadu: jalan pesisir, dermaga nelayan, dan fasilitas penunjang wisata.",
+      sambutanSingkat: "Perencanaan infrastruktur fisik terpadu: jalan poros desa, irigasi pertanian, dan sarana publik.",
       kontak: "0821-9988-7766"
     },
     {
       nama: "H. Syamsir",
-      jabatan: "Kepala Dusun Empang",
+      jabatan: "Kepala Dusun Demung Landung",
       foto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=80",
-      sambutanSingkat: "Mengawal keharmonisan warga dan percepatan program pembangunan di kawasan Dusun Empang.",
+      sambutanSingkat: "Mengawal keharmonisan warga dan percepatan program pembangunan di kawasan Dusun Demung Landung.",
       kontak: "0813-1234-5678"
     },
     {
       nama: "Rustam Efendi",
-      jabatan: "Kepala Dusun Kersik",
+      jabatan: "Kepala Dusun Ranca Sari",
       foto: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop&q=80",
-      sambutanSingkat: "Membangun gotong royong dan kemitraan kelompok nelayan di pesisir Dusun Kersik.",
+      sambutanSingkat: "Membangun gotong royong dan kemitraan masyarakat di wilayah Dusun Ranca Sari.",
       kontak: "0853-2233-4455"
     }
   ],
 
   wisata: [
     {
-      id: "pantai-biru-kersik",
-      nama: "Pantai Biru Kersik (Pantai Kersik)",
-      kategori: "Wisata Bahari Unggulan",
-      deskripsi: "Ikon pariwisata bahari Desa Papayan yang berbatasan langsung dengan Selat Makassar. Menampilkan bentangan pasir bersih, ombak tenang, deretan cemara laut rindang, dan jembatan kayu estetik yang menjorok ke laut.",
-      fasilitas: ["Jembatan Foto Laut", "Camping Ground", "Saung / Gazebo Santai", "Warung Kuliner Pesisir", "Toilet & Kamar Bilas", "Homestay Warga"],
-      gambar: "/static/images/pantai_kersik.jpg",
-      lokasi: "Pesisir Selat Makassar, Dusun Kersik",
-      tiket: "Rp 5.000 / orang (Kebersihan & Parkir Pokdarwis)"
+      id: "agrowisata-papayan",
+      nama: "Agrowisata & Pertanian Terpadu Papayan",
+      kategori: "Agrowisata & Edukasi",
+      deskripsi: "Kawasan percontohan pertanian hortikultura, persawahan terasering, dan kebun bibit unggul binaan kelompok tani Desa Papayan.",
+      fasilitas: ["Saung Tani", "Pusat Bibit Tanaman", "Spot Edukasi Tani", "Area Parkir", "Toilet & Musholla"],
+      gambar: "/static/images/banner1.png",
+      lokasi: "Dusun Ranca Sari, Desa Papayan",
+      tiket: "Gratis"
     },
     {
-      id: "mangrove-kersik",
-      nama: "Ekowisata & Konservasi Mangrove Kersik",
-      kategori: "Ekowisata & Lingkungan (Proklim)",
-      deskripsi: "Kawasan hutan bakau rimbun penahan abrasi pantai yang dikelola swadaya oleh Pokdarwis dan Pemdes Kersik. Menghantarkan Desa Papayan meraih penghargaan Kampung Iklim (Proklim) Utama dari KLHK RI.",
-      fasilitas: ["Track Kayu Susur Mangrove", "Pusat Pembibitan Bakau", "Spot Bird Watching", "Edukasi Adopsi Pohon Mangrove", "Pondok Edukasi"],
-      gambar: "/static/images/mangrove.jpg",
-      lokasi: "Kawasan Pesisir Muara, Desa Papayan",
-      tiket: "Gratis / Donasi Bibit Mangrove"
-    },
-    {
-      id: "kampung-nelayan-tambak",
-      nama: "Kampung Nelayan & Wisata Edukasi Tambak",
-      kategori: "Wisata Budidaya & Pemancingan",
-      deskripsi: "Menyajikan pengalaman memancing air payau, melihat budidaya udang windu dan ikan bandeng, serta proses tradisional pembuatan ikan asin dan terasi khas pesisir Kutai Kartanegara.",
-      fasilitas: ["Spot Pemancingan", "Sewa Perahu Nelayan", "Warung Ikan Bakar Segar", "Pusat Pengolahan Ikan"],
-      gambar: "/static/images/tambak.jpg",
-      lokasi: "Dusun Empang & Muara Kersik",
-      tiket: "Sesuai aktivitas / sewa alat"
+      id: "taman-desa-papayan",
+      nama: "Taman Rekreasi & Lapang Desa Papayan",
+      kategori: "Ruang Terbuka Hijau",
+      deskripsi: "Pusat kegiatan olahraga, kebugaran masyarakat, serta ruang interaksi pagelaran seni budaya warga Desa Papayan.",
+      fasilitas: ["Lapang Sepakbola", "Jogging Track", "Gazebo Warga", "Kios UMKM", "Area Bermain Anak"],
+      gambar: "/static/images/banner2.png",
+      lokasi: "Dusun Margahayu, Desa Papayan",
+      tiket: "Gratis"
     }
   ],
 
   umkm: [
     {
       id: 1,
-      nama: "Terasi Udang Rebon Asli Kersik (Khas Marang Kayu)",
-      produsen: "KWT Melati Pesisir Kersik",
-      harga: 25000,
-      satuan: "Pack 250gr",
+      nama: "Madu Murni Asli Hutan Desa Papayan",
+      produsen: "Kelompok Tani Lestari Papayan",
+      harga: 85000,
+      satuan: "Botol 350ml",
       rating: 4.9,
-      terjual: 450,
-      gambar: "/static/images/produk_terasi.jpg",
-      deskripsi: "Dibuat dari 100% udang rebon tangkapan nelayan Desa Papayan, diolah secara alami tanpa bahan pengawet kimia, harum gurih dan sangat legit untuk sambal.",
-      kontakWa: "6282150208664"
+      terjual: 320,
+      gambar: "/static/images/banner1.png",
+      deskripsi: "Madu hutan murni alami tanpa campuran pemanis, dipanen langsung oleh kelompok tani hutan Desa Papayan, berkhasiat menjaga imunitas tubuh.",
+      kontakWa: "6282179918783"
     },
     {
       id: 2,
-      nama: "Kerupuk Ikan Tenggiri Gurih Renyah",
-      produsen: "UMKM Pesisir Berkah Kersik",
-      harga: 20000,
+      nama: "Keripik Tempe Renyah Gurih Desa Papayan",
+      produsen: "Ibu Ani Papayan Berkah",
+      harga: 15000,
       satuan: "Bungkus 200gr",
       rating: 4.8,
-      terjual: 380,
-      gambar: "/static/images/produk_kerupuk.jpg",
-      deskripsi: "Olahan ikan tenggiri segar hasil laut Selat Makassar. Renyah, gurih nikmat, cocok untuk oleh-oleh khas Kutai Kartanegara.",
-      kontakWa: "6282150208664"
-    },
-    {
-      id: 3,
-      nama: "Ikan Asin Kering Super (Tenggiri & Biawan)",
-      produsen: "Kelompok Nelayan Dusun Empang",
-      harga: 45000,
-      satuan: "Pack 500gr",
-      rating: 4.9,
-      terjual: 290,
-      gambar: "/static/images/nelayan.jpg",
-      deskripsi: "Ikan segar hasil tangkapan harian yang dikeringkan dengan penjemuran sinar matahari pesisir. Daging tebal, gurih dan higienis.",
-      kontakWa: "6282150208664"
-    },
-    {
-      id: 4,
-      nama: "Souvenir Miniatur Perahu & Kerajinan Kerang Laut",
-      produsen: "Karang Taruna Bahari Kersik",
-      harga: 35000,
-      satuan: "Pcs",
-      rating: 4.7,
-      terjual: 120,
-      gambar: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80",
-      deskripsi: "Karya seni tangan pemuda desa memanfaatkan limbah kerang pesisir pantai dan kayu lokal menjadi hiasan rumah bernilai tinggi.",
-      kontakWa: "6282150208664"
+      terjual: 410,
+      gambar: "/static/images/banner2.png",
+      deskripsi: "Keripik tempe renyah bumbu rempah tradisional khas olahan rumahan warga Papayan. Renyah, gurih, dan halal.",
+      kontakWa: "6282179918783"
     }
   ],
 
   berita: [
     {
       id: "berita-1",
-      judul: "Pemdes Kersik Gelar Gerakan Tanam 1.000 Mangrove Perkuat Ketahanan Proklim Pesisir",
-      tanggal: "12 Oktober 2026",
-      kategori: "Lingkungan & Wisata",
-      penulis: "Humas Pemdes Kersik",
-      gambar: "/static/images/mangrove.jpg",
-      ringkasan: "Sebagai peraih penghargaan Proklim Utama KLHK, warga bersama Pokdarwis dan pelajar menanam 1.000 bibit mangrove di pesisir Selat Makassar.",
-      isi: "Desa Papayan kembali menegaskan komitmennya dalam menjaga kelestarian ekosistem bahari. Pada Minggu pagi, Pemerintah Desa Papayan bersama Dinas Lingkungan Hidup Kabupaten Kutai Kartanegara dan ratusan warga Dusun Empang menggelar aksi penanaman 1.000 bibit mangrove jenis Rhizophora di area bibir pantai. Kepala Desa Papayan, Jumadi S.Sos, menyatakan bahwa gerakan ini menjaga keberlanjutan penghargaan Kampung Iklim (Proklim) Utama sekaligus mencegah bahaya abrasi bagi pemukiman nelayan."
+      judul: "Pemerintah Desa Papayan Ikuti Pembinaan Program Desa Cantik (Cinta Statistik) 2026",
+      tanggal: "18 Oktober 2026",
+      kategori: "Pemerintahan",
+      penulis: "Humas Pemdes Papayan",
+      gambar: "/static/images/uploads/b2_1792274407.jpeg",
+      ringkasan: "Desa Papayan terpilih dalam pembinaan Program Desa Cantik oleh BPS Kabupaten Tasikmalaya untuk penguatan tata kelola data kependudukan dan statistik desa berbasis SLS.",
+      isi: "Desa Papayan, Kecamatan Jatiwaras terpilih sebagai salah satu desa binaan Program Desa Cantik (Desa Cinta Statistik) tahun 2026 yang diselenggarakan oleh Badan Pusat Statistik (BPS) Kabupaten Tasikmalaya."
     },
     {
       id: "berita-2",
-      judul: "Kunjungan Wisatawan Pantai Biru Kersik Meningkat Pesat pada Akhir Pekan",
-      tanggal: "04 Oktober 2026",
-      kategori: "Pariwisata Desa",
-      penulis: "Pokdarwis Kersik",
-      gambar: "/static/images/pantai_kersik.jpg",
-      ringkasan: "Pantai Biru Kersik menjadi primadona wisata keluarga asal Samarinda dan Bontang berkat jembatan laut dan suasana cemara yang asri.",
-      isi: "Pantai Biru Kersik terus menarik animo pelancong dari berbagai kabupaten/kota di Kalimantan Timur. Akses jalan yang semakin mulus dari simpang Marang Kayu membuat wisatawan dari Bontang, Samarinda, dan Tenggarong berbondong-bondong datang berkemah dan menikmati kuliner laut bakar segar di saung-saung Pokdarwis. Pihak Pemdes juga terus melengkapi fasilitas sanitasi dan tempat ibadah di kawasan pantai."
+      judul: "Penyaluran Bantuan Langsung Tunai (BLT) Dana Desa Papayan Berjalan Lancar & Tertib",
+      tanggal: "15 Oktober 2026",
+      kategori: "Sosial & Masyarakat",
+      penulis: "Kaur Keuangan",
+      gambar: "/static/images/banner1.png",
+      ringkasan: "Pemerintah Desa Papayan menyalurkan BLT Dana Desa kepada puluhan Keluarga Penerima Manfaat (KPM) bertempat di Aula Pertemuan Desa.",
+      isi: "Penyaluran Bantuan Langsung Tunai bersumber dari Dana Desa (BLT-DD) tahap terkini telah dilaksanakan secara tertib di Balai Pertemuan Desa Papayan."
     },
     {
       id: "berita-3",
-      judul: "Penyaluran BLT Dana Desa dan Bantuan Alat Tangkap Nelayan Berjalan Lancar",
-      tanggal: "25 September 2026",
-      kategori: "Pemerintahan & Sosial",
-      penulis: "Kasi Kesejahteraan",
-      gambar: "/static/images/kantor_desa.jpg",
-      ringkasan: "Sebanyak 65 KPM menerima BLT triwulan ketiga dan 20 kelompok nelayan menerima jaring ramah lingkungan di Balai Pertemuan Desa.",
-      isi: "Transparansi dan ketepatan sasaran penyaluran bantuan sosial senantiasa menjadi prioritas utama Pemdes Kersik. Bertempat di Balai Pertemuan Kantor Desa Papayan, BPD dan Pendamping Desa turut mengawasi penyerahan bantuan tunai bersumber dari Dana Desa tahun 2026 serta alat kelengkapan keselamatan bagi nelayan tangkap tradisional."
+      judul: "Musrenbangdes Penetapan RKPDes Papayan Fokus pada Peningkatan Pertanian & Layanan Digital",
+      tanggal: "10 Oktober 2026",
+      kategori: "Pembangunan",
+      penulis: "Sekretariat Desa",
+      gambar: "/static/images/banner2.png",
+      ringkasan: "Musyawarah perencanaan pembangunan desa menyepakati prioritas anggaran tahun 2026 untuk perbaikan jalan usaha tani dan layanan digital warga.",
+      isi: "Pemerintah Desa Papayan sukses menggelar Musyawarah Perencanaan Pembangunan Desa (Musrenbangdes). Berdasarkan musyawarah mufakat seluruh unsur kelembagaan desa, disepakati program prioritas meliputi perbaikan infrastruktur jalan pertanian dan digitalisasi pelayanan warga."
     }
   ],
 
   titikPeta: [
     {
       nama: "Kantor Desa Papayan",
-      lat: -0.0682,
-      lng: 117.3854,
+      lat: -7.4782,
+      lng: 108.2055,
       kategori: "Pemerintahan",
-      deskripsi: "Pusat pelayanan administrasi & pemerintahan Desa Papayan.",
-      alamat: "Jl. Langaseng Dusun Empang RT.003",
+      deskripsi: "Pusat pelayanan administrasi & pemerintahan resmi Desa Papayan.",
+      alamat: "Jl. Raya Papayan, Kec. Jatiwaras, Kab. Tasikmalaya",
       icon: "building-columns"
     },
     {
-      nama: "Pantai Biru Kersik (Pantai Kersik)",
-      lat: -0.0635,
-      lng: 117.3980,
-      kategori: "Wisata",
-      deskripsi: "Destinasi wisata bahari unggulan, jembatan laut, dan camping ground.",
-      alamat: "Pesisir Dusun Kersik",
-      icon: "umbrella-beach"
+      nama: "Balai Pertemuan & GOR Desa Papayan",
+      lat: -7.4785,
+      lng: 108.2050,
+      kategori: "Fasilitas Publik",
+      deskripsi: "Gedung serbaguna dan sarana musyawarah warga Desa Papayan.",
+      alamat: "Dusun Margahayu, Desa Papayan",
+      icon: "users"
     },
     {
-      nama: "Ekowisata & Mangrove Center Kersik",
-      lat: -0.0725,
-      lng: 117.3910,
-      kategori: "Lingkungan",
-      deskripsi: "Kawasan edukasi konservasi bakau dan peraih Proklim Utama KLHK.",
-      alamat: "Kawasan Muara Pesisir",
-      icon: "tree"
-    },
-    {
-      nama: "Dermaga Pendaratan Ikan (TPI Nelayan)",
-      lat: -0.0660,
-      lng: 117.3940,
-      kategori: "Perikanan",
-      deskripsi: "Pusat bongkar muat hasil laut nelayan dan spot pasar ikan segar.",
-      alamat: "Dusun Empang Pesisir",
-      icon: "ship"
-    },
-    {
-      nama: "Puskesmas Pembantu (Pustu) Kersik",
-      lat: -0.0690,
-      lng: 117.3830,
+      nama: "Poskesdes / Pustu Desa Papayan",
+      lat: -7.4778,
+      lng: 108.2060,
       kategori: "Kesehatan",
-      deskripsi: "Pelayanan kesehatan dasar, ibu dan anak, serta pengobatan warga.",
-      alamat: "Jl. Poros Desa Papayan",
+      deskripsi: "Pelayanan kesehatan dasar, ibu dan anak, serta posyandu warga.",
+      alamat: "Dusun Ranca Sari, Desa Papayan",
       icon: "heart-pulse"
     },
     {
-      nama: "Masjid Jami' Al-Ikhlas Kersik",
-      lat: -0.0675,
-      lng: 117.3860,
+      nama: "Masjid Jami' Desa Papayan",
+      lat: -7.4770,
+      lng: 108.2052,
       kategori: "Ibadah",
       deskripsi: "Pusat ibadah dan kegiatan keagamaan masyarakat Desa Papayan.",
-      alamat: "Dusun Empang",
+      alamat: "Dusun Demung Landung, Desa Papayan",
       icon: "mosque"
+    },
+    {
+      nama: "Sentra Agrowisata & Pertanian Papayan",
+      lat: -7.4720,
+      lng: 108.2070,
+      kategori: "Pertanian & Potensi",
+      deskripsi: "Kawasan percontohan pertanian dan perkebunan produktif warga.",
+      alamat: "Dusun Ranca Sari, Desa Papayan",
+      icon: "leaf"
     }
   ],
 
@@ -332,16 +289,17 @@ const desaData = {
     { id: "skd", kode: "470", nama: "Surat Keterangan Domisili (SKD)", syarat: ["Fotokopi KTP & KK", "Surat Pengantar RT"] },
     { id: "sktm", kode: "401", nama: "Surat Keterangan Tidak Mampu (SKTM)", syarat: ["Fotokopi KK & KTP", "Surat Pernyataan / Pengantar RT", "Foto Rumah"] },
     { id: "skbm", kode: "474", nama: "Surat Keterangan Belum Menikah", syarat: ["Fotokopi KTP & KK Pemohon", "Surat Pengantar RT", "Pernyataan Belum Menikah Bermaterai"] },
-    { id: "skck", kode: "331", nama: "Surat Pengantar SKCK Polsek", syarat: ["Fotokopi KTP & KK", "Pas Foto 4x6 2 lembar", "Pengantar RT"] },
-    { id: "skk", kode: "472", nama: "Surat Keterangan Kelahiran / Kematian", syarat: ["Surat Keterangan Bidan/RS", "KTP Orang Tua / Saksi", "Buku Nikah & KK"] }
+    { id: "skck", kode: "331", nama: "Surat Pengantar SKCK Polsek", syarat: ["Fotokopi KTP & KK", "Pas Foto 4x6 2 lembar", "Pengantar RT"] }
   ],
 
   galeri: [
-    { judul: "Panorama Jembatan Pantai Biru Kersik", url: "/static/images/pantai_kersik.jpg", kategori: "Wisata" },
-    { judul: "Kawasan Hutan Mangrove Lestari Kersik", url: "/static/images/mangrove.jpg", kategori: "Lingkungan" },
-    { judul: "Aktivitas Perahu Nelayan Selat Makassar", url: "/static/images/nelayan.jpg", kategori: "Masyarakat" },
-    { judul: "Hamparan Tambak Budidaya Udang & Bandeng", url: "/static/images/tambak.jpg", kategori: "Potensi" },
-    { judul: "Gedung Balai & Kantor Desa Papayan", url: "/static/images/kantor_desa.jpg", kategori: "Pemerintahan" },
-    { judul: "Produk Olahan Terasi Rebon & Kerupuk UMKM", url: "/static/images/produk_terasi.jpg", kategori: "UMKM" }
+    { judul: "Pelatihan Penguatan Kapasitas Data Desa Cantik 2026", url: "static/images/uploads/b2_1792274407.jpeg", kategori: "Pemerintahan" },
+    { judul: "Penyaluran Bantuan Langsung Tunai di Balai Desa", url: "static/images/banner1.png", kategori: "Sosial" },
+    { judul: "Musrenbang Penetapan RKPDes Papayan", url: "static/images/banner2.png", kategori: "Pembangunan" },
+    { judul: "Kantor & Pelayanan Administrasi Desa Papayan", url: "static/images/kantor_desa.jpg", kategori: "Pemerintahan" }
   ]
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = desaData;
+}
