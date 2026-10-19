@@ -8,7 +8,8 @@ def export_site():
     pages = [
         ('/', 'index.html'),
         ('/peta', 'peta.html'),
-        ('/publikasi', 'publikasi.html')
+        ('/publikasi', 'publikasi.html'),
+        ('/pembangunan', 'pembangunan.html')
     ]
     
     pub_docs = {
@@ -101,6 +102,7 @@ def export_site():
         # 2. Transform navigation routes
         content = re.sub(r'href=["\']/peta["\']', 'href="peta.html"', content)
         content = re.sub(r'href=["\']/publikasi["\']', 'href="publikasi.html"', content)
+        content = re.sub(r'href=["\']/pembangunan["\']', 'href="pembangunan.html"', content)
         content = re.sub(r'href=["\']/#([^"\']+)["\']', r'href="index.html#\1"', content)
         content = re.sub(r'href=["\']/["\']', 'href="index.html"', content)
 

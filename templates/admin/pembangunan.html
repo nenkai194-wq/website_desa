@@ -1,0 +1,1078 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Kelola Pembangunan Desa{% endblock %}
+{% block header_title %}Manajemen Kegiatan & Transparansi Pembangunan Desa{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- TOP HEADER & ACTION BANNER -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+    <div>
+      <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+        <i class="fa-solid fa-person-digging text-amber-600"></i> Monitoring & Dokumentasi Pembangunan Desa
+      </h3>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Kelola transparansi pekerjaan fisik desa yang <strong>sedang dikerjakan</strong> maupun <strong>sudah selesai</strong> lengkap dengan komparasi 3 fase foto (Sebelum, Proses, Akhir).
+      </p>
+    </div>
+    <div class="flex items-center gap-2 flex-shrink-0">
+      <a href="{{ url_for('halaman_pembangunan') }}" target="_blank" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-globe text-brand-600"></i> Buka Halaman Publik
+      </a>
+      <button type="button" onclick="bukaModalTambahPembangunan()" class="px-4 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs flex items-center gap-2 shadow-md transition">
+        <i class="fa-solid fa-plus"></i> Tambah Kegiatan Baru
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY STATS -->
+  <div class="grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+    <!-- Total Proyek -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-lg shrink-0">
+        <i class="fa-solid fa-helmet-safety"></i>
+      </div>
+      <div>
+        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Total Kegiatan</span>
+        <span class="text-xl font-black text-slate-900">{{ total_proyek }}</span>
+      </div>
+    </div>
+
+    <!-- Sedang Dikerjakan -->
+    <div class="bg-white p-4 rounded-2xl border border-amber-200/80 shadow-sm flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg shrink-0">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+      </div>
+      <div>
+        <span class="text-[11px] font-bold text-amber-700 uppercase tracking-wider block">Sedang Berjalan</span>
+        <span class="text-xl font-black text-amber-700">{{ sedang_dikerjakan }}</span>
+      </div>
+    </div>
+
+    <!-- Selesai -->
+    <div class="bg-white p-4 rounded-2xl border border-emerald-200/80 shadow-sm flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shrink-0">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <div>
+        <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block">Sudah Selesai</span>
+        <span class="text-xl font-black text-emerald-700">{{ selesai }}</span>
+      </div>
+    </div>
+
+    <!-- Rencana -->
+    <div class="bg-white p-4 rounded-2xl border border-blue-200/80 shadow-sm flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg shrink-0">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+      </div>
+      <div>
+        <span class="text-[11px] font-bold text-blue-700 uppercase tracking-wider block">Rencana</span>
+        <span class="text-xl font-black text-blue-700">{{ rencana }}</span>
+      </div>
+    </div>
+
+    <!-- Total Anggaran -->
+    <div class="col-span-2 sm:col-span-1 bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4 rounded-2xl shadow-sm flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-white/10 text-amber-400 flex items-center justify-center text-lg shrink-0">
+        <i class="fa-solid fa-rupiah-sign"></i>
+      </div>
+      <div class="overflow-hidden">
+        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider block">Total Realisasi</span>
+        <span class="text-sm sm:text-base font-black truncate block text-emerald-400">Rp {{ "{:,.0f}".format(total_anggaran).replace(",", ".") }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER & SEARCH BAR -->
+  <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <!-- Search Input -->
+      <div class="relative flex-1">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <input type="text" id="pencarianPembangunan" onkeyup="filterDaftarPembangunan()" placeholder="Cari kegiatan pembangunan, lokasi, atau dusun..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
+      </div>
+
+      <!-- Quick Filters Dropdowns -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Status Filter -->
+        <select id="filterStatus" onchange="terapkanFilter()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold py-2 px-3 rounded-xl focus:outline-none focus:border-brand-500">
+          <option value="Semua" {% if status_filter == 'Semua' %}selected{% endif %}>Semua Status Progres</option>
+          <option value="Sedang Dikerjakan" {% if status_filter == 'Sedang Dikerjakan' %}selected{% endif %}>Sedang Dikerjakan</option>
+          <option value="Selesai" {% if status_filter == 'Selesai' %}selected{% endif %}>Sudah Selesai</option>
+          <option value="Rencana" {% if status_filter == 'Rencana' %}selected{% endif %}>Rencana Pembangunan</option>
+        </select>
+
+        <!-- Dusun Filter -->
+        <select id="filterDusun" onchange="terapkanFilter()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold py-2 px-3 rounded-xl focus:outline-none focus:border-brand-500">
+          <option value="Semua" {% if dusun_filter == 'Semua' %}selected{% endif %}>Seluruh Dusun</option>
+          {% for d in dusun_list %}
+          <option value="{{ d }}" {% if dusun_filter == d %}selected{% endif %}>{{ d }}</option>
+          {% endfor %}
+        </select>
+
+        <!-- Tahun Filter -->
+        <select id="filterTahun" onchange="terapkanFilter()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold py-2 px-3 rounded-xl focus:outline-none focus:border-brand-500">
+          <option value="Semua" {% if tahun_filter == 'Semua' %}selected{% endif %}>Semua Tahun</option>
+          {% for th in tahun_list %}
+          <option value="{{ th }}" {% if tahun_filter == (th|string) %}selected{% endif %}>TA {{ th }}</option>
+          {% endfor %}
+        </select>
+
+        {% if status_filter != 'Semua' or dusun_filter != 'Semua' or tahun_filter != 'Semua' %}
+        <a href="{{ url_for('admin_pembangunan') }}" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition" title="Reset Filter">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- DAFTAR KEGIATAN PEMBANGUNAN -->
+  {% if items %}
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="gridPembangunan">
+    {% for p in items %}
+    <div class="pembangunan-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
+         data-nama="{{ p.nama_kegiatan|lower }}"
+         data-lokasi="{{ p.lokasi|lower }}"
+         data-dusun="{{ p.dusun|lower }}">
+      
+      <div>
+        <!-- Foto Banner Showcase (Menampilkan perbandingan Sebelum vs Akhir / Proses) -->
+        <div class="h-48 bg-slate-900 relative overflow-hidden group">
+          <!-- Thumbnail Utama -->
+          {% set thumb_foto = p.foto_akhir_1 or p.foto_proses_1 or p.foto_sebelum_1 or 'static/images/banner1.png' %}
+          <img src="{{ url_for('static', filename=thumb_foto.replace('static/', '')) if thumb_foto and thumb_foto.startswith('static/') else (thumb_foto or url_for('static', filename='images/banner1.png')) }}" 
+               alt="{{ p.nama_kegiatan }}" 
+               class="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
+               onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'" />
+          
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+          <!-- Badge Status Progres -->
+          <div class="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
+            {% if p.status_progres == 'Selesai' %}
+            <span class="bg-emerald-600/95 backdrop-blur-md text-white text-[11px] font-black px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+              <i class="fa-solid fa-circle-check text-xs"></i> 100% Selesai
+            </span>
+            {% elif p.status_progres == 'Sedang Dikerjakan' %}
+            <span class="bg-amber-500/95 backdrop-blur-md text-slate-950 text-[11px] font-black px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 animate-pulse">
+              <i class="fa-solid fa-screwdriver-wrench text-xs"></i> {{ p.progres_persen or 50 }}% Berjalan
+            </span>
+            {% else %}
+            <span class="bg-blue-600/95 backdrop-blur-md text-white text-[11px] font-black px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+              <i class="fa-solid fa-clock text-xs"></i> Rencana
+            </span>
+            {% endif %}
+
+            <span class="bg-black/60 backdrop-blur-md text-white/90 text-[10px] font-bold px-2 py-0.5 rounded-md">
+              TA {{ p.tahun_anggaran }}
+            </span>
+          </div>
+
+          <!-- Status Tayang Badge -->
+          <div class="absolute top-3 right-3">
+            {% if p.status_tayang == 'Tayang' %}
+            <span class="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+              <i class="fa-solid fa-eye text-[9px] mr-0.5"></i> Tayang
+            </span>
+            {% else %}
+            <span class="bg-slate-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+              <i class="fa-solid fa-eye-slash text-[9px] mr-0.5"></i> Draf
+            </span>
+            {% endif %}
+          </div>
+
+          <!-- Bottom Banner Strip: 3 Fase Foto Indicator -->
+          <div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-xs">
+            <span class="text-[11px] font-bold text-amber-300 truncate max-w-[200px]">
+              <i class="fa-solid fa-tag text-[10px] mr-1"></i>{{ p.kategori }}
+            </span>
+            <span class="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-md font-bold">
+              <i class="fa-solid fa-images mr-1"></i>{{ p.foto_list|length if p.foto_list else '3' }}/6 Foto
+            </span>
+          </div>
+        </div>
+
+        <!-- Content Details -->
+        <div class="p-5 space-y-3">
+          <div>
+            <h4 class="font-extrabold text-slate-900 text-base leading-snug line-clamp-2 hover:text-brand-700 transition cursor-pointer" onclick="lihatDetailPembangunan({{ p.id }})">
+              {{ p.nama_kegiatan }}
+            </h4>
+            <p class="text-xs text-slate-500 flex items-center gap-1.5 mt-1.5">
+              <i class="fa-solid fa-location-dot text-brand-600 shrink-0"></i>
+              <span class="truncate">{{ p.lokasi }} ({{ p.dusun }})</span>
+            </p>
+          </div>
+
+          <!-- Progress Bar Visual -->
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 space-y-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-medium text-[11px]">Progres Pekerjaan Fisik</span>
+              <span class="font-black {% if p.status_progres == 'Selesai' %}text-emerald-700{% elif p.status_progres == 'Sedang Dikerjakan' %}text-amber-700{% else %}text-blue-700{% endif %}">
+                {{ p.progres_persen or 0 }}%
+              </span>
+            </div>
+            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-500 {% if p.status_progres == 'Selesai' %}bg-emerald-500{% elif p.status_progres == 'Sedang Dikerjakan' %}bg-amber-500{% else %}bg-blue-500{% endif %}"
+                   style="width: {{ p.progres_persen or 0 }}%;"></div>
+            </div>
+          </div>
+
+          <!-- Mini 3-Fase Preview Strip (Sebelum, Proses, Akhir) -->
+          <div class="grid grid-cols-3 gap-1.5 pt-1">
+            <!-- Sebelum -->
+            <div class="relative rounded-lg overflow-hidden border border-slate-200 bg-slate-100 h-16 group/thumb">
+              {% set fs = p.foto_sebelum_1 or 'static/images/banner1.png' %}
+              <img src="{{ url_for('static', filename=fs.replace('static/', '')) if fs.startswith('static/') else fs }}" class="w-full h-full object-cover" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
+              <div class="absolute inset-0 bg-black/40 flex items-center justify-center text-center p-1">
+                <span class="text-[9px] font-black uppercase text-white bg-slate-900/80 px-1 py-0.5 rounded">1. Sebelum</span>
+              </div>
+            </div>
+
+            <!-- Proses -->
+            <div class="relative rounded-lg overflow-hidden border border-slate-200 bg-slate-100 h-16 group/thumb">
+              {% set fp = p.foto_proses_1 or 'static/images/banner2.png' %}
+              <img src="{{ url_for('static', filename=fp.replace('static/', '')) if fp.startswith('static/') else fp }}" class="w-full h-full object-cover" onerror="this.src='{{ url_for('static', filename='images/banner2.png') }}'">
+              <div class="absolute inset-0 bg-black/40 flex items-center justify-center text-center p-1">
+                <span class="text-[9px] font-black uppercase text-amber-300 bg-slate-900/80 px-1 py-0.5 rounded">2. Proses</span>
+              </div>
+            </div>
+
+            <!-- Akhir -->
+            <div class="relative rounded-lg overflow-hidden border border-slate-200 bg-slate-100 h-16 group/thumb">
+              {% set fa = p.foto_akhir_1 or 'static/images/banner3.png' %}
+              <img src="{{ url_for('static', filename=fa.replace('static/', '')) if fa.startswith('static/') else fa }}" class="w-full h-full object-cover" onerror="this.src='{{ url_for('static', filename='images/banner3.png') }}'">
+              <div class="absolute inset-0 bg-black/40 flex items-center justify-center text-center p-1">
+                <span class="text-[9px] font-black uppercase text-emerald-300 bg-slate-900/80 px-1 py-0.5 rounded">3. Akhir</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Financial & Dimension Metrics -->
+          <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-slate-100">
+            <div>
+              <span class="text-[10px] text-slate-400 block font-semibold uppercase">Nilai Anggaran</span>
+              <span class="font-extrabold text-slate-800 text-[11px] sm:text-xs">
+                Rp {{ "{:,.0f}".format(p.anggaran or 0).replace(",", ".") }}
+              </span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block font-semibold uppercase">Sumber Dana</span>
+              <span class="font-bold text-slate-700 truncate block text-[11px]">{{ p.sumber_dana or 'Dana Desa' }}</span>
+            </div>
+            {% if p.volume %}
+            <div class="col-span-2">
+              <span class="text-[10px] text-slate-400 block font-semibold uppercase">Volume / Dimensi</span>
+              <span class="font-medium text-slate-700 text-[11px] truncate block">{{ p.volume }}</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Card Buttons -->
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-1.5">
+        <button type="button" onclick="lihatDetailPembangunan({{ p.id }})" class="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center gap-1 transition shadow-sm">
+          <i class="fa-solid fa-eye text-brand-600"></i> Detail Foto
+        </button>
+
+        <div class="flex items-center gap-1">
+          <!-- Toggle Tayang -->
+          <form action="{{ url_for('admin_toggle_status_pembangunan', id=p.id) }}" method="POST" class="inline">
+            <button type="submit" class="p-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-xs transition" title="Ubah status tayang">
+              <i class="fa-solid {% if p.status_tayang == 'Tayang' %}fa-eye-slash text-amber-600{% else %}fa-eye text-emerald-600{% endif %}"></i>
+            </button>
+          </form>
+
+          <!-- Edit Button -->
+          <button type="button" onclick="bukaModalEditPembangunan({{ p.id }})" class="p-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs transition" title="Edit kegiatan">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+
+          <!-- Hapus Button -->
+          <form action="{{ url_for('admin_hapus_pembangunan', id=p.id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data pembangunan ini?');" class="inline">
+            <button type="submit" class="p-1.5 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 text-xs transition" title="Hapus kegiatan">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-sm">
+    <div class="w-16 h-16 rounded-full bg-amber-50 text-amber-600 mx-auto flex items-center justify-center text-2xl mb-3">
+      <i class="fa-solid fa-person-digging"></i>
+    </div>
+    <h4 class="font-extrabold text-slate-900 text-base">Belum Ada Data Pembangunan</h4>
+    <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-5">
+      Mulai catat transparansi proyek fisik desa, unggah 6 foto tahapan sebelum, proses, dan hasil akhir pembangunan.
+    </p>
+    <button type="button" onclick="bukaModalTambahPembangunan()" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs inline-flex items-center gap-2 shadow-md transition">
+      <i class="fa-solid fa-plus"></i> Tambah Kegiatan Pembangunan
+    </button>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- ======================================================= -->
+<!-- MODAL TAMBAH KEGIATAN PEMBANGUNAN -->
+<!-- ======================================================= -->
+<div id="modalTambahPembangunan" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
+  <div class="min-h-screen px-4 py-8 flex items-center justify-center">
+    <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all">
+      
+      <!-- Modal Header -->
+      <div class="p-5 sm:p-6 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center text-lg font-black shrink-0">
+            <i class="fa-solid fa-person-digging"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-base sm:text-lg">Tambah Kegiatan Pembangunan Desa</h3>
+            <p class="text-xs text-slate-300">Input rincian proyek, anggaran, dan unggah maksimal 6 foto 3 fase.</p>
+          </div>
+        </div>
+        <button type="button" onclick="tutupModalTambahPembangunan()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body Form -->
+      <form action="{{ url_for('admin_tambah_pembangunan') }}" method="POST" enctype="multipart/form-data" class="p-5 sm:p-7 space-y-6 max-h-[80vh] overflow-y-auto">
+        
+        <!-- Section 1: Identitas & Lokasi Proyek -->
+        <div class="space-y-4">
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-2 flex items-center gap-2">
+            <i class="fa-solid fa-circle-info text-brand-600"></i> Informasi Pokok Kegiatan
+          </h4>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kegiatan Pembangunan <span class="text-red-500">*</span></label>
+              <input type="text" name="nama_kegiatan" required placeholder="Contoh: Pembangunan Jalan Rabat Beton Poros Dusun Ranca Sari" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Pembangunan <span class="text-red-500">*</span></label>
+              <select name="kategori" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                <option value="Infrastruktur Jalan">Infrastruktur Jalan & Jembatan</option>
+                <option value="Irigasi & Pertanian">Irigasi & Sarana Pertanian</option>
+                <option value="Sarana Kesehatan & Posyandu">Sarana Kesehatan & Posyandu</option>
+                <option value="Sarana Air Bersih & Sanitasi">Sarana Air Bersih & Sanitasi</option>
+                <option value="Gedung & Balai Desa">Gedung / Balai Pertemuan Desa</option>
+                <option value="Sarana Olahraga & Kepemudaan">Sarana Olahraga & Kepemudaan</option>
+                <option value="Penerangan & Kelistrikan">Penerangan Jalan & Energi</option>
+                <option value="Penguatan Tebing & Drainase">Penguatan Tebing & Drainase</option>
+                <option value="Fasilitas Umum Lainnya">Fasilitas Umum Lainnya</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Wilayah Dusun <span class="text-red-500">*</span></label>
+              <select name="dusun" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                <option value="Dusun Demung Landung">Dusun Demung Landung</option>
+                <option value="Dusun Ranca Sari">Dusun Ranca Sari</option>
+                <option value="Dusun Margahayu">Dusun Margahayu</option>
+                <option value="Dusun Cihaur">Dusun Cihaur</option>
+                <option value="Lintas Dusun">Lintas Dusun / Seluruh Desa</option>
+              </select>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Titik Lokasi Spesifik <span class="text-red-500">*</span></label>
+              <input type="text" name="lokasi" required placeholder="Contoh: Jl. Poros Dusun Ranca Sari RT 002 / RW 001" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Anggaran, Volume & Pelaksana -->
+        <div class="space-y-4">
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-2 flex items-center gap-2">
+            <i class="fa-solid fa-coins text-amber-600"></i> Anggaran, Volume & Status Pelaksanaan
+          </h4>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Nilai Anggaran (Rp) <span class="text-red-500">*</span></label>
+              <input type="number" name="anggaran" required placeholder="148500000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Sumber Dana</label>
+              <input type="text" name="sumber_dana" placeholder="Dana Desa (DDS) TA 2026" value="Dana Desa (DDS)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Tahun Anggaran</label>
+              <input type="number" name="tahun_anggaran" value="2026" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Volume / Dimensi Fisik</label>
+              <input type="text" name="volume" placeholder="Contoh: 650 m x 2,5 m x 0,15 m" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Tim Pelaksana Kegiatan (TPK)</label>
+              <input type="text" name="pelaksana" value="TPK Desa Papayan & Swadaya Warga" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Status Pengerjaan <span class="text-red-500">*</span></label>
+              <select name="status_progres" id="tambah_status_progres" onchange="autoSetProgresPercent(this.value, 'tambah_progres_persen')" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white font-bold text-slate-800 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                <option value="Sedang Dikerjakan" selected>Sedang Dikerjakan (Dalam Proses)</option>
+                <option value="Selesai">Selesai (Sudah Tuntas 100%)</option>
+                <option value="Rencana">Rencana (Belum Dimulai)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Progres Pekerjaan (%)</label>
+              <div class="flex items-center gap-2">
+                <input type="number" name="progres_persen" id="tambah_progres_persen" min="0" max="100" value="50" class="w-24 px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-center">
+                <span class="text-xs text-slate-500 font-bold">%</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Mulai</label>
+              <input type="date" name="tanggal_mulai" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Target / Selesai</label>
+              <input type="date" name="tanggal_selesai" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+            </div>
+
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Uraian Singkat / Deskripsi Umum</label>
+              <textarea name="uraian_singkat" rows="2" placeholder="Uraikan gambaran umum mengenai pekerjaan fisik dan maksud pelaksanaannya..." class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Manfaat Bagi Masyarakat</label>
+              <input type="text" name="manfaat" placeholder="Contoh: Memperlancar mobilitas angkutan hasil tani dan akses warga antar dusun" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: 6 Foto Dokumentasi & Uraian 3 Fase -->
+        <div class="space-y-5 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
+          <div>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center justify-between">
+              <span class="flex items-center gap-2">
+                <i class="fa-solid fa-camera text-brand-600"></i> Dokumentasi Foto (Maksimal 6 Foto: 3 Fase Pembangunan)
+              </span>
+              <span class="text-[11px] text-amber-700 font-bold bg-amber-100 px-2 py-0.5 rounded-full">
+                Sebelum • Proses • Akhir
+              </span>
+            </h4>
+            <p class="text-[11px] text-slate-500 mt-1">Unggah berkas foto dokumentasi fisik lapangan atau tempelkan tautan URL gambar.</p>
+          </div>
+
+          <!-- FASE 1: SEBELUM PEMBANGUNAN -->
+          <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-slate-800 text-white text-[10px] flex items-center justify-center font-bold">1</span>
+                Status Sebelum Pembangunan (Kondisi Awal / 0%)
+              </span>
+              <span class="text-[10px] text-slate-500 font-bold">Maks. 2 Foto</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Foto Sebelum 1 -->
+              <div class="space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-600">Foto Sebelum 1 <span class="text-red-500">*</span></label>
+                <input type="file" name="foto_sebelum_1" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                <input type="text" name="caption_sebelum_1" placeholder="Uraian/Caption foto sebelum 1..." class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px]">
+              </div>
+
+              <!-- Foto Sebelum 2 -->
+              <div class="space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-600">Foto Sebelum 2 (Opsional)</label>
+                <input type="file" name="foto_sebelum_2" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                <input type="text" name="caption_sebelum_2" placeholder="Uraian/Caption foto sebelum 2..." class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px]">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Uraian Kondisi Sebelum Pembangunan:</label>
+              <textarea name="uraian_sebelum" rows="2" placeholder="Jelaskan kondisi awal lokasi sebelum ada kegiatan (misal: jalan tanah becek dan berlubang parah saat hujan)..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+          </div>
+
+          <!-- FASE 2: PROSES PEMBANGUNAN -->
+          <div class="bg-white p-4 rounded-xl border border-amber-200/80 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-amber-100">
+              <span class="text-xs font-black uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-[10px] flex items-center justify-center font-bold">2</span>
+                Status Proses Pembangunan (Pengerjaan Konstruksi)
+              </span>
+              <span class="text-[10px] text-amber-700 font-bold">Maks. 2 Foto</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Foto Proses 1 -->
+              <div class="space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-600">Foto Proses 1 <span class="text-red-500">*</span></label>
+                <input type="file" name="foto_proses_1" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100">
+                <input type="text" name="caption_proses_1" placeholder="Uraian/Caption foto proses 1..." class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px]">
+              </div>
+
+              <!-- Foto Proses 2 -->
+              <div class="space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-600">Foto Proses 2 (Opsional)</label>
+                <input type="file" name="foto_proses_2" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100">
+                <input type="text" name="caption_proses_2" placeholder="Uraian/Caption foto proses 2..." class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px]">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Uraian Tahap Proses Pembangunan:</label>
+              <textarea name="uraian_proses" rows="2" placeholder="Jelaskan tahapan pengerjaan yang sedang/telah dilakukan (misal: pemasangan bekisting, pemadatan makadam, pengecoran beton)..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+          </div>
+
+          <!-- FASE 3: AKHIR PEMBANGUNAN -->
+          <div class="bg-white p-4 rounded-xl border border-emerald-200/80 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-emerald-100">
+              <span class="text-xs font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] flex items-center justify-center font-bold">3</span>
+                Status Akhir Pembangunan (Selesai 100% / Pasca-Konstruksi)
+              </span>
+              <span class="text-[10px] text-emerald-700 font-bold">Maks. 2 Foto</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Foto Akhir 1 -->
+              <div class="space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-600">Foto Akhir 1 <span class="text-red-500">*</span></label>
+                <input type="file" name="foto_akhir_1" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-800 hover:file:bg-emerald-100">
+                <input type="text" name="caption_akhir_1" placeholder="Uraian/Caption foto akhir 1..." class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px]">
+              </div>
+
+              <!-- Foto Akhir 2 -->
+              <div class="space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-600">Foto Akhir 2 (Opsional)</label>
+                <input type="file" name="foto_akhir_2" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-800 hover:file:bg-emerald-100">
+                <input type="text" name="caption_akhir_2" placeholder="Uraian/Caption foto akhir 2..." class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px]">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Uraian Hasil Akhir Pembangunan:</label>
+              <textarea name="uraian_akhir" rows="2" placeholder="Jelaskan kondisi akhir fisik setelah pembangunan selesai dan manfaat langsung yang dirasakan warga..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Section 4: Publikasi & Urutan -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Status Publikasi di Website</label>
+            <select name="status_tayang" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white">
+              <option value="Tayang">Tayang Langsung di Website Publik</option>
+              <option value="Draf">Draf (Hanya Terlihat di Admin)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Prioritas Tampilan</label>
+            <input type="number" name="urutan" value="1" min="1" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+          <button type="button" onclick="tutupModalTambahPembangunan()" class="px-5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition">
+            Batal
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-black text-xs shadow-md transition flex items-center gap-2">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Kegiatan Pembangunan
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================= -->
+<!-- MODAL EDIT KEGIATAN PEMBANGUNAN -->
+<!-- ======================================================= -->
+<div id="modalEditPembangunan" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
+  <div class="min-h-screen px-4 py-8 flex items-center justify-center">
+    <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all">
+      
+      <!-- Modal Header -->
+      <div class="p-5 sm:p-6 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center text-lg font-black shrink-0">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-base sm:text-lg">Edit Kegiatan Pembangunan</h3>
+            <p class="text-xs text-slate-300" id="edit_modal_subtitle">Perbarui data proyek, progres %, dan foto tahapan pembangunan.</p>
+          </div>
+        </div>
+        <button type="button" onclick="tutupModalEditPembangunan()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Edit Form -->
+      <form id="formEditPembangunan" method="POST" enctype="multipart/form-data" class="p-5 sm:p-7 space-y-6 max-h-[80vh] overflow-y-auto">
+        <input type="hidden" name="id" id="edit_id">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kegiatan Pembangunan <span class="text-red-500">*</span></label>
+            <input type="text" name="nama_kegiatan" id="edit_nama_kegiatan" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Pembangunan</label>
+            <select name="kategori" id="edit_kategori" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white">
+              <option value="Infrastruktur Jalan">Infrastruktur Jalan & Jembatan</option>
+              <option value="Irigasi & Pertanian">Irigasi & Sarana Pertanian</option>
+              <option value="Sarana Kesehatan & Posyandu">Sarana Kesehatan & Posyandu</option>
+              <option value="Sarana Air Bersih & Sanitasi">Sarana Air Bersih & Sanitasi</option>
+              <option value="Gedung & Balai Desa">Gedung / Balai Pertemuan Desa</option>
+              <option value="Sarana Olahraga & Kepemudaan">Sarana Olahraga & Kepemudaan</option>
+              <option value="Penerangan & Kelistrikan">Penerangan Jalan & Energi</option>
+              <option value="Penguatan Tebing & Drainase">Penguatan Tebing & Drainase</option>
+              <option value="Fasilitas Umum Lainnya">Fasilitas Umum Lainnya</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Wilayah Dusun</label>
+            <select name="dusun" id="edit_dusun" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white">
+              <option value="Dusun Demung Landung">Dusun Demung Landung</option>
+              <option value="Dusun Ranca Sari">Dusun Ranca Sari</option>
+              <option value="Dusun Margahayu">Dusun Margahayu</option>
+              <option value="Dusun Cihaur">Dusun Cihaur</option>
+              <option value="Lintas Dusun">Lintas Dusun / Seluruh Desa</option>
+            </select>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Titik Lokasi Spesifik</label>
+            <input type="text" name="lokasi" id="edit_lokasi" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nilai Anggaran (Rp)</label>
+            <input type="number" name="anggaran" id="edit_anggaran" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Sumber Dana</label>
+            <input type="text" name="sumber_dana" id="edit_sumber_dana" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tahun Anggaran</label>
+            <input type="number" name="tahun_anggaran" id="edit_tahun_anggaran" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Volume / Dimensi</label>
+            <input type="text" name="volume" id="edit_volume" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Pelaksana Kegiatan</label>
+            <input type="text" name="pelaksana" id="edit_pelaksana" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Status Pengerjaan</label>
+            <select name="status_progres" id="edit_status_progres" onchange="autoSetProgresPercent(this.value, 'edit_progres_persen')" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white font-bold">
+              <option value="Sedang Dikerjakan">Sedang Dikerjakan</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Rencana">Rencana</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Progres (%)</label>
+            <input type="number" name="progres_persen" id="edit_progres_persen" min="0" max="100" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Mulai</label>
+            <input type="date" name="tanggal_mulai" id="edit_tanggal_mulai" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Selesai</label>
+            <input type="date" name="tanggal_selesai" id="edit_tanggal_selesai" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Singkat</label>
+            <textarea name="uraian_singkat" id="edit_uraian_singkat" rows="2" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+          </div>
+        </div>
+
+        <!-- Uraian 3 Fase -->
+        <div class="space-y-4 pt-2 border-t border-slate-100">
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">Uraian 3 Fase Pembangunan</h4>
+          
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Uraian Sebelum Pembangunan:</label>
+              <textarea name="uraian_sebelum" id="edit_uraian_sebelum" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-amber-800 mb-1">Uraian Proses Pembangunan:</label>
+              <textarea name="uraian_proses" id="edit_uraian_proses" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-emerald-800 mb-1">Uraian Akhir Pembangunan:</label>
+              <textarea name="uraian_akhir" id="edit_uraian_akhir" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unggah Ganti Foto (Maks 6 Foto) -->
+        <div class="space-y-3 pt-2 border-t border-slate-100 bg-slate-50 p-4 rounded-2xl">
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-700">Perbarui Foto Dokumentasi (Kosongkan jika tidak ingin mengubah)</h4>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <!-- Sebelum -->
+            <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+              <span class="font-black text-[11px] text-slate-800 block">Fase 1: Sebelum</span>
+              <input type="file" name="foto_sebelum_1" accept="image/*" class="w-full text-[10px]">
+              <input type="file" name="foto_sebelum_2" accept="image/*" class="w-full text-[10px]">
+            </div>
+
+            <!-- Proses -->
+            <div class="bg-white p-3 rounded-xl border border-amber-200 space-y-2">
+              <span class="font-black text-[11px] text-amber-800 block">Fase 2: Proses</span>
+              <input type="file" name="foto_proses_1" accept="image/*" class="w-full text-[10px]">
+              <input type="file" name="foto_proses_2" accept="image/*" class="w-full text-[10px]">
+            </div>
+
+            <!-- Akhir -->
+            <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-2">
+              <span class="font-black text-[11px] text-emerald-800 block">Fase 3: Akhir</span>
+              <input type="file" name="foto_akhir_1" accept="image/*" class="w-full text-[10px]">
+              <input type="file" name="foto_akhir_2" accept="image/*" class="w-full text-[10px]">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Status Publikasi</label>
+            <select name="status_tayang" id="edit_status_tayang" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white">
+              <option value="Tayang">Tayang</option>
+              <option value="Draf">Draf</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Urutan</label>
+            <input type="number" name="urutan" id="edit_urutan" min="1" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+          <button type="button" onclick="tutupModalEditPembangunan()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs">
+            Batal
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md">
+            Simpan Perubahan
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================= -->
+<!-- MODAL DETAIL & KOMPARASI 3 FASE FOTO PEMBANGUNAN -->
+<!-- ======================================================= -->
+<div id="modalDetailPembangunan" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm overflow-y-auto">
+  <div class="min-h-screen px-4 py-8 flex items-center justify-center">
+    <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all">
+      
+      <!-- Header -->
+      <div class="p-5 sm:p-6 bg-slate-950 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-brand-500 text-slate-950 flex items-center justify-center text-lg font-black shrink-0">
+            <i class="fa-solid fa-images"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-base sm:text-lg leading-tight" id="detail_nama">Detail Dokumentasi Proyek</h3>
+            <p class="text-xs text-slate-400" id="detail_sub">Komparasi Foto 3 Fase Pembangunan</p>
+          </div>
+        </div>
+        <button type="button" onclick="tutupModalDetailPembangunan()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Body Content -->
+      <div class="p-5 sm:p-7 space-y-6 max-h-[80vh] overflow-y-auto">
+        
+        <!-- Status Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+          <div class="flex items-center gap-2">
+            <span id="detail_status_badge" class="px-3 py-1 rounded-full text-xs font-black shadow-sm">Status</span>
+            <span id="detail_kategori" class="bg-slate-200 text-slate-700 text-xs font-bold px-2.5 py-1 rounded-full">Kategori</span>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-slate-400 font-bold uppercase block">Nilai Anggaran Realisasi</span>
+            <span class="text-base font-black text-brand-700" id="detail_anggaran">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- 3-Fase Tab Nav -->
+        <div class="flex border-b border-slate-200 gap-2">
+          <button type="button" onclick="gantiTabDetailFase('sebelum')" id="tab-fase-btn-sebelum" class="px-4 py-2.5 text-xs font-bold border-b-2 border-slate-800 text-slate-900 flex items-center gap-1.5 transition">
+            <span class="w-2 h-2 rounded-full bg-slate-800"></span> 1. Sebelum Pembangunan
+          </button>
+          <button type="button" onclick="gantiTabDetailFase('proses')" id="tab-fase-btn-proses" class="px-4 py-2.5 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span> 2. Proses Pembangunan
+          </button>
+          <button type="button" onclick="gantiTabDetailFase('akhir')" id="tab-fase-btn-akhir" class="px-4 py-2.5 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 3. Akhir Pembangunan
+          </button>
+        </div>
+
+        <!-- FASE CONTAINER: SEBELUM -->
+        <div id="detail_container_sebelum" class="space-y-4">
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+            <span class="text-[11px] font-black uppercase tracking-wider text-slate-500 block mb-1">Uraian Kondisi Sebelum:</span>
+            <p class="text-xs text-slate-700 leading-relaxed" id="detail_uraian_sebelum">-</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="detail_foto_sebelum_grid"></div>
+        </div>
+
+        <!-- FASE CONTAINER: PROSES -->
+        <div id="detail_container_proses" class="space-y-4 hidden">
+          <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200">
+            <span class="text-[11px] font-black uppercase tracking-wider text-amber-800 block mb-1">Uraian Tahap Pengerjaan:</span>
+            <p class="text-xs text-slate-700 leading-relaxed" id="detail_uraian_proses">-</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="detail_foto_proses_grid"></div>
+        </div>
+
+        <!-- FASE CONTAINER: AKHIR -->
+        <div id="detail_container_akhir" class="space-y-4 hidden">
+          <div class="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-200">
+            <span class="text-[11px] font-black uppercase tracking-wider text-emerald-800 block mb-1">Uraian Hasil Akhir Pembangunan:</span>
+            <p class="text-xs text-slate-700 leading-relaxed" id="detail_uraian_akhir">-</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="detail_foto_akhir_grid"></div>
+        </div>
+
+        <!-- Technical Specs & Details -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-4 border-t border-slate-100 bg-slate-50 p-4 rounded-2xl">
+          <div>
+            <span class="text-[10px] text-slate-400 font-bold uppercase block">Lokasi & Dusun</span>
+            <span class="font-bold text-slate-800" id="detail_lokasi_dusun">-</span>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-bold uppercase block">Sumber Dana</span>
+            <span class="font-bold text-slate-800" id="detail_sumber">-</span>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-bold uppercase block">Volume Fisik</span>
+            <span class="font-bold text-slate-800" id="detail_volume">-</span>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-bold uppercase block">Pelaksana</span>
+            <span class="font-bold text-slate-800" id="detail_pelaksana">-</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="p-4 bg-slate-100 border-t border-slate-200 flex justify-end">
+        <button type="button" onclick="tutupModalDetailPembangunan()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- JAVASCRIPT LOGIC -->
+<script>
+function autoSetProgresPercent(statusVal, targetInputId) {
+  const inp = document.getElementById(targetInputId);
+  if (!inp) return;
+  if (statusVal === 'Selesai') {
+    inp.value = 100;
+  } else if (statusVal === 'Rencana') {
+    inp.value = 0;
+  } else if (statusVal === 'Sedang Dikerjakan' && (parseInt(inp.value) === 100 || parseInt(inp.value) === 0)) {
+    inp.value = 50;
+  }
+}
+
+function bukaModalTambahPembangunan() {
+  document.getElementById('modalTambahPembangunan').classList.remove('hidden');
+}
+function tutupModalTambahPembangunan() {
+  document.getElementById('modalTambahPembangunan').classList.add('hidden');
+}
+
+function bukaModalEditPembangunan(id) {
+  fetch(`/api/pembangunan/${id}`)
+    .then(r => r.json())
+    .then(res => {
+      if (!res.success) throw new Error(res.message);
+      const d = res.data;
+      const f = document.getElementById('formEditPembangunan');
+      f.action = `/admin/pembangunan/edit/${d.id}`;
+      document.getElementById('edit_id').value = d.id;
+      document.getElementById('edit_nama_kegiatan').value = d.nama_kegiatan || '';
+      document.getElementById('edit_kategori').value = d.kategori || 'Infrastruktur Jalan';
+      document.getElementById('edit_dusun').value = d.dusun || 'Dusun Demung Landung';
+      document.getElementById('edit_lokasi').value = d.lokasi || '';
+      document.getElementById('edit_anggaran').value = d.anggaran || 0;
+      document.getElementById('edit_sumber_dana').value = d.sumber_dana || '';
+      document.getElementById('edit_tahun_anggaran').value = d.tahun_anggaran || 2026;
+      document.getElementById('edit_volume').value = d.volume || '';
+      document.getElementById('edit_pelaksana').value = d.pelaksana || '';
+      document.getElementById('edit_status_progres').value = d.status_progres || 'Sedang Dikerjakan';
+      document.getElementById('edit_progres_persen').value = d.progres_persen || 0;
+      document.getElementById('edit_tanggal_mulai').value = d.tanggal_mulai || '';
+      document.getElementById('edit_tanggal_selesai').value = d.tanggal_selesai || '';
+      document.getElementById('edit_uraian_singkat').value = d.uraian_singkat || '';
+      document.getElementById('edit_uraian_sebelum').value = d.uraian_sebelum || '';
+      document.getElementById('edit_uraian_proses').value = d.uraian_proses || '';
+      document.getElementById('edit_uraian_akhir').value = d.uraian_akhir || '';
+      document.getElementById('edit_status_tayang').value = d.status_tayang || 'Tayang';
+      document.getElementById('edit_urutan').value = d.urutan || 1;
+
+      document.getElementById('modalEditPembangunan').classList.remove('hidden');
+    })
+    .catch(err => {
+      alert('Gagal memuat data pembangunan: ' + err.message);
+    });
+}
+function tutupModalEditPembangunan() {
+  document.getElementById('modalEditPembangunan').classList.add('hidden');
+}
+
+function lihatDetailPembangunan(id) {
+  fetch(`/api/pembangunan/${id}`)
+    .then(r => r.json())
+    .then(res => {
+      if (!res.success) throw new Error(res.message);
+      const d = res.data;
+      document.getElementById('detail_nama').innerText = d.nama_kegiatan;
+      document.getElementById('detail_sub').innerText = `${d.lokasi} • TA ${d.tahun_anggaran}`;
+      document.getElementById('detail_kategori').innerText = d.kategori;
+      document.getElementById('detail_anggaran').innerText = 'Rp ' + Number(d.anggaran || 0).toLocaleString('id-ID');
+      document.getElementById('detail_lokasi_dusun').innerText = `${d.lokasi} (${d.dusun})`;
+      document.getElementById('detail_sumber').innerText = d.sumber_dana || '-';
+      document.getElementById('detail_volume').innerText = d.volume || '-';
+      document.getElementById('detail_pelaksana').innerText = d.pelaksana || '-';
+
+      const badge = document.getElementById('detail_status_badge');
+      if (d.status_progres === 'Selesai') {
+        badge.className = 'px-3 py-1 rounded-full text-xs font-black shadow-sm bg-emerald-600 text-white';
+        badge.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> 100% Selesai';
+      } else if (d.status_progres === 'Sedang Dikerjakan') {
+        badge.className = 'px-3 py-1 rounded-full text-xs font-black shadow-sm bg-amber-500 text-slate-950 animate-pulse';
+        badge.innerHTML = `<i class="fa-solid fa-screwdriver-wrench mr-1"></i> ${d.progres_persen || 50}% Sedang Berjalan`;
+      } else {
+        badge.className = 'px-3 py-1 rounded-full text-xs font-black shadow-sm bg-blue-600 text-white';
+        badge.innerHTML = '<i class="fa-solid fa-clock mr-1"></i> Rencana';
+      }
+
+      document.getElementById('detail_uraian_sebelum').innerText = d.uraian_sebelum || 'Belum ada uraian kondisi awal sebelum pembangunan.';
+      document.getElementById('detail_uraian_proses').innerText = d.uraian_proses || 'Belum ada uraian tahapan proses konstruksi.';
+      document.getElementById('detail_uraian_akhir').innerText = d.uraian_akhir || 'Belum ada uraian hasil akhir pembangunan.';
+
+      // Render Photos for each phase
+      renderFotoFase('detail_foto_sebelum_grid', [d.foto_sebelum_1, d.foto_sebelum_2], 'Sebelum');
+      renderFotoFase('detail_foto_proses_grid', [d.foto_proses_1, d.foto_proses_2], 'Proses');
+      renderFotoFase('detail_foto_akhir_grid', [d.foto_akhir_1, d.foto_akhir_2], 'Akhir');
+
+      gantiTabDetailFase('sebelum');
+      document.getElementById('modalDetailPembangunan').classList.remove('hidden');
+    })
+    .catch(err => {
+      alert('Gagal memuat detail pembangunan: ' + err.message);
+    });
+}
+function tutupModalDetailPembangunan() {
+  document.getElementById('modalDetailPembangunan').classList.add('hidden');
+}
+
+function renderFotoFase(containerId, fotoArray, label) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const validPhotos = fotoArray.filter(Boolean);
+  if (validPhotos.length === 0) {
+    container.innerHTML = `<div class="col-span-2 p-6 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs text-slate-400 italic">Belum ada foto dokumentasi fase ${label}</div>`;
+    return;
+  }
+  validPhotos.forEach((src, idx) => {
+    let cleanSrc = src;
+    if (cleanSrc.startsWith('static/')) cleanSrc = '/' + cleanSrc;
+    container.innerHTML += `
+      <div class="rounded-xl overflow-hidden border border-slate-200 bg-black h-56 relative group">
+        <img src="${cleanSrc}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='/static/images/banner1.png'">
+        <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded">
+          Fase ${label} - Foto #${idx + 1}
+        </span>
+      </div>
+    `;
+  });
+}
+
+function gantiTabDetailFase(fase) {
+  ['sebelum', 'proses', 'akhir'].forEach(f => {
+    const btn = document.getElementById(`tab-fase-btn-${f}`);
+    const box = document.getElementById(`detail_container_${f}`);
+    if (f === fase) {
+      btn.className = 'px-4 py-2.5 text-xs font-bold border-b-2 border-slate-900 text-slate-900 flex items-center gap-1.5 transition';
+      box.classList.remove('hidden');
+    } else {
+      btn.className = 'px-4 py-2.5 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-800 flex items-center gap-1.5 transition';
+      box.classList.add('hidden');
+    }
+  });
+}
+
+function terapkanFilter() {
+  const status = document.getElementById('filterStatus').value;
+  const dusun = document.getElementById('filterDusun').value;
+  const tahun = document.getElementById('filterTahun').value;
+  window.location.href = `/admin/pembangunan?status=${encodeURIComponent(status)}&dusun=${encodeURIComponent(dusun)}&tahun=${encodeURIComponent(tahun)}`;
+}
+
+function filterDaftarPembangunan() {
+  const q = document.getElementById('pencarianPembangunan').value.toLowerCase();
+  const cards = document.querySelectorAll('.pembangunan-card');
+  cards.forEach(c => {
+    const nama = c.getAttribute('data-nama') || '';
+    const lokasi = c.getAttribute('data-lokasi') || '';
+    const dusun = c.getAttribute('data-dusun') || '';
+    if (nama.includes(q) || lokasi.includes(q) || dusun.includes(q)) {
+      c.style.display = '';
+    } else {
+      c.style.display = 'none';
+    }
+  });
+}
+</script>
+{% endblock %}

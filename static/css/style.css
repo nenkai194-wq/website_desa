@@ -137,3 +137,21 @@ body {
     box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
   }
 }
+
+/* Phase Tabs for Pembangunan Desa */
+.phase-tab-active-sebelum {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #0f172a !important;
+}
+.phase-tab-active-proses {
+  background-color: #f59e0b !important;
+  color: #0f172a !important;
+  border-color: #f59e0b !important;
+}
+.phase-tab-active-akhir {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+  border-color: #059669 !important;
+}
+

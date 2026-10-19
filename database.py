@@ -1593,6 +1593,167 @@ def init_db():
     ''')
     conn.commit()
 
+    # 16. Pembangunan Desa (Kegiatan & Proyek Pembangunan yang Sedang dan Sudah Dikerjakan)
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS pembangunan_desa (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nama_kegiatan TEXT NOT NULL,
+        kategori TEXT DEFAULT 'Infrastruktur Jalan',
+        lokasi TEXT NOT NULL,
+        dusun TEXT DEFAULT 'Dusun Demung Landung',
+        tahun_anggaran INTEGER DEFAULT 2026,
+        sumber_dana TEXT DEFAULT 'Dana Desa (DDS)',
+        anggaran INTEGER DEFAULT 0,
+        volume TEXT DEFAULT '',
+        pelaksana TEXT DEFAULT 'TPK Desa Papayan',
+        progres_persen INTEGER DEFAULT 0,
+        status_progres TEXT DEFAULT 'Sedang Dikerjakan',
+        tanggal_mulai TEXT,
+        tanggal_selesai TEXT,
+        manfaat TEXT,
+        uraian_singkat TEXT,
+        uraian_sebelum TEXT,
+        uraian_proses TEXT,
+        uraian_akhir TEXT,
+        foto_sebelum_1 TEXT,
+        foto_sebelum_2 TEXT,
+        foto_proses_1 TEXT,
+        foto_proses_2 TEXT,
+        foto_akhir_1 TEXT,
+        foto_akhir_2 TEXT,
+        data_foto_json TEXT,
+        status_tayang TEXT DEFAULT 'Tayang',
+        urutan INTEGER DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+    conn.commit()
+
+    cursor.execute("SELECT COUNT(*) FROM pembangunan_desa")
+    if cursor.fetchone()[0] == 0:
+        sample_pembangunan = [
+            (
+                "Pembangunan Jalan Rabat Beton Poros Dusun Ranca Sari",
+                "Infrastruktur Jalan",
+                "Jalan Poros Dusun Ranca Sari RT 002 / RW 001",
+                "Dusun Ranca Sari",
+                2026,
+                "Dana Desa (DDS) TA 2026",
+                148500000,
+                "650 m x 2,5 m x 0,15 m",
+                "TPK Desa Papayan & Swakelola Warga",
+                65,
+                "Sedang Dikerjakan",
+                "2026-08-10",
+                "2026-11-20",
+                "Memperlancar arus transportasi angkutan hasil bumi, komoditas perkebunan, dan mobilitas harian warga antar dusun.",
+                "Pekerjaan peningkatan ruas jalan penghubung utama Dusun Ranca Sari menuju jalan poros desa dengan konstruksi cor rabat beton bertulang wiremesh dan berem batu.",
+                "Kondisi awal jalan berupa lapisan tanah dan batu lepas yang berlubang parah serta licin dan berlumpur saat musim penghujan, sangat menyulitkan kendaraan roda dua dan roda empat melintas.",
+                "Tahapan pengerjaan saat ini meliputi pembersihan dan perataan badan jalan, penghamparan batu makadam dasar, pemasangan papan bekisting, serta pengecoran campuran semen beton K-250.",
+                "Jalan rabat beton kokoh berstandar teknis dengan saluran drainase tepi jalan, menjamin akses transportasi lancar bebas becek sepanjang tahun.",
+                "static/images/banner1.png",
+                "static/images/banner2.png",
+                "static/images/banner3.png",
+                "static/images/uploads/b1_1792274448.jpeg",
+                "static/images/uploads/b2_1792274407.jpeg",
+                "static/images/uploads/b3_1792274617.jpg",
+                json.dumps([
+                    {"url": "static/images/banner1.png", "fase": "Sebelum", "caption": "Kondisi jalan tanah berlubang dan licin sebelum dibangun"},
+                    {"url": "static/images/banner2.png", "fase": "Sebelum", "caption": "Titik rawan genangan air di tikungan badan jalan"},
+                    {"url": "static/images/banner3.png", "fase": "Proses", "caption": "Pemasangan bekisting dan pemadatan lapisan batu makadam"},
+                    {"url": "static/images/uploads/b1_1792274448.jpeg", "fase": "Proses", "caption": "Pengecoran beton semen K-250 bersama TPK dan warga"},
+                    {"url": "static/images/uploads/b2_1792274407.jpeg", "fase": "Akhir", "caption": "Progres bentangan cor beton yang telah mengeras rapi"},
+                    {"url": "static/images/uploads/b3_1792274617.jpg", "fase": "Akhir", "caption": "Uji coba lintasan dan pembersihan bahu jalan rabat"}
+                ]),
+                "Tayang",
+                1
+            ),
+            (
+                "Pembangunan & Normalisasi Saluran Irigasi Tersier Dusun Demung Landung",
+                "Irigasi & Pertanian",
+                "Blok Sawah Demung Kidul RT 003 / RW 001",
+                "Dusun Demung Landung",
+                2026,
+                "Alokasi Dana Desa (ADD) & PADes",
+                96200000,
+                "Panjang 420 Meter (Tinggi 0,8 m x Lebar 0,6 m)",
+                "Kelompok Mitra Cai & TPK Desa Papayan",
+                100,
+                "Selesai",
+                "2026-05-15",
+                "2026-07-30",
+                "Menjamin pasokan debit air stabil bagi lebih dari 35 hektar persawahan warga dan mencegah kekeringan saat kemarau.",
+                "Pembangunan dinding penahan dan saluran pasangan batu belah terstandar guna menggantikan saluran tanah alami yang kerap longsor dan tersumbat sedimentasi.",
+                "Saluran irigasi tanah terdahulu sering jebol saat debit air sungai meluap di musim hujan dan tersumbat endapan lumpur, mengakibatkan sawah di bagian hilir sering kekurangan air.",
+                "Penggalian dasar saluran, pemancangan cerucuk bambu penguat pondasi, penyusunan pasangan batu belah dengan adukan semen standar SNI, serta plesteran acian anti-rembes.",
+                "Saluran irigasi permanen telah tuntas 100% lengkap dengan pintu bagi air tersier, air mengalir lancar ke seluruh petak sawah tanpa ada rembesan tanggul.",
+                "static/images/banner2.png",
+                "static/images/banner3.png",
+                "static/images/banner1.png",
+                "static/images/uploads/b2_1792274407.jpeg",
+                "static/images/uploads/b3_1792274617.jpg",
+                "static/images/uploads/b1_1792274448.jpeg",
+                json.dumps([
+                    {"url": "static/images/banner2.png", "fase": "Sebelum", "caption": "Kondisi tanggul irigasi tanah yang jebol dan dangkal"},
+                    {"url": "static/images/banner3.png", "fase": "Sebelum", "caption": "Endapan sedimen lumpur menyumbat aliran air ke sawah"},
+                    {"url": "static/images/banner1.png", "fase": "Proses", "caption": "Pemasangan pondasi batu belah dan adukan semen"},
+                    {"url": "static/images/uploads/b2_1792274407.jpeg", "fase": "Proses", "caption": "Pengerjaan plesteran dinding saluran dan pintu air"},
+                    {"url": "static/images/uploads/b3_1792274617.jpg", "fase": "Akhir", "caption": "Saluran irigasi permanen selesai 100% teraliri air bersih"},
+                    {"url": "static/images/uploads/b1_1792274448.jpeg", "fase": "Akhir", "caption": "Debit air mengairi hamparan sawah warga dengan stabil"}
+                ]),
+                "Tayang",
+                2
+            ),
+            (
+                "Peningkatan & Rehabilitasi Sarana Posyandu Terpadu Dusun Cihaur",
+                "Sarana Kesehatan & Sosial",
+                "Komplek Kantor RW 004 Dusun Cihaur",
+                "Dusun Cihaur",
+                2025,
+                "Dana Desa (DDS) & Swadaya",
+                64800000,
+                "1 Unit Gedung (7 m x 6 m)",
+                "TPK Desa & Tim Kader Posyandu Cihaur",
+                100,
+                "Selesai",
+                "2025-09-01",
+                "2025-11-15",
+                "Menyediakan ruang pelayanan kesehatan dasar yang higienis, ramah anak, dan nyaman bagi balita, ibu hamil, serta lansia.",
+                "Renovasi menyeluruh bangunan posyandu desa mencakup pergantian atap rangka baja ringan, lantai keramik granit, fasilitas sanitasi jamban sehat, dan ruang laktasi.",
+                "Bangunan lama mengalami kebocoran atap genteng, kayu kaso lapuk dimakan rayap, lantai semen retak berdebu, dan tidak memiliki sarana sanitasi toilet yang memadai.",
+                "Pembongkaran atap lama, pemasangan rangka baja ringan dan atap genteng metal pasir, pengecoran rabat lantai dan pemasangan keramik, perbaikan instalasi listrik, serta pengecatan ramah anak.",
+                "Gedung posyandu kini tampil asri, bersih, terang, dan higienis, lengkap dengan ruang periksa, ruang laktasi, dan toilet ramah lansia.",
+                "static/images/banner3.png",
+                "static/images/banner1.png",
+                "static/images/banner2.png",
+                "static/images/uploads/b3_1792274617.jpg",
+                "static/images/uploads/b1_1792274448.jpeg",
+                "static/images/uploads/b2_1792274407.jpeg",
+                json.dumps([
+                    {"url": "static/images/banner3.png", "fase": "Sebelum", "caption": "Bangunan posyandu lama dengan plafon dan atap bocor"},
+                    {"url": "static/images/banner1.png", "fase": "Sebelum", "caption": "Lantai semen retak dan ventilasi udara yang minim"},
+                    {"url": "static/images/banner2.png", "fase": "Proses", "caption": "Pemasangan konstruksi atap baja ringan tahan gempa"},
+                    {"url": "static/images/uploads/b3_1792274617.jpg", "fase": "Proses", "caption": "Pemasangan keramik lantai dan kusen jendela baru"},
+                    {"url": "static/images/uploads/b1_1792274448.jpeg", "fase": "Akhir", "caption": "Bangunan posyandu baru yang representatif dan rapi"},
+                    {"url": "static/images/uploads/b2_1792274407.jpeg", "fase": "Akhir", "caption": "Fasilitas penimbangan balita dan ruang periksa siap pakai"}
+                ]),
+                "Tayang",
+                3
+            )
+        ]
+        cursor.executemany('''
+        INSERT INTO pembangunan_desa (
+            nama_kegiatan, kategori, lokasi, dusun, tahun_anggaran, sumber_dana,
+            anggaran, volume, pelaksana, progres_persen, status_progres,
+            tanggal_mulai, tanggal_selesai, manfaat, uraian_singkat,
+            uraian_sebelum, uraian_proses, uraian_akhir,
+            foto_sebelum_1, foto_sebelum_2, foto_proses_1, foto_proses_2, foto_akhir_1, foto_akhir_2,
+            data_foto_json, status_tayang, urutan
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', sample_pembangunan)
+        conn.commit()
+
     conn.close()
 
 def record_activity_log(action, details=None, username=None, user_id=None, ip_address=None, user_agent=None):

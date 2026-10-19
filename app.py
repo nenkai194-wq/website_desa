@@ -429,6 +429,21 @@ def index():
     cursor.execute("SELECT * FROM buku_publikasi WHERE status = 'Tayang' ORDER BY is_featured DESC, id DESC LIMIT 4")
     buku_publikasi = [dict(row) for row in cursor.fetchall()]
 
+    # 8.1 Pembangunan Desa (Proyek & Kegiatan yang Sedang dan Sudah Dikerjakan)
+    cursor.execute("""
+        SELECT * FROM pembangunan_desa 
+        WHERE status_tayang = 'Tayang' 
+        ORDER BY urutan ASC, id DESC
+    """)
+    pembangunan_list = []
+    for row in cursor.fetchall():
+        item = dict(row)
+        try:
+            item['foto_list'] = json.loads(item.get('data_foto_json') or '[]')
+        except Exception:
+            item['foto_list'] = []
+        pembangunan_list.append(item)
+
     # 9. Kategori Pengaduan & Daftar Monitoring Aduan
     cursor.execute("SELECT * FROM kategori_pengaduan ORDER BY urutan ASC, id ASC")
     kategori_pengaduan_list = [dict(row) for row in cursor.fetchall()]
@@ -463,6 +478,7 @@ def index():
         umkm=umkm,
         berita=berita,
         buku_publikasi=buku_publikasi,
+        pembangunan_list=pembangunan_list,
         kategori_pengaduan_list=kategori_pengaduan_list,
         monitoring_aduan_list=monitoring_aduan_list,
         apbdes=apbdes,
@@ -2737,6 +2753,400 @@ def admin_hapus_kategori_publikasi(id):
     conn.close()
     flash('Kategori publikasi berhasil dihapus.', 'info')
     return redirect(url_for('admin_publikasi'))
+
+# ==========================================
+# 5.2 MANAJEMEN PEMBANGUNAN DESA (PROYEK & KEGIATAN)
+# ==========================================
+
+def simpan_foto_pembangunan(request, field_name, fallback_url=''):
+    """Helper untuk upload file foto pembangunan atau fallback ke url/foto lama"""
+    if field_name in request.files:
+        f = request.files[field_name]
+        if f and f.filename != '':
+            ext = os.path.splitext(f.filename)[1].lower()
+            if ext in ['.png', '.jpg', '.jpeg', '.webp', '.svg']:
+                fn = secure_filename(f"bangun_{int(time.time())}_{random.randint(100,999)}{ext}")
+                full_path = os.path.join(app.config['UPLOAD_FOLDER'], fn)
+                f.save(full_path)
+                return f"static/images/uploads/{fn}"
+    text_url = request.form.get(f"{field_name}_url", "").strip()
+    if text_url:
+        return text_url
+    return fallback_url or ''
+
+@app.route('/admin/pembangunan')
+@login_required
+def admin_pembangunan():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    status_filter = request.args.get('status', 'Semua')
+    dusun_filter = request.args.get('dusun', 'Semua')
+    tahun_filter = request.args.get('tahun', 'Semua')
+
+    query = "SELECT * FROM pembangunan_desa WHERE 1=1"
+    params = []
+
+    if status_filter != 'Semua':
+        query += " AND status_progres = ?"
+        params.append(status_filter)
+    if dusun_filter != 'Semua':
+        query += " AND dusun = ?"
+        params.append(dusun_filter)
+    if tahun_filter != 'Semua':
+        try:
+            th_val = int(tahun_filter)
+            query += " AND tahun_anggaran = ?"
+            params.append(th_val)
+        except Exception:
+            pass
+
+    query += " ORDER BY urutan ASC, id DESC"
+    cursor.execute(query, tuple(params))
+    items = []
+    for r in cursor.fetchall():
+        d = dict(r)
+        try:
+            d['foto_list'] = json.loads(d.get('data_foto_json') or '[]')
+        except Exception:
+            d['foto_list'] = []
+        items.append(d)
+
+    # Fetch all for summary stats
+    cursor.execute("SELECT * FROM pembangunan_desa")
+    all_raw = [dict(r) for r in cursor.fetchall()]
+
+    total_proyek = len(all_raw)
+    sedang_dikerjakan = sum(1 for p in all_raw if p.get('status_progres') == 'Sedang Dikerjakan')
+    selesai = sum(1 for p in all_raw if p.get('status_progres') == 'Selesai')
+    rencana = sum(1 for p in all_raw if p.get('status_progres') == 'Rencana')
+    total_anggaran = sum(p.get('anggaran', 0) for p in all_raw)
+
+    cursor.execute("SELECT DISTINCT tahun_anggaran FROM pembangunan_desa ORDER BY tahun_anggaran DESC")
+    tahun_list = [r[0] for r in cursor.fetchall() if r[0]]
+    if not tahun_list:
+        tahun_list = [2026, 2025]
+
+    cursor.execute("SELECT DISTINCT dusun FROM pembangunan_desa WHERE dusun IS NOT NULL AND dusun != ''")
+    dusun_list = [r[0] for r in cursor.fetchall()]
+    dusun_defaults = ["Dusun Demung Landung", "Dusun Ranca Sari", "Dusun Margahayu", "Dusun Cihaur"]
+    for dd in dusun_defaults:
+        if dd not in dusun_list:
+            dusun_list.append(dd)
+
+    cursor.execute("SELECT * FROM profil_desa WHERE id = 1")
+    profil = dict(cursor.fetchone() or {})
+    conn.close()
+
+    return render_template(
+        'admin/pembangunan.html',
+        items=items,
+        total_proyek=total_proyek,
+        sedang_dikerjakan=sedang_dikerjakan,
+        selesai=selesai,
+        rencana=rencana,
+        total_anggaran=total_anggaran,
+        tahun_list=tahun_list,
+        dusun_list=dusun_list,
+        status_filter=status_filter,
+        dusun_filter=dusun_filter,
+        tahun_filter=tahun_filter,
+        profil=profil
+    )
+
+@app.route('/admin/pembangunan/tambah', methods=['POST'])
+@login_required
+def admin_tambah_pembangunan():
+    nama_kegiatan = request.form.get('nama_kegiatan', '').strip()
+    kategori = request.form.get('kategori', 'Infrastruktur Jalan').strip()
+    lokasi = request.form.get('lokasi', '').strip()
+    dusun = request.form.get('dusun', 'Dusun Demung Landung').strip()
+    tahun_anggaran = int(request.form.get('tahun_anggaran') or 2026)
+    sumber_dana = request.form.get('sumber_dana', 'Dana Desa (DDS)').strip()
+    anggaran = int(request.form.get('anggaran') or 0)
+    volume = request.form.get('volume', '').strip()
+    pelaksana = request.form.get('pelaksana', 'TPK Desa Papayan').strip()
+    progres_persen = int(request.form.get('progres_persen') or 0)
+    status_progres = request.form.get('status_progres', 'Sedang Dikerjakan').strip()
+    tanggal_mulai = request.form.get('tanggal_mulai', '').strip()
+    tanggal_selesai = request.form.get('tanggal_selesai', '').strip()
+    manfaat = request.form.get('manfaat', '').strip()
+    uraian_singkat = request.form.get('uraian_singkat', '').strip()
+    uraian_sebelum = request.form.get('uraian_sebelum', '').strip()
+    uraian_proses = request.form.get('uraian_proses', '').strip()
+    uraian_akhir = request.form.get('uraian_akhir', '').strip()
+    status_tayang = request.form.get('status_tayang', 'Tayang').strip()
+    urutan = int(request.form.get('urutan') or 1)
+
+    if not nama_kegiatan or not lokasi:
+        flash('Nama kegiatan pembangunan dan lokasi wajib diisi.', 'danger')
+        return redirect(url_for('admin_pembangunan'))
+
+    # Upload hingga 6 foto untuk 3 fase
+    foto_sebelum_1 = simpan_foto_pembangunan(request, 'foto_sebelum_1', 'static/images/banner1.png')
+    foto_sebelum_2 = simpan_foto_pembangunan(request, 'foto_sebelum_2', '')
+    foto_proses_1 = simpan_foto_pembangunan(request, 'foto_proses_1', 'static/images/banner2.png')
+    foto_proses_2 = simpan_foto_pembangunan(request, 'foto_proses_2', '')
+    foto_akhir_1 = simpan_foto_pembangunan(request, 'foto_akhir_1', 'static/images/banner3.png')
+    foto_akhir_2 = simpan_foto_pembangunan(request, 'foto_akhir_2', '')
+
+    caption_sebelum_1 = request.form.get('caption_sebelum_1', '').strip() or 'Kondisi fisik lokasi sebelum pelaksanaan pembangunan'
+    caption_sebelum_2 = request.form.get('caption_sebelum_2', '').strip() or 'Titik dokumentasi awal pra-konstruksi'
+    caption_proses_1 = request.form.get('caption_proses_1', '').strip() or 'Tahapan pengerjaan konstruksi pembangunan'
+    caption_proses_2 = request.form.get('caption_proses_2', '').strip() or 'Pelaksanaan pengerjaan fisik bersama tim pelaksana'
+    caption_akhir_1 = request.form.get('caption_akhir_1', '').strip() or 'Hasil akhir pasca pembangunan fisik'
+    caption_akhir_2 = request.form.get('caption_akhir_2', '').strip() or 'Penyelesaian pekerjaan dan siap dimanfaatkan'
+
+    foto_list = []
+    if foto_sebelum_1: foto_list.append({"url": foto_sebelum_1, "fase": "Sebelum", "caption": caption_sebelum_1})
+    if foto_sebelum_2: foto_list.append({"url": foto_sebelum_2, "fase": "Sebelum", "caption": caption_sebelum_2})
+    if foto_proses_1: foto_list.append({"url": foto_proses_1, "fase": "Proses", "caption": caption_proses_1})
+    if foto_proses_2: foto_list.append({"url": foto_proses_2, "fase": "Proses", "caption": caption_proses_2})
+    if foto_akhir_1: foto_list.append({"url": foto_akhir_1, "fase": "Akhir", "caption": caption_akhir_1})
+    if foto_akhir_2: foto_list.append({"url": foto_akhir_2, "fase": "Akhir", "caption": caption_akhir_2})
+
+    data_foto_json = json.dumps(foto_list)
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+    INSERT INTO pembangunan_desa (
+        nama_kegiatan, kategori, lokasi, dusun, tahun_anggaran, sumber_dana,
+        anggaran, volume, pelaksana, progres_persen, status_progres,
+        tanggal_mulai, tanggal_selesai, manfaat, uraian_singkat,
+        uraian_sebelum, uraian_proses, uraian_akhir,
+        foto_sebelum_1, foto_sebelum_2, foto_proses_1, foto_proses_2, foto_akhir_1, foto_akhir_2,
+        data_foto_json, status_tayang, urutan
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (
+        nama_kegiatan, kategori, lokasi, dusun, tahun_anggaran, sumber_dana,
+        anggaran, volume, pelaksana, progres_persen, status_progres,
+        tanggal_mulai, tanggal_selesai, manfaat, uraian_singkat,
+        uraian_sebelum, uraian_proses, uraian_akhir,
+        foto_sebelum_1, foto_sebelum_2, foto_proses_1, foto_proses_2, foto_akhir_1, foto_akhir_2,
+        data_foto_json, status_tayang, urutan
+    ))
+    conn.commit()
+    conn.close()
+
+    record_activity_log("TAMBAH_PEMBANGUNAN", f"Menambahkan kegiatan pembangunan: {nama_kegiatan} ({status_progres})", session.get('username'))
+    flash(f'Kegiatan pembangunan "{nama_kegiatan}" berhasil ditambahkan.', 'success')
+    return redirect(url_for('admin_pembangunan'))
+
+@app.route('/admin/pembangunan/edit/<int:id>', methods=['POST'])
+@login_required
+def admin_edit_pembangunan(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM pembangunan_desa WHERE id = ?", (id,))
+    cur = cursor.fetchone()
+    if not cur:
+        conn.close()
+        flash('Data pembangunan tidak ditemukan.', 'danger')
+        return redirect(url_for('admin_pembangunan'))
+
+    cur_dict = dict(cur)
+
+    nama_kegiatan = request.form.get('nama_kegiatan', '').strip() or cur_dict['nama_kegiatan']
+    kategori = request.form.get('kategori', '').strip() or cur_dict['kategori']
+    lokasi = request.form.get('lokasi', '').strip() or cur_dict['lokasi']
+    dusun = request.form.get('dusun', '').strip() or cur_dict['dusun']
+    tahun_anggaran = int(request.form.get('tahun_anggaran') or cur_dict['tahun_anggaran'])
+    sumber_dana = request.form.get('sumber_dana', '').strip() or cur_dict['sumber_dana']
+    anggaran = int(request.form.get('anggaran') or cur_dict['anggaran'])
+    volume = request.form.get('volume', '').strip() or cur_dict.get('volume', '')
+    pelaksana = request.form.get('pelaksana', '').strip() or cur_dict.get('pelaksana', '')
+    progres_persen = int(request.form.get('progres_persen') or cur_dict.get('progres_persen', 0))
+    status_progres = request.form.get('status_progres', '').strip() or cur_dict['status_progres']
+    tanggal_mulai = request.form.get('tanggal_mulai', '').strip() or cur_dict.get('tanggal_mulai', '')
+    tanggal_selesai = request.form.get('tanggal_selesai', '').strip() or cur_dict.get('tanggal_selesai', '')
+    manfaat = request.form.get('manfaat', '').strip() or cur_dict.get('manfaat', '')
+    uraian_singkat = request.form.get('uraian_singkat', '').strip() or cur_dict.get('uraian_singkat', '')
+    uraian_sebelum = request.form.get('uraian_sebelum', '').strip() or cur_dict.get('uraian_sebelum', '')
+    uraian_proses = request.form.get('uraian_proses', '').strip() or cur_dict.get('uraian_proses', '')
+    uraian_akhir = request.form.get('uraian_akhir', '').strip() or cur_dict.get('uraian_akhir', '')
+    status_tayang = request.form.get('status_tayang', 'Tayang').strip()
+    urutan = int(request.form.get('urutan') or cur_dict.get('urutan', 1))
+
+    # Ambil foto baru jika diunggah, jika tidak pakai foto lama
+    foto_sebelum_1 = simpan_foto_pembangunan(request, 'foto_sebelum_1', cur_dict.get('foto_sebelum_1', ''))
+    foto_sebelum_2 = simpan_foto_pembangunan(request, 'foto_sebelum_2', cur_dict.get('foto_sebelum_2', ''))
+    foto_proses_1 = simpan_foto_pembangunan(request, 'foto_proses_1', cur_dict.get('foto_proses_1', ''))
+    foto_proses_2 = simpan_foto_pembangunan(request, 'foto_proses_2', cur_dict.get('foto_proses_2', ''))
+    foto_akhir_1 = simpan_foto_pembangunan(request, 'foto_akhir_1', cur_dict.get('foto_akhir_1', ''))
+    foto_akhir_2 = simpan_foto_pembangunan(request, 'foto_akhir_2', cur_dict.get('foto_akhir_2', ''))
+
+    caption_sebelum_1 = request.form.get('caption_sebelum_1', '').strip() or 'Kondisi fisik lokasi sebelum pelaksanaan pembangunan'
+    caption_sebelum_2 = request.form.get('caption_sebelum_2', '').strip() or 'Titik dokumentasi awal pra-konstruksi'
+    caption_proses_1 = request.form.get('caption_proses_1', '').strip() or 'Tahapan pengerjaan konstruksi pembangunan'
+    caption_proses_2 = request.form.get('caption_proses_2', '').strip() or 'Pelaksanaan pengerjaan fisik bersama tim pelaksana'
+    caption_akhir_1 = request.form.get('caption_akhir_1', '').strip() or 'Hasil akhir pasca pembangunan fisik'
+    caption_akhir_2 = request.form.get('caption_akhir_2', '').strip() or 'Penyelesaian pekerjaan dan siap dimanfaatkan'
+
+    foto_list = []
+    if foto_sebelum_1: foto_list.append({"url": foto_sebelum_1, "fase": "Sebelum", "caption": caption_sebelum_1})
+    if foto_sebelum_2: foto_list.append({"url": foto_sebelum_2, "fase": "Sebelum", "caption": caption_sebelum_2})
+    if foto_proses_1: foto_list.append({"url": foto_proses_1, "fase": "Proses", "caption": caption_proses_1})
+    if foto_proses_2: foto_list.append({"url": foto_proses_2, "fase": "Proses", "caption": caption_proses_2})
+    if foto_akhir_1: foto_list.append({"url": foto_akhir_1, "fase": "Akhir", "caption": caption_akhir_1})
+    if foto_akhir_2: foto_list.append({"url": foto_akhir_2, "fase": "Akhir", "caption": caption_akhir_2})
+
+    data_foto_json = json.dumps(foto_list)
+
+    cursor.execute('''
+    UPDATE pembangunan_desa SET
+        nama_kegiatan = ?, kategori = ?, lokasi = ?, dusun = ?, tahun_anggaran = ?, sumber_dana = ?,
+        anggaran = ?, volume = ?, pelaksana = ?, progres_persen = ?, status_progres = ?,
+        tanggal_mulai = ?, tanggal_selesai = ?, manfaat = ?, uraian_singkat = ?,
+        uraian_sebelum = ?, uraian_proses = ?, uraian_akhir = ?,
+        foto_sebelum_1 = ?, foto_sebelum_2 = ?, foto_proses_1 = ?, foto_proses_2 = ?, foto_akhir_1 = ?, foto_akhir_2 = ?,
+        data_foto_json = ?, status_tayang = ?, urutan = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+    ''', (
+        nama_kegiatan, kategori, lokasi, dusun, tahun_anggaran, sumber_dana,
+        anggaran, volume, pelaksana, progres_persen, status_progres,
+        tanggal_mulai, tanggal_selesai, manfaat, uraian_singkat,
+        uraian_sebelum, uraian_proses, uraian_akhir,
+        foto_sebelum_1, foto_sebelum_2, foto_proses_1, foto_proses_2, foto_akhir_1, foto_akhir_2,
+        data_foto_json, status_tayang, urutan, id
+    ))
+    conn.commit()
+    conn.close()
+
+    record_activity_log("EDIT_PEMBANGUNAN", f"Mengubah data pembangunan ID {id}: {nama_kegiatan}", session.get('username'))
+    flash(f'Pembaruan kegiatan "{nama_kegiatan}" berhasil disimpan.', 'success')
+    return redirect(url_for('admin_pembangunan'))
+
+@app.route('/admin/pembangunan/hapus/<int:id>', methods=['POST'])
+@login_required
+def admin_hapus_pembangunan(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT nama_kegiatan FROM pembangunan_desa WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    nama = row[0] if row else f"ID {id}"
+
+    cursor.execute("DELETE FROM pembangunan_desa WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+
+    record_activity_log("HAPUS_PEMBANGUNAN", f"Menghapus kegiatan pembangunan: {nama}", session.get('username'))
+    flash(f'Kegiatan pembangunan "{nama}" berhasil dihapus.', 'info')
+    return redirect(url_for('admin_pembangunan'))
+
+@app.route('/admin/pembangunan/toggle-status/<int:id>', methods=['POST'])
+@login_required
+def admin_toggle_status_pembangunan(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT status_tayang, nama_kegiatan FROM pembangunan_desa WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    if row:
+        curr_status = row[0]
+        new_status = 'Draf' if curr_status == 'Tayang' else 'Tayang'
+        cursor.execute("UPDATE pembangunan_desa SET status_tayang = ? WHERE id = ?", (new_status, id))
+        conn.commit()
+        record_activity_log("TOGGLE_STATUS_PEMBANGUNAN", f"Mengubah status tayang ID {id} ({row[1]}) menjadi {new_status}", session.get('username'))
+        flash(f'Status publikasi "{row[1]}" diubah menjadi {new_status}.', 'success')
+    conn.close()
+    return redirect(url_for('admin_pembangunan'))
+
+@app.route('/api/pembangunan/<int:id>')
+def api_pembangunan_detail(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM pembangunan_desa WHERE id = ?", (id,))
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        return jsonify({'success': False, 'message': 'Data tidak ditemukan'}), 404
+
+    d = dict(row)
+    try:
+        d['foto_list'] = json.loads(d.get('data_foto_json') or '[]')
+    except Exception:
+        d['foto_list'] = []
+
+    return jsonify({'success': True, 'data': d})
+
+@app.route('/pembangunan')
+def halaman_pembangunan():
+    """Halaman Publik Menampilkan Transparansi Progres Pembangunan Desa Papayan"""
+    conn = get_db()
+    cursor = conn.cursor()
+
+    status_filter = request.args.get('status', 'Semua')
+    dusun_filter = request.args.get('dusun', 'Semua')
+    tahun_filter = request.args.get('tahun', 'Semua')
+
+    query = "SELECT * FROM pembangunan_desa WHERE status_tayang = 'Tayang'"
+    params = []
+
+    if status_filter != 'Semua':
+        query += " AND status_progres = ?"
+        params.append(status_filter)
+    if dusun_filter != 'Semua':
+        query += " AND dusun = ?"
+        params.append(dusun_filter)
+    if tahun_filter != 'Semua':
+        try:
+            th_val = int(tahun_filter)
+            query += " AND tahun_anggaran = ?"
+            params.append(th_val)
+        except Exception:
+            pass
+
+    query += " ORDER BY urutan ASC, id DESC"
+    cursor.execute(query, tuple(params))
+    items = []
+    for r in cursor.fetchall():
+        d = dict(r)
+        try:
+            d['foto_list'] = json.loads(d.get('data_foto_json') or '[]')
+        except Exception:
+            d['foto_list'] = []
+        items.append(d)
+
+    cursor.execute("SELECT * FROM pembangunan_desa WHERE status_tayang = 'Tayang'")
+    all_raw = [dict(r) for r in cursor.fetchall()]
+
+    total_proyek = len(all_raw)
+    sedang_dikerjakan = sum(1 for p in all_raw if p.get('status_progres') == 'Sedang Dikerjakan')
+    selesai = sum(1 for p in all_raw if p.get('status_progres') == 'Selesai')
+    rencana = sum(1 for p in all_raw if p.get('status_progres') == 'Rencana')
+    total_anggaran = sum(p.get('anggaran', 0) for p in all_raw)
+
+    cursor.execute("SELECT DISTINCT tahun_anggaran FROM pembangunan_desa WHERE status_tayang = 'Tayang' ORDER BY tahun_anggaran DESC")
+    tahun_list = [r[0] for r in cursor.fetchall() if r[0]]
+    if not tahun_list:
+        tahun_list = [2026, 2025]
+
+    cursor.execute("SELECT DISTINCT dusun FROM pembangunan_desa WHERE status_tayang = 'Tayang' AND dusun IS NOT NULL AND dusun != ''")
+    dusun_list = [r[0] for r in cursor.fetchall()]
+    dusun_defaults = ["Dusun Demung Landung", "Dusun Ranca Sari", "Dusun Margahayu", "Dusun Cihaur"]
+    for dd in dusun_defaults:
+        if dd not in dusun_list:
+            dusun_list.append(dd)
+
+    cursor.execute("SELECT * FROM profil_desa WHERE id = 1")
+    profil = dict(cursor.fetchone() or {})
+    conn.close()
+
+    return render_template(
+        'pembangunan.html',
+        items=items,
+        total_proyek=total_proyek,
+        sedang_dikerjakan=sedang_dikerjakan,
+        selesai=selesai,
+        rencana=rencana,
+        total_anggaran=total_anggaran,
+        tahun_list=tahun_list,
+        dusun_list=dusun_list,
+        status_filter=status_filter,
+        dusun_filter=dusun_filter,
+        tahun_filter=tahun_filter,
+        profil=profil
+    )
 
 # ==========================================
 # ADMIN RUNNING TEXT (PENGUMUMAN BERJALAN)

@@ -134,6 +134,14 @@
             <span>Publikasi</span>
           </button>
 
+          <!-- 9. Pembangunan -->
+          <button type="button" onclick="navigateToView('pembangunan')" data-nav-view="pembangunan" 
+                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+            <i class="fa-solid fa-person-digging text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Pembangunan</span>
+          </button>
+
+
         </nav>
 
         <!-- Bagian Kanan: Tombol Kuning Layanan Surat & Toggle Mobile -->
@@ -220,6 +228,10 @@
       <button type="button" onclick="navigateToView('publikasi')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
         <i class="fa-solid fa-book-bookmark w-4 text-emerald-300"></i> Buku Publikasi Desa (PDF)
       </button>
+      <button type="button" onclick="navigateToView('pembangunan')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-person-digging w-4 text-emerald-300"></i> Pembangunan Desa (Kegiatan & Progres)
+      </button>
+
       <button type="button" onclick="handleKlikLayananSurat()" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white text-black font-black hover:bg-emerald-100 flex items-center gap-2.5 shadow-sm" style="color: #000000 !important;">
         <i class="fa-solid fa-file-pen w-4 text-black" style="color: #000000 !important;"></i>
         <span class="text-black font-black" style="color: #000000 !important;">Layanan Surat Mandiri</span>
@@ -564,8 +576,34 @@
           </div>
         </div>
 
-        <!-- 8. Layanan Surat Mandiri (Spotlight Hero Emerald) -->
+        <!-- 8. Pembangunan Desa (Emerald & Cyan Construction Aura) -->
+        <div onclick="navigateToView('pembangunan')" class="bg-gradient-to-br from-white via-teal-50/40 to-emerald-50/50 rounded-3xl p-6 border border-teal-200/90 shadow-sm hover:shadow-xl hover:shadow-teal-500/10 hover:border-teal-400 transition-all duration-300 transform hover:-translate-y-1.5 cursor-pointer flex flex-col justify-between group">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-700 text-white flex items-center justify-center text-2xl mb-4 shadow-md shadow-teal-500/25 group-hover:scale-110 transition duration-300">
+              <i class="fa-solid fa-person-digging"></i>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-black text-slate-900 group-hover:text-teal-700 transition">Pembangunan Desa</h3>
+              <span class="text-[10px] font-bold bg-teal-100/90 text-teal-800 px-2.5 py-0.5 rounded-full border border-teal-300 shadow-xs">{{ (pembangunan_list or [])|length }} Kegiatan</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Transparansi progres pekerjaan fisik & infrastruktur. Komparasi visual 3 fase: Sebelum, Proses, dan Selesai.
+            </p>
+            <ul class="text-[11px] text-slate-600 space-y-1.5 mb-4 font-medium">
+              <li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-600 text-[10px]"></i> Foto 3 Fase (0%, 50%, 100%)</li>
+              <li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-600 text-[10px]"></i> Anggaran, Pelaksana & Lokasi</li>
+              <li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-600 text-[10px]"></i> Sedang Berjalan & Selesai</li>
+            </ul>
+          </div>
+          <div class="pt-3 border-t border-teal-100 flex items-center justify-between text-xs font-bold text-teal-700 group-hover:text-teal-800">
+            <span>Lihat Kegiatan Pembangunan</span>
+            <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1.5 transition"></i>
+          </div>
+        </div>
+
+        <!-- 9. Layanan Surat Mandiri (Spotlight Hero Emerald) -->
         <div onclick="navigateToView('layanan-surat')" class="bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white rounded-3xl p-6 border border-emerald-400/80 shadow-lg shadow-emerald-700/25 hover:shadow-2xl hover:shadow-emerald-600/35 hover:scale-[1.02] transition-all duration-300 cursor-pointer flex flex-col justify-between group">
+
           <div>
             <div class="w-14 h-14 rounded-2xl bg-white/20 text-white flex items-center justify-center text-2xl mb-4 border border-white/30 backdrop-blur-md shadow-inner group-hover:rotate-6 transition duration-300">
               <i class="fa-solid fa-file-pen text-amber-200"></i>
@@ -3185,8 +3223,384 @@
   
   </div>
 
+  <!-- ==================== VIEW 9B: PEMBANGUNAN DESA ==================== -->
+  <div id="view-pembangunan" class="page-view-container hidden">
+
+    <!-- Header Banner -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
+      <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-800/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold mb-2">
+            <button type="button" onclick="navigateToView('beranda')" class="hover:underline flex items-center gap-1.5 text-emerald-300">
+              <i class="fa-solid fa-house"></i> Beranda
+            </button>
+            <span class="text-emerald-600">/</span>
+            <span class="text-white">Pembangunan Desa</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-3">
+            <i class="fa-solid fa-person-digging text-emerald-400"></i>
+            Transparansi Pembangunan & Proyek Fisik
+          </h2>
+          <p class="text-xs sm:text-sm text-emerald-200/80 mt-1 max-w-2xl leading-relaxed">
+            Informasi publik dokumentasi pekerjaan desa yang <strong>sedang dikerjakan</strong> maupun <strong>sudah selesai</strong> dengan komparasi visual 3 fase (Sebelum, Proses, Akhir).
+          </p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <a href="{{ url_for('halaman_pembangunan') }}" target="_blank" class="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 border border-white/15 transition shadow-sm">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Halaman Penuh
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Metric Counters -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+      {% set total_proyek = (pembangunan_list or [])|length %}
+      {% set sedang_proyek = (pembangunan_list or [])|selectattr('status_progres', 'equalto', 'Sedang Dikerjakan')|list|length %}
+      {% set selesai_proyek = (pembangunan_list or [])|selectattr('status_progres', 'equalto', 'Selesai')|list|length %}
+      {% set total_dana = namespace(val=0) %}
+      {% for it in (pembangunan_list or []) %}
+        {% if it.anggaran %}{% set total_dana.val = total_dana.val + it.anggaran %}{% endif %}
+      {% endfor %}
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm flex items-center gap-3.5">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-emerald-100">
+            <i class="fa-solid fa-person-digging"></i>
+          </div>
+          <div>
+            <span class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider block">Total Kegiatan</span>
+            <span class="text-lg sm:text-2xl font-black text-slate-900 leading-tight">{{ total_proyek }} Proyek</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-3xl border border-amber-200/80 shadow-sm flex items-center gap-3.5">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-amber-100">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+          </div>
+          <div>
+            <span class="text-[10px] sm:text-xs text-amber-700 font-bold uppercase tracking-wider block">Sedang Berjalan</span>
+            <span class="text-lg sm:text-2xl font-black text-amber-600 leading-tight">{{ sedang_proyek }} Kegiatan</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-3xl border border-emerald-200/80 shadow-sm flex items-center gap-3.5">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-emerald-100">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div>
+            <span class="text-[10px] sm:text-xs text-emerald-700 font-bold uppercase tracking-wider block">Sudah Selesai</span>
+            <span class="text-lg sm:text-2xl font-black text-emerald-600 leading-tight">{{ selesai_proyek }} Kegiatan</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm flex items-center gap-3.5">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-blue-100">
+            <i class="fa-solid fa-money-bill-wave"></i>
+          </div>
+          <div class="min-w-0">
+            <span class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider block">Total Realisasi</span>
+            <span class="text-base sm:text-lg font-black text-slate-900 leading-tight truncate block">Rp {{ "{:,.0f}".format(total_dana.val).replace(",", ".") }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" id="pencarianSpaPembangunan" onkeyup="filterSpaPembangunan()" placeholder="Cari nama kegiatan, dusun, atau lokasi proyek..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="setSpaStatusFilter('Semua')" id="spa-filter-status-semua" class="spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-brand-700 text-white shadow-xs">Semua</button>
+          <button type="button" onclick="setSpaStatusFilter('Sedang Dikerjakan')" id="spa-filter-status-sedang" class="spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-slate-100 hover:bg-slate-200 text-slate-700">Sedang Dikerjakan</button>
+          <button type="button" onclick="setSpaStatusFilter('Selesai')" id="spa-filter-status-selesai" class="spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-slate-100 hover:bg-slate-200 text-slate-700">Sudah Selesai</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid List of Pembangunan -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      {% if pembangunan_list %}
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8" id="gridSpaPembangunan">
+        {% for p in pembangunan_list %}
+        <div class="spa-pembangunan-item bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between"
+             data-nama="{{ p.nama_kegiatan|lower }}"
+             data-lokasi="{{ p.lokasi|lower }}"
+             data-dusun="{{ p.dusun|lower }}"
+             data-status="{{ p.status_progres }}">
+          
+          <div>
+            <!-- Header Card Info -->
+            <div class="p-5 sm:p-6 pb-4 border-b border-slate-100 space-y-2">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-[11px] font-black uppercase tracking-wider text-brand-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">
+                  <i class="fa-solid fa-tag text-[10px] mr-1"></i>{{ p.kategori }}
+                </span>
+
+                {% if p.status_progres == 'Selesai' %}
+                <span class="bg-emerald-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle-check"></i> 100% Selesai
+                </span>
+                {% elif p.status_progres == 'Sedang Dikerjakan' %}
+                <span class="bg-amber-500 text-slate-950 text-xs font-black px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5 animate-pulse">
+                  <i class="fa-solid fa-screwdriver-wrench"></i> {{ p.progres_persen or 50 }}% Berjalan
+                </span>
+                {% else %}
+                <span class="bg-blue-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+                  <i class="fa-solid fa-clock"></i> Rencana
+                </span>
+                {% endif %}
+              </div>
+
+              <h3 class="text-lg sm:text-xl font-black text-slate-900 leading-snug">
+                {{ p.nama_kegiatan }}
+              </h3>
+
+              <div class="flex items-center gap-2 text-xs text-slate-500">
+                <i class="fa-solid fa-location-dot text-brand-600"></i>
+                <span class="font-medium">{{ p.lokasi }} ({{ p.dusun }})</span>
+              </div>
+            </div>
+
+            <!-- Interactive 3-Phase Photo Comparison Viewer -->
+            <div class="p-5 sm:p-6 pt-4 space-y-4">
+              
+              <!-- Phase Navigation Tabs -->
+              <div class="flex items-center justify-between gap-1 p-1 bg-slate-100 rounded-2xl">
+                <button type="button" 
+                        onclick="gantiFaseSpaCard({{ p.id }}, 'sebelum')" 
+                        id="spa-btn-sebelum-{{ p.id }}" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black transition-all phase-tab-active-sebelum">
+                  1. Sebelum
+                </button>
+                <button type="button" 
+                        onclick="gantiFaseSpaCard({{ p.id }}, 'proses')" 
+                        id="spa-btn-proses-{{ p.id }}" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black text-slate-600 hover:text-slate-900 transition-all">
+                  2. Proses
+                </button>
+                <button type="button" 
+                        onclick="gantiFaseSpaCard({{ p.id }}, 'akhir')" 
+                        id="spa-btn-akhir-{{ p.id }}" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black text-slate-600 hover:text-slate-900 transition-all">
+                  3. Akhir
+                </button>
+              </div>
+
+              <!-- Display Area per Fase -->
+              
+              <!-- 1. FASE SEBELUM -->
+              <div id="spa-fase-sebelum-{{ p.id }}" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('{{ url_for('static', filename=p.foto_sebelum_1.replace('static/', '')) if p.foto_sebelum_1 and p.foto_sebelum_1.startswith('static/') else (p.foto_sebelum_1 or url_for('static', filename='images/banner1.png')) }}', '{{ p.nama_kegiatan|replace('\'', '\\\'') }} - Kondisi Sebelum Pembangunan', 'Fase 1: Sebelum Pembangunan', 'Tahun {{ p.tahun_anggaran }}', '{{ p.pelaksana|replace('\'', '\\\'') if p.pelaksana else 'Tim Pelaksana Desa' }}', '{{ (p.uraian_sebelum or 'Kondisi awal lokasi sebelum pelaksanaan pembangunan fisik.')|replace('\'', '\\\'')|replace('\r', '')|replace('\n', ' ') }}')">
+                    {% set fs1 = p.foto_sebelum_1 or 'static/images/banner1.png' %}
+                    <img src="{{ url_for('static', filename=fs1.replace('static/', '')) if fs1.startswith('static/') else fs1 }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                      Foto 1 - Sebelum
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  {% if p.foto_sebelum_2 %}
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('{{ url_for('static', filename=p.foto_sebelum_2.replace('static/', '')) if p.foto_sebelum_2.startswith('static/') else p.foto_sebelum_2 }}', '{{ p.nama_kegiatan|replace('\'', '\\\'') }} - Kondisi Tambahan Sebelum Pembangunan', 'Fase 1: Sebelum Pembangunan', 'Tahun {{ p.tahun_anggaran }}', '{{ p.pelaksana|replace('\'', '\\\'') if p.pelaksana else 'Tim Pelaksana Desa' }}', '{{ (p.uraian_sebelum or '')|replace('\'', '\\\'')|replace('\r', '')|replace('\n', ' ') }}')">
+                    {% set fs2 = p.foto_sebelum_2 %}
+                    <img src="{{ url_for('static', filename=fs2.replace('static/', '')) if fs2.startswith('static/') else fs2 }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
+                    <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                      Foto 2 - Sebelum
+                    </span>
+                  </div>
+                  {% else %}
+                  <div class="hidden sm:flex h-44 sm:h-52 rounded-2xl border border-dashed border-slate-200 bg-slate-50 items-center justify-center text-center p-4">
+                    <span class="text-xs text-slate-400 italic font-medium"><i class="fa-solid fa-camera text-base block mb-1"></i> Dokumentasi Sudut Tunggal</span>
+                  </div>
+                  {% endif %}
+                </div>
+
+                <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-slate-900"></span>
+                    <span>Uraian Kondisi Awal (0%)</span>
+                  </div>
+                  <p class="text-xs text-slate-600 leading-relaxed">
+                    {{ p.uraian_sebelum or 'Belum ada uraian kondisi awal yang dimasukkan.' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- 2. FASE PROSES -->
+              <div id="spa-fase-proses-{{ p.id }}" class="space-y-3 hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('{{ url_for('static', filename=p.foto_proses_1.replace('static/', '')) if p.foto_proses_1 and p.foto_proses_1.startswith('static/') else (p.foto_proses_1 or url_for('static', filename='images/banner1.png')) }}', '{{ p.nama_kegiatan|replace('\'', '\\\'') }} - Pelaksanaan Fisik', 'Fase 2: Proses Pembangunan', 'Tahun {{ p.tahun_anggaran }}', '{{ p.pelaksana|replace('\'', '\\\'') if p.pelaksana else 'Tim Pelaksana Desa' }}', '{{ (p.uraian_proses or 'Proses pengerjaan fisik di lapangan.')|replace('\'', '\\\'')|replace('\r', '')|replace('\n', ' ') }}')">
+                    {% set fp1 = p.foto_proses_1 or 'static/images/banner1.png' %}
+                    <img src="{{ url_for('static', filename=fp1.replace('static/', '')) if fp1.startswith('static/') else fp1 }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 1 - Proses
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  {% if p.foto_proses_2 %}
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('{{ url_for('static', filename=p.foto_proses_2.replace('static/', '')) if p.foto_proses_2.startswith('static/') else p.foto_proses_2 }}', '{{ p.nama_kegiatan|replace('\'', '\\\'') }} - Tambahan Foto Pelaksanaan', 'Fase 2: Proses Pembangunan', 'Tahun {{ p.tahun_anggaran }}', '{{ p.pelaksana|replace('\'', '\\\'') if p.pelaksana else 'Tim Pelaksana Desa' }}', '{{ (p.uraian_proses or '')|replace('\'', '\\\'')|replace('\r', '')|replace('\n', ' ') }}')">
+                    {% set fp2 = p.foto_proses_2 %}
+                    <img src="{{ url_for('static', filename=fp2.replace('static/', '')) if fp2.startswith('static/') else fp2 }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
+                    <span class="absolute bottom-2 left-2 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 2 - Proses
+                    </span>
+                  </div>
+                  {% else %}
+                  <div class="hidden sm:flex h-44 sm:h-52 rounded-2xl border border-dashed border-amber-200 bg-amber-50/50 items-center justify-center text-center p-4">
+                    <span class="text-xs text-amber-700/80 italic font-medium"><i class="fa-solid fa-camera text-base block mb-1"></i> Dokumentasi Sudut Tunggal</span>
+                  </div>
+                  {% endif %}
+                </div>
+
+                <div class="p-3.5 bg-amber-50/50 rounded-2xl border border-amber-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-amber-900 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    <span>Uraian Tahap Pengerjaan</span>
+                  </div>
+                  <p class="text-xs text-slate-700 leading-relaxed">
+                    {{ p.uraian_proses or 'Belum ada rincian uraian proses pengerjaan yang dimasukkan.' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- 3. FASE AKHIR -->
+              <div id="spa-fase-akhir-{{ p.id }}" class="space-y-3 hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('{{ url_for('static', filename=p.foto_akhir_1.replace('static/', '')) if p.foto_akhir_1 and p.foto_akhir_1.startswith('static/') else (p.foto_akhir_1 or url_for('static', filename='images/banner1.png')) }}', '{{ p.nama_kegiatan|replace('\'', '\\\'') }} - Hasil Akhir Selesai 100%', 'Fase 3: Akhir Pembangunan', 'Tahun {{ p.tahun_anggaran }}', '{{ p.pelaksana|replace('\'', '\\\'') if p.pelaksana else 'Tim Pelaksana Desa' }}', '{{ (p.uraian_akhir or 'Hasil akhir pengerjaan fisik pembangunan.')|replace('\'', '\\\'')|replace('\r', '')|replace('\n', ' ') }}')">
+                    {% set fa1 = p.foto_akhir_1 or 'static/images/banner1.png' %}
+                    <img src="{{ url_for('static', filename=fa1.replace('static/', '')) if fa1.startswith('static/') else fa1 }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 1 - Akhir (100%)
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  {% if p.foto_akhir_2 %}
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('{{ url_for('static', filename=p.foto_akhir_2.replace('static/', '')) if p.foto_akhir_2.startswith('static/') else p.foto_akhir_2 }}', '{{ p.nama_kegiatan|replace('\'', '\\\'') }} - Tambahan Foto Hasil Akhir', 'Fase 3: Akhir Pembangunan', 'Tahun {{ p.tahun_anggaran }}', '{{ p.pelaksana|replace('\'', '\\\'') if p.pelaksana else 'Tim Pelaksana Desa' }}', '{{ (p.uraian_akhir or '')|replace('\'', '\\\'')|replace('\r', '')|replace('\n', ' ') }}')">
+                    {% set fa2 = p.foto_akhir_2 %}
+                    <img src="{{ url_for('static', filename=fa2.replace('static/', '')) if fa2.startswith('static/') else fa2 }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
+                    <span class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 2 - Akhir
+                    </span>
+                  </div>
+                  {% else %}
+                  <div class="hidden sm:flex h-44 sm:h-52 rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/50 items-center justify-center text-center p-4">
+                    <span class="text-xs text-emerald-700/80 italic font-medium"><i class="fa-solid fa-camera text-base block mb-1"></i> Dokumentasi Sudut Tunggal</span>
+                  </div>
+                  {% endif %}
+                </div>
+
+                <div class="p-3.5 bg-emerald-50/50 rounded-2xl border border-emerald-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-emerald-900 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    <span>Uraian Hasil Akhir (100%)</span>
+                  </div>
+                  <p class="text-xs text-slate-700 leading-relaxed">
+                    {{ p.uraian_akhir or 'Belum ada uraian hasil akhir pengerjaan yang dimasukkan.' }}
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Transparency Meta Information Box -->
+            <div class="px-5 sm:px-6 py-4 bg-slate-50 border-t border-slate-100 space-y-3">
+              
+              <!-- Progress Bar -->
+              <div>
+                <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                  <span class="text-slate-600">Capaian Progres Fisik:</span>
+                  <span class="{% if p.status_progres == 'Selesai' %}text-emerald-700{% else %}text-amber-600{% endif %} font-black">{{ p.progres_persen or (100 if p.status_progres == 'Selesai' else 50) }}%</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-500 {% if p.status_progres == 'Selesai' %}bg-emerald-600{% else %}bg-amber-500{% endif %}"
+                       style="width: {{ p.progres_persen or (100 if p.status_progres == 'Selesai' else 50) }}%"></div>
+                </div>
+              </div>
+
+              <!-- Budget, Volume, Pelaksana Table Grid -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Sumber Dana</span>
+                  <span class="font-bold text-slate-800 truncate block">{{ p.sumber_dana or 'Dana Desa' }}</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Tahun</span>
+                  <span class="font-bold text-slate-800 truncate block">TA {{ p.tahun_anggaran }}</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Volume</span>
+                  <span class="font-bold text-slate-800 truncate block">{{ p.volume or '-' }}</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Pagu Anggaran</span>
+                  <span class="font-black text-emerald-700 truncate block">Rp {{ "{:,.0f}".format(p.anggaran or 0).replace(",", ".") }}</span>
+                </div>
+              </div>
+
+              <!-- Manfaat & Pelaksana -->
+              {% if p.manfaat %}
+              <div class="text-xs text-slate-600 pt-1">
+                <span class="font-bold text-slate-800"><i class="fa-solid fa-bullseye text-brand-600 mr-1"></i> Manfaat:</span> {{ p.manfaat }}
+              </div>
+              {% endif %}
+
+              {% if p.pelaksana %}
+              <div class="text-[11px] text-slate-500 flex items-center gap-1.5">
+                <i class="fa-solid fa-users-gear text-slate-400"></i>
+                <span>Pelaksana: <strong>{{ p.pelaksana }}</strong></span>
+              </div>
+              {% endif %}
+
+            </div>
+
+          </div>
+
+          <!-- Bottom Action Bar -->
+          <div class="p-4 sm:p-5 pt-3 bg-white border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 flex items-center gap-1">
+              <i class="fa-regular fa-calendar"></i> {{ p.tanggal_mulai or '-' }} s/d {{ p.tanggal_selesai or '-' }}
+            </span>
+            <a href="{{ url_for('halaman_pembangunan') }}" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
+              <i class="fa-solid fa-eye text-[11px]"></i> Rincian Penuh
+            </a>
+          </div>
+
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="bg-white rounded-3xl p-12 text-center border border-slate-200 shadow-sm max-w-lg mx-auto">
+        <div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl mx-auto mb-4">
+          <i class="fa-solid fa-person-digging"></i>
+        </div>
+        <h3 class="text-base font-bold text-slate-900 mb-1">Belum Ada Data Pembangunan</h3>
+        <p class="text-xs text-slate-500">Data kegiatan pembangunan desa yang sedang atau sudah dikerjakan akan ditampilkan di sini.</p>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+
   <!-- ==================== VIEW 10: PENGADUAN WARGA ==================== -->
   <div id="view-pengaduan" class="page-view-container hidden">
+
     
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
     <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -3596,6 +4010,8 @@
             <li><a href="{{ url_for('admin_login') }}" class="text-emerald-400 font-bold hover:underline">Masuk Panel Admin CMS</a></li>
             <li><a href="{{ url_for('peta_desa') }}" class="hover:text-brand-300 transition text-emerald-300 font-semibold"><i class="fa-solid fa-map-location-dot mr-1"></i> Peta Desa & SLS Poligon (26 RT)</a></li>
             <li><a href="{{ url_for('publikasi') }}" class="hover:text-brand-300 transition">Buku & Publikasi Desa (PDF)</a></li>
+            <li><a href="javascript:void(0)" onclick="navigateToView('pembangunan')" class="hover:text-brand-300 transition text-emerald-300 font-semibold"><i class="fa-solid fa-person-digging mr-1"></i> Pembangunan Desa (Progres & Foto)</a></li>
+
             <li><a href="javascript:void(0)" onclick="navigateToView('layanan-surat')" class="hover:text-brand-300 transition">Pengajuan Surat Mandiri</a></li>
             <li><a href="javascript:void(0)" onclick="navigateToView('wisata')" class="hover:text-brand-300 transition">Destinasi Wisata Desa</a></li>
             <li><a href="#umkm" class="hover:text-brand-300 transition">Katalog Produk UMKM</a></li>
@@ -5164,8 +5580,70 @@
     });
 
     // ==========================================================
+    // LOGIKA PEMBANGUNAN DESA (3-FASE COMPARISON & FILTERING)
+    // ==========================================================
+    let statusFilterSpaAktif = 'Semua';
+
+    function gantiFaseSpaCard(proyekId, fase) {
+      ['sebelum', 'proses', 'akhir'].forEach(f => {
+        const btn = document.getElementById(`spa-btn-${f}-${proyekId}`);
+        const box = document.getElementById(`spa-fase-${f}-${proyekId}`);
+        if (!btn || !box) return;
+
+        if (f === fase) {
+          box.classList.remove('hidden');
+          btn.className = `flex-1 py-2 px-2 text-center rounded-xl text-xs font-black transition-all phase-tab-active-${f}`;
+        } else {
+          box.classList.add('hidden');
+          btn.className = 'flex-1 py-2 px-2 text-center rounded-xl text-xs font-black text-slate-600 hover:text-slate-900 transition-all';
+        }
+      });
+    }
+
+    function setSpaStatusFilter(status) {
+      statusFilterSpaAktif = status;
+      const buttons = [
+        { id: 'spa-filter-status-semua', val: 'Semua' },
+        { id: 'spa-filter-status-sedang', val: 'Sedang Dikerjakan' },
+        { id: 'spa-filter-status-selesai', val: 'Selesai' }
+      ];
+      buttons.forEach(b => {
+        const el = document.getElementById(b.id);
+        if (!el) return;
+        if (b.val === status) {
+          el.className = 'spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-brand-700 text-white shadow-xs';
+        } else {
+          el.className = 'spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-slate-100 hover:bg-slate-200 text-slate-700';
+        }
+      });
+      filterSpaPembangunan();
+    }
+
+    function filterSpaPembangunan() {
+      const qInput = document.getElementById('pencarianSpaPembangunan');
+      const q = qInput ? qInput.value.toLowerCase().trim() : '';
+      const items = document.querySelectorAll('.spa-pembangunan-item');
+      items.forEach(it => {
+        const nama = it.getAttribute('data-nama') || '';
+        const lokasi = it.getAttribute('data-lokasi') || '';
+        const dusun = it.getAttribute('data-dusun') || '';
+        const status = it.getAttribute('data-status') || '';
+
+        const cocokKeyword = !q || nama.includes(q) || lokasi.includes(q) || dusun.includes(q);
+        const cocokStatus = (statusFilterSpaAktif === 'Semua') || (status === statusFilterSpaAktif);
+
+        if (cocokKeyword && cocokStatus) {
+          it.style.display = '';
+        } else {
+          it.style.display = 'none';
+        }
+      });
+    }
+
+    // ==========================================================
     // LOGIKA GRAFIK TREN DERET WAKTU & TABEL DINAMIS INFOGRAFIS
     // ==========================================================
+
     let timeSeriesChartInstance = null;
     let activeSeriesMode = 'all';
 

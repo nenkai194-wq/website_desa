@@ -193,6 +193,14 @@
             <span>Publikasi</span>
           </button>
 
+          <!-- 9. Pembangunan -->
+          <button type="button" onclick="navigateToView('pembangunan')" data-nav-view="pembangunan" 
+                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+            <i class="fa-solid fa-person-digging text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Pembangunan</span>
+          </button>
+
+
         </nav>
 
         <!-- Bagian Kanan: Tombol Kuning Layanan Surat & Toggle Mobile -->
@@ -279,6 +287,10 @@
       <button type="button" onclick="navigateToView('publikasi')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
         <i class="fa-solid fa-book-bookmark w-4 text-emerald-300"></i> Buku Publikasi Desa (PDF)
       </button>
+      <button type="button" onclick="navigateToView('pembangunan')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <i class="fa-solid fa-person-digging w-4 text-emerald-300"></i> Pembangunan Desa (Kegiatan & Progres)
+      </button>
+
       <button type="button" onclick="handleKlikLayananSurat()" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white text-black font-black hover:bg-emerald-100 flex items-center gap-2.5 shadow-sm" style="color: #000000 !important;">
         <i class="fa-solid fa-file-pen w-4 text-black" style="color: #000000 !important;"></i>
         <span class="text-black font-black" style="color: #000000 !important;">Layanan Surat Mandiri</span>
@@ -683,8 +695,34 @@
           </div>
         </div>
 
-        <!-- 8. Layanan Surat Mandiri (Spotlight Hero Emerald) -->
+        <!-- 8. Pembangunan Desa (Emerald & Cyan Construction Aura) -->
+        <div onclick="navigateToView('pembangunan')" class="bg-gradient-to-br from-white via-teal-50/40 to-emerald-50/50 rounded-3xl p-6 border border-teal-200/90 shadow-sm hover:shadow-xl hover:shadow-teal-500/10 hover:border-teal-400 transition-all duration-300 transform hover:-translate-y-1.5 cursor-pointer flex flex-col justify-between group">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-700 text-white flex items-center justify-center text-2xl mb-4 shadow-md shadow-teal-500/25 group-hover:scale-110 transition duration-300">
+              <i class="fa-solid fa-person-digging"></i>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-black text-slate-900 group-hover:text-teal-700 transition">Pembangunan Desa</h3>
+              <span class="text-[10px] font-bold bg-teal-100/90 text-teal-800 px-2.5 py-0.5 rounded-full border border-teal-300 shadow-xs">3 Kegiatan</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Transparansi progres pekerjaan fisik & infrastruktur. Komparasi visual 3 fase: Sebelum, Proses, dan Selesai.
+            </p>
+            <ul class="text-[11px] text-slate-600 space-y-1.5 mb-4 font-medium">
+              <li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-600 text-[10px]"></i> Foto 3 Fase (0%, 50%, 100%)</li>
+              <li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-600 text-[10px]"></i> Anggaran, Pelaksana & Lokasi</li>
+              <li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-600 text-[10px]"></i> Sedang Berjalan & Selesai</li>
+            </ul>
+          </div>
+          <div class="pt-3 border-t border-teal-100 flex items-center justify-between text-xs font-bold text-teal-700 group-hover:text-teal-800">
+            <span>Lihat Kegiatan Pembangunan</span>
+            <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1.5 transition"></i>
+          </div>
+        </div>
+
+        <!-- 9. Layanan Surat Mandiri (Spotlight Hero Emerald) -->
         <div onclick="navigateToView('layanan-surat')" class="bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white rounded-3xl p-6 border border-emerald-400/80 shadow-lg shadow-emerald-700/25 hover:shadow-2xl hover:shadow-emerald-600/35 hover:scale-[1.02] transition-all duration-300 cursor-pointer flex flex-col justify-between group">
+
           <div>
             <div class="w-14 h-14 rounded-2xl bg-white/20 text-white flex items-center justify-center text-2xl mb-4 border border-white/30 backdrop-blur-md shadow-inner group-hover:rotate-6 transition duration-300">
               <i class="fa-solid fa-file-pen text-amber-200"></i>
@@ -11845,8 +11883,838 @@
   
   </div>
 
+  <!-- ==================== VIEW 9B: PEMBANGUNAN DESA ==================== -->
+  <div id="view-pembangunan" class="page-view-container hidden">
+
+    <!-- Header Banner -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
+      <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-800/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold mb-2">
+            <button type="button" onclick="navigateToView('beranda')" class="hover:underline flex items-center gap-1.5 text-emerald-300">
+              <i class="fa-solid fa-house"></i> Beranda
+            </button>
+            <span class="text-emerald-600">/</span>
+            <span class="text-white">Pembangunan Desa</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-3">
+            <i class="fa-solid fa-person-digging text-emerald-400"></i>
+            Transparansi Pembangunan & Proyek Fisik
+          </h2>
+          <p class="text-xs sm:text-sm text-emerald-200/80 mt-1 max-w-2xl leading-relaxed">
+            Informasi publik dokumentasi pekerjaan desa yang <strong>sedang dikerjakan</strong> maupun <strong>sudah selesai</strong> dengan komparasi visual 3 fase (Sebelum, Proses, Akhir).
+          </p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <a href="pembangunan.html" target="_blank" class="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 border border-white/15 transition shadow-sm">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Halaman Penuh
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Metric Counters -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+      
+      
+      
+      
+      
+        
+      
+        
+      
+        
+      
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm flex items-center gap-3.5">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-emerald-100">
+            <i class="fa-solid fa-person-digging"></i>
+          </div>
+          <div>
+            <span class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider block">Total Kegiatan</span>
+            <span class="text-lg sm:text-2xl font-black text-slate-900 leading-tight">3 Proyek</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-3xl border border-amber-200/80 shadow-sm flex items-center gap-3.5">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-amber-100">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+          </div>
+          <div>
+            <span class="text-[10px] sm:text-xs text-amber-700 font-bold uppercase tracking-wider block">Sedang Berjalan</span>
+            <span class="text-lg sm:text-2xl font-black text-amber-600 leading-tight">1 Kegiatan</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-3xl border border-emerald-200/80 shadow-sm flex items-center gap-3.5">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-emerald-100">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div>
+            <span class="text-[10px] sm:text-xs text-emerald-700 font-bold uppercase tracking-wider block">Sudah Selesai</span>
+            <span class="text-lg sm:text-2xl font-black text-emerald-600 leading-tight">2 Kegiatan</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm flex items-center gap-3.5">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-blue-100">
+            <i class="fa-solid fa-money-bill-wave"></i>
+          </div>
+          <div class="min-w-0">
+            <span class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider block">Total Realisasi</span>
+            <span class="text-base sm:text-lg font-black text-slate-900 leading-tight truncate block">Rp 309.500.000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" id="pencarianSpaPembangunan" onkeyup="filterSpaPembangunan()" placeholder="Cari nama kegiatan, dusun, atau lokasi proyek..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="setSpaStatusFilter('Semua')" id="spa-filter-status-semua" class="spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-brand-700 text-white shadow-xs">Semua</button>
+          <button type="button" onclick="setSpaStatusFilter('Sedang Dikerjakan')" id="spa-filter-status-sedang" class="spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-slate-100 hover:bg-slate-200 text-slate-700">Sedang Dikerjakan</button>
+          <button type="button" onclick="setSpaStatusFilter('Selesai')" id="spa-filter-status-selesai" class="spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-slate-100 hover:bg-slate-200 text-slate-700">Sudah Selesai</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid List of Pembangunan -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8" id="gridSpaPembangunan">
+        
+        <div class="spa-pembangunan-item bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between"
+             data-nama="pembangunan jalan rabat beton poros dusun ranca sari"
+             data-lokasi="jalan poros dusun ranca sari rt 002 / rw 001"
+             data-dusun="dusun ranca sari"
+             data-status="Sedang Dikerjakan">
+          
+          <div>
+            <!-- Header Card Info -->
+            <div class="p-5 sm:p-6 pb-4 border-b border-slate-100 space-y-2">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-[11px] font-black uppercase tracking-wider text-brand-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">
+                  <i class="fa-solid fa-tag text-[10px] mr-1"></i>Infrastruktur Jalan
+                </span>
+
+                
+                <span class="bg-amber-500 text-slate-950 text-xs font-black px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5 animate-pulse">
+                  <i class="fa-solid fa-screwdriver-wrench"></i> 65% Berjalan
+                </span>
+                
+              </div>
+
+              <h3 class="text-lg sm:text-xl font-black text-slate-900 leading-snug">
+                Pembangunan Jalan Rabat Beton Poros Dusun Ranca Sari
+              </h3>
+
+              <div class="flex items-center gap-2 text-xs text-slate-500">
+                <i class="fa-solid fa-location-dot text-brand-600"></i>
+                <span class="font-medium">Jalan Poros Dusun Ranca Sari RT 002 / RW 001 (Dusun Ranca Sari)</span>
+              </div>
+            </div>
+
+            <!-- Interactive 3-Phase Photo Comparison Viewer -->
+            <div class="p-5 sm:p-6 pt-4 space-y-4">
+              
+              <!-- Phase Navigation Tabs -->
+              <div class="flex items-center justify-between gap-1 p-1 bg-slate-100 rounded-2xl">
+                <button type="button" 
+                        onclick="gantiFaseSpaCard(1, 'sebelum')" 
+                        id="spa-btn-sebelum-1" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black transition-all phase-tab-active-sebelum">
+                  1. Sebelum
+                </button>
+                <button type="button" 
+                        onclick="gantiFaseSpaCard(1, 'proses')" 
+                        id="spa-btn-proses-1" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black text-slate-600 hover:text-slate-900 transition-all">
+                  2. Proses
+                </button>
+                <button type="button" 
+                        onclick="gantiFaseSpaCard(1, 'akhir')" 
+                        id="spa-btn-akhir-1" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black text-slate-600 hover:text-slate-900 transition-all">
+                  3. Akhir
+                </button>
+              </div>
+
+              <!-- Display Area per Fase -->
+              
+              <!-- 1. FASE SEBELUM -->
+              <div id="spa-fase-sebelum-1" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/banner1.png', 'Pembangunan Jalan Rabat Beton Poros Dusun Ranca Sari - Kondisi Sebelum Pembangunan', 'Fase 1: Sebelum Pembangunan', 'Tahun 2026', 'TPK Desa Papayan &amp; Swakelola Warga', 'Kondisi awal jalan berupa lapisan tanah dan batu lepas yang berlubang parah serta licin dan berlumpur saat musim penghujan, sangat menyulitkan kendaraan roda dua dan roda empat melintas.')">
+                    
+                    <img src="static/images/banner1.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                      Foto 1 - Sebelum
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/banner2.png', 'Pembangunan Jalan Rabat Beton Poros Dusun Ranca Sari - Kondisi Tambahan Sebelum Pembangunan', 'Fase 1: Sebelum Pembangunan', 'Tahun 2026', 'TPK Desa Papayan &amp; Swakelola Warga', 'Kondisi awal jalan berupa lapisan tanah dan batu lepas yang berlubang parah serta licin dan berlumpur saat musim penghujan, sangat menyulitkan kendaraan roda dua dan roda empat melintas.')">
+                    
+                    <img src="static/images/banner2.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                      Foto 2 - Sebelum
+                    </span>
+                  </div>
+                  
+                </div>
+
+                <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-slate-900"></span>
+                    <span>Uraian Kondisi Awal (0%)</span>
+                  </div>
+                  <p class="text-xs text-slate-600 leading-relaxed">
+                    Kondisi awal jalan berupa lapisan tanah dan batu lepas yang berlubang parah serta licin dan berlumpur saat musim penghujan, sangat menyulitkan kendaraan roda dua dan roda empat melintas.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 2. FASE PROSES -->
+              <div id="spa-fase-proses-1" class="space-y-3 hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/banner3.png', 'Pembangunan Jalan Rabat Beton Poros Dusun Ranca Sari - Pelaksanaan Fisik', 'Fase 2: Proses Pembangunan', 'Tahun 2026', 'TPK Desa Papayan &amp; Swakelola Warga', 'Tahapan pengerjaan saat ini meliputi pembersihan dan perataan badan jalan, penghamparan batu makadam dasar, pemasangan papan bekisting, serta pengecoran campuran semen beton K-250.')">
+                    
+                    <img src="static/images/banner3.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 1 - Proses
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/uploads/b1_1792274448.jpeg', 'Pembangunan Jalan Rabat Beton Poros Dusun Ranca Sari - Tambahan Foto Pelaksanaan', 'Fase 2: Proses Pembangunan', 'Tahun 2026', 'TPK Desa Papayan &amp; Swakelola Warga', 'Tahapan pengerjaan saat ini meliputi pembersihan dan perataan badan jalan, penghamparan batu makadam dasar, pemasangan papan bekisting, serta pengecoran campuran semen beton K-250.')">
+                    
+                    <img src="static/images/uploads/b1_1792274448.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <span class="absolute bottom-2 left-2 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 2 - Proses
+                    </span>
+                  </div>
+                  
+                </div>
+
+                <div class="p-3.5 bg-amber-50/50 rounded-2xl border border-amber-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-amber-900 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    <span>Uraian Tahap Pengerjaan</span>
+                  </div>
+                  <p class="text-xs text-slate-700 leading-relaxed">
+                    Tahapan pengerjaan saat ini meliputi pembersihan dan perataan badan jalan, penghamparan batu makadam dasar, pemasangan papan bekisting, serta pengecoran campuran semen beton K-250.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 3. FASE AKHIR -->
+              <div id="spa-fase-akhir-1" class="space-y-3 hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/uploads/b2_1792274407.jpeg', 'Pembangunan Jalan Rabat Beton Poros Dusun Ranca Sari - Hasil Akhir Selesai 100%', 'Fase 3: Akhir Pembangunan', 'Tahun 2026', 'TPK Desa Papayan &amp; Swakelola Warga', 'Jalan rabat beton kokoh berstandar teknis dengan saluran drainase tepi jalan, menjamin akses transportasi lancar bebas becek sepanjang tahun.')">
+                    
+                    <img src="static/images/uploads/b2_1792274407.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 1 - Akhir (100%)
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/uploads/b3_1792274617.jpg', 'Pembangunan Jalan Rabat Beton Poros Dusun Ranca Sari - Tambahan Foto Hasil Akhir', 'Fase 3: Akhir Pembangunan', 'Tahun 2026', 'TPK Desa Papayan &amp; Swakelola Warga', 'Jalan rabat beton kokoh berstandar teknis dengan saluran drainase tepi jalan, menjamin akses transportasi lancar bebas becek sepanjang tahun.')">
+                    
+                    <img src="static/images/uploads/b3_1792274617.jpg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <span class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 2 - Akhir
+                    </span>
+                  </div>
+                  
+                </div>
+
+                <div class="p-3.5 bg-emerald-50/50 rounded-2xl border border-emerald-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-emerald-900 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    <span>Uraian Hasil Akhir (100%)</span>
+                  </div>
+                  <p class="text-xs text-slate-700 leading-relaxed">
+                    Jalan rabat beton kokoh berstandar teknis dengan saluran drainase tepi jalan, menjamin akses transportasi lancar bebas becek sepanjang tahun.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Transparency Meta Information Box -->
+            <div class="px-5 sm:px-6 py-4 bg-slate-50 border-t border-slate-100 space-y-3">
+              
+              <!-- Progress Bar -->
+              <div>
+                <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                  <span class="text-slate-600">Capaian Progres Fisik:</span>
+                  <span class="text-amber-600 font-black">65%</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-500 bg-amber-500"
+                       style="width: 65%"></div>
+                </div>
+              </div>
+
+              <!-- Budget, Volume, Pelaksana Table Grid -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Sumber Dana</span>
+                  <span class="font-bold text-slate-800 truncate block">Dana Desa (DDS) TA 2026</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Tahun</span>
+                  <span class="font-bold text-slate-800 truncate block">TA 2026</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Volume</span>
+                  <span class="font-bold text-slate-800 truncate block">650 m x 2,5 m x 0,15 m</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Pagu Anggaran</span>
+                  <span class="font-black text-emerald-700 truncate block">Rp 148.500.000</span>
+                </div>
+              </div>
+
+              <!-- Manfaat & Pelaksana -->
+              
+              <div class="text-xs text-slate-600 pt-1">
+                <span class="font-bold text-slate-800"><i class="fa-solid fa-bullseye text-brand-600 mr-1"></i> Manfaat:</span> Memperlancar arus transportasi angkutan hasil bumi, komoditas perkebunan, dan mobilitas harian warga antar dusun.
+              </div>
+              
+
+              
+              <div class="text-[11px] text-slate-500 flex items-center gap-1.5">
+                <i class="fa-solid fa-users-gear text-slate-400"></i>
+                <span>Pelaksana: <strong>TPK Desa Papayan &amp; Swakelola Warga</strong></span>
+              </div>
+              
+
+            </div>
+
+          </div>
+
+          <!-- Bottom Action Bar -->
+          <div class="p-4 sm:p-5 pt-3 bg-white border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 flex items-center gap-1">
+              <i class="fa-regular fa-calendar"></i> 2026-08-10 s/d 2026-11-20
+            </span>
+            <a href="pembangunan.html" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
+              <i class="fa-solid fa-eye text-[11px]"></i> Rincian Penuh
+            </a>
+          </div>
+
+        </div>
+        
+        <div class="spa-pembangunan-item bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between"
+             data-nama="pembangunan &amp; normalisasi saluran irigasi tersier dusun demung landung"
+             data-lokasi="blok sawah demung kidul rt 003 / rw 001"
+             data-dusun="dusun demung landung"
+             data-status="Selesai">
+          
+          <div>
+            <!-- Header Card Info -->
+            <div class="p-5 sm:p-6 pb-4 border-b border-slate-100 space-y-2">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-[11px] font-black uppercase tracking-wider text-brand-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">
+                  <i class="fa-solid fa-tag text-[10px] mr-1"></i>Irigasi &amp; Pertanian
+                </span>
+
+                
+                <span class="bg-emerald-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle-check"></i> 100% Selesai
+                </span>
+                
+              </div>
+
+              <h3 class="text-lg sm:text-xl font-black text-slate-900 leading-snug">
+                Pembangunan &amp; Normalisasi Saluran Irigasi Tersier Dusun Demung Landung
+              </h3>
+
+              <div class="flex items-center gap-2 text-xs text-slate-500">
+                <i class="fa-solid fa-location-dot text-brand-600"></i>
+                <span class="font-medium">Blok Sawah Demung Kidul RT 003 / RW 001 (Dusun Demung Landung)</span>
+              </div>
+            </div>
+
+            <!-- Interactive 3-Phase Photo Comparison Viewer -->
+            <div class="p-5 sm:p-6 pt-4 space-y-4">
+              
+              <!-- Phase Navigation Tabs -->
+              <div class="flex items-center justify-between gap-1 p-1 bg-slate-100 rounded-2xl">
+                <button type="button" 
+                        onclick="gantiFaseSpaCard(2, 'sebelum')" 
+                        id="spa-btn-sebelum-2" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black transition-all phase-tab-active-sebelum">
+                  1. Sebelum
+                </button>
+                <button type="button" 
+                        onclick="gantiFaseSpaCard(2, 'proses')" 
+                        id="spa-btn-proses-2" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black text-slate-600 hover:text-slate-900 transition-all">
+                  2. Proses
+                </button>
+                <button type="button" 
+                        onclick="gantiFaseSpaCard(2, 'akhir')" 
+                        id="spa-btn-akhir-2" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black text-slate-600 hover:text-slate-900 transition-all">
+                  3. Akhir
+                </button>
+              </div>
+
+              <!-- Display Area per Fase -->
+              
+              <!-- 1. FASE SEBELUM -->
+              <div id="spa-fase-sebelum-2" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/banner2.png', 'Pembangunan &amp; Normalisasi Saluran Irigasi Tersier Dusun Demung Landung - Kondisi Sebelum Pembangunan', 'Fase 1: Sebelum Pembangunan', 'Tahun 2026', 'Kelompok Mitra Cai &amp; TPK Desa Papayan', 'Saluran irigasi tanah terdahulu sering jebol saat debit air sungai meluap di musim hujan dan tersumbat endapan lumpur, mengakibatkan sawah di bagian hilir sering kekurangan air.')">
+                    
+                    <img src="static/images/banner2.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                      Foto 1 - Sebelum
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/banner3.png', 'Pembangunan &amp; Normalisasi Saluran Irigasi Tersier Dusun Demung Landung - Kondisi Tambahan Sebelum Pembangunan', 'Fase 1: Sebelum Pembangunan', 'Tahun 2026', 'Kelompok Mitra Cai &amp; TPK Desa Papayan', 'Saluran irigasi tanah terdahulu sering jebol saat debit air sungai meluap di musim hujan dan tersumbat endapan lumpur, mengakibatkan sawah di bagian hilir sering kekurangan air.')">
+                    
+                    <img src="static/images/banner3.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                      Foto 2 - Sebelum
+                    </span>
+                  </div>
+                  
+                </div>
+
+                <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-slate-900"></span>
+                    <span>Uraian Kondisi Awal (0%)</span>
+                  </div>
+                  <p class="text-xs text-slate-600 leading-relaxed">
+                    Saluran irigasi tanah terdahulu sering jebol saat debit air sungai meluap di musim hujan dan tersumbat endapan lumpur, mengakibatkan sawah di bagian hilir sering kekurangan air.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 2. FASE PROSES -->
+              <div id="spa-fase-proses-2" class="space-y-3 hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/banner1.png', 'Pembangunan &amp; Normalisasi Saluran Irigasi Tersier Dusun Demung Landung - Pelaksanaan Fisik', 'Fase 2: Proses Pembangunan', 'Tahun 2026', 'Kelompok Mitra Cai &amp; TPK Desa Papayan', 'Penggalian dasar saluran, pemancangan cerucuk bambu penguat pondasi, penyusunan pasangan batu belah dengan adukan semen standar SNI, serta plesteran acian anti-rembes.')">
+                    
+                    <img src="static/images/banner1.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 1 - Proses
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/uploads/b2_1792274407.jpeg', 'Pembangunan &amp; Normalisasi Saluran Irigasi Tersier Dusun Demung Landung - Tambahan Foto Pelaksanaan', 'Fase 2: Proses Pembangunan', 'Tahun 2026', 'Kelompok Mitra Cai &amp; TPK Desa Papayan', 'Penggalian dasar saluran, pemancangan cerucuk bambu penguat pondasi, penyusunan pasangan batu belah dengan adukan semen standar SNI, serta plesteran acian anti-rembes.')">
+                    
+                    <img src="static/images/uploads/b2_1792274407.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <span class="absolute bottom-2 left-2 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 2 - Proses
+                    </span>
+                  </div>
+                  
+                </div>
+
+                <div class="p-3.5 bg-amber-50/50 rounded-2xl border border-amber-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-amber-900 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    <span>Uraian Tahap Pengerjaan</span>
+                  </div>
+                  <p class="text-xs text-slate-700 leading-relaxed">
+                    Penggalian dasar saluran, pemancangan cerucuk bambu penguat pondasi, penyusunan pasangan batu belah dengan adukan semen standar SNI, serta plesteran acian anti-rembes.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 3. FASE AKHIR -->
+              <div id="spa-fase-akhir-2" class="space-y-3 hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/uploads/b3_1792274617.jpg', 'Pembangunan &amp; Normalisasi Saluran Irigasi Tersier Dusun Demung Landung - Hasil Akhir Selesai 100%', 'Fase 3: Akhir Pembangunan', 'Tahun 2026', 'Kelompok Mitra Cai &amp; TPK Desa Papayan', 'Saluran irigasi permanen telah tuntas 100% lengkap dengan pintu bagi air tersier, air mengalir lancar ke seluruh petak sawah tanpa ada rembesan tanggul.')">
+                    
+                    <img src="static/images/uploads/b3_1792274617.jpg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 1 - Akhir (100%)
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/uploads/b1_1792274448.jpeg', 'Pembangunan &amp; Normalisasi Saluran Irigasi Tersier Dusun Demung Landung - Tambahan Foto Hasil Akhir', 'Fase 3: Akhir Pembangunan', 'Tahun 2026', 'Kelompok Mitra Cai &amp; TPK Desa Papayan', 'Saluran irigasi permanen telah tuntas 100% lengkap dengan pintu bagi air tersier, air mengalir lancar ke seluruh petak sawah tanpa ada rembesan tanggul.')">
+                    
+                    <img src="static/images/uploads/b1_1792274448.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <span class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 2 - Akhir
+                    </span>
+                  </div>
+                  
+                </div>
+
+                <div class="p-3.5 bg-emerald-50/50 rounded-2xl border border-emerald-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-emerald-900 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    <span>Uraian Hasil Akhir (100%)</span>
+                  </div>
+                  <p class="text-xs text-slate-700 leading-relaxed">
+                    Saluran irigasi permanen telah tuntas 100% lengkap dengan pintu bagi air tersier, air mengalir lancar ke seluruh petak sawah tanpa ada rembesan tanggul.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Transparency Meta Information Box -->
+            <div class="px-5 sm:px-6 py-4 bg-slate-50 border-t border-slate-100 space-y-3">
+              
+              <!-- Progress Bar -->
+              <div>
+                <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                  <span class="text-slate-600">Capaian Progres Fisik:</span>
+                  <span class="text-emerald-700 font-black">100%</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-500 bg-emerald-600"
+                       style="width: 100%"></div>
+                </div>
+              </div>
+
+              <!-- Budget, Volume, Pelaksana Table Grid -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Sumber Dana</span>
+                  <span class="font-bold text-slate-800 truncate block">Alokasi Dana Desa (ADD) &amp; PADes</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Tahun</span>
+                  <span class="font-bold text-slate-800 truncate block">TA 2026</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Volume</span>
+                  <span class="font-bold text-slate-800 truncate block">Panjang 420 Meter (Tinggi 0,8 m x Lebar 0,6 m)</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Pagu Anggaran</span>
+                  <span class="font-black text-emerald-700 truncate block">Rp 96.200.000</span>
+                </div>
+              </div>
+
+              <!-- Manfaat & Pelaksana -->
+              
+              <div class="text-xs text-slate-600 pt-1">
+                <span class="font-bold text-slate-800"><i class="fa-solid fa-bullseye text-brand-600 mr-1"></i> Manfaat:</span> Menjamin pasokan debit air stabil bagi lebih dari 35 hektar persawahan warga dan mencegah kekeringan saat kemarau.
+              </div>
+              
+
+              
+              <div class="text-[11px] text-slate-500 flex items-center gap-1.5">
+                <i class="fa-solid fa-users-gear text-slate-400"></i>
+                <span>Pelaksana: <strong>Kelompok Mitra Cai &amp; TPK Desa Papayan</strong></span>
+              </div>
+              
+
+            </div>
+
+          </div>
+
+          <!-- Bottom Action Bar -->
+          <div class="p-4 sm:p-5 pt-3 bg-white border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 flex items-center gap-1">
+              <i class="fa-regular fa-calendar"></i> 2026-05-15 s/d 2026-07-30
+            </span>
+            <a href="pembangunan.html" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
+              <i class="fa-solid fa-eye text-[11px]"></i> Rincian Penuh
+            </a>
+          </div>
+
+        </div>
+        
+        <div class="spa-pembangunan-item bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between"
+             data-nama="peningkatan &amp; rehabilitasi sarana posyandu terpadu dusun cihaur"
+             data-lokasi="komplek kantor rw 004 dusun cihaur"
+             data-dusun="dusun cihaur"
+             data-status="Selesai">
+          
+          <div>
+            <!-- Header Card Info -->
+            <div class="p-5 sm:p-6 pb-4 border-b border-slate-100 space-y-2">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-[11px] font-black uppercase tracking-wider text-brand-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">
+                  <i class="fa-solid fa-tag text-[10px] mr-1"></i>Sarana Kesehatan &amp; Sosial
+                </span>
+
+                
+                <span class="bg-emerald-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle-check"></i> 100% Selesai
+                </span>
+                
+              </div>
+
+              <h3 class="text-lg sm:text-xl font-black text-slate-900 leading-snug">
+                Peningkatan &amp; Rehabilitasi Sarana Posyandu Terpadu Dusun Cihaur
+              </h3>
+
+              <div class="flex items-center gap-2 text-xs text-slate-500">
+                <i class="fa-solid fa-location-dot text-brand-600"></i>
+                <span class="font-medium">Komplek Kantor RW 004 Dusun Cihaur (Dusun Cihaur)</span>
+              </div>
+            </div>
+
+            <!-- Interactive 3-Phase Photo Comparison Viewer -->
+            <div class="p-5 sm:p-6 pt-4 space-y-4">
+              
+              <!-- Phase Navigation Tabs -->
+              <div class="flex items-center justify-between gap-1 p-1 bg-slate-100 rounded-2xl">
+                <button type="button" 
+                        onclick="gantiFaseSpaCard(3, 'sebelum')" 
+                        id="spa-btn-sebelum-3" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black transition-all phase-tab-active-sebelum">
+                  1. Sebelum
+                </button>
+                <button type="button" 
+                        onclick="gantiFaseSpaCard(3, 'proses')" 
+                        id="spa-btn-proses-3" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black text-slate-600 hover:text-slate-900 transition-all">
+                  2. Proses
+                </button>
+                <button type="button" 
+                        onclick="gantiFaseSpaCard(3, 'akhir')" 
+                        id="spa-btn-akhir-3" 
+                        class="flex-1 py-2 px-2 text-center rounded-xl text-xs font-black text-slate-600 hover:text-slate-900 transition-all">
+                  3. Akhir
+                </button>
+              </div>
+
+              <!-- Display Area per Fase -->
+              
+              <!-- 1. FASE SEBELUM -->
+              <div id="spa-fase-sebelum-3" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/banner3.png', 'Peningkatan &amp; Rehabilitasi Sarana Posyandu Terpadu Dusun Cihaur - Kondisi Sebelum Pembangunan', 'Fase 1: Sebelum Pembangunan', 'Tahun 2025', 'TPK Desa &amp; Tim Kader Posyandu Cihaur', 'Bangunan lama mengalami kebocoran atap genteng, kayu kaso lapuk dimakan rayap, lantai semen retak berdebu, dan tidak memiliki sarana sanitasi toilet yang memadai.')">
+                    
+                    <img src="static/images/banner3.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                      Foto 1 - Sebelum
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/banner1.png', 'Peningkatan &amp; Rehabilitasi Sarana Posyandu Terpadu Dusun Cihaur - Kondisi Tambahan Sebelum Pembangunan', 'Fase 1: Sebelum Pembangunan', 'Tahun 2025', 'TPK Desa &amp; Tim Kader Posyandu Cihaur', 'Bangunan lama mengalami kebocoran atap genteng, kayu kaso lapuk dimakan rayap, lantai semen retak berdebu, dan tidak memiliki sarana sanitasi toilet yang memadai.')">
+                    
+                    <img src="static/images/banner1.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                      Foto 2 - Sebelum
+                    </span>
+                  </div>
+                  
+                </div>
+
+                <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-slate-900"></span>
+                    <span>Uraian Kondisi Awal (0%)</span>
+                  </div>
+                  <p class="text-xs text-slate-600 leading-relaxed">
+                    Bangunan lama mengalami kebocoran atap genteng, kayu kaso lapuk dimakan rayap, lantai semen retak berdebu, dan tidak memiliki sarana sanitasi toilet yang memadai.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 2. FASE PROSES -->
+              <div id="spa-fase-proses-3" class="space-y-3 hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/banner2.png', 'Peningkatan &amp; Rehabilitasi Sarana Posyandu Terpadu Dusun Cihaur - Pelaksanaan Fisik', 'Fase 2: Proses Pembangunan', 'Tahun 2025', 'TPK Desa &amp; Tim Kader Posyandu Cihaur', 'Pembongkaran atap lama, pemasangan rangka baja ringan dan atap genteng metal pasir, pengecoran rabat lantai dan pemasangan keramik, perbaikan instalasi listrik, serta pengecatan ramah anak.')">
+                    
+                    <img src="static/images/banner2.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 1 - Proses
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/uploads/b3_1792274617.jpg', 'Peningkatan &amp; Rehabilitasi Sarana Posyandu Terpadu Dusun Cihaur - Tambahan Foto Pelaksanaan', 'Fase 2: Proses Pembangunan', 'Tahun 2025', 'TPK Desa &amp; Tim Kader Posyandu Cihaur', 'Pembongkaran atap lama, pemasangan rangka baja ringan dan atap genteng metal pasir, pengecoran rabat lantai dan pemasangan keramik, perbaikan instalasi listrik, serta pengecatan ramah anak.')">
+                    
+                    <img src="static/images/uploads/b3_1792274617.jpg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <span class="absolute bottom-2 left-2 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 2 - Proses
+                    </span>
+                  </div>
+                  
+                </div>
+
+                <div class="p-3.5 bg-amber-50/50 rounded-2xl border border-amber-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-amber-900 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    <span>Uraian Tahap Pengerjaan</span>
+                  </div>
+                  <p class="text-xs text-slate-700 leading-relaxed">
+                    Pembongkaran atap lama, pemasangan rangka baja ringan dan atap genteng metal pasir, pengecoran rabat lantai dan pemasangan keramik, perbaikan instalasi listrik, serta pengecatan ramah anak.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 3. FASE AKHIR -->
+              <div id="spa-fase-akhir-3" class="space-y-3 hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/uploads/b1_1792274448.jpeg', 'Peningkatan &amp; Rehabilitasi Sarana Posyandu Terpadu Dusun Cihaur - Hasil Akhir Selesai 100%', 'Fase 3: Akhir Pembangunan', 'Tahun 2025', 'TPK Desa &amp; Tim Kader Posyandu Cihaur', 'Gedung posyandu kini tampil asri, bersih, terang, dan higienis, lengkap dengan ruang periksa, ruang laktasi, dan toilet ramah lansia.')">
+                    
+                    <img src="static/images/uploads/b1_1792274448.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
+                    <span class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 1 - Akhir (100%)
+                    </span>
+                    <span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                  </div>
+
+                  
+                  <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightboxFrontend('static/images/uploads/b2_1792274407.jpeg', 'Peningkatan &amp; Rehabilitasi Sarana Posyandu Terpadu Dusun Cihaur - Tambahan Foto Hasil Akhir', 'Fase 3: Akhir Pembangunan', 'Tahun 2025', 'TPK Desa &amp; Tim Kader Posyandu Cihaur', 'Gedung posyandu kini tampil asri, bersih, terang, dan higienis, lengkap dengan ruang periksa, ruang laktasi, dan toilet ramah lansia.')">
+                    
+                    <img src="static/images/uploads/b2_1792274407.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                    <span class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">
+                      Foto 2 - Akhir
+                    </span>
+                  </div>
+                  
+                </div>
+
+                <div class="p-3.5 bg-emerald-50/50 rounded-2xl border border-emerald-200/80">
+                  <div class="flex items-center gap-2 text-xs font-bold text-emerald-900 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    <span>Uraian Hasil Akhir (100%)</span>
+                  </div>
+                  <p class="text-xs text-slate-700 leading-relaxed">
+                    Gedung posyandu kini tampil asri, bersih, terang, dan higienis, lengkap dengan ruang periksa, ruang laktasi, dan toilet ramah lansia.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Transparency Meta Information Box -->
+            <div class="px-5 sm:px-6 py-4 bg-slate-50 border-t border-slate-100 space-y-3">
+              
+              <!-- Progress Bar -->
+              <div>
+                <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                  <span class="text-slate-600">Capaian Progres Fisik:</span>
+                  <span class="text-emerald-700 font-black">100%</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-500 bg-emerald-600"
+                       style="width: 100%"></div>
+                </div>
+              </div>
+
+              <!-- Budget, Volume, Pelaksana Table Grid -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Sumber Dana</span>
+                  <span class="font-bold text-slate-800 truncate block">Dana Desa (DDS) &amp; Swadaya</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Tahun</span>
+                  <span class="font-bold text-slate-800 truncate block">TA 2025</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Volume</span>
+                  <span class="font-bold text-slate-800 truncate block">1 Unit Gedung (7 m x 6 m)</span>
+                </div>
+
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                  <span class="text-slate-400 block text-[9px] uppercase font-bold">Pagu Anggaran</span>
+                  <span class="font-black text-emerald-700 truncate block">Rp 64.800.000</span>
+                </div>
+              </div>
+
+              <!-- Manfaat & Pelaksana -->
+              
+              <div class="text-xs text-slate-600 pt-1">
+                <span class="font-bold text-slate-800"><i class="fa-solid fa-bullseye text-brand-600 mr-1"></i> Manfaat:</span> Menyediakan ruang pelayanan kesehatan dasar yang higienis, ramah anak, dan nyaman bagi balita, ibu hamil, serta lansia.
+              </div>
+              
+
+              
+              <div class="text-[11px] text-slate-500 flex items-center gap-1.5">
+                <i class="fa-solid fa-users-gear text-slate-400"></i>
+                <span>Pelaksana: <strong>TPK Desa &amp; Tim Kader Posyandu Cihaur</strong></span>
+              </div>
+              
+
+            </div>
+
+          </div>
+
+          <!-- Bottom Action Bar -->
+          <div class="p-4 sm:p-5 pt-3 bg-white border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 flex items-center gap-1">
+              <i class="fa-regular fa-calendar"></i> 2025-09-01 s/d 2025-11-15
+            </span>
+            <a href="pembangunan.html" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
+              <i class="fa-solid fa-eye text-[11px]"></i> Rincian Penuh
+            </a>
+          </div>
+
+        </div>
+        
+      </div>
+      
+    </div>
+
+  </div>
+
   <!-- ==================== VIEW 10: PENGADUAN WARGA ==================== -->
   <div id="view-pengaduan" class="page-view-container hidden">
+
     
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
     <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -12339,6 +13207,8 @@
             <li><a href="#admin-modal" onclick="alert('Panel Admin CMS berbasis server Python Flask. Pada hosting statis GitHub Pages, silakan jalankan website di komputer lokal atau deploy ke server cloud backend untuk mengakses Dashboard CMS Admin.'); return false;" class="text-emerald-400 font-bold hover:underline">Masuk Panel Admin CMS</a></li>
             <li><a href="peta.html" class="hover:text-brand-300 transition text-emerald-300 font-semibold"><i class="fa-solid fa-map-location-dot mr-1"></i> Peta Desa & SLS Poligon (26 RT)</a></li>
             <li><a href="publikasi.html" class="hover:text-brand-300 transition">Buku & Publikasi Desa (PDF)</a></li>
+            <li><a href="javascript:void(0)" onclick="navigateToView('pembangunan')" class="hover:text-brand-300 transition text-emerald-300 font-semibold"><i class="fa-solid fa-person-digging mr-1"></i> Pembangunan Desa (Progres & Foto)</a></li>
+
             <li><a href="javascript:void(0)" onclick="navigateToView('layanan-surat')" class="hover:text-brand-300 transition">Pengajuan Surat Mandiri</a></li>
             <li><a href="javascript:void(0)" onclick="navigateToView('wisata')" class="hover:text-brand-300 transition">Destinasi Wisata Desa</a></li>
             <li><a href="#umkm" class="hover:text-brand-300 transition">Katalog Produk UMKM</a></li>
@@ -12353,19 +13223,19 @@
           <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-blue-400"></i> Hari Ini:</span>
-              <span id="count-today" class="font-bold text-white">158</span>
+              <span id="count-today" class="font-bold text-white">174</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-week text-amber-400"></i> Minggu Ini:</span>
-              <span id="count-week" class="font-bold text-white">1.222</span>
+              <span id="count-week" class="font-bold text-white">1.238</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-emerald-400"></i> Bulan Ini:</span>
-              <span id="count-month" class="font-bold text-white">4.076</span>
+              <span id="count-month" class="font-bold text-white">4.092</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-purple-400"></i> Total Kunjungan:</span>
-              <span id="count-total" class="font-black text-brand-300">28.755</span>
+              <span id="count-total" class="font-black text-brand-300">28.771</span>
             </div>
           </div>
         </div>
@@ -14478,8 +15348,70 @@
     });
 
     // ==========================================================
+    // LOGIKA PEMBANGUNAN DESA (3-FASE COMPARISON & FILTERING)
+    // ==========================================================
+    let statusFilterSpaAktif = 'Semua';
+
+    function gantiFaseSpaCard(proyekId, fase) {
+      ['sebelum', 'proses', 'akhir'].forEach(f => {
+        const btn = document.getElementById(`spa-btn-${f}-${proyekId}`);
+        const box = document.getElementById(`spa-fase-${f}-${proyekId}`);
+        if (!btn || !box) return;
+
+        if (f === fase) {
+          box.classList.remove('hidden');
+          btn.className = `flex-1 py-2 px-2 text-center rounded-xl text-xs font-black transition-all phase-tab-active-${f}`;
+        } else {
+          box.classList.add('hidden');
+          btn.className = 'flex-1 py-2 px-2 text-center rounded-xl text-xs font-black text-slate-600 hover:text-slate-900 transition-all';
+        }
+      });
+    }
+
+    function setSpaStatusFilter(status) {
+      statusFilterSpaAktif = status;
+      const buttons = [
+        { id: 'spa-filter-status-semua', val: 'Semua' },
+        { id: 'spa-filter-status-sedang', val: 'Sedang Dikerjakan' },
+        { id: 'spa-filter-status-selesai', val: 'Selesai' }
+      ];
+      buttons.forEach(b => {
+        const el = document.getElementById(b.id);
+        if (!el) return;
+        if (b.val === status) {
+          el.className = 'spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-brand-700 text-white shadow-xs';
+        } else {
+          el.className = 'spa-pemb-filter-btn px-3.5 py-2 rounded-xl text-xs font-black transition bg-slate-100 hover:bg-slate-200 text-slate-700';
+        }
+      });
+      filterSpaPembangunan();
+    }
+
+    function filterSpaPembangunan() {
+      const qInput = document.getElementById('pencarianSpaPembangunan');
+      const q = qInput ? qInput.value.toLowerCase().trim() : '';
+      const items = document.querySelectorAll('.spa-pembangunan-item');
+      items.forEach(it => {
+        const nama = it.getAttribute('data-nama') || '';
+        const lokasi = it.getAttribute('data-lokasi') || '';
+        const dusun = it.getAttribute('data-dusun') || '';
+        const status = it.getAttribute('data-status') || '';
+
+        const cocokKeyword = !q || nama.includes(q) || lokasi.includes(q) || dusun.includes(q);
+        const cocokStatus = (statusFilterSpaAktif === 'Semua') || (status === statusFilterSpaAktif);
+
+        if (cocokKeyword && cocokStatus) {
+          it.style.display = '';
+        } else {
+          it.style.display = 'none';
+        }
+      });
+    }
+
+    // ==========================================================
     // LOGIKA GRAFIK TREN DERET WAKTU & TABEL DINAMIS INFOGRAFIS
     // ==========================================================
+
     let timeSeriesChartInstance = null;
     let activeSeriesMode = 'all';
 

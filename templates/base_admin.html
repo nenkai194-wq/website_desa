@@ -88,6 +88,9 @@
       <a href="{{ url_for('admin_publikasi') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_publikasi' %}bg-brand-700 text-white{% endif %}">
         <i class="fa-solid fa-book-bookmark w-4 text-center"></i> Buku Publikasi
       </a>
+      <a href="{{ url_for('admin_pembangunan') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_pembangunan' %}bg-brand-700 text-white{% endif %}">
+        <i class="fa-solid fa-person-digging w-4 text-center text-amber-400"></i> Pembangunan Desa
+      </a>
       <a href="{{ url_for('admin_running_text') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_running_text' %}bg-brand-700 text-white{% endif %}">
         <i class="fa-solid fa-bullhorn w-4 text-center text-emerald-400"></i> Running Text & Footer
       </a>
