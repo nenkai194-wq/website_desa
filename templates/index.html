@@ -60,103 +60,104 @@
       <div class="flex items-center justify-between py-2 sm:py-2.5 min-h-[72px] gap-3">
         
         <!-- Logo & Identitas Desa: Sesuai Screenshot -->
-        <a href="javascript:void(0)" onclick="navigateToView('beranda')" class="flex items-center gap-3.5 group shrink-0">
+        <a href="javascript:void(0)" onclick="navigateToView('beranda')" class="flex items-center gap-2.5 sm:gap-3 group shrink-0">
           <img src="{{ url_for('static', filename=profil.logo_website.replace('static/', '')) if profil.logo_website and profil.logo_website.startswith('static/') else (profil.logo_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" 
                alt="Logo {{ profil.nama_desa }}" 
-               class="h-12 sm:h-14 w-auto object-contain drop-shadow" 
+               class="h-10 sm:h-12 w-auto object-contain drop-shadow" 
                onerror="this.src='{{ url_for('static', filename='images/logo_tasikmalaya.png') }}'" />
           <div class="flex flex-col justify-center">
-            <h1 class="text-xl sm:text-2xl font-black uppercase tracking-tight text-white block leading-none font-outfit">
+            <h1 class="text-base sm:text-lg xl:text-xl font-black uppercase tracking-tight text-white block leading-none font-outfit">
               PEMDES {{ (profil.nama_desa or 'PAPAYAN')|upper }}
             </h1>
-            <span class="text-[11px] sm:text-xs text-white/90 font-medium block mt-1 tracking-tight">
+            <span class="text-[10px] sm:text-xs text-white/90 font-medium block mt-1 tracking-tight">
               Kecamatan {{ profil.kecamatan or 'Jatiwaras' }}, Kabupaten {{ profil.kabupaten or 'Tasikmalaya' }}
             </span>
           </div>
         </a>
 
         <!-- Desktop Navigation: Menu Sejajar Sesuai Screenshot (Ukuran Teks & Jarak Proporsional) -->
-        <nav class="hidden lg:flex items-center gap-0.5 xl:gap-1.5 2xl:gap-2.5 font-bold text-white/95">
+        <nav class="hidden xl:flex items-center gap-0.5 xl:gap-1 2xl:gap-1.5 font-bold text-white/95 shrink-0">
           
           <!-- 1. Beranda -->
           <button type="button" onclick="navigateToView('beranda')" data-nav-view="beranda" 
-                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+                  class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
             <i class="fa-solid fa-house text-[#34d399] text-[11px] xl:text-xs"></i>
             <span>Beranda</span>
           </button>
 
           <!-- 2. Profil -->
           <button type="button" onclick="navigateToView('profil')" data-nav-view="profil" 
-                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+                  class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
             <i class="fa-solid fa-landmark text-[#34d399] text-[11px] xl:text-xs"></i>
             <span>Profil</span>
           </button>
 
           <!-- 3. Statistik Desa -->
           <button type="button" onclick="navigateToView('infografis')" data-nav-view="infografis" 
-                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+                  class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
             <i class="fa-solid fa-chart-pie text-[#34d399] text-[11px] xl:text-xs"></i>
-            <span>Statistik Desa</span>
+            <span>Statistik</span>
           </button>
 
           <!-- 4. Peta Desa -->
           <button type="button" onclick="navigateToView('peta')" data-nav-view="peta" 
-                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+                  class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
             <i class="fa-solid fa-map-location-dot text-[#34d399] text-[11px] xl:text-xs"></i>
-            <span>Peta Desa</span>
+            <span>Peta</span>
           </button>
 
           <!-- 5. Wisata -->
           <button type="button" onclick="navigateToView('wisata')" data-nav-view="wisata" 
-                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+                  class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
             <i class="fa-solid fa-umbrella-beach text-[#34d399] text-[11px] xl:text-xs"></i>
             <span>Wisata</span>
           </button>
 
           <!-- 6. UMKM -->
           <button type="button" onclick="navigateToView('umkm')" data-nav-view="umkm" 
-                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+                  class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
             <i class="fa-solid fa-basket-shopping text-[#34d399] text-[11px] xl:text-xs"></i>
             <span>UMKM</span>
           </button>
 
           <!-- 7. Berita & Galeri -->
           <button type="button" onclick="navigateToView('berita')" data-nav-view="berita" 
-                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+                  class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
             <i class="fa-solid fa-newspaper text-[#34d399] text-[11px] xl:text-xs"></i>
-            <span>Berita & Galeri</span>
+            <span>Berita</span>
           </button>
 
           <!-- 8. Publikasi -->
           <button type="button" onclick="navigateToView('publikasi')" data-nav-view="publikasi" 
-                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+                  class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
             <i class="fa-solid fa-book-bookmark text-[#34d399] text-[11px] xl:text-xs"></i>
             <span>Publikasi</span>
           </button>
 
           <!-- 9. Pembangunan -->
           <button type="button" onclick="navigateToView('pembangunan')" data-nav-view="pembangunan" 
-                  class="nav-desktop-btn px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
+                  class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/15 flex items-center gap-1.5 whitespace-nowrap text-[11px] xl:text-[12px] 2xl:text-[13px]">
             <i class="fa-solid fa-person-digging text-[#34d399] text-[11px] xl:text-xs"></i>
             <span>Pembangunan</span>
           </button>
-
-
         </nav>
 
-        <!-- Bagian Kanan: Tombol Kuning Layanan Surat & Toggle Mobile -->
-        <div class="flex items-center gap-3 shrink-0">
-          <button type="button" onclick="handleKlikLayananSurat()" data-nav-view="layanan-surat" 
-                  class="hidden sm:inline-flex items-center gap-2.5 bg-gradient-to-r from-[#ffe066] via-[#ffd43b] to-[#fcc419] hover:from-[#ffd43b] hover:to-[#fab005] text-slate-950 font-black px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm shadow-lg shadow-black/20 border border-amber-200/90 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
-            <i class="fa-solid fa-file-signature text-base text-slate-950"></i>
-            <span class="leading-tight text-center">Layanan<br class="hidden sm:inline">Surat</span>
-          </button>
-
-          <!-- Mobile Toggle Button -->
+        <!-- Bagian Kanan: Toggle Mobile & Tombol Kuning Layanan Surat -->
+        <div class="flex items-center shrink-0">
+          <!-- Mobile Toggle Button (hidden di layar desktop xl+) -->
           <button id="mobile-menu-toggle" type="button" 
-                  class="xl:hidden p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15" aria-label="Buka Menu Navigasi">
+                  class="xl:hidden p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15 mr-2 sm:mr-3" aria-label="Buka Menu Navigasi">
             <i class="fa-solid fa-bars text-xl"></i>
           </button>
+
+          <!-- Tombol Kuning Layanan Surat: Lebar w-[136px] agar tepat rata atas-bawah dengan nomor kontak di baris bawah -->
+          <div class="flex items-center justify-end shrink-0 w-[136px]">
+            <button type="button" onclick="handleKlikLayananSurat()" data-nav-view="layanan-surat" 
+                    class="w-full hidden sm:inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#ffe066] via-[#ffd43b] to-[#fcc419] hover:from-[#ffd43b] hover:to-[#fab005] text-slate-950 font-black px-3 py-2 rounded-2xl text-xs sm:text-sm shadow-lg shadow-black/20 border border-amber-200/90 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
+              <i class="fa-solid fa-file-signature text-sm sm:text-base text-slate-950"></i>
+              <span class="leading-tight text-center">Layanan<br class="hidden sm:inline">Surat</span>
+            </button>
+          </div>
         </div>
 
       </div>
@@ -190,10 +191,10 @@
           </div>
         </div>
 
-        <!-- Right side: No Kontak Sesuai Screenshot (Green Rounded Pill) -->
-        <div class="flex items-center gap-2 shrink-0">
+        <!-- Right side: No Kontak Sesuai Screenshot (Green Rounded Pill) - Rata Atas Bawah dengan Layanan Surat -->
+        <div class="flex items-center justify-end shrink-0 w-[136px]">
           <a href="https://wa.me/{{ (profil.no_telepon or '0821-1991-8783').replace('-', '').replace(' ', '') }}" target="_blank" 
-             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0d3319] hover:bg-[#124220] text-[#a7f3d0] border border-[#34d399]/60 text-[11px] font-semibold transition shadow-xs">
+             class="w-full inline-flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0d3319] hover:bg-[#124220] text-[#a7f3d0] border border-[#34d399]/60 text-[11px] font-semibold transition shadow-xs whitespace-nowrap">
             <i class="fa-solid fa-phone text-[#34d399] text-[10px]"></i>
             <span>{{ profil.no_telepon or '0821-1991-8783' }}</span>
           </a>
@@ -203,7 +204,7 @@
     </div>
 
     <!-- Mobile Dropdown Navigation -->
-    <div id="mobile-menu-dropdown" class="hidden lg:hidden bg-brand-900/98 backdrop-blur-lg border-t border-brand-800 px-4 pt-3 pb-6 text-white text-xs font-semibold space-y-1 shadow-2xl">
+    <div id="mobile-menu-dropdown" class="hidden xl:hidden bg-brand-900/98 backdrop-blur-lg border-t border-brand-800 px-4 pt-3 pb-6 text-white text-xs font-semibold space-y-1 shadow-2xl">
       <button type="button" onclick="navigateToView('beranda')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
         <i class="fa-solid fa-house w-4 text-emerald-300"></i> Beranda
       </button>
