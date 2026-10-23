@@ -95,6 +95,94 @@ app.config['BACKUP_FOLDER'] = BACKUP_FOLDER
 def assets_fallback(filename):
     return send_from_directory(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'), filename)
 
+def hitung_status_waktu_popup(popup_dict):
+    """
+    Menentukan status tayang dinamis pop-up berdasarkan status manual dan rentang waktu.
+    Mengembalikan dict:
+      'status_waktu': 'Tayang' | 'Terjadwal' | 'Kedaluwarsa' | 'Draf'
+      'label': teks label tampilan
+      'badge_class': kelas warna CSS
+      'is_aktif': boolean (apakah berhak tampil di frontend saat ini)
+      'keterangan_waktu': uraian info waktu
+    """
+    if not popup_dict:
+        return {'status_waktu': 'Draf', 'label': 'Tidak Tayang (Draf)', 'badge_class': 'bg-slate-100 text-slate-600 border-slate-300', 'is_aktif': False, 'keterangan_waktu': 'Nonaktif'}
+    
+    status_manual = popup_dict.get('status', 'Tayang')
+    if status_manual != 'Tayang':
+        return {
+            'status_waktu': 'Draf',
+            'label': 'Tidak Tayang (Draf)',
+            'badge_class': 'bg-slate-100 text-slate-600 border-slate-300',
+            'is_aktif': False,
+            'keterangan_waktu': 'Dinonaktifkan manual oleh admin'
+        }
+
+    t_mulai = (popup_dict.get('tanggal_mulai') or '').strip()
+    t_selesai = (popup_dict.get('tanggal_selesai') or '').strip()
+
+    if not t_mulai and not t_selesai:
+        return {
+            'status_waktu': 'Tayang',
+            'label': 'Tayang (Aktif)',
+            'badge_class': 'bg-emerald-100 text-emerald-900 border-emerald-300',
+            'is_aktif': True,
+            'keterangan_waktu': 'Tanpa batas waktu (selalu aktif)'
+        }
+
+    now = datetime.now()
+    dt_mulai = None
+    dt_selesai = None
+
+    if t_mulai:
+        try:
+            clean_m = t_mulai.replace('T', ' ')
+            if len(clean_m) == 10:
+                clean_m += ' 00:00:00'
+            elif len(clean_m) == 16:
+                clean_m += ':00'
+            dt_mulai = datetime.strptime(clean_m, '%Y-%m-%d %H:%M:%S')
+        except Exception:
+            pass
+
+    if t_selesai:
+        try:
+            clean_s = t_selesai.replace('T', ' ')
+            if len(clean_s) == 10:
+                clean_s += ' 23:59:59'
+            elif len(clean_s) == 16:
+                clean_s += ':59'
+            dt_selesai = datetime.strptime(clean_s, '%Y-%m-%d %H:%M:%S')
+        except Exception:
+            pass
+
+    if dt_mulai and now < dt_mulai:
+        return {
+            'status_waktu': 'Terjadwal',
+            'label': 'Terjadwal',
+            'badge_class': 'bg-sky-100 text-sky-800 border-sky-300',
+            'is_aktif': False,
+            'keterangan_waktu': f"Mulai tayang {dt_mulai.strftime('%d/%m/%Y %H:%M')} WIB"
+        }
+
+    if dt_selesai and now > dt_selesai:
+        return {
+            'status_waktu': 'Kedaluwarsa',
+            'label': 'Kedaluwarsa (Terhenti Otomatis)',
+            'badge_class': 'bg-rose-100 text-rose-800 border-rose-300',
+            'is_aktif': False,
+            'keterangan_waktu': f"Otomatis terhenti sejak {dt_selesai.strftime('%d/%m/%Y %H:%M')} WIB"
+        }
+
+    info_s = f"Berakhir pada {dt_selesai.strftime('%d/%m/%Y %H:%M')} WIB" if dt_selesai else 'Aktif'
+    return {
+        'status_waktu': 'Tayang',
+        'label': 'Tayang (Aktif)',
+        'badge_class': 'bg-emerald-100 text-emerald-900 border-emerald-300',
+        'is_aktif': True,
+        'keterangan_waktu': info_s
+    }
+
 @app.context_processor
 def inject_global_data():
     data = {
@@ -115,10 +203,17 @@ def inject_global_data():
         cursor.execute("SELECT * FROM kategori_pengaduan ORDER BY urutan ASC, id ASC")
         data['kategori_pengaduan_global'] = [dict(r) for r in cursor.fetchall()]
 
-        # Popup Informasi Aktif (Tayang)
-        cursor.execute("SELECT * FROM popup_informasi WHERE status = 'Tayang' ORDER BY urutan ASC, id DESC LIMIT 1")
-        row_pop = cursor.fetchone()
-        data['popup_aktif_global'] = dict(row_pop) if row_pop else None
+        # Popup Informasi Aktif (Tayang & Masih dalam batas waktu yang valid)
+        cursor.execute("SELECT * FROM popup_informasi WHERE status = 'Tayang' ORDER BY urutan ASC, id DESC")
+        pop_candidates = [dict(r) for r in cursor.fetchall()]
+        popup_aktif = None
+        for p in pop_candidates:
+            st = hitung_status_waktu_popup(p)
+            if st['is_aktif']:
+                popup_aktif = p
+                popup_aktif['status_info'] = st
+                break
+        data['popup_aktif_global'] = popup_aktif
 
         # Banner Slider Aktif (Tayang)
         cursor.execute("SELECT * FROM banner_slider WHERE is_active = 1 ORDER BY urutan ASC, id ASC")
@@ -3365,13 +3460,19 @@ def admin_popup():
     cursor.execute("SELECT * FROM popup_informasi ORDER BY urutan ASC, id DESC")
     popup_list = [dict(row) for row in cursor.fetchall()]
 
-    # Statistik Pop-up
-    total_popup = len(popup_list)
-    total_tayang = sum(1 for p in popup_list if p['status'] == 'Tayang')
-    total_draf = total_popup - total_tayang
+    # Hitung status dinamis berdasarkan rentang waktu tayang
+    for p in popup_list:
+        p['status_info'] = hitung_status_waktu_popup(p)
 
-    # Active pop-up currently shown on frontend
-    active_popup = next((p for p in popup_list if p['status'] == 'Tayang'), None)
+    # Statistik Pop-up Akurat
+    total_popup = len(popup_list)
+    total_tayang = sum(1 for p in popup_list if p['status_info']['status_waktu'] == 'Tayang')
+    total_terjadwal = sum(1 for p in popup_list if p['status_info']['status_waktu'] == 'Terjadwal')
+    total_kedaluwarsa = sum(1 for p in popup_list if p['status_info']['status_waktu'] == 'Kedaluwarsa')
+    total_draf = sum(1 for p in popup_list if p['status_info']['status_waktu'] == 'Draf')
+
+    # Pop-up yang sedang aktif tayang saat ini
+    active_popup = next((p for p in popup_list if p['status_info']['is_aktif']), None)
 
     conn.close()
     return render_template(
@@ -3379,6 +3480,8 @@ def admin_popup():
         popup_list=popup_list,
         total_popup=total_popup,
         total_tayang=total_tayang,
+        total_terjadwal=total_terjadwal,
+        total_kedaluwarsa=total_kedaluwarsa,
         total_draf=total_draf,
         active_popup=active_popup
     )
@@ -3396,6 +3499,10 @@ def admin_popup_tambah():
     status = request.form.get('status', 'Tayang').strip()
     tampil_sekali = 1 if request.form.get('tampil_sekali') == '1' else 0
     urutan = request.form.get('urutan', type=int) or 1
+    tanggal_mulai = request.form.get('tanggal_mulai', '').strip() or None
+    tanggal_selesai = request.form.get('tanggal_selesai', '').strip() or None
+    tanggal_mulai = request.form.get('tanggal_mulai', '').strip() or None
+    tanggal_selesai = request.form.get('tanggal_selesai', '').strip() or None
 
     if not judul:
         flash('Judul pop-up pengumuman wajib diisi.', 'danger')
@@ -3421,11 +3528,11 @@ def admin_popup_tambah():
     cursor.execute('''
     INSERT INTO popup_informasi (
         judul, subjudul, kategori, isi, gambar, link_url, link_teks, tombol_sekunder_teks,
-        status, tampil_sekali, urutan
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        status, tampil_sekali, urutan, tanggal_mulai, tanggal_selesai
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
         judul, subjudul, kategori, isi, gambar, link_url, link_teks, tombol_sekunder_teks,
-        status, tampil_sekali, urutan
+        status, tampil_sekali, urutan, tanggal_mulai, tanggal_selesai
     ))
     conn.commit()
     conn.close()
@@ -3488,11 +3595,12 @@ def admin_popup_edit(id):
     UPDATE popup_informasi SET
         judul = ?, subjudul = ?, kategori = ?, isi = ?, gambar = ?,
         link_url = ?, link_teks = ?, tombol_sekunder_teks = ?,
-        status = ?, tampil_sekali = ?, urutan = ?, updated_at = CURRENT_TIMESTAMP
+        status = ?, tampil_sekali = ?, urutan = ?,
+        tanggal_mulai = ?, tanggal_selesai = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
     ''', (
         judul, subjudul, kategori, isi, gambar, link_url, link_teks, tombol_sekunder_teks,
-        status, tampil_sekali, urutan, id
+        status, tampil_sekali, urutan, tanggal_mulai, tanggal_selesai, id
     ))
     conn.commit()
     conn.close()

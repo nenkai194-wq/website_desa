@@ -101,6 +101,23 @@
     const isSeenSession = sessionStorage.getItem(keySession);
     const isClosedLocal = localStorage.getItem(keyLocal);
 
+    // Cek batas waktu tayang client-side (otomatis terhenti sistem)
+    {% if popup_aktif_global.tanggal_mulai %}
+    const tMulaiStr = "{{ popup_aktif_global.tanggal_mulai }}".replace(' ', 'T');
+    const dtMulai = new Date(tMulaiStr);
+    if (!isNaN(dtMulai.getTime()) && new Date() < dtMulai) {
+      return; // Belum masuk jadwal tayang
+    }
+    {% endif %}
+
+    {% if popup_aktif_global.tanggal_selesai %}
+    const tSelesaiStr = "{{ popup_aktif_global.tanggal_selesai }}".replace(' ', 'T');
+    const dtSelesai = new Date(tSelesaiStr);
+    if (!isNaN(dtSelesai.getTime()) && new Date() > dtSelesai) {
+      return; // Sudah melewati batas waktu tayang (otomatis berhenti)
+    }
+    {% endif %}
+
     // Jika tampil_sekali = 1, cek session storage & local storage
     if (tampilSekali === 1 && (isSeenSession === '1' || isClosedLocal === '1')) {
       return; // Jangan tampilkan

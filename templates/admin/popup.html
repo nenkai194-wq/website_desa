@@ -14,7 +14,7 @@
         <span>Pop-up Pengumuman, Berita & Banner Informasi</span>
       </h2>
       <p class="text-xs text-slate-500 mt-0.5">
-        Kelola jendela pop-up banner otomatis yang tampil di layar pengunjung saat pertama kali mengakses portal website desa.
+        Kelola jendela pop-up banner otomatis yang tampil di layar pengunjung saat pertama kali mengakses portal website desa, lengkap dengan fitur batas waktu tayang otomatis.
       </p>
     </div>
 
@@ -49,41 +49,47 @@
       <div>
         <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Sedang Tayang</span>
         <span class="text-2xl font-black text-emerald-950 block mt-1">{{ total_tayang }}</span>
-        <span class="text-[11px] text-emerald-600 font-semibold">Aktif di layar pengunjung</span>
+        <span class="text-[11px] text-emerald-600 font-semibold">Aktif saat ini di frontend</span>
       </div>
       <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
         <i class="fa-solid fa-circle-check"></i>
       </div>
     </div>
 
-    <!-- Draf / Tidak Tayang -->
+    <!-- Otomatisasi Waktu (Terjadwal / Kedaluwarsa) -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+      <div>
+        <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wider block">Jadwal & Terhenti</span>
+        <div class="flex items-baseline gap-2 mt-1">
+          <span class="text-xl font-black text-sky-700">{{ total_terjadwal }}</span>
+          <span class="text-[11px] text-slate-400">Jadwal</span>
+          <span class="text-slate-300">|</span>
+          <span class="text-xl font-black text-rose-600">{{ total_kedaluwarsa }}</span>
+          <span class="text-[11px] text-slate-400">Selesai</span>
+        </div>
+        <span class="text-[11px] text-slate-500">Otomatis terhenti sistem</span>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+        <i class="fa-solid fa-calendar-check"></i>
+      </div>
+    </div>
+
+    <!-- Draf / Nonaktif Manual -->
     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
       <div>
         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Draf / Nonaktif</span>
         <span class="text-2xl font-black text-slate-900 block mt-1">{{ total_draf }}</span>
-        <span class="text-[11px] text-slate-500">Disimpan tanpa tayang</span>
+        <span class="text-[11px] text-slate-500">Disimpan manual admin</span>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+      <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center text-xl">
         <i class="fa-solid fa-file-lines"></i>
-      </div>
-    </div>
-
-    <!-- Mode Tampilan -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-      <div>
-        <span class="text-[10px] font-bold text-sky-700 uppercase tracking-wider block">Mode Tampilan</span>
-        <span class="text-sm font-black text-sky-950 block mt-1">Smart Session</span>
-        <span class="text-[11px] text-sky-600 font-medium">Sekali per sesi kunjungan</span>
-      </div>
-      <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl">
-        <i class="fa-solid fa-user-clock"></i>
       </div>
     </div>
   </div>
 
   <!-- LIVE SIMULATOR: POP-UP YANG SEDANG AKTIF SAAT INI -->
   {% if active_popup %}
-  <div class="bg-gradient-to-r from-emerald-900 to-slate-900 rounded-3xl p-6 sm:p-7 text-white shadow-lg relative overflow-hidden">
+  <div class="bg-gradient-to-r from-emerald-900 via-slate-900 to-slate-950 rounded-3xl p-6 sm:p-7 text-white shadow-lg relative overflow-hidden">
     <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
     <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -106,6 +112,12 @@
             <span class="px-2.5 py-0.5 rounded-full bg-white/15 text-emerald-200 font-bold text-[10px]">
               {{ active_popup.kategori }}
             </span>
+            {% if active_popup.tanggal_selesai %}
+            <span class="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-bold text-[10px] flex items-center gap-1">
+              <i class="fa-solid fa-hourglass-end text-[9px]"></i>
+              <span>Batas: {{ active_popup.tanggal_selesai.replace('T', ' ') }}</span>
+            </span>
+            {% endif %}
           </div>
           <h3 class="text-lg sm:text-xl font-black text-white leading-tight">
             {{ active_popup.judul }}
@@ -139,7 +151,9 @@
       </div>
       <div>
         <h4 class="font-extrabold text-sm text-amber-950">Belum Ada Pop-up yang Sedang Tayang</h4>
-        <p class="text-xs text-amber-800/80 mt-0.5">Website frontend saat ini tidak memunculkan pop-up saat diakses pertama kali. Anda dapat mengaktifkan salah satu pop-up di bawah atau menambahkan baru.</p>
+        <p class="text-xs text-amber-800/80 mt-0.5">
+          Website frontend saat ini tidak memunculkan pop-up karena belum ada banner berstatus aktif atau jadwal waktu tayang telah kedaluwarsa/belum mulai.
+        </p>
       </div>
     </div>
     <button type="button" onclick="bukaModalTambahPopup()" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs whitespace-nowrap shadow-sm">
@@ -156,7 +170,7 @@
           <i class="fa-solid fa-table-list text-brand-600"></i>
           <span>Daftar Pop-up Pengumuman & Banner Informasi</span>
         </h3>
-        <p class="text-xs text-slate-500 mt-0.5">Kelola, sunting isi informasi, ganti gambar poster, atau ubah status tayang kapan saja.</p>
+        <p class="text-xs text-slate-500 mt-0.5">Kelola jadwal waktu tayang, ganti flyer poster, atau ubah status tayang kapan saja.</p>
       </div>
       <span class="text-xs text-slate-500 font-medium">Total: <strong>{{ popup_list|length }}</strong> pop-up</span>
     </div>
@@ -167,9 +181,10 @@
           <tr class="bg-slate-50 text-slate-700 font-extrabold uppercase text-[10px] tracking-wider border-b border-slate-200">
             <th class="p-4 w-12 text-center">No</th>
             <th class="p-4 w-28">Banner</th>
-            <th class="p-4 min-w-[220px]">Judul & Kategori</th>
+            <th class="p-4 min-w-[200px]">Judul & Kategori</th>
             <th class="p-4 whitespace-nowrap">Status Tayang</th>
-            <th class="p-4 min-w-[150px]">Tautan Aksi</th>
+            <th class="p-4 min-w-[180px]">Jadwal Waktu Tayang</th>
+            <th class="p-4 min-w-[130px]">Tautan Aksi</th>
             <th class="p-4 whitespace-nowrap">Frekuensi</th>
             <th class="p-4 text-center min-w-[140px]">Aksi Pengelolaan</th>
           </tr>
@@ -211,22 +226,65 @@
               <p class="text-[11px] text-slate-500 mt-0.5">{{ p.subjudul }}</p>
               {% endif %}
               <span class="text-[10px] text-slate-400 block mt-1">
-                <i class="fa-regular fa-calendar mr-1"></i> {{ p.created_at }}
+                <i class="fa-regular fa-calendar mr-1"></i> Dibuat: {{ p.created_at }}
               </span>
             </td>
 
-            <!-- Status Tayang -->
+            <!-- Status Tayang (Dinamis Berdasarkan Waktu) -->
             <td class="p-4 whitespace-nowrap">
-              {% if p.status == 'Tayang' %}
+              {% if p.status_info.status_waktu == 'Tayang' %}
               <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-extrabold text-xs border border-emerald-300 shadow-xs">
                 <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
                 Tayang (Aktif)
+              </span>
+              {% elif p.status_info.status_waktu == 'Terjadwal' %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-900 font-extrabold text-xs border border-sky-300 shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-sky-600"></span>
+                Terjadwal
+              </span>
+              {% elif p.status_info.status_waktu == 'Kedaluwarsa' %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-900 font-extrabold text-xs border border-rose-300 shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-rose-600"></span>
+                Kedaluwarsa (Terhenti)
               </span>
               {% else %}
               <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-600 font-bold text-xs border border-slate-300">
                 <span class="w-2 h-2 rounded-full bg-slate-400"></span>
                 Tidak Tayang (Draf)
               </span>
+              {% endif %}
+            </td>
+
+            <!-- Jadwal Waktu Tayang -->
+            <td class="p-4">
+              {% if p.tanggal_mulai or p.tanggal_selesai %}
+              <div class="space-y-1 text-[11px]">
+                {% if p.tanggal_mulai %}
+                <div class="flex items-center gap-1.5 text-slate-700">
+                  <i class="fa-regular fa-clock text-emerald-600 w-3.5"></i>
+                  <span>Mulai: <strong class="text-slate-900">{{ p.tanggal_mulai.replace('T', ' ') }}</strong></span>
+                </div>
+                {% endif %}
+                {% if p.tanggal_selesai %}
+                <div class="flex items-center gap-1.5 {% if p.status_info.status_waktu == 'Kedaluwarsa' %}text-rose-700 font-semibold{% else %}text-slate-700{% endif %}">
+                  <i class="fa-solid fa-hourglass-end {% if p.status_info.status_waktu == 'Kedaluwarsa' %}text-rose-600{% else %}text-amber-600{% endif %} w-3.5"></i>
+                  <span>Batas: <strong class="{% if p.status_info.status_waktu == 'Kedaluwarsa' %}text-rose-800 font-bold{% else %}text-slate-900{% endif %}">{{ p.tanggal_selesai.replace('T', ' ') }}</strong></span>
+                </div>
+                {% endif %}
+                <div class="pt-0.5">
+                  <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold {% if p.status_info.status_waktu == 'Kedaluwarsa' %}bg-rose-50 text-rose-700 border border-rose-200{% elif p.status_info.status_waktu == 'Terjadwal' %}bg-sky-50 text-sky-700 border border-sky-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+                    {{ p.status_info.keterangan_waktu }}
+                  </span>
+                </div>
+              </div>
+              {% else %}
+              <div class="space-y-0.5">
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-700">
+                  <i class="fa-solid fa-infinity text-brand-600"></i>
+                  <span>Tanpa Batas Waktu</span>
+                </span>
+                <span class="block text-[10px] text-slate-400">Tayang permanen selama status aktif</span>
+              </div>
               {% endif %}
             </td>
 
@@ -237,7 +295,7 @@
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                 <span>{{ p.link_teks or 'Buka Tautan' }}</span>
               </a>
-              <span class="block text-[10px] text-slate-400 truncate max-w-[180px]" title="{{ p.link_url }}">{{ p.link_url }}</span>
+              <span class="block text-[10px] text-slate-400 truncate max-w-[160px]" title="{{ p.link_url }}">{{ p.link_url }}</span>
               {% else %}
               <span class="text-slate-400 italic text-[11px]">Hanya Tombol Tutup</span>
               {% endif %}
@@ -293,7 +351,7 @@
           </tr>
           {% else %}
           <tr>
-            <td colspan="7" class="p-12 text-center text-slate-400">
+            <td colspan="8" class="p-12 text-center text-slate-400">
               <i class="fa-solid fa-window-restore text-4xl mb-3 text-slate-300 block"></i>
               Belum ada data pop-up informasi yang dibuat. Klik tombol <strong>Tambah Pop-up Baru</strong> di atas untuk membuat pengumuman pertama Anda.
             </td>
@@ -340,8 +398,63 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Subjudul / Keterangan Waktu</label>
-          <input type="text" name="subjudul" placeholder="Contoh: Berlaku s.d 30 Oktober 2026" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">Subjudul / Keterangan Singkat</label>
+          <input type="text" name="subjudul" placeholder="Contoh: Khusus Warga Desa Papayan" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+      </div>
+
+      <!-- RANGE WAKTU TAYANG OTOMATIS (BARU) -->
+      <div class="bg-gradient-to-br from-amber-50/70 via-slate-50 to-emerald-50/40 p-4 rounded-2xl border border-amber-200/90 space-y-3">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <label class="text-xs font-black text-amber-950 flex items-center gap-1.5">
+              <i class="fa-solid fa-calendar-days text-amber-600"></i>
+              <span>Rentang Waktu Tayang (Otomatis Terhenti)</span>
+            </label>
+            <p class="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+              Tentukan batas tanggal & jam tayang. Pop-up akan <strong>otomatis terhenti oleh sistem</strong> begitu batas waktu berakhir.
+            </p>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1 shadow-2xs">
+            <i class="fa-solid fa-clock-rotate-left text-[9px]"></i> Auto-Stop
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">
+              <i class="fa-regular fa-clock text-emerald-600 mr-1"></i> Mulai Tayang
+            </label>
+            <input type="datetime-local" name="tanggal_mulai" id="tambah-popup-tanggal-mulai" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            <span class="text-[10px] text-slate-400 mt-0.5 block">Kosongkan jika langsung tayang saat disimpan</span>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">
+              <i class="fa-solid fa-hourglass-end text-rose-500 mr-1"></i> Berakhir / Terhenti Pada
+            </label>
+            <input type="datetime-local" name="tanggal_selesai" id="tambah-popup-tanggal-selesai" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            <span class="text-[10px] text-slate-400 mt-0.5 block">Sistem otomatis menghentikan pop-up setelah jam ini</span>
+          </div>
+        </div>
+
+        <!-- Tombol Pintas Preset Waktu -->
+        <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-200/60">
+          <span class="text-[10px] font-bold text-slate-500 mr-1">Pintasan Durasi:</span>
+          <button type="button" onclick="setPresetWaktu('tambah', 3)" class="px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-amber-50 hover:border-amber-300 text-[10px] font-bold text-slate-700 transition">
+            +3 Hari
+          </button>
+          <button type="button" onclick="setPresetWaktu('tambah', 7)" class="px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-amber-50 hover:border-amber-300 text-[10px] font-bold text-slate-700 transition">
+            +1 Minggu
+          </button>
+          <button type="button" onclick="setPresetWaktu('tambah', 14)" class="px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-amber-50 hover:border-amber-300 text-[10px] font-bold text-slate-700 transition">
+            +2 Minggu
+          </button>
+          <button type="button" onclick="setPresetWaktu('tambah', 30)" class="px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-amber-50 hover:border-amber-300 text-[10px] font-bold text-slate-700 transition">
+            +1 Bulan
+          </button>
+          <button type="button" onclick="resetWaktu('tambah')" class="px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-rose-50 hover:border-rose-300 text-[10px] font-bold text-rose-600 transition ml-auto">
+            <i class="fa-solid fa-rotate-left mr-0.5"></i> Tanpa Batas
+          </button>
         </div>
       </div>
 
@@ -406,7 +519,7 @@
           Batal
         </button>
         <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5">
-          <i class="fa-solid fa-floppy-disk"></i> Simpan & Tayangkan
+          <i class="fa-solid fa-floppy-disk"></i> Simpan & Pasang Jadwal
         </button>
       </div>
     </form>
@@ -447,8 +560,63 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Subjudul / Keterangan Waktu</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Subjudul / Keterangan Singkat</label>
           <input type="text" name="subjudul" id="edit-popup-subjudul" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+      </div>
+
+      <!-- RANGE WAKTU TAYANG OTOMATIS (EDIT) -->
+      <div class="bg-gradient-to-br from-amber-50/70 via-slate-50 to-emerald-50/40 p-4 rounded-2xl border border-amber-200/90 space-y-3">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <label class="text-xs font-black text-amber-950 flex items-center gap-1.5">
+              <i class="fa-solid fa-calendar-days text-amber-600"></i>
+              <span>Rentang Waktu Tayang (Otomatis Terhenti)</span>
+            </label>
+            <p class="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+              Atur batas waktu tayang. Begitu batas waktu selesai terlewati, pop-up akan <strong>otomatis terhenti dari sistem</strong>.
+            </p>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1 shadow-2xs">
+            <i class="fa-solid fa-clock-rotate-left text-[9px]"></i> Auto-Stop
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">
+              <i class="fa-regular fa-clock text-emerald-600 mr-1"></i> Mulai Tayang
+            </label>
+            <input type="datetime-local" name="tanggal_mulai" id="edit-popup-tanggal-mulai" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            <span class="text-[10px] text-slate-400 mt-0.5 block">Kosongkan jika langsung tayang</span>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">
+              <i class="fa-solid fa-hourglass-end text-rose-500 mr-1"></i> Berakhir / Terhenti Pada
+            </label>
+            <input type="datetime-local" name="tanggal_selesai" id="edit-popup-tanggal-selesai" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            <span class="text-[10px] text-slate-400 mt-0.5 block">Sistem otomatis menghentikan pop-up setelah jam ini</span>
+          </div>
+        </div>
+
+        <!-- Tombol Pintas Preset Waktu -->
+        <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-200/60">
+          <span class="text-[10px] font-bold text-slate-500 mr-1">Pintasan Durasi:</span>
+          <button type="button" onclick="setPresetWaktu('edit', 3)" class="px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-amber-50 hover:border-amber-300 text-[10px] font-bold text-slate-700 transition">
+            +3 Hari
+          </button>
+          <button type="button" onclick="setPresetWaktu('edit', 7)" class="px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-amber-50 hover:border-amber-300 text-[10px] font-bold text-slate-700 transition">
+            +1 Minggu
+          </button>
+          <button type="button" onclick="setPresetWaktu('edit', 14)" class="px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-amber-50 hover:border-amber-300 text-[10px] font-bold text-slate-700 transition">
+            +2 Minggu
+          </button>
+          <button type="button" onclick="setPresetWaktu('edit', 30)" class="px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-amber-50 hover:border-amber-300 text-[10px] font-bold text-slate-700 transition">
+            +1 Bulan
+          </button>
+          <button type="button" onclick="resetWaktu('edit')" class="px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-rose-50 hover:border-rose-300 text-[10px] font-bold text-rose-600 transition ml-auto">
+            <i class="fa-solid fa-rotate-left mr-0.5"></i> Tanpa Batas
+          </button>
         </div>
       </div>
 
@@ -536,19 +704,21 @@
     <div id="preview-popup-img-container" class="w-full h-48 sm:h-56 bg-slate-100 overflow-hidden relative hidden">
       <img id="preview-popup-img" src="" alt="Banner Preview" class="w-full h-full object-cover" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-      <div class="absolute bottom-3 left-4">
+      <div class="absolute bottom-3 left-4 flex flex-wrap items-center gap-2">
         <span id="preview-popup-kategori" class="px-3 py-1 rounded-full bg-emerald-600 text-white font-extrabold text-[11px] uppercase tracking-wider shadow-sm">
           PENGUMUMAN
         </span>
+        <span id="preview-popup-jadwal-badge" class="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-amber-300 font-bold text-[10px] hidden"></span>
       </div>
     </div>
 
     <!-- Body Preview -->
     <div class="p-6 space-y-3 overflow-y-auto max-h-[60vh]">
-      <div id="preview-popup-kategori-text-container">
+      <div id="preview-popup-kategori-text-container" class="flex flex-wrap items-center gap-2">
         <span id="preview-popup-kategori-text" class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-extrabold text-[10px] uppercase tracking-wider">
           PENGUMUMAN
         </span>
+        <span id="preview-popup-jadwal-badge-alt" class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 font-bold text-[10px] hidden"></span>
       </div>
       <h3 id="preview-popup-judul" class="text-lg sm:text-xl font-black text-slate-900 leading-tight">
         Judul Pop-up Pengumuman
@@ -585,6 +755,34 @@
     {% endfor %}
   };
 
+  function formatDateTimeLocal(date) {
+    const pad = n => (n < 10 ? '0' + n : n);
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  function setPresetWaktu(prefix, days) {
+    const now = new Date();
+    const target = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+    // Mulai sekarang jika belum ada
+    const elMulai = document.getElementById(prefix + '-popup-tanggal-mulai');
+    if (!elMulai.value) {
+      elMulai.value = formatDateTimeLocal(now);
+    }
+    // Selesai target jam 23:59
+    target.setHours(23, 59, 0, 0);
+    document.getElementById(prefix + '-popup-tanggal-selesai').value = formatDateTimeLocal(target);
+  }
+
+  function resetWaktu(prefix) {
+    document.getElementById(prefix + '-popup-tanggal-mulai').value = '';
+    document.getElementById(prefix + '-popup-tanggal-selesai').value = '';
+  }
+
   function bukaModalTambahPopup() {
     document.getElementById('modal-tambah-popup').classList.remove('hidden');
   }
@@ -606,6 +804,10 @@
     document.getElementById('edit-popup-link-teks').value = p.link_teks || 'Lihat Selengkapnya';
     document.getElementById('edit-popup-status').value = p.status || 'Tayang';
     document.getElementById('edit-popup-tampil-sekali').checked = (p.tampil_sekali == 1);
+
+    // Tanggal Mulai & Tanggal Selesai
+    document.getElementById('edit-popup-tanggal-mulai').value = p.tanggal_mulai || '';
+    document.getElementById('edit-popup-tanggal-selesai').value = p.tanggal_selesai || '';
 
     const imgPreviewContainer = document.getElementById('edit-popup-gambar-preview');
     const imgThumb = document.getElementById('edit-popup-gambar-thumb');
@@ -646,6 +848,18 @@
     const kategoriVal = p.kategori || 'PENGUMUMAN';
     if (katImg) katImg.textContent = kategoriVal;
     if (katText) katText.textContent = kategoriVal;
+
+    // Badge Jadwal
+    const badgeImg = document.getElementById('preview-popup-jadwal-badge');
+    const badgeText = document.getElementById('preview-popup-jadwal-badge-alt');
+    if (p.tanggal_selesai) {
+      const textJadwal = 'Batas: ' + p.tanggal_selesai.replace('T', ' ');
+      if (badgeImg) { badgeImg.textContent = textJadwal; badgeImg.classList.remove('hidden'); }
+      if (badgeText) { badgeText.textContent = textJadwal; badgeText.classList.remove('hidden'); }
+    } else {
+      if (badgeImg) badgeImg.classList.add('hidden');
+      if (badgeText) badgeText.classList.add('hidden');
+    }
 
     const imgContainer = document.getElementById('preview-popup-img-container');
     const imgEl = document.getElementById('preview-popup-img');

@@ -732,6 +732,13 @@ def init_db():
     ''')
 
     # 12. Pop-up Pengumuman & Banner Informasi Frontend
+    cursor.execute("PRAGMA table_info(popup_informasi)")
+    cols_popup = [col[1] for col in cursor.fetchall()]
+    if 'tanggal_mulai' not in cols_popup and len(cols_popup) > 0:
+        cursor.execute("ALTER TABLE popup_informasi ADD COLUMN tanggal_mulai TEXT")
+    if 'tanggal_selesai' not in cols_popup and len(cols_popup) > 0:
+        cursor.execute("ALTER TABLE popup_informasi ADD COLUMN tanggal_selesai TEXT")
+    conn.commit()
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS popup_informasi (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -746,6 +753,8 @@ def init_db():
         status TEXT DEFAULT 'Tayang',
         tampil_sekali INTEGER DEFAULT 1,
         urutan INTEGER DEFAULT 1,
+        tanggal_mulai TEXT,
+        tanggal_selesai TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
