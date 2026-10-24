@@ -1,7 +1,7 @@
 {
   "type": "FeatureCollection",
   "metadata": {
-    "tahun": 2026,
+    "tahun": 2025,
     "total_sls": 26,
     "kml_source": "https://www.google.com/maps/d/kml?mid=1dkqA9acPAb0AOLjjlN6Vb_meNM6nc1k"
   },
@@ -9,19 +9,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 17,
+        "id": 127,
         "no_urut": 17,
         "nama": "RT 003 RW 005 DUSUN CIHAUR",
         "nama_sls": "RT 003 RW 005",
         "dusun": "DUSUN CIHAUR",
-        "total_penduduk": 225,
-        "laki_laki": 111,
-        "perempuan": 114,
+        "total_penduduk": 223,
+        "laki_laki": 108,
+        "perempuan": 115,
         "keluarga": 78,
         "lat": -7.493572,
         "lng": 108.2008101,
         "color": "#c2410c",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -146,19 +146,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 16,
+        "id": 126,
         "no_urut": 16,
         "nama": "RT 002 RW 005 DUSUN CIHAUR",
         "nama_sls": "RT 002 RW 005",
         "dusun": "DUSUN CIHAUR",
-        "total_penduduk": 184,
-        "laki_laki": 101,
-        "perempuan": 83,
-        "keluarga": 69,
+        "total_penduduk": 182,
+        "laki_laki": 102,
+        "perempuan": 80,
+        "keluarga": 70,
         "lat": -7.4935217,
         "lng": 108.202862,
         "color": "#d97706",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -423,19 +423,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 15,
+        "id": 125,
         "no_urut": 15,
         "nama": "RT 001 RW 005 DUSUN CIHAUR",
         "nama_sls": "RT 001 RW 005",
         "dusun": "DUSUN CIHAUR",
-        "total_penduduk": 240,
-        "laki_laki": 115,
-        "perempuan": 125,
-        "keluarga": 84,
+        "total_penduduk": 239,
+        "laki_laki": 112,
+        "perempuan": 127,
+        "keluarga": 85,
         "lat": -7.4905728,
         "lng": 108.2050619,
         "color": "#c2410c",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -808,19 +808,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 1,
+        "id": 111,
         "no_urut": 1,
         "nama": "RT 001 RW 001 DUSUN DEMUNG LANDUNG",
         "nama_sls": "RT 001 RW 001",
         "dusun": "DUSUN DEMUNG LANDUNG",
-        "total_penduduk": 185,
-        "laki_laki": 88,
-        "perempuan": 97,
-        "keluarga": 63,
+        "total_penduduk": 184,
+        "laki_laki": 90,
+        "perempuan": 94,
+        "keluarga": 61,
         "lat": -7.4627341,
         "lng": 108.2033712,
         "color": "#d97706",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -1161,19 +1161,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 13,
+        "id": 123,
         "no_urut": 13,
         "nama": "RT 002 RW 004 DUSUN MARGAHAYU",
         "nama_sls": "RT 002 RW 004",
         "dusun": "DUSUN MARGAHAYU",
-        "total_penduduk": 189,
-        "laki_laki": 89,
+        "total_penduduk": 186,
+        "laki_laki": 86,
         "perempuan": 100,
-        "keluarga": 70,
+        "keluarga": 68,
         "lat": -7.4812463,
         "lng": 108.2049746,
         "color": "#d97706",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -1510,19 +1510,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 12,
+        "id": 122,
         "no_urut": 12,
         "nama": "RT 001 RW 004 DUSUN MARGAHAYU",
         "nama_sls": "RT 001 RW 004",
         "dusun": "DUSUN MARGAHAYU",
-        "total_penduduk": 232,
-        "laki_laki": 116,
-        "perempuan": 116,
-        "keluarga": 92,
+        "total_penduduk": 229,
+        "laki_laki": 114,
+        "perempuan": 115,
+        "keluarga": 90,
         "lat": -7.4793031,
         "lng": 108.2047908,
         "color": "#c2410c",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -1679,19 +1679,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 11,
+        "id": 121,
         "no_urut": 11,
         "nama": "RT 002 RW 003 DUSUN RANCA SARI",
         "nama_sls": "RT 002 RW 003",
         "dusun": "DUSUN RANCA SARI",
-        "total_penduduk": 229,
-        "laki_laki": 115,
-        "perempuan": 114,
-        "keluarga": 80,
+        "total_penduduk": 227,
+        "laki_laki": 114,
+        "perempuan": 113,
+        "keluarga": 79,
         "lat": -7.4700012,
         "lng": 108.2069189,
         "color": "#c2410c",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -2036,19 +2036,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 20,
+        "id": 130,
         "no_urut": 20,
         "nama": "RT 002 RW 006 DUSUN CIHAUR",
         "nama_sls": "RT 002 RW 006",
         "dusun": "DUSUN CIHAUR",
-        "total_penduduk": 139,
-        "laki_laki": 72,
-        "perempuan": 67,
-        "keluarga": 52,
+        "total_penduduk": 138,
+        "laki_laki": 69,
+        "perempuan": 69,
+        "keluarga": 51,
         "lat": -7.4867264,
         "lng": 108.1981448,
         "color": "#059669",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -2169,19 +2169,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 19,
+        "id": 129,
         "no_urut": 19,
         "nama": "RT 001 RW 006 DUSUN CIHAUR",
         "nama_sls": "RT 001 RW 006",
         "dusun": "DUSUN CIHAUR",
-        "total_penduduk": 152,
-        "laki_laki": 74,
-        "perempuan": 78,
-        "keluarga": 54,
+        "total_penduduk": 151,
+        "laki_laki": 75,
+        "perempuan": 76,
+        "keluarga": 52,
         "lat": -7.4934828,
         "lng": 108.1959009,
         "color": "#d97706",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -2330,19 +2330,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 21,
+        "id": 131,
         "no_urut": 21,
         "nama": "RT 003 RW 006 DUSUN CIHAUR",
         "nama_sls": "RT 003 RW 006",
         "dusun": "DUSUN CIHAUR",
-        "total_penduduk": 92,
-        "laki_laki": 45,
-        "perempuan": 47,
-        "keluarga": 34,
+        "total_penduduk": 88,
+        "laki_laki": 44,
+        "perempuan": 44,
+        "keluarga": 33,
         "lat": -7.4893041,
         "lng": 108.1948713,
         "color": "#0284c7",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -2435,19 +2435,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 10,
+        "id": 120,
         "no_urut": 10,
         "nama": "RT 001 RW 003 DUSUN RANCA SARI",
         "nama_sls": "RT 001 RW 003",
         "dusun": "DUSUN RANCA SARI",
-        "total_penduduk": 282,
-        "laki_laki": 147,
-        "perempuan": 135,
-        "keluarga": 94,
+        "total_penduduk": 277,
+        "laki_laki": 144,
+        "perempuan": 133,
+        "keluarga": 95,
         "lat": -7.4683202,
         "lng": 108.2062075,
         "color": "#7c2d12",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -2776,19 +2776,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 9,
+        "id": 119,
         "no_urut": 9,
         "nama": "RT 004 RW 002 DUSUN RANCA SARI",
         "nama_sls": "RT 004 RW 002",
         "dusun": "DUSUN RANCA SARI",
-        "total_penduduk": 155,
-        "laki_laki": 87,
+        "total_penduduk": 153,
+        "laki_laki": 85,
         "perempuan": 68,
         "keluarga": 62,
         "lat": -7.4699779,
         "lng": 108.2142913,
         "color": "#d97706",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -3533,19 +3533,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 26,
+        "id": 136,
         "no_urut": 26,
         "nama": "RT 003 RW 008 DUSUN MARGAHAYU",
         "nama_sls": "RT 003 RW 008",
         "dusun": "DUSUN MARGAHAYU",
-        "total_penduduk": 179,
-        "laki_laki": 95,
-        "perempuan": 84,
-        "keluarga": 61,
+        "total_penduduk": 183,
+        "laki_laki": 97,
+        "perempuan": 86,
+        "keluarga": 59,
         "lat": -7.4793564,
         "lng": 108.207879,
         "color": "#d97706",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -3758,19 +3758,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 22,
+        "id": 132,
         "no_urut": 22,
         "nama": "RT 001 RW 007 DUSUN DEMUNG LANDUNG",
         "nama_sls": "RT 001 RW 007",
         "dusun": "DUSUN DEMUNG LANDUNG",
-        "total_penduduk": 198,
-        "laki_laki": 96,
+        "total_penduduk": 195,
+        "laki_laki": 93,
         "perempuan": 102,
         "keluarga": 67,
         "lat": -7.4631743,
         "lng": 108.208862,
         "color": "#d97706",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -4071,19 +4071,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 25,
+        "id": 135,
         "no_urut": 25,
         "nama": "RT 002 RW 008 DUSUN MARGAHAYU",
         "nama_sls": "RT 002 RW 008",
         "dusun": "DUSUN MARGAHAYU",
         "total_penduduk": 171,
-        "laki_laki": 86,
-        "perempuan": 85,
+        "laki_laki": 84,
+        "perempuan": 87,
         "keluarga": 57,
         "lat": -7.4770852,
         "lng": 108.2093253,
         "color": "#d97706",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -4480,19 +4480,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 5,
+        "id": 115,
         "no_urut": 5,
         "nama": "RT 005 RW 001 DUSUN DEMUNG LANDUNG",
         "nama_sls": "RT 005 RW 001",
         "dusun": "DUSUN DEMUNG LANDUNG",
-        "total_penduduk": 121,
-        "laki_laki": 69,
+        "total_penduduk": 122,
+        "laki_laki": 70,
         "perempuan": 52,
-        "keluarga": 42,
+        "keluarga": 40,
         "lat": -7.4657286,
         "lng": 108.2028884,
         "color": "#059669",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -4733,19 +4733,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 4,
+        "id": 114,
         "no_urut": 4,
         "nama": "RT 004 RW 001 DUSUN DEMUNG LANDUNG",
         "nama_sls": "RT 004 RW 001",
         "dusun": "DUSUN DEMUNG LANDUNG",
-        "total_penduduk": 197,
-        "laki_laki": 96,
-        "perempuan": 101,
-        "keluarga": 67,
+        "total_penduduk": 201,
+        "laki_laki": 98,
+        "perempuan": 103,
+        "keluarga": 65,
         "lat": -7.4618315,
         "lng": 108.2009951,
-        "color": "#d97706",
-        "tahun": 2026
+        "color": "#c2410c",
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -5082,19 +5082,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 24,
+        "id": 134,
         "no_urut": 24,
         "nama": "RT 001 RW 008 DUSUN MARGAHAYU",
         "nama_sls": "RT 001 RW 008",
         "dusun": "DUSUN MARGAHAYU",
-        "total_penduduk": 177,
-        "laki_laki": 96,
-        "perempuan": 81,
+        "total_penduduk": 174,
+        "laki_laki": 94,
+        "perempuan": 80,
         "keluarga": 59,
         "lat": -7.4758422,
         "lng": 108.2063846,
         "color": "#d97706",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -5335,19 +5335,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 2,
+        "id": 112,
         "no_urut": 2,
         "nama": "RT 002 RW 001 DUSUN DEMUNG LANDUNG",
         "nama_sls": "RT 002 RW 001",
         "dusun": "DUSUN DEMUNG LANDUNG",
-        "total_penduduk": 237,
-        "laki_laki": 121,
-        "perempuan": 116,
-        "keluarga": 81,
+        "total_penduduk": 238,
+        "laki_laki": 123,
+        "perempuan": 115,
+        "keluarga": 80,
         "lat": -7.465413,
         "lng": 108.2005275,
         "color": "#c2410c",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -5640,19 +5640,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 14,
+        "id": 124,
         "no_urut": 14,
         "nama": "RT 003 RW 004 DUSUN MARGAHAYU",
         "nama_sls": "RT 003 RW 004",
         "dusun": "DUSUN MARGAHAYU",
-        "total_penduduk": 216,
-        "laki_laki": 115,
-        "perempuan": 101,
+        "total_penduduk": 214,
+        "laki_laki": 114,
+        "perempuan": 100,
         "keluarga": 85,
         "lat": -7.482778,
         "lng": 108.202643,
         "color": "#c2410c",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -6041,19 +6041,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 3,
+        "id": 113,
         "no_urut": 3,
         "nama": "RT 003 RW 001 DUSUN DEMUNG LANDUNG",
         "nama_sls": "RT 003 RW 001",
         "dusun": "DUSUN DEMUNG LANDUNG",
-        "total_penduduk": 244,
-        "laki_laki": 125,
-        "perempuan": 119,
-        "keluarga": 92,
+        "total_penduduk": 240,
+        "laki_laki": 123,
+        "perempuan": 117,
+        "keluarga": 90,
         "lat": -7.467933,
         "lng": 108.2035854,
         "color": "#c2410c",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -6358,19 +6358,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 7,
+        "id": 117,
         "no_urut": 7,
         "nama": "RT 002 RW 002 DUSUN RANCA SARI",
         "nama_sls": "RT 002 RW 002",
         "dusun": "DUSUN RANCA SARI",
-        "total_penduduk": 148,
-        "laki_laki": 75,
-        "perempuan": 73,
-        "keluarga": 51,
+        "total_penduduk": 147,
+        "laki_laki": 73,
+        "perempuan": 74,
+        "keluarga": 49,
         "lat": -7.4669964,
         "lng": 108.2111364,
         "color": "#059669",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -6559,19 +6559,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 6,
+        "id": 116,
         "no_urut": 6,
         "nama": "RT 001 RW 002 DUSUN RANCA SARI",
         "nama_sls": "RT 001 RW 002",
         "dusun": "DUSUN RANCA SARI",
-        "total_penduduk": 115,
-        "laki_laki": 61,
-        "perempuan": 54,
-        "keluarga": 46,
+        "total_penduduk": 109,
+        "laki_laki": 58,
+        "perempuan": 51,
+        "keluarga": 45,
         "lat": -7.4659631,
         "lng": 108.2088363,
         "color": "#059669",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -6736,19 +6736,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 23,
+        "id": 133,
         "no_urut": 23,
         "nama": "RT 002 RW 007 DUSUN DEMUNG LANDUNG",
         "nama_sls": "RT 002 RW 007",
         "dusun": "DUSUN DEMUNG LANDUNG",
-        "total_penduduk": 191,
+        "total_penduduk": 193,
         "laki_laki": 97,
-        "perempuan": 94,
+        "perempuan": 96,
         "keluarga": 69,
         "lat": -7.4646261,
         "lng": 108.2065185,
         "color": "#d97706",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -7001,19 +7001,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 18,
+        "id": 128,
         "no_urut": 18,
         "nama": "RT 004 RW 005 DUSUN CIHAUR",
         "nama_sls": "RT 004 RW 005",
         "dusun": "DUSUN CIHAUR",
-        "total_penduduk": 253,
-        "laki_laki": 139,
-        "perempuan": 114,
+        "total_penduduk": 256,
+        "laki_laki": 141,
+        "perempuan": 115,
         "keluarga": 85,
         "lat": -7.4975062,
         "lng": 108.2013711,
         "color": "#7c2d12",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",
@@ -7406,19 +7406,19 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 8,
+        "id": 118,
         "no_urut": 8,
         "nama": "RT 003 RW 002 DUSUN RANCA SARI",
         "nama_sls": "RT 003 RW 002",
         "dusun": "DUSUN RANCA SARI",
-        "total_penduduk": 147,
-        "laki_laki": 73,
-        "perempuan": 74,
-        "keluarga": 54,
+        "total_penduduk": 146,
+        "laki_laki": 74,
+        "perempuan": 72,
+        "keluarga": 55,
         "lat": -7.4664316,
         "lng": 108.2100832,
         "color": "#059669",
-        "tahun": 2026
+        "tahun": 2025
       },
       "geometry": {
         "type": "Polygon",

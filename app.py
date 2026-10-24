@@ -812,18 +812,31 @@ def peta_desa():
     cursor.execute("SELECT DISTINCT tahun FROM statistik_sls ORDER BY tahun DESC")
     tahun_list = [r[0] for r in cursor.fetchall() if r[0]]
     if not tahun_list:
-        tahun_list = [2026]
+        tahun_list = [2026, 2025]
     if tahun not in tahun_list:
         tahun = tahun_list[0]
 
-    cursor.execute("SELECT * FROM statistik_sls WHERE tahun = ? ORDER BY no_urut ASC", (tahun,))
-    sls_list = [dict(r) for r in cursor.fetchall()]
+    # Pre-build data for all available years so client-side switching works instantly with ZERO 404
+    data_semua_tahun = {}
+    for th in tahun_list:
+        cursor.execute("SELECT * FROM statistik_sls WHERE tahun = ? ORDER BY no_urut ASC", (th,))
+        th_sls_list = [dict(r) for r in cursor.fetchall()]
+        th_geojson = buat_geojson_sls_dengan_penduduk(th)
+        data_semua_tahun[th] = {
+            'sls_list': th_sls_list,
+            'geojson': th_geojson,
+            'total_jiwa': sum(r.get('total', 0) for r in th_sls_list),
+            'total_l': sum(r.get('laki_laki', 0) for r in th_sls_list),
+            'total_p': sum(r.get('perempuan', 0) for r in th_sls_list),
+            'total_kk': sum(r.get('keluarga', 0) for r in th_sls_list)
+        }
 
-    # Hitung total
-    total_jiwa = sum(r.get('total', 0) for r in sls_list)
-    total_l = sum(r.get('laki_laki', 0) for r in sls_list)
-    total_p = sum(r.get('perempuan', 0) for r in sls_list)
-    total_kk = sum(r.get('keluarga', 0) for r in sls_list)
+    sls_list = data_semua_tahun[tahun]['sls_list']
+    total_jiwa = data_semua_tahun[tahun]['total_jiwa']
+    total_l = data_semua_tahun[tahun]['total_l']
+    total_p = data_semua_tahun[tahun]['total_p']
+    total_kk = data_semua_tahun[tahun]['total_kk']
+    geojson_data = data_semua_tahun[tahun]['geojson']
 
     # Titik wisata / fasilitas (filter khusus koordinat wilayah Papayan)
     cursor.execute("""
@@ -837,8 +850,6 @@ def peta_desa():
 
     conn.close()
 
-    geojson_data = buat_geojson_sls_dengan_penduduk(tahun)
-
     return render_template(
         'peta.html',
         profil=profil,
@@ -850,7 +861,8 @@ def peta_desa():
         total_p=total_p,
         total_kk=total_kk,
         wisata_list=wisata_list,
-        geojson_data=geojson_data
+        geojson_data=geojson_data,
+        data_semua_tahun=data_semua_tahun
     )
 
 @app.route('/api/peta/sls-geojson')

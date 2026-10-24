@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>Mengarahkan...</title>
+  <script>
+    // GitHub Pages SPA / Fallback redirect script
+    var path = window.location.pathname;
+    var search = window.location.search || '';
+    var hash = window.location.hash || '';
+
+    // Deteksi halaman tujuan
+    var target = 'index.html';
+    if (path.indexOf('peta') !== -1) {
+      target = 'peta.html';
+    } else if (path.indexOf('publikasi') !== -1) {
+      target = 'publikasi.html';
+    } else if (path.indexOf('pembangunan') !== -1) {
+      target = 'pembangunan.html';
+    } else if (path.indexOf('berita') !== -1) {
+      target = 'berita.html';
+    } else if (path.indexOf('layanan') !== -1) {
+      target = 'layanan.html';
+    } else if (path.indexOf('kontak') !== -1) {
+      target = 'kontak.html';
+    }
+
+    // Arahkan kembali ke direktori /website_desa/ dengan aman
+    window.location.replace('/website_desa/' + target + search + hash);
+  </script>
+</head>
+<body style="font-family: sans-serif; text-align: center; padding: 50px;">
+  <p>Sedang mengalihkan ke halaman yang tepat...</p>
+</body>
+</html>
