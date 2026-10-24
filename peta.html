@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <!-- Theme Mode -->
   <script src="static/js/theme-mode.js"></script>
   <link rel="stylesheet" href="static/css/theme-mode.css" />
@@ -51,10 +51,23 @@
 
   <style>
     body { font-family: 'Outfit', sans-serif; }
-    #peta-canvas { height: calc(100vh - 72px); width: 100%; z-index: 1; }
-    .leaflet-popup-content-wrapper { border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); }
+    #peta-canvas { 
+      height: calc(100dvh - 56px); 
+      width: 100%; 
+      z-index: 1; 
+    }
+    @media (min-width: 640px) {
+      #peta-canvas { height: calc(100dvh - 64px); }
+    }
+    @media (min-width: 768px) {
+      #peta-canvas { height: calc(100dvh - 68px); }
+    }
+    .leaflet-popup-content-wrapper { 
+      border-radius: 1rem; 
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.25); 
+    }
     .rt-label {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-size: 10px;
@@ -63,6 +76,11 @@
       color: #0f172a;
       box-shadow: 0 2px 4px rgba(0,0,0,0.15);
       white-space: nowrap;
+    }
+    .dark .rt-label {
+      background: rgba(15, 23, 42, 0.92);
+      border-color: #334155;
+      color: #f8fafc;
     }
     .custom-tooltip {
       background: #0f172a;
@@ -75,6 +93,11 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
     .custom-tooltip::before { border-top-color: #0f172a; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
   </style>
 
 <script>
@@ -139,40 +162,40 @@
 </script>
 
 </head>
-<body class="bg-slate-900 text-slate-800 antialiased overflow-hidden">
+<body class="bg-slate-900 text-slate-800 antialiased overflow-hidden flex flex-col h-[100dvh]">
 
-  <!-- TOP NAVIGATION BAR -->
-  <header class="h-[72px] bg-slate-950/95 backdrop-blur-md border-b border-slate-800 text-white flex items-center justify-between px-4 sm:px-6 z-20 relative">
-    <div class="flex items-center gap-3">
-      <a href="index.html" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition border border-slate-700 shadow-sm" title="Kembali ke Beranda">
-        <i class="fa-solid fa-arrow-left text-sm"></i>
+  <!-- TOP NAVIGATION BAR (Responsif & Proporsional di Handphone maupun PC) -->
+  <header class="h-14 sm:h-16 md:h-[68px] bg-slate-950/95 backdrop-blur-md border-b border-slate-800 text-white flex items-center justify-between px-3 sm:px-5 z-30 shrink-0">
+    <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+      <a href="index.html" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition border border-slate-700 shadow-sm shrink-0" title="Kembali ke Beranda">
+        <i class="fa-solid fa-arrow-left text-xs sm:text-sm"></i>
       </a>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
         <img src="static/images/logo_tasikmalaya.png" 
-             class="w-9 h-9 object-contain" 
+             class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 object-contain shrink-0" 
              alt="Logo" 
              onerror="this.src='static/images/logo_tasikmalaya.png'" />
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-sm sm:text-base font-extrabold tracking-tight leading-tight text-white">
-              Peta Tematik Kependudukan SLS (RT/RW)
+        <div class="min-w-0 pr-1">
+          <div class="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
+            <h1 class="text-xs sm:text-sm md:text-base font-extrabold tracking-tight leading-tight text-white truncate">
+              Peta Tematik SLS (RT/RW)
             </h1>
-            <span class="bg-brand-500/20 text-brand-300 border border-brand-500/30 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
-              GIS Desa Papayan
+            <span class="hidden sm:inline-block bg-brand-500/20 text-brand-300 border border-brand-500/30 text-[9px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded-full uppercase shrink-0">
+              Desa Papayan
             </span>
           </div>
-          <p class="text-[11px] text-slate-400">Integrasi Poligon Google Maps dengan Data Penduduk & SLS Tingkat RT</p>
+          <p class="hidden lg:block text-[10px] sm:text-[11px] text-slate-400 truncate">Integrasi Poligon Peta dengan Data Kependudukan Tingkat RT</p>
         </div>
       </div>
     </div>
 
     <!-- Controls & Quick Filters -->
-    <div class="flex items-center gap-2 sm:gap-3">
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
       <!-- Tahun Filter -->
-      <div class="flex items-center gap-1.5 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-700 text-xs">
-        <i class="fa-solid fa-calendar text-brand-400 text-xs"></i>
-        <span class="font-bold text-slate-300">Tahun:</span>
-        <select id="pilihTahunPeta" onchange="gantiTahunPeta(this.value)" class="bg-transparent text-white font-black text-xs focus:outline-none cursor-pointer">
+      <div class="flex items-center gap-1 bg-slate-900 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-xl border border-slate-700 text-xs">
+        <i class="fa-solid fa-calendar text-brand-400 text-[10px] sm:text-xs"></i>
+        <span class="font-bold text-slate-300 hidden sm:inline text-[11px]">Thn:</span>
+        <select id="pilihTahunPeta" onchange="gantiTahunPeta(this.value)" class="bg-transparent text-white font-black text-[11px] sm:text-xs focus:outline-none cursor-pointer">
           
           <option value="2026" class="bg-slate-900 text-white" selected>2026</option>
           
@@ -181,8 +204,8 @@
         </select>
       </div>
 
-      <!-- Dusun Filter -->
-      <div class="hidden md:flex items-center gap-1.5 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-700 text-xs">
+      <!-- Dusun Filter (Visible on Tablet & Desktop) -->
+      <div class="hidden md:flex items-center gap-1.5 bg-slate-900 px-2.5 py-1.5 rounded-xl border border-slate-700 text-xs">
         <i class="fa-solid fa-layer-group text-amber-400 text-xs"></i>
         <select id="filterDusun" onchange="filterPetaPerDusun(this.value)" class="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer">
           <option value="SEMUA" class="bg-slate-900 text-white">Seluruh Dusun (26 RT)</option>
@@ -194,38 +217,48 @@
       </div>
 
       <!-- Batas Wilayah Modal Button -->
-      <button type="button" onclick="toggleModalBatasPeta()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-850 text-slate-300 hover:text-white border border-slate-700 text-xs font-bold transition shadow-sm">
-        <i class="fa-solid fa-compass text-amber-400"></i>
-        <span>Batas Wilayah</span>
+      <button type="button" onclick="toggleModalBatasPeta()" class="flex items-center gap-1 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-xl bg-slate-900 hover:bg-slate-850 text-slate-300 hover:text-white border border-slate-700 text-xs font-bold transition shadow-sm" title="Batas Wilayah Desa">
+        <i class="fa-solid fa-compass text-amber-400 text-xs"></i>
+        <span class="hidden sm:inline text-[11px]">Batas</span>
       </button>
 
       <!-- Toggle Panel List RT -->
-      <button type="button" onclick="toggleSidebarDaftar()" class="px-3.5 py-1.5 rounded-xl bg-brand-700 hover:bg-brand-600 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md">
-        <i class="fa-solid fa-list-ul"></i>
-        <span class="hidden sm:inline">Daftar SLS (26 RT)</span>
+      <button type="button" onclick="toggleSidebarDaftar()" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-brand-700 hover:bg-brand-600 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md" title="Buka Daftar 26 RT">
+        <i class="fa-solid fa-list-ul text-xs"></i>
+        <span class="hidden sm:inline text-[11px]">Daftar SLS</span>
       </button>
     </div>
   </header>
 
   <!-- MAIN MAP WRAPPER -->
-  <div class="relative w-full h-[calc(100vh-72px)] overflow-hidden">
+  <div class="relative w-full flex-1 overflow-hidden">
 
     <!-- Leaflet Canvas -->
     <div id="peta-canvas"></div>
 
-    <!-- FLOATING LAYER & BASEMAP CONTROLS (Top Right) -->
-    <div class="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
-      <!-- Basemap & Layer Buttons -->
-      <div class="bg-slate-900/90 backdrop-blur-md p-3 rounded-2xl border border-slate-700 text-white shadow-2xl text-xs space-y-2.5 min-w-[200px]">
+    <!-- FLOATING LAYER & BASEMAP CONTROLS (Top Right: Tombol Ringkas & Dropdown) -->
+    <div class="absolute top-2.5 sm:top-3.5 right-2.5 sm:right-3.5 z-20 flex flex-col items-end">
+      <!-- Toggle Button -->
+      <button type="button" onclick="togglePanelLapisan()" id="btnLapisanToggle" 
+              class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-950/90 hover:bg-slate-900 text-white border border-slate-700 shadow-xl backdrop-blur-md text-[11px] sm:text-xs font-bold transition cursor-pointer">
+        <i class="fa-solid fa-layer-group text-brand-400 text-xs"></i>
+        <span>Lapisan Peta</span>
+        <i id="iconChevronLapisan" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
+      </button>
+
+      <!-- Collapsible Layer Panel -->
+      <div id="panelLapisanContent" class="hidden mt-1.5 bg-slate-950/95 backdrop-blur-md p-3 rounded-2xl border border-slate-700 text-white shadow-2xl text-xs space-y-2.5 w-60 sm:w-64 max-w-[calc(100vw-24px)]">
         <div class="font-extrabold text-[11px] uppercase tracking-wider text-slate-400 pb-1.5 border-b border-slate-800 flex items-center justify-between">
-          <span>Lapisan Peta</span>
-          <i class="fa-solid fa-sliders text-brand-400"></i>
+          <span>Opsi Lapisan</span>
+          <button type="button" onclick="togglePanelLapisan()" class="text-slate-400 hover:text-white">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
 
         <!-- Basemap Selection -->
         <div class="space-y-1">
           <label class="text-[10px] text-slate-400 block font-bold">Pilihan Peta Dasar (Basemap):</label>
-          <select id="pilihBasemap" onchange="gantiBasemap(this.value)" class="w-full bg-slate-800 text-white rounded-lg px-2.5 py-1.5 text-xs font-semibold border border-slate-700 focus:outline-none">
+          <select id="pilihBasemap" onchange="gantiBasemap(this.value)" class="w-full bg-slate-900 text-white rounded-lg px-2.5 py-1.5 text-[11px] font-semibold border border-slate-700 focus:outline-none cursor-pointer">
             <option value="osm">OpenStreetMap (Standar)</option>
             <option value="satellite">Citra Satelit (Esri World)</option>
             <option value="positron">Peta Minimalis (CartoDB)</option>
@@ -248,763 +281,782 @@
           </label>
           <label class="flex items-center gap-2 cursor-pointer text-[11px] font-semibold text-slate-200">
             <input type="checkbox" id="layerFasilitas" checked onchange="toggleLayerFasilitas(this.checked)" class="rounded text-brand-500 focus:ring-brand-500 w-3.5 h-3.5" />
-            <span>Fasilitas & Titik Minat</span>
+            <span>Fasilitas &amp; Titik Minat</span>
           </label>
         </div>
       </div>
     </div>
 
-    <!-- FLOATING INFO CARD (Detail RT Terpilih di Kiri Atas) -->
-    <div id="cardDetailRT" class="absolute top-4 left-4 z-10 max-w-sm w-full bg-white/95 backdrop-blur-md rounded-3xl p-5 border border-slate-200 shadow-2xl transition-all duration-300">
-      <div class="flex items-start justify-between pb-3 border-b border-slate-100 gap-2">
-        <div>
-          <span id="detailBadgeDusun" class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-50 text-brand-800 border border-brand-200 block w-max">
+    <!-- FLOATING INFO CARD (Detail RT: Responsif & Proporsional di Handphone & Desktop) -->
+    <div id="cardDetailRT" class="fixed sm:absolute bottom-3 sm:bottom-auto sm:top-3.5 inset-x-3 sm:inset-x-auto sm:left-3.5 z-20 w-auto sm:w-80 md:w-84 max-w-full sm:max-w-sm bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xl transition-all duration-300">
+      
+      <!-- Card Header -->
+      <div class="flex items-start justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800 gap-2">
+        <div class="min-w-0">
+          <span id="detailBadgeDusun" class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-50 dark:bg-brand-950/60 text-brand-800 dark:text-brand-300 border border-brand-200 dark:border-brand-800/60 inline-block">
             Dusun Ranca Sari
           </span>
-          <h2 id="detailNamaSLS" class="font-extrabold text-base text-slate-900 mt-1 leading-tight">
+          <h2 id="detailNamaSLS" class="font-black text-xs sm:text-sm text-slate-900 dark:text-white mt-1 leading-tight truncate">
             RT 001 RW 003 DUSUN RANCA SARI
           </h2>
         </div>
-        <button type="button" onclick="tutupDetailCard()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <!-- Statistik Angka -->
-      <div class="grid grid-cols-2 gap-2.5 my-3">
-        <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200/60 text-center">
-          <span class="text-[10px] font-bold text-amber-800 uppercase block">Total Penduduk</span>
-          <span id="detailTotalJiwa" class="text-2xl font-black text-amber-950 block mt-0.5">282</span>
-          <span class="text-[9px] text-amber-700 font-bold">Jiwa</span>
-        </div>
-        <div class="bg-blue-50 p-3 rounded-2xl border border-blue-200/60 text-center">
-          <span class="text-[10px] font-bold text-blue-800 uppercase block">Kepala Keluarga</span>
-          <span id="detailTotalKK" class="text-2xl font-black text-blue-950 block mt-0.5">94</span>
-          <span class="text-[9px] text-blue-700 font-bold">KK</span>
+        
+        <div class="flex items-center gap-1 shrink-0">
+          <!-- Tombol Minimize / Collapse Detail Card -->
+          <button type="button" onclick="toggleCollapseDetailCard()" id="btnCollapseDetail" 
+                  class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 flex items-center justify-center text-[10px] transition" title="Kecilkan / Buka Card">
+            <i id="iconCollapseDetail" class="fa-solid fa-chevron-up"></i>
+          </button>
+          
+          <!-- Tombol Tutup -->
+          <button type="button" onclick="tutupDetailCard()" 
+                  class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 flex items-center justify-center text-[10px] transition" title="Tutup Card">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-200 mb-3 font-semibold text-slate-700">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-mars text-blue-600"></i>
-          <span>Laki-laki: <strong id="detailJiwaL" class="text-slate-900">147</strong></span>
+      <!-- Card Body (Bisa Dikecilkan/Collapsed Agar Peta Tetap Terlihat Lega) -->
+      <div id="detailCardBody" class="space-y-2.5 pt-2.5 transition-all duration-300">
+        <!-- Statistik Angka: Proporsional -->
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-amber-50 dark:bg-amber-950/30 p-2 sm:p-2.5 rounded-xl border border-amber-200/60 dark:border-amber-800/40 text-center">
+            <span class="text-[9px] font-bold text-amber-800 dark:text-amber-300 uppercase block">Total Penduduk</span>
+            <span id="detailTotalJiwa" class="text-xl sm:text-2xl font-black text-amber-950 dark:text-amber-100 block mt-0.5">282</span>
+            <span class="text-[9px] text-amber-700 dark:text-amber-400 font-bold">Jiwa</span>
+          </div>
+          <div class="bg-blue-50 dark:bg-blue-950/30 p-2 sm:p-2.5 rounded-xl border border-blue-200/60 dark:border-blue-800/40 text-center">
+            <span class="text-[9px] font-bold text-blue-800 dark:text-blue-300 uppercase block">Kepala Keluarga</span>
+            <span id="detailTotalKK" class="text-xl sm:text-2xl font-black text-blue-950 dark:text-blue-100 block mt-0.5">94</span>
+            <span class="text-[9px] text-blue-700 dark:text-blue-400 font-bold">KK</span>
+          </div>
         </div>
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-venus text-rose-500"></i>
-          <span>Perempuan: <strong id="detailJiwaP" class="text-slate-900">135</strong></span>
-        </div>
-      </div>
 
-      <!-- Koordinat -->
-      <div class="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
-        <span class="flex items-center gap-1">
-          <i class="fa-solid fa-location-dot text-brand-600"></i>
-          <span id="detailCoords">-7.4683202, 108.2062075</span>
-        </span>
-        <span class="text-[10px] font-bold text-slate-400">Tahun 2026</span>
+        <div class="grid grid-cols-2 gap-1.5 text-[11px] bg-slate-50 dark:bg-slate-800/60 p-2 rounded-xl border border-slate-200 dark:border-slate-700 font-semibold text-slate-700 dark:text-slate-300">
+          <div class="flex items-center gap-1.5 truncate">
+            <i class="fa-solid fa-mars text-blue-600"></i>
+            <span>Laki: <strong id="detailJiwaL" class="text-slate-900 dark:text-white">147</strong></span>
+          </div>
+          <div class="flex items-center gap-1.5 truncate">
+            <i class="fa-solid fa-venus text-rose-500"></i>
+            <span>Perem: <strong id="detailJiwaP" class="text-slate-900 dark:text-white">135</strong></span>
+          </div>
+        </div>
+
+        <!-- Koordinat & Tahun -->
+        <div class="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-1.5 border-t border-slate-100 dark:border-slate-800">
+          <span class="flex items-center gap-1 truncate pr-2">
+            <i class="fa-solid fa-location-dot text-brand-600 shrink-0"></i>
+            <span id="detailCoords" class="truncate">-7.468320, 108.206207</span>
+          </span>
+          <span class="text-[10px] font-bold text-slate-400 shrink-0">Thn 2026</span>
+        </div>
       </div>
     </div>
 
-    <!-- LEGEND CHOROPLETH (Bottom Left) -->
-    <div class="absolute bottom-6 left-4 z-10 bg-slate-950/90 backdrop-blur-md p-3.5 rounded-2xl border border-slate-800 text-white shadow-2xl text-xs max-w-xs">
-      <div class="font-extrabold text-[11px] uppercase tracking-wider text-slate-300 mb-2 flex items-center justify-between">
-        <span>Kepadatan Penduduk RT</span>
-        <i class="fa-solid fa-chart-simple text-amber-400"></i>
-      </div>
-      <div class="space-y-1 text-[11px]">
+    <!-- LEGEND CHOROPLETH (Bottom Left: Collapsible / Bisa Dibuka-Tutup) -->
+    <div class="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 z-20 max-w-[210px] sm:max-w-xs bg-slate-950/90 backdrop-blur-md rounded-2xl border border-slate-800 text-white shadow-2xl text-xs overflow-hidden transition-all duration-300">
+      <button type="button" onclick="toggleLegend()" class="w-full px-3 py-2 flex items-center justify-between gap-2 font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-300 hover:text-white transition cursor-pointer">
+        <span class="flex items-center gap-1.5">
+          <i class="fa-solid fa-chart-simple text-amber-400 text-xs"></i>
+          <span>Kepadatan RT</span>
+        </span>
+        <i id="iconChevronLegend" class="fa-solid fa-chevron-up text-[10px] text-slate-400 transition-transform duration-200"></i>
+      </button>
+      <div id="legendBody" class="px-3 pb-2.5 pt-0.5 space-y-1 text-[10px] sm:text-[11px]">
         <div class="flex items-center gap-2">
-          <span class="w-4 h-3 rounded bg-[#7c2d12] inline-block border border-white/20"></span>
-          <span class="text-slate-200">&ge; 250 Jiwa (Sangat Padat)</span>
+          <span class="w-3.5 h-2.5 rounded bg-[#7c2d12] inline-block border border-white/20 shrink-0"></span>
+          <span class="text-slate-200 leading-tight">&ge; 250 Jiwa (Sangat Padat)</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="w-4 h-3 rounded bg-[#c2410c] inline-block border border-white/20"></span>
-          <span class="text-slate-200">200 &ndash; 249 Jiwa (Padat)</span>
+          <span class="w-3.5 h-2.5 rounded bg-[#c2410c] inline-block border border-white/20 shrink-0"></span>
+          <span class="text-slate-200 leading-tight">200 &ndash; 249 Jiwa (Padat)</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="w-4 h-3 rounded bg-[#d97706] inline-block border border-white/20"></span>
-          <span class="text-slate-200">150 &ndash; 199 Jiwa (Sedang)</span>
+          <span class="w-3.5 h-2.5 rounded bg-[#d97706] inline-block border border-white/20 shrink-0"></span>
+          <span class="text-slate-200 leading-tight">150 &ndash; 199 Jiwa (Sedang)</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="w-4 h-3 rounded bg-[#059669] inline-block border border-white/20"></span>
-          <span class="text-slate-200">100 &ndash; 149 Jiwa (Rendah-Sedang)</span>
+          <span class="w-3.5 h-2.5 rounded bg-[#059669] inline-block border border-white/20 shrink-0"></span>
+          <span class="text-slate-200 leading-tight">100 &ndash; 149 Jiwa (Rendah-Sedang)</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="w-4 h-3 rounded bg-[#0284c7] inline-block border border-white/20"></span>
-          <span class="text-slate-200">&lt; 100 Jiwa (Rendah)</span>
+          <span class="w-3.5 h-2.5 rounded bg-[#0284c7] inline-block border border-white/20 shrink-0"></span>
+          <span class="text-slate-200 leading-tight">&lt; 100 Jiwa (Rendah)</span>
         </div>
       </div>
     </div>
 
     <!-- SLIDE-OVER SIDEBAR: DAFTAR 26 RT (Kanan) -->
-    <aside id="sidebarDaftarRT" class="absolute top-0 right-0 bottom-0 w-80 sm:w-96 bg-white shadow-2xl z-20 border-l border-slate-200 flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
-      <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-map-location-dot text-brand-400"></i>
-          <div>
-            <h3 class="font-extrabold text-sm leading-tight">Daftar Wilayah SLS (RT/RW)</h3>
-            <p class="text-[11px] text-slate-400">Total 26 RT di Desa Papayan</p>
+    <aside id="sidebarDaftarRT" class="absolute top-0 right-0 bottom-0 w-72 sm:w-84 md:w-96 max-w-[85vw] bg-white dark:bg-slate-900 shadow-2xl z-40 border-l border-slate-200 dark:border-slate-800 flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+      <div class="p-3.5 sm:p-4 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-2 min-w-0">
+          <i class="fa-solid fa-map-location-dot text-brand-400 shrink-0"></i>
+          <div class="min-w-0">
+            <h3 class="font-extrabold text-xs sm:text-sm leading-tight truncate">Daftar Wilayah SLS (RT/RW)</h3>
+            <p class="text-[10px] sm:text-[11px] text-slate-400">Total 26 RT di Desa Papayan</p>
           </div>
         </div>
-        <button type="button" onclick="toggleSidebarDaftar()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center">
-          <i class="fa-solid fa-xmark"></i>
+        <button type="button" onclick="toggleSidebarDaftar()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-xmark text-xs"></i>
         </button>
       </div>
 
       <!-- Quick Search inside Sidebar -->
-      <div class="p-3 bg-slate-50 border-b border-slate-200">
+      <div class="p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800">
         <div class="relative">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-400"></i>
-          <input type="text" id="cariRTSidebar" onkeyup="filterListRTSidebar()" placeholder="Cari RT / RW / Dusun..." class="w-full text-xs pl-8 pr-3 py-2 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          <input type="text" id="cariRTSidebar" onkeyup="filterListRTSidebar()" placeholder="Cari RT / RW / Dusun..." class="w-full text-xs pl-8 pr-3 py-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500" />
         </div>
       </div>
 
       <!-- List Container -->
-      <div class="flex-1 overflow-y-auto divide-y divide-slate-100 p-2" id="listRTContainer">
+      <div class="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/80 p-2" id="listRTContainer">
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 001 RW 001', -7.4627341, 108.2033712)"
              data-sls="rt 001 rw 001"
              data-lengkap="rt 001 rw 001 dusun demung landung"
              data-dusun="dusun demung landung">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN DEMUNG LANDUNG
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 001 RW 001 DUSUN DEMUNG LANDUNG
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               185 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 88 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 97 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 63 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 002 RW 001', -7.465413, 108.2005275)"
              data-sls="rt 002 rw 001"
              data-lengkap="rt 002 rw 001 dusun demung landung"
              data-dusun="dusun demung landung">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN DEMUNG LANDUNG
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 002 RW 001 DUSUN DEMUNG LANDUNG
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               237 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 121 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 116 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 81 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 003 RW 001', -7.467933, 108.2035854)"
              data-sls="rt 003 rw 001"
              data-lengkap="rt 003 rw 001 dusun demung landung"
              data-dusun="dusun demung landung">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN DEMUNG LANDUNG
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 003 RW 001 DUSUN DEMUNG LANDUNG
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               244 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 125 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 119 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 92 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 004 RW 001', -7.4618315, 108.2009951)"
              data-sls="rt 004 rw 001"
              data-lengkap="rt 004 rw 001 dusun demung landung"
              data-dusun="dusun demung landung">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN DEMUNG LANDUNG
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 004 RW 001 DUSUN DEMUNG LANDUNG
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               197 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 96 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 101 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 67 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 005 RW 001', -7.4657286, 108.2028884)"
              data-sls="rt 005 rw 001"
              data-lengkap="rt 005 rw 001 dusun demung landung"
              data-dusun="dusun demung landung">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN DEMUNG LANDUNG
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 005 RW 001 DUSUN DEMUNG LANDUNG
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               121 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 69 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 52 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 42 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 001 RW 002', -7.4659631, 108.2088363)"
              data-sls="rt 001 rw 002"
              data-lengkap="rt 001 rw 002 dusun ranca sari"
              data-dusun="dusun ranca sari">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN RANCA SARI
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 001 RW 002 DUSUN RANCA SARI
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               115 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 61 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 54 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 46 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 002 RW 002', -7.4669964, 108.2111364)"
              data-sls="rt 002 rw 002"
              data-lengkap="rt 002 rw 002 dusun ranca sari"
              data-dusun="dusun ranca sari">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN RANCA SARI
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 002 RW 002 DUSUN RANCA SARI
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               148 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 75 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 73 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 51 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 003 RW 002', -7.4664316, 108.2100832)"
              data-sls="rt 003 rw 002"
              data-lengkap="rt 003 rw 002 dusun ranca sari"
              data-dusun="dusun ranca sari">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN RANCA SARI
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 003 RW 002 DUSUN RANCA SARI
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               147 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 73 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 74 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 54 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 004 RW 002', -7.4699779, 108.2142913)"
              data-sls="rt 004 rw 002"
              data-lengkap="rt 004 rw 002 dusun ranca sari"
              data-dusun="dusun ranca sari">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN RANCA SARI
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 004 RW 002 DUSUN RANCA SARI
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               155 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 87 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 68 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 62 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 001 RW 003', -7.4683202, 108.2062075)"
              data-sls="rt 001 rw 003"
              data-lengkap="rt 001 rw 003 dusun ranca sari"
              data-dusun="dusun ranca sari">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN RANCA SARI
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 001 RW 003 DUSUN RANCA SARI
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               282 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 147 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 135 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 94 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 002 RW 003', -7.4700012, 108.2069189)"
              data-sls="rt 002 rw 003"
              data-lengkap="rt 002 rw 003 dusun ranca sari"
              data-dusun="dusun ranca sari">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN RANCA SARI
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 002 RW 003 DUSUN RANCA SARI
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               229 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 115 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 114 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 80 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 001 RW 004', -7.4793031, 108.2047908)"
              data-sls="rt 001 rw 004"
              data-lengkap="rt 001 rw 004 dusun margahayu"
              data-dusun="dusun margahayu">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN MARGAHAYU
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 001 RW 004 DUSUN MARGAHAYU
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               232 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 116 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 116 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 92 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 002 RW 004', -7.4812463, 108.2049746)"
              data-sls="rt 002 rw 004"
              data-lengkap="rt 002 rw 004 dusun margahayu"
              data-dusun="dusun margahayu">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN MARGAHAYU
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 002 RW 004 DUSUN MARGAHAYU
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               189 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 89 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 100 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 70 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 003 RW 004', -7.482778, 108.202643)"
              data-sls="rt 003 rw 004"
              data-lengkap="rt 003 rw 004 dusun margahayu"
              data-dusun="dusun margahayu">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN MARGAHAYU
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 003 RW 004 DUSUN MARGAHAYU
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               216 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 115 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 101 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 85 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 001 RW 005', -7.4905728, 108.2050619)"
              data-sls="rt 001 rw 005"
              data-lengkap="rt 001 rw 005 dusun cihaur"
              data-dusun="dusun cihaur">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN CIHAUR
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 001 RW 005 DUSUN CIHAUR
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               240 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 115 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 125 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 84 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 002 RW 005', -7.4935217, 108.202862)"
              data-sls="rt 002 rw 005"
              data-lengkap="rt 002 rw 005 dusun cihaur"
              data-dusun="dusun cihaur">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN CIHAUR
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 002 RW 005 DUSUN CIHAUR
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               184 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 101 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 83 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 69 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 003 RW 005', -7.493572, 108.2008101)"
              data-sls="rt 003 rw 005"
              data-lengkap="rt 003 rw 005 dusun cihaur"
              data-dusun="dusun cihaur">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN CIHAUR
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 003 RW 005 DUSUN CIHAUR
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               225 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 111 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 114 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 78 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 004 RW 005', -7.4975062, 108.2013711)"
              data-sls="rt 004 rw 005"
              data-lengkap="rt 004 rw 005 dusun cihaur"
              data-dusun="dusun cihaur">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN CIHAUR
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 004 RW 005 DUSUN CIHAUR
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               253 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 139 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 114 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 85 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 001 RW 006', -7.4934828, 108.1959009)"
              data-sls="rt 001 rw 006"
              data-lengkap="rt 001 rw 006 dusun cihaur"
              data-dusun="dusun cihaur">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN CIHAUR
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 001 RW 006 DUSUN CIHAUR
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               152 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 74 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 78 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 54 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 002 RW 006', -7.4867264, 108.1981448)"
              data-sls="rt 002 rw 006"
              data-lengkap="rt 002 rw 006 dusun cihaur"
              data-dusun="dusun cihaur">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN CIHAUR
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 002 RW 006 DUSUN CIHAUR
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               139 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 72 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 67 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 52 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 003 RW 006', -7.4893041, 108.1948713)"
              data-sls="rt 003 rw 006"
              data-lengkap="rt 003 rw 006 dusun cihaur"
              data-dusun="dusun cihaur">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN CIHAUR
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 003 RW 006 DUSUN CIHAUR
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               92 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 45 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 47 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 34 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 001 RW 007', -7.4631743, 108.208862)"
              data-sls="rt 001 rw 007"
              data-lengkap="rt 001 rw 007 dusun demung landung"
              data-dusun="dusun demung landung">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN DEMUNG LANDUNG
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 001 RW 007 DUSUN DEMUNG LANDUNG
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               198 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 96 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 102 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 67 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 002 RW 007', -7.4646261, 108.2065185)"
              data-sls="rt 002 rw 007"
              data-lengkap="rt 002 rw 007 dusun demung landung"
              data-dusun="dusun demung landung">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN DEMUNG LANDUNG
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 002 RW 007 DUSUN DEMUNG LANDUNG
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               191 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 97 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 94 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 69 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 001 RW 008', -7.4758422, 108.2063846)"
              data-sls="rt 001 rw 008"
              data-lengkap="rt 001 rw 008 dusun margahayu"
              data-dusun="dusun margahayu">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN MARGAHAYU
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 001 RW 008 DUSUN MARGAHAYU
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               177 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 96 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 81 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 59 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 002 RW 008', -7.4770852, 108.2093253)"
              data-sls="rt 002 rw 008"
              data-lengkap="rt 002 rw 008 dusun margahayu"
              data-dusun="dusun margahayu">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN MARGAHAYU
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 002 RW 008 DUSUN MARGAHAYU
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               171 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 86 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 85 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 57 KK</span>
           </div>
         </div>
         
-        <div class="p-3 hover:bg-brand-50/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
+        <div class="p-2.5 sm:p-3 hover:bg-brand-50/60 dark:hover:bg-slate-800/60 rounded-xl transition cursor-pointer item-rt-sidebar" 
              onclick="fokusKeRT('RT 003 RW 008', -7.4793564, 108.207879)"
              data-sls="rt 003 rw 008"
              data-lengkap="rt 003 rw 008 dusun margahayu"
              data-dusun="dusun margahayu">
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+            <div class="min-w-0">
+              <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block truncate">
                 DUSUN MARGAHAYU
               </span>
-              <h4 class="font-black text-xs text-slate-900 leading-snug">
+              <h4 class="font-black text-xs text-slate-900 dark:text-white leading-snug truncate">
                 RT 003 RW 008 DUSUN MARGAHAYU
               </h4>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 bg-brand-100 flex-shrink-0">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-brand-900 dark:text-brand-300 bg-brand-100 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/50 flex-shrink-0">
               179 Jiwa
             </span>
           </div>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-2 font-medium">
+          <div class="flex items-center gap-2.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
             <span><i class="fa-solid fa-mars text-blue-500"></i> 95 L</span>
             <span><i class="fa-solid fa-venus text-rose-500"></i> 84 P</span>
             <span><i class="fa-solid fa-people-roof text-amber-600"></i> 61 KK</span>
@@ -1044,7 +1096,7 @@
       }),
       satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         maxZoom: 19,
-        attribution: '&copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
+        attribution: '&copy; Esri'
       }),
       positron: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 19,
@@ -1074,15 +1126,35 @@
       // Render Fasilitas & Wisata
       renderFasilitas();
 
-      // Fit bounds to polygon features
+      // Responsive Fit bounds
+      const isMobile = window.innerWidth < 768;
+      const initialPadding = isMobile ? [20, 20] : [50, 50];
       if (slsGeoJsonLayer && slsGeoJsonLayer.getLayers().length > 0) {
-        map.fitBounds(slsGeoJsonLayer.getBounds(), { padding: [40, 40] });
+        map.fitBounds(slsGeoJsonLayer.getBounds(), { padding: initialPadding });
       }
 
       // Default select first RT
       if (GEOJSON_PAYLOAD.features && GEOJSON_PAYLOAD.features.length > 0) {
         tampilkanDetailCard(GEOJSON_PAYLOAD.features[0].properties);
       }
+
+      // Responsive default for mobile: collapse legend by default so map is clear
+      if (isMobile) {
+        const legendBody = document.getElementById('legendBody');
+        const icon = document.getElementById('iconChevronLegend');
+        if (legendBody && icon) {
+          legendBody.classList.add('hidden');
+          icon.classList.remove('fa-chevron-up');
+          icon.classList.add('fa-chevron-down');
+        }
+      }
+
+      // Listen for window resize
+      window.addEventListener('resize', () => {
+        if (map) {
+          map.invalidateSize();
+        }
+      });
     }
 
     function renderSLSPolygons(geojson) {
@@ -1114,7 +1186,7 @@
             sticky: true
           });
 
-          // Click handler
+          // Click handler with responsive padding
           layer.on({
             mouseover: function (e) {
               const l = e.target;
@@ -1132,7 +1204,9 @@
               slsGeoJsonLayer.resetStyle(e.target);
             },
             click: function (e) {
-              map.fitBounds(e.target.getBounds(), { maxZoom: 16, padding: [30, 30] });
+              const isMobile = window.innerWidth < 768;
+              const padding = isMobile ? [20, 20] : [40, 40];
+              map.fitBounds(e.target.getBounds(), { maxZoom: 16, padding: padding });
               tampilkanDetailCard(p);
             }
           });
@@ -1207,7 +1281,6 @@
           if (w.latitude && w.longitude) {
             const wLat = parseFloat(w.latitude);
             const wLng = parseFloat(w.longitude);
-            // Validasi ketat batas koordinat Desa Papayan (Jatiwaras, Tasikmalaya)
             if (isNaN(wLat) || isNaN(wLng) || wLat < -7.65 || wLat > -7.30 || wLng < 108.05 || wLng > 108.35) {
               return;
             }
@@ -1230,7 +1303,7 @@
       }
     }
 
-    // Controls
+    // Basemap & Layer Toggles
     function gantiBasemap(type) {
       if (baseTileLayer) map.removeLayer(baseTileLayer);
       baseTileLayer = basemaps[type] || basemaps.osm;
@@ -1254,6 +1327,7 @@
       else map.removeLayer(fasilitasLayerGroup);
     }
 
+    // Detail Card Controls
     function tampilkanDetailCard(p) {
       if (!p) return;
       document.getElementById('detailBadgeDusun').innerText = p.dusun || 'Desa Papayan';
@@ -1263,13 +1337,70 @@
       document.getElementById('detailJiwaL').innerText = p.laki_laki || 0;
       document.getElementById('detailJiwaP').innerText = p.perempuan || 0;
       document.getElementById('detailCoords').innerText = (p.lat && p.lng) ? `${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}` : '-';
-      document.getElementById('cardDetailRT').classList.remove('hidden');
+      
+      const card = document.getElementById('cardDetailRT');
+      const body = document.getElementById('detailCardBody');
+      const icon = document.getElementById('iconCollapseDetail');
+      
+      card.classList.remove('hidden');
+      if (body) body.classList.remove('hidden');
+      if (icon) {
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+      }
     }
 
     function tutupDetailCard() {
       document.getElementById('cardDetailRT').classList.add('hidden');
     }
 
+    function toggleCollapseDetailCard() {
+      const body = document.getElementById('detailCardBody');
+      const icon = document.getElementById('iconCollapseDetail');
+      if (body.classList.contains('hidden')) {
+        body.classList.remove('hidden');
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+      } else {
+        body.classList.add('hidden');
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+      }
+    }
+
+    // Layer Panel Toggle
+    function togglePanelLapisan() {
+      const panel = document.getElementById('panelLapisanContent');
+      const icon = document.getElementById('iconChevronLapisan');
+      if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        if (icon) icon.classList.add('rotate-180');
+      } else {
+        panel.classList.add('hidden');
+        if (icon) icon.classList.remove('rotate-180');
+      }
+    }
+
+    // Legend Panel Toggle
+    function toggleLegend() {
+      const body = document.getElementById('legendBody');
+      const icon = document.getElementById('iconChevronLegend');
+      if (body.classList.contains('hidden')) {
+        body.classList.remove('hidden');
+        if (icon) {
+          icon.classList.remove('fa-chevron-down');
+          icon.classList.add('fa-chevron-up');
+        }
+      } else {
+        body.classList.add('hidden');
+        if (icon) {
+          icon.classList.remove('fa-chevron-up');
+          icon.classList.add('fa-chevron-down');
+        }
+      }
+    }
+
+    // Sidebar RT
     function toggleSidebarDaftar() {
       const sb = document.getElementById('sidebarDaftarRT');
       sb.classList.toggle('translate-x-full');
@@ -1278,7 +1409,9 @@
     function fokusKeRT(slsCode, lat, lng) {
       if (polygonMapByCode[slsCode]) {
         const polyLayer = polygonMapByCode[slsCode];
-        map.fitBounds(polyLayer.getBounds(), { maxZoom: 16, padding: [30, 30] });
+        const isMobile = window.innerWidth < 768;
+        const padding = isMobile ? [20, 20] : [40, 40];
+        map.fitBounds(polyLayer.getBounds(), { maxZoom: 16, padding: padding });
         polyLayer.fire('click');
       } else if (lat && lng) {
         map.setView([lat, lng], 16);
@@ -1324,66 +1457,66 @@
 
   <!-- MODAL BATAS WILAYAH DESA -->
   <div id="modalBatasPeta" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-100 dark:border-slate-800 relative">
+      <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800 mb-4">
         <div class="flex items-center gap-2.5">
-          <span class="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-sm border border-amber-200">
+          <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 flex items-center justify-center text-xs sm:text-sm border border-amber-200 dark:border-amber-800/60">
             <i class="fa-solid fa-compass"></i>
           </span>
           <div>
-            <h3 class="font-extrabold text-base text-slate-900">Batas Wilayah Desa Papayan</h3>
-            <p class="text-[11px] text-slate-500">Kecamatan Jatiwaras, Kabupaten Tasikmalaya</p>
+            <h3 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">Batas Wilayah Desa Papayan</h3>
+            <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400">Kecamatan Jatiwaras, Kabupaten Tasikmalaya</p>
           </div>
         </div>
-        <button type="button" onclick="toggleModalBatasPeta()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs transition">
+        <button type="button" onclick="toggleModalBatasPeta()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center text-xs transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-        <div class="bg-blue-50/60 p-3.5 rounded-2xl border border-blue-100">
-          <div class="flex items-center gap-1.5 font-black text-blue-900 mb-1">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+        <div class="bg-blue-50/60 dark:bg-blue-950/30 p-3 sm:p-3.5 rounded-2xl border border-blue-100 dark:border-blue-900/40">
+          <div class="flex items-center gap-1.5 font-black text-blue-900 dark:text-blue-300 mb-1">
             <span class="w-5 h-5 rounded-md bg-blue-600 text-white flex items-center justify-center text-[10px]">
               <i class="fa-solid fa-arrow-up"></i>
             </span>
             <span>Sebelah Utara</span>
           </div>
-          <p class="text-slate-700 font-semibold leading-relaxed">Berbatasan dengan Desa Sukakerta / Desa Janggala</p>
+          <p class="text-slate-700 dark:text-slate-300 font-semibold leading-relaxed text-[11px] sm:text-xs">Berbatasan dengan Desa Sukakerta / Desa Janggala</p>
         </div>
 
-        <div class="bg-amber-50/60 p-3.5 rounded-2xl border border-amber-100">
-          <div class="flex items-center gap-1.5 font-black text-amber-900 mb-1">
+        <div class="bg-amber-50/60 dark:bg-amber-950/30 p-3 sm:p-3.5 rounded-2xl border border-amber-100 dark:border-amber-900/40">
+          <div class="flex items-center gap-1.5 font-black text-amber-900 dark:text-amber-300 mb-1">
             <span class="w-5 h-5 rounded-md bg-amber-600 text-white flex items-center justify-center text-[10px]">
               <i class="fa-solid fa-arrow-down"></i>
             </span>
             <span>Sebelah Selatan</span>
           </div>
-          <p class="text-slate-700 font-semibold leading-relaxed">Berbatasan dengan Desa Kertarahayu / Desa Jatiwaras</p>
+          <p class="text-slate-700 dark:text-slate-300 font-semibold leading-relaxed text-[11px] sm:text-xs">Berbatasan dengan Desa Kertarahayu / Desa Jatiwaras</p>
         </div>
 
-        <div class="bg-purple-50/60 p-3.5 rounded-2xl border border-purple-100">
-          <div class="flex items-center gap-1.5 font-black text-purple-900 mb-1">
+        <div class="bg-purple-50/60 dark:bg-purple-950/30 p-3 sm:p-3.5 rounded-2xl border border-purple-100 dark:border-purple-900/40">
+          <div class="flex items-center gap-1.5 font-black text-purple-900 dark:text-purple-300 mb-1">
             <span class="w-5 h-5 rounded-md bg-purple-600 text-white flex items-center justify-center text-[10px]">
               <i class="fa-solid fa-arrow-left"></i>
             </span>
             <span>Sebelah Barat</span>
           </div>
-          <p class="text-slate-700 font-semibold leading-relaxed">Berbatasan dengan Desa Sukaraja / Sungai Ciwulan</p>
+          <p class="text-slate-700 dark:text-slate-300 font-semibold leading-relaxed text-[11px] sm:text-xs">Berbatasan dengan Desa Sukaraja / Sungai Ciwulan</p>
         </div>
 
-        <div class="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100">
-          <div class="flex items-center gap-1.5 font-black text-emerald-900 mb-1">
+        <div class="bg-emerald-50/60 dark:bg-emerald-950/30 p-3 sm:p-3.5 rounded-2xl border border-emerald-100 dark:border-emerald-900/40">
+          <div class="flex items-center gap-1.5 font-black text-emerald-900 dark:text-emerald-300 mb-1">
             <span class="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center text-[10px]">
               <i class="fa-solid fa-arrow-right"></i>
             </span>
             <span>Sebelah Timur</span>
           </div>
-          <p class="text-slate-700 font-semibold leading-relaxed">Berbatasan dengan Desa Neglasari / Desa Setiawangi</p>
+          <p class="text-slate-700 dark:text-slate-300 font-semibold leading-relaxed text-[11px] sm:text-xs">Berbatasan dengan Desa Neglasari / Desa Setiawangi</p>
         </div>
       </div>
 
-      <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end">
-        <button type="button" onclick="toggleModalBatasPeta()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition">
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+        <button type="button" onclick="toggleModalBatasPeta()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs transition">
           Tutup
         </button>
       </div>
@@ -1393,7 +1526,7 @@
   <!-- Floating Theme Switcher Quick Control (Anti-Glare / Ramah Mata) -->
   <div class="floating-theme-toggle">
     <button type="button" onclick="toggleThemeMode()" 
-            class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-900/90 hover:bg-slate-900 dark:bg-white/95 dark:hover:bg-white text-white dark:text-slate-900 shadow-xl border border-white/20 dark:border-slate-300 text-xs font-extrabold backdrop-blur-md transition cursor-pointer"
+            class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 hover:bg-slate-900 dark:bg-white/95 dark:hover:bg-white text-white dark:text-slate-900 shadow-xl border border-white/20 dark:border-slate-300 text-xs font-extrabold backdrop-blur-md transition cursor-pointer"
             title="Atur Pencahayaan Layar (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
       <i id="theme-toggle-icon-float" class="fa-solid fa-moon text-amber-300 dark:text-amber-600"></i>
       <span id="theme-toggle-text-float" class="hidden md:inline font-bold">Mode Gelap</span>
