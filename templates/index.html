@@ -700,27 +700,27 @@
         <div class="mt-8 space-y-6">
           
           <!-- Visi Desa (Teks Besar & Berwibawa) -->
-          <div class="bg-gradient-to-br from-emerald-50 via-teal-50/60 to-white border-2 border-emerald-300/90 rounded-3xl p-6 sm:p-7 shadow-sm">
+          <div class="bg-gradient-to-br from-emerald-50 via-teal-50/60 to-white dark:from-emerald-950/60 dark:via-slate-900 dark:to-slate-900 border-2 border-emerald-300/90 dark:border-emerald-500/40 rounded-3xl p-6 sm:p-7 shadow-sm">
             <div class="flex items-center gap-2.5 mb-3">
               <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow-sm">
                 <i class="fa-solid fa-bullseye"></i>
               </span>
-              <h4 class="text-sm font-black uppercase tracking-wider text-emerald-950">
+              <h4 class="text-sm font-black uppercase tracking-wider text-emerald-950 dark:text-emerald-300">
                 Visi Pemerintah Desa {{ profil.nama_desa }}
               </h4>
             </div>
-            <p class="text-base sm:text-lg text-emerald-950 leading-relaxed font-bold pl-1">
+            <p class="text-base sm:text-lg text-emerald-950 dark:text-white leading-relaxed font-bold pl-1">
               "{{ profil.visi }}"
             </p>
           </div>
 
           <!-- Misi Pembangunan Desa (Teks Besar & Nyaman Dibaca) -->
-          <div class="bg-gradient-to-br from-white via-slate-50 to-blue-50/30 border border-slate-200/90 rounded-3xl p-6 sm:p-7 shadow-sm">
+          <div class="bg-gradient-to-br from-white via-slate-50 to-blue-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-blue-950/40 border border-slate-200/90 dark:border-blue-500/30 rounded-3xl p-6 sm:p-7 shadow-sm">
             <div class="flex items-center gap-2.5 mb-4">
               <span class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm shadow-sm">
                 <i class="fa-solid fa-list-check"></i>
               </span>
-              <h4 class="text-sm font-black uppercase tracking-wider text-slate-900">
+              <h4 class="text-sm font-black uppercase tracking-wider text-slate-900 dark:text-blue-300">
                 Misi Utama Pembangunan Desa {{ profil.nama_desa }}
               </h4>
             </div>
@@ -728,7 +728,7 @@
               {% if profil.misi %}
                 {% for m in profil.misi.split('\n') %}
                   {% if m.strip() %}
-                  <li class="flex items-start gap-3 text-xs sm:text-sm lg:text-[15px] text-slate-800 leading-relaxed font-medium">
+                  <li class="flex items-start gap-3 text-xs sm:text-sm lg:text-[15px] text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
                     <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 shadow-xs">✓</span>
                     <span>{{ m.strip() }}</span>
                   </li>
@@ -749,14 +749,14 @@
   <!-- SEJARAH & ASAL-USUL DESA                                 -->
   <!-- ======================================================== -->
   {% if sejarah_list %}
-  <section class="py-14 sm:py-20 bg-gradient-to-b from-amber-50/40 via-white to-slate-50 border-t border-slate-200/80">
+  <section class="py-14 sm:py-20 bg-gradient-to-b from-amber-50/40 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-t border-slate-200/80 dark:border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="text-center max-w-3xl mx-auto mb-12">
         <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-100 px-3.5 py-1 rounded-full border border-amber-300 shadow-xs">
           <i class="fa-solid fa-landmark-dome mr-1"></i> Rekam Historis &amp; Asal-Usul
         </span>
-        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-3">Sejarah Desa {{ profil.nama_desa }}</h2>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">Sejarah Desa {{ profil.nama_desa }}</h2>
         <p class="text-xs sm:text-sm text-slate-500 mt-2 max-w-2xl mx-auto leading-relaxed">
           Menelusuri jejak perjalanan luhur, kearifan lokal, dan tonggak perkembangan Desa {{ profil.nama_desa }} dari masa ke masa.
         </p>

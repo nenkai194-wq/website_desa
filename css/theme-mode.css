@@ -1,57 +1,110 @@
-/* ==========================================================
-   MODE PENCAHAYAAN (LIGHT & DARK THEME) - DESA PAPAYAN
-   Desain ramah mata (anti-glare & eye-friendly comfort)
-   ========================================================== */
+/* ==========================================================================
+   SISTEM PENCAHAYAAN PROFESIONAL (DARK & LIGHT MODE) - DESA PAPAYAN
+   Desain Ergonomis Anti-Silau (Eye-Friendly Obsidian & Deep Navy Palette)
+   ========================================================================== */
 
-/* Transisi halus saat beralih mode */
-html, body, div, section, header, nav, footer, button, input, select, textarea, .card {
+/* Transisi Halus (Smooth Transitions) */
+html, body, div, section, header, nav, footer, button, input, select, textarea, .card, article {
   transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, box-shadow 0.25s ease;
 }
 
-/* ==========================================================
+/* ==========================================================================
    DARK MODE RULES (Ketika class "dark" aktif pada <html>)
-   ========================================================== */
+   ========================================================================== */
 html.dark {
   color-scheme: dark;
 }
 
+/* 1. Latar Belakang Utama (Canvas Obsidian & Deep Navy) */
 html.dark body {
-  background-color: #0b1120 !important;
+  background-color: #070b14 !important;
   color: #e2e8f0 !important;
 }
 
-/* Background Containers */
+/* Seluruh Section Kontainer */
+html.dark section,
+html.dark .page-view-container,
+html.dark main {
+  background-color: transparent !important;
+}
+
+/* 2. Kartu dan Kontainer Elemen (Elevated Dark Slate Glass Cards) */
 html.dark .bg-white {
-  background-color: #1e293b !important;
-  border-color: #334155 !important;
+  background-color: #111a2e !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
 }
 
 html.dark .bg-slate-50,
-html.dark .bg-gray-50 {
-  background-color: #0f172a !important;
-  border-color: #334155 !important;
-}
-
+html.dark .bg-gray-50,
 html.dark .bg-slate-100,
 html.dark .bg-gray-100 {
-  background-color: #1e293b !important;
-  border-color: #334155 !important;
+  background-color: #0c1424 !important;
+  border-color: rgba(255, 255, 255, 0.07) !important;
 }
 
 html.dark .bg-slate-200,
 html.dark .bg-gray-200 {
-  background-color: #334155 !important;
+  background-color: #18233c !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Glassmorphism containers in dark mode */
-html.dark .backdrop-blur-md,
-html.dark .backdrop-blur-lg,
-html.dark .backdrop-blur-xl {
-  background-color: rgba(15, 23, 42, 0.88) !important;
-  border-color: rgba(51, 65, 85, 0.7) !important;
+html.dark .bg-slate-900 {
+  background-color: #090e1a !important;
 }
 
-/* Text Colors */
+/* 3. Menetralkan Gradient Terang & Menggantinya Secara Presisi */
+html.dark [class*="bg-gradient-to-"] {
+  background-color: #111a2e !important;
+}
+
+/* Background gradient Sejarah & Struktur Organisasi */
+html.dark section.bg-gradient-to-b {
+  background: linear-gradient(180deg, #090e1a 0%, #0d1527 100%) !important;
+}
+
+/* 4. Perbaikan Khusus Kartu Visi & Misi (Kontras Maksimal, Anti-Silau) */
+/* Visi Card */
+html.dark .bg-gradient-to-br.from-emerald-50,
+html.dark [class*="from-emerald-50"] {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.5) 0%, rgba(13, 26, 44, 0.95) 100%) !important;
+  border: 2px solid rgba(16, 185, 129, 0.45) !important;
+  box-shadow: 0 10px 30px -5px rgba(6, 78, 59, 0.35) !important;
+}
+
+html.dark .bg-gradient-to-br.from-emerald-50 h4,
+html.dark [class*="from-emerald-50"] h4 {
+  color: #6ee7b7 !important; /* Mint cerah */
+}
+
+html.dark .bg-gradient-to-br.from-emerald-50 p,
+html.dark [class*="from-emerald-50"] p {
+  color: #f8fafc !important; /* Putih bersih jelas */
+}
+
+/* Misi Card */
+html.dark .bg-gradient-to-br.from-white.via-slate-50,
+html.dark [class*="from-white"][class*="to-blue-50"] {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(13, 26, 44, 0.95) 100%) !important;
+  border: 2px solid rgba(59, 130, 246, 0.35) !important;
+  box-shadow: 0 10px 30px -5px rgba(30, 58, 138, 0.3) !important;
+}
+
+html.dark .bg-gradient-to-br.from-white.via-slate-50 h4,
+html.dark [class*="from-white"][class*="to-blue-50"] h4 {
+  color: #93c5fd !important; /* Biru muda cerah */
+}
+
+html.dark .bg-gradient-to-br.from-white.via-slate-50 li,
+html.dark [class*="from-white"][class*="to-blue-50"] li,
+html.dark .bg-gradient-to-br.from-white.via-slate-50 span,
+html.dark [class*="from-white"][class*="to-blue-50"] span {
+  color: #e2e8f0 !important; /* Silver nyaman di mata */
+}
+
+/* 5. Tipografi & Kontras Teks (High Readability Typography) */
+/* Judul & Headings */
+html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark h6,
 html.dark .text-slate-900,
 html.dark .text-slate-800,
 html.dark .text-gray-900,
@@ -59,6 +112,8 @@ html.dark .text-gray-800 {
   color: #f8fafc !important;
 }
 
+/* Teks Paragraf & Isi Konten */
+html.dark p,
 html.dark .text-slate-700,
 html.dark .text-slate-600,
 html.dark .text-gray-700,
@@ -66,73 +121,158 @@ html.dark .text-gray-600 {
   color: #cbd5e1 !important;
 }
 
+/* Teks Keterangan & Subtitle */
 html.dark .text-slate-500,
-html.dark .text-gray-500 {
-  color: #94a3b8 !important;
-}
-
 html.dark .text-slate-400,
+html.dark .text-gray-500,
 html.dark .text-gray-400 {
   color: #94a3b8 !important;
 }
 
-/* Borders */
+/* 6. Perbaikan Khusus Kelas Warna Gelap (Dark Green/Amber/Blue Text Inversion) */
+/* Emerald / Hijau */
+html.dark .text-emerald-950,
+html.dark .text-emerald-900,
+html.dark .text-emerald-800,
+html.dark .text-emerald-700,
+html.dark .text-brand-900,
+html.dark .text-brand-800,
+html.dark .text-brand-700 {
+  color: #34d399 !important; /* Hijau zamrud cerah & sejuk */
+}
+
+/* Amber / Oranye / Kuning */
+html.dark .text-amber-950,
+html.dark .text-amber-900,
+html.dark .text-amber-800,
+html.dark .text-amber-700 {
+  color: #fbbf24 !important; /* Kuning keemasan cerah */
+}
+
+/* Blue / Biru */
+html.dark .text-blue-950,
+html.dark .text-blue-900,
+html.dark .text-blue-800,
+html.dark .text-blue-700 {
+  color: #60a5fa !important; /* Biru langit cerah */
+}
+
+/* Indigo */
+html.dark .text-indigo-950,
+html.dark .text-indigo-900,
+html.dark .text-indigo-800,
+html.dark .text-indigo-700 {
+  color: #818cf8 !important;
+}
+
+/* Rose / Merah */
+html.dark .text-rose-950,
+html.dark .text-rose-900,
+html.dark .text-rose-800,
+html.dark .text-rose-700,
+html.dark .text-red-800,
+html.dark .text-red-900 {
+  color: #fb7185 !important;
+}
+
+/* 7. Perbaikan Khusus Latar Belakang Pastel (Soft Badges & Pills) */
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-100,
+html.dark [class*="bg-emerald-50/"],
+html.dark [class*="bg-emerald-100/"],
+html.dark .bg-brand-50,
+html.dark .bg-brand-100 {
+  background-color: rgba(16, 185, 129, 0.18) !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  color: #34d399 !important;
+}
+
+html.dark .bg-amber-50,
+html.dark .bg-amber-100,
+html.dark [class*="bg-amber-50/"],
+html.dark [class*="bg-amber-100/"] {
+  background-color: rgba(245, 158, 11, 0.18) !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+  color: #fbbf24 !important;
+}
+
+html.dark .bg-blue-50,
+html.dark .bg-blue-100,
+html.dark [class*="bg-blue-50/"],
+html.dark [class*="bg-blue-100/"] {
+  background-color: rgba(59, 130, 246, 0.18) !important;
+  border-color: rgba(59, 130, 246, 0.35) !important;
+  color: #60a5fa !important;
+}
+
+html.dark .bg-rose-50,
+html.dark .bg-rose-100 {
+  background-color: rgba(244, 63, 94, 0.18) !important;
+  border-color: rgba(244, 63, 94, 0.35) !important;
+  color: #fb7185 !important;
+}
+
+/* 8. Garis Batas & Border */
 html.dark .border-slate-100,
 html.dark .border-slate-200,
 html.dark .border-slate-300,
 html.dark .border-gray-100,
 html.dark .border-gray-200,
-html.dark .border-gray-300 {
-  border-color: #334155 !important;
+html.dark .border-gray-300,
+html.dark .border-emerald-100,
+html.dark .border-emerald-200,
+html.dark .border-amber-100,
+html.dark .border-amber-200,
+html.dark .border-blue-100,
+html.dark .border-blue-200 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Form Inputs, Selects, and Textareas */
+/* 9. Bagan Struktur Organisasi & Tab Switcher */
+html.dark #tab-btn-bagan-pemdes.bg-white {
+  background-color: #1e293b !important;
+  color: #34d399 !important;
+}
+
+html.dark #tab-btn-bagan-bpd.bg-white {
+  background-color: #1e293b !important;
+  color: #818cf8 !important;
+}
+
+/* 10. Formulir & Input */
 html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
 html.dark textarea,
 html.dark select {
-  background-color: #0f172a !important;
+  background-color: #0b1120 !important;
   color: #f8fafc !important;
-  border-color: #475569 !important;
+  border-color: #334155 !important;
 }
 
-html.dark input::placeholder,
-html.dark textarea::placeholder {
-  color: #64748b !important;
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
 }
 
-/* Modals & Dialogs */
-html.dark .modal-content,
+/* 11. Modals & Popups */
+html.dark .modal-container,
 html.dark [id^="modal"],
 html.dark [id^="lightbox"] {
   border-color: #334155 !important;
 }
 
-/* Tables */
-html.dark table thead th {
-  background-color: #0f172a !important;
-  color: #cbd5e1 !important;
-  border-color: #334155 !important;
-}
-
-html.dark table tbody tr {
-  border-color: #334155 !important;
-}
-
-html.dark table tbody tr:hover {
-  background-color: rgba(51, 65, 85, 0.4) !important;
-}
-
-/* Leaflet Map Controls & Popups */
+/* 12. Leaflet & Peta */
 html.dark .leaflet-container {
-  background: #0f172a !important;
+  background: #070b14 !important;
 }
 
 html.dark .leaflet-popup-content-wrapper,
 html.dark .leaflet-popup-tip {
-  background: #1e293b !important;
+  background: #111a2e !important;
   color: #f8fafc !important;
-  border: 1px solid #334155 !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7) !important;
 }
 
 html.dark .leaflet-popup-content h4,
@@ -142,17 +282,7 @@ html.dark .leaflet-popup-content span {
   color: #f8fafc !important;
 }
 
-html.dark .leaflet-popup-content strong {
-  color: #34d399 !important;
-}
-
-html.dark .sls-map-tooltip {
-  background: #0f172a !important;
-  color: #f8fafc !important;
-  border: 1px solid #334155 !important;
-}
-
-/* Floating Quick Toggle Pill */
+/* 13. Floating Quick Toggle Pill */
 .floating-theme-toggle {
   position: fixed;
   bottom: 84px;
