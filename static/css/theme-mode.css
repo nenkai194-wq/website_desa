@@ -15,7 +15,7 @@ html.dark {
   color-scheme: dark;
 }
 
-/* 1. Latar Belakang Utama (Canvas Obsidian & Deep Navy) */
+/* 1. Latar Belakang Utama (Canvas Obsidian) */
 html.dark body {
   background-color: #070b14 !important;
   color: #e2e8f0 !important;
@@ -28,81 +28,140 @@ html.dark main {
   background-color: transparent !important;
 }
 
-/* 2. Kartu dan Kontainer Elemen (Elevated Dark Slate Glass Cards) */
+/* ==========================================================================
+   2. PERLINDUNGAN MUTLAK OVERLAY FOTO & BANNER HERO (TIDAK BOLEH DITUTUP)
+   ========================================================================== */
+html.dark .carousel-slide > div,
+html.dark .carousel-slide [class*="bg-gradient-to-"],
+html.dark [class*="absolute"][class*="bg-gradient-to-"],
+html.dark [class*="inset-0"][class*="bg-gradient-to-"],
+html.dark [class*="inset-x-0"][class*="bg-gradient-to-"],
+html.dark [class*="bottom-0"][class*="bg-gradient-to-"],
+html.dark .group [class*="absolute"][class*="bg-gradient-to-"] {
+  background-color: transparent !important;
+}
+
+/* Pastikan foto profil dan gambar banner selalu tampil jernih */
+html.dark img {
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* ==========================================================================
+   3. KARTU & KONTAINER ELEMEN (Dark Slate Cards)
+   ========================================================================== */
 html.dark .bg-white {
-  background-color: #111a2e !important;
+  background-color: #0e172a !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45) !important;
 }
 
 html.dark .bg-slate-50,
 html.dark .bg-gray-50,
 html.dark .bg-slate-100,
 html.dark .bg-gray-100 {
-  background-color: #0c1424 !important;
+  background-color: #0a1120 !important;
   border-color: rgba(255, 255, 255, 0.07) !important;
 }
 
 html.dark .bg-slate-200,
 html.dark .bg-gray-200 {
-  background-color: #18233c !important;
+  background-color: #162035 !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 html.dark .bg-slate-900 {
-  background-color: #090e1a !important;
+  background-color: #070b14 !important;
 }
 
-/* 3. Menetralkan Gradient Terang & Menggantinya Secara Presisi */
-html.dark [class*="bg-gradient-to-"] {
-  background-color: #111a2e !important;
+/* ==========================================================================
+   4. PENYESUAIAN KARTU BERGRADASI TERANG (HANYA KARTU PUTIH/PASTEL)
+   ========================================================================== */
+html.dark [class*="bg-gradient-to-br"][class*="from-white"],
+html.dark [class*="bg-gradient-to-b"][class*="from-white"],
+html.dark [class*="bg-gradient-to-r"][class*="from-white"] {
+  background-image: none !important;
+  background-color: #0e172a !important;
 }
 
-/* Background gradient Sejarah & Struktur Organisasi */
-html.dark section.bg-gradient-to-b {
-  background: linear-gradient(180deg, #090e1a 0%, #0d1527 100%) !important;
+/* Background section Sejarah & Bagan Kelembagaan */
+html.dark section[class*="from-amber-50"],
+html.dark section[class*="from-slate-50"] {
+  background: #070b14 !important;
+  background-image: none !important;
 }
 
-/* 4. Perbaikan Khusus Kartu Visi & Misi (Kontras Maksimal, Anti-Silau) */
-/* Visi Card */
-html.dark .bg-gradient-to-br.from-emerald-50,
-html.dark [class*="from-emerald-50"] {
-  background: linear-gradient(135deg, rgba(6, 78, 59, 0.5) 0%, rgba(13, 26, 44, 0.95) 100%) !important;
-  border: 2px solid rgba(16, 185, 129, 0.45) !important;
-  box-shadow: 0 10px 30px -5px rgba(6, 78, 59, 0.35) !important;
+/* ==========================================================================
+   5. MENU BERANDA: SAMBUTAN KADES & 8 KARTU MENU UTAMA
+   ========================================================================== */
+/* Kartu Sambutan Kades di Beranda */
+html.dark [class*="from-white"][class*="to-emerald-50"] {
+  background-color: #0e172a !important;
+  background-image: none !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-html.dark .bg-gradient-to-br.from-emerald-50 h4,
-html.dark [class*="from-emerald-50"] h4 {
-  color: #6ee7b7 !important; /* Mint cerah */
+/* 8 Kartu Menu Navigasi Utama */
+html.dark .grid > [onclick*="navigateToView"] {
+  background-color: #0e172a !important;
+  background-image: none !important;
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.45) !important;
 }
 
-html.dark .bg-gradient-to-br.from-emerald-50 p,
-html.dark [class*="from-emerald-50"] p {
-  color: #f8fafc !important; /* Putih bersih jelas */
+html.dark .grid > [onclick*="navigateToView"] h3 {
+  color: #f8fafc !important;
 }
 
-/* Misi Card */
-html.dark .bg-gradient-to-br.from-white.via-slate-50,
+html.dark .grid > [onclick*="navigateToView"] p {
+  color: #94a3b8 !important;
+}
+
+html.dark .grid > [onclick*="navigateToView"] ul,
+html.dark .grid > [onclick*="navigateToView"] li {
+  color: #cbd5e1 !important;
+}
+
+html.dark .grid > [onclick*="navigateToView"] .border-t {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ==========================================================================
+   6. MENU PROFIL: KARTU VISI & MISI KEPALA DESA
+   ========================================================================== */
+/* Kartu Visi */
+html.dark [class*="from-emerald-50"][class*="via-teal-50"] {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.45) 0%, #0d1527 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  box-shadow: 0 10px 25px -5px rgba(6, 78, 59, 0.25) !important;
+}
+
+html.dark [class*="from-emerald-50"][class*="via-teal-50"] h4 {
+  color: #34d399 !important;
+}
+
+html.dark [class*="from-emerald-50"][class*="via-teal-50"] p {
+  color: #f8fafc !important;
+}
+
+/* Kartu Misi */
 html.dark [class*="from-white"][class*="to-blue-50"] {
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(13, 26, 44, 0.95) 100%) !important;
-  border: 2px solid rgba(59, 130, 246, 0.35) !important;
-  box-shadow: 0 10px 30px -5px rgba(30, 58, 138, 0.3) !important;
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.35) 0%, #0d1527 100%) !important;
+  border: 1px solid rgba(59, 130, 246, 0.35) !important;
+  box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.2) !important;
 }
 
-html.dark .bg-gradient-to-br.from-white.via-slate-50 h4,
 html.dark [class*="from-white"][class*="to-blue-50"] h4 {
-  color: #93c5fd !important; /* Biru muda cerah */
+  color: #60a5fa !important;
 }
 
-html.dark .bg-gradient-to-br.from-white.via-slate-50 li,
 html.dark [class*="from-white"][class*="to-blue-50"] li,
-html.dark .bg-gradient-to-br.from-white.via-slate-50 span,
 html.dark [class*="from-white"][class*="to-blue-50"] span {
-  color: #e2e8f0 !important; /* Silver nyaman di mata */
+  color: #e2e8f0 !important;
 }
 
-/* 5. Tipografi & Kontras Teks (High Readability Typography) */
+/* ==========================================================================
+   7. TIPOGRAFI & KONTRAS TEKS
+   ========================================================================== */
 /* Judul & Headings */
 html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark h6,
 html.dark .text-slate-900,
@@ -129,8 +188,7 @@ html.dark .text-gray-400 {
   color: #94a3b8 !important;
 }
 
-/* 6. Perbaikan Khusus Kelas Warna Gelap (Dark Green/Amber/Blue Text Inversion) */
-/* Emerald / Hijau */
+/* Inversi Warna Teks Gelap ke Warna Terang Sejuk */
 html.dark .text-emerald-950,
 html.dark .text-emerald-900,
 html.dark .text-emerald-800,
@@ -138,26 +196,37 @@ html.dark .text-emerald-700,
 html.dark .text-brand-900,
 html.dark .text-brand-800,
 html.dark .text-brand-700 {
-  color: #34d399 !important; /* Hijau zamrud cerah & sejuk */
+  color: #34d399 !important;
 }
 
-/* Amber / Oranye / Kuning */
 html.dark .text-amber-950,
 html.dark .text-amber-900,
 html.dark .text-amber-800,
 html.dark .text-amber-700 {
-  color: #fbbf24 !important; /* Kuning keemasan cerah */
+  color: #fbbf24 !important;
 }
 
-/* Blue / Biru */
 html.dark .text-blue-950,
 html.dark .text-blue-900,
 html.dark .text-blue-800,
 html.dark .text-blue-700 {
-  color: #60a5fa !important; /* Biru langit cerah */
+  color: #60a5fa !important;
 }
 
-/* Indigo */
+html.dark .text-teal-950,
+html.dark .text-teal-900,
+html.dark .text-teal-800,
+html.dark .text-teal-700 {
+  color: #2dd4bf !important;
+}
+
+html.dark .text-purple-950,
+html.dark .text-purple-900,
+html.dark .text-purple-800,
+html.dark .text-purple-700 {
+  color: #c084fc !important;
+}
+
 html.dark .text-indigo-950,
 html.dark .text-indigo-900,
 html.dark .text-indigo-800,
@@ -165,7 +234,6 @@ html.dark .text-indigo-700 {
   color: #818cf8 !important;
 }
 
-/* Rose / Merah */
 html.dark .text-rose-950,
 html.dark .text-rose-900,
 html.dark .text-rose-800,
@@ -175,15 +243,17 @@ html.dark .text-red-900 {
   color: #fb7185 !important;
 }
 
-/* 7. Perbaikan Khusus Latar Belakang Pastel (Soft Badges & Pills) */
+/* ==========================================================================
+   8. LENCANA & BADGE SOFT ACCENT
+   ========================================================================== */
 html.dark .bg-emerald-50,
 html.dark .bg-emerald-100,
 html.dark [class*="bg-emerald-50/"],
 html.dark [class*="bg-emerald-100/"],
 html.dark .bg-brand-50,
 html.dark .bg-brand-100 {
-  background-color: rgba(16, 185, 129, 0.18) !important;
-  border-color: rgba(16, 185, 129, 0.35) !important;
+  background-color: rgba(16, 185, 129, 0.16) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
   color: #34d399 !important;
 }
 
@@ -191,8 +261,8 @@ html.dark .bg-amber-50,
 html.dark .bg-amber-100,
 html.dark [class*="bg-amber-50/"],
 html.dark [class*="bg-amber-100/"] {
-  background-color: rgba(245, 158, 11, 0.18) !important;
-  border-color: rgba(245, 158, 11, 0.35) !important;
+  background-color: rgba(245, 158, 11, 0.16) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
   color: #fbbf24 !important;
 }
 
@@ -200,19 +270,39 @@ html.dark .bg-blue-50,
 html.dark .bg-blue-100,
 html.dark [class*="bg-blue-50/"],
 html.dark [class*="bg-blue-100/"] {
-  background-color: rgba(59, 130, 246, 0.18) !important;
-  border-color: rgba(59, 130, 246, 0.35) !important;
+  background-color: rgba(59, 130, 246, 0.16) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
   color: #60a5fa !important;
+}
+
+html.dark .bg-teal-50,
+html.dark .bg-teal-100,
+html.dark [class*="bg-teal-50/"],
+html.dark [class*="bg-teal-100/"] {
+  background-color: rgba(20, 184, 166, 0.16) !important;
+  border-color: rgba(20, 184, 166, 0.3) !important;
+  color: #2dd4bf !important;
+}
+
+html.dark .bg-purple-50,
+html.dark .bg-purple-100,
+html.dark [class*="bg-purple-50/"],
+html.dark [class*="bg-purple-100/"] {
+  background-color: rgba(168, 85, 247, 0.16) !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+  color: #c084fc !important;
 }
 
 html.dark .bg-rose-50,
 html.dark .bg-rose-100 {
-  background-color: rgba(244, 63, 94, 0.18) !important;
-  border-color: rgba(244, 63, 94, 0.35) !important;
+  background-color: rgba(244, 63, 94, 0.16) !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
   color: #fb7185 !important;
 }
 
-/* 8. Garis Batas & Border */
+/* ==========================================================================
+   9. BORDER & GARIS PEMBATAS
+   ========================================================================== */
 html.dark .border-slate-100,
 html.dark .border-slate-200,
 html.dark .border-slate-300,
@@ -228,7 +318,9 @@ html.dark .border-blue-200 {
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-/* 9. Bagan Struktur Organisasi & Tab Switcher */
+/* ==========================================================================
+   10. BAGAN STRUKTUR ORGANISASI & TAB SWITCHER
+   ========================================================================== */
 html.dark #tab-btn-bagan-pemdes.bg-white {
   background-color: #1e293b !important;
   color: #34d399 !important;
@@ -239,7 +331,9 @@ html.dark #tab-btn-bagan-bpd.bg-white {
   color: #818cf8 !important;
 }
 
-/* 10. Formulir & Input */
+/* ==========================================================================
+   11. FORMULIR & INPUT
+   ========================================================================== */
 html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
 html.dark textarea,
 html.dark select {
@@ -255,21 +349,25 @@ html.dark select:focus {
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
 }
 
-/* 11. Modals & Popups */
+/* ==========================================================================
+   12. MODALS & POPUPS
+   ========================================================================== */
 html.dark .modal-container,
 html.dark [id^="modal"],
 html.dark [id^="lightbox"] {
   border-color: #334155 !important;
 }
 
-/* 12. Leaflet & Peta */
+/* ==========================================================================
+   13. LEAFLET & PETA
+   ========================================================================== */
 html.dark .leaflet-container {
   background: #070b14 !important;
 }
 
 html.dark .leaflet-popup-content-wrapper,
 html.dark .leaflet-popup-tip {
-  background: #111a2e !important;
+  background: #0e172a !important;
   color: #f8fafc !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7) !important;
@@ -282,7 +380,9 @@ html.dark .leaflet-popup-content span {
   color: #f8fafc !important;
 }
 
-/* 13. Floating Quick Toggle Pill */
+/* ==========================================================================
+   14. FLOATING QUICK TOGGLE PILL
+   ========================================================================== */
 .floating-theme-toggle {
   position: fixed;
   bottom: 84px;
