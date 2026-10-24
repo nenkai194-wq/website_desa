@@ -167,48 +167,90 @@
           </div>
         </a>
 
-        <!-- Desktop Navigation Links -->
-        <nav class="hidden lg:flex items-center gap-1 text-xs font-bold text-white/90">
-          <a href="index.html" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-house text-[11px]"></i> Beranda
+                <!-- Desktop Navigation: Menu Sejajar Sesuai Screenshot Halaman Utama (9 Menu Utama) -->
+        <nav class="hidden xl:flex items-center gap-0.5 xl:gap-1 2xl:gap-1.5 font-bold text-white/95 shrink-0">
+          
+          <!-- 1. Beranda -->
+          <a href="index.html" 
+             class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/10 active:scale-95 flex items-center gap-1.5 shrink-0 text-xs sm:text-[13px]">
+            <i class="fa-solid fa-house text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Beranda</span>
           </a>
-          <a href="index.html#profil" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-landmark text-[11px]"></i> Profil
+
+          <!-- 2. Profil -->
+          <a href="index.html#profil" 
+             class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/10 active:scale-95 flex items-center gap-1.5 shrink-0 text-xs sm:text-[13px]">
+            <i class="fa-solid fa-landmark text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Profil</span>
           </a>
-          <a href="index.html#infografis" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-chart-pie text-[11px]"></i> Infografis
+
+          <!-- 3. Statistik Desa -->
+          <a href="index.html#infografis" 
+             class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/10 active:scale-95 flex items-center gap-1.5 shrink-0 text-xs sm:text-[13px]">
+            <i class="fa-solid fa-chart-pie text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Statistik</span>
           </a>
-          <a href="index.html#peta" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-emerald-200 hover:text-white">
-            <i class="fa-solid fa-map-location-dot text-[11px]"></i> Peta Desa
+
+          <!-- 4. Peta Desa -->
+          <a href="index.html#peta" 
+             class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/10 active:scale-95 flex items-center gap-1.5 shrink-0 text-xs sm:text-[13px]">
+            <i class="fa-solid fa-map-location-dot text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Peta</span>
           </a>
-          <a href="index.html#wisata" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-umbrella-beach text-[11px]"></i> Wisata
+
+          <!-- 5. Wisata -->
+          <a href="index.html#wisata" 
+             class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/10 active:scale-95 flex items-center gap-1.5 shrink-0 text-xs sm:text-[13px]">
+            <i class="fa-solid fa-umbrella-beach text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Wisata</span>
           </a>
-          <a href="index.html#umkm" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-basket-shopping text-[11px]"></i> UMKM
+
+          <!-- 6. UMKM -->
+          <a href="index.html#umkm" 
+             class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/10 active:scale-95 flex items-center gap-1.5 shrink-0 text-xs sm:text-[13px]">
+            <i class="fa-solid fa-basket-shopping text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>UMKM</span>
           </a>
-          <a href="index.html#berita" class="px-2.5 py-1.5 rounded-xl transition hover:bg-white/15 flex items-center gap-1.5 text-white/85">
-            <i class="fa-solid fa-newspaper text-[11px]"></i> Berita
+
+          <!-- 7. Berita & Galeri -->
+          <a href="index.html#berita" 
+             class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/10 active:scale-95 flex items-center gap-1.5 shrink-0 text-xs sm:text-[13px]">
+            <i class="fa-solid fa-newspaper text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Berita</span>
           </a>
-          <a href="publikasi.html" class="px-2.5 py-1.5 rounded-xl transition bg-white/20 text-white font-bold flex items-center gap-1.5">
-            <i class="fa-solid fa-book-bookmark text-[11px]"></i> Publikasi
+
+          <!-- 8. Publikasi (Aktif di Halaman Ini) -->
+          <a href="publikasi.html" 
+             class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 bg-white/20 text-white border border-white/30 shadow-xs flex items-center gap-1.5 shrink-0 text-xs sm:text-[13px]">
+            <i class="fa-solid fa-book-bookmark text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Publikasi</span>
+          </a>
+
+          <!-- 9. Pembangunan (Ditampilkan Sesuai Permintaan) -->
+          <a href="index.html#pembangunan" 
+             class="nav-desktop-btn px-2 xl:px-2.5 py-1.5 rounded-full transition-all duration-200 hover:bg-white/10 active:scale-95 flex items-center gap-1.5 shrink-0 text-xs sm:text-[13px]">
+            <i class="fa-solid fa-person-digging text-[#34d399] text-[11px] xl:text-xs"></i>
+            <span>Pembangunan</span>
           </a>
         </nav>
 
-        <!-- CTA & Mobile Burger -->
-        <div class="flex items-center gap-3">
-          <button type="button" onclick="handleKlikLayananSurat()" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-300 via-amber-200 to-yellow-300 text-black font-black px-4 py-2 rounded-xl text-xs hover:brightness-105 transition shadow-md shadow-amber-400/20 border border-amber-300 hover:scale-105" style="color: #000000 !important;">
-            <i class="fa-solid fa-file-pen text-black" style="color: #000000 !important;"></i>
-            <span class="text-black font-black" style="color: #000000 !important;">Layanan Surat</span>
-          </button>
-
-          <!-- Mobile Toggle Button -->
-          <button id="mobile-menu-toggle" onclick="document.getElementById('mobile-menu-dropdown').classList.toggle('hidden')" type="button" class="lg:hidden p-2.5 rounded-xl text-white hover:bg-white/10 transition" aria-label="Menu Navigasi">
+                <!-- Bagian Kanan: Toggle Mobile & Tombol Kuning Layanan Surat -->
+        <div class="flex items-center shrink-0">
+          <!-- Mobile Toggle Button (hidden di layar desktop xl+) -->
+          <button id="mobile-menu-toggle" onclick="document.getElementById('mobile-menu-dropdown').classList.toggle('hidden')" type="button" 
+                  class="xl:hidden p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15 mr-1" aria-label="Buka Menu Navigasi">
             <i class="fa-solid fa-bars text-xl"></i>
           </button>
-        </div>
 
-      </div>
+          <!-- Tombol Kuning Layanan Surat: Lebar w-[136px] agar tepat rata atas-bawah dengan nomor kontak di baris bawah -->
+          <div class="flex items-center justify-end shrink-0 w-[136px]">
+            <a href="index.html#layanan-surat" 
+               class="w-full hidden sm:inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#ffe066] via-[#ffd43b] to-[#fcc419] hover:from-[#ffd43b] hover:to-[#fab005] text-slate-950 font-black px-3 py-2 rounded-2xl text-xs sm:text-sm shadow-lg shadow-black/20 border border-amber-200/90 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
+              <i class="fa-solid fa-file-signature text-sm sm:text-base text-slate-950"></i>
+              <span class="leading-tight text-center">Layanan<br class="hidden sm:inline">Surat</span>
+            </a>
+          </div>
+        </div></div>
     </div>
 
     <!-- RUNNING TEXT TICKER (Di Bawah Menu Utama - Sejajar Logo) -->
@@ -249,38 +291,42 @@
       </div>
     </div>
 
-    <!-- Mobile Dropdown Navigation -->
-    <div id="mobile-menu-dropdown" class="hidden lg:hidden bg-brand-900/98 backdrop-blur-lg border-t border-brand-800 px-4 pt-3 pb-6 text-white text-xs font-semibold space-y-1 shadow-2xl">
-      <a href="index.html" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
+        <!-- Mobile Dropdown Navigation -->
+    <div id="mobile-menu-dropdown" class="hidden xl:hidden bg-[#0c2a0d]/98 backdrop-blur-lg border-t border-emerald-800/60 px-4 pt-3 pb-6 text-white text-xs font-semibold space-y-1 shadow-2xl">
+      <a href="index.html" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-white/10 flex items-center gap-3">
         <i class="fa-solid fa-house w-4 text-emerald-300"></i> Beranda
       </a>
-      <a href="index.html#profil" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
-        <i class="fa-solid fa-landmark w-4 text-emerald-300"></i> Profil Desa & SOTK
+      <a href="index.html#profil" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-white/10 flex items-center gap-3">
+        <i class="fa-solid fa-landmark w-4 text-emerald-300"></i> Profil
       </a>
-      <a href="index.html#infografis" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
-        <i class="fa-solid fa-chart-pie w-4 text-emerald-300"></i> Infografis & APBDes
+      <a href="index.html#infografis" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-white/10 flex items-center gap-3">
+        <i class="fa-solid fa-chart-pie w-4 text-emerald-300"></i> Statistik
       </a>
-      <a href="index.html#peta" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
-        <i class="fa-solid fa-map-location-dot w-4 text-emerald-300"></i> Peta Wilayah SLS (26 RT)
+      <a href="index.html#peta" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-white/10 flex items-center gap-3">
+        <i class="fa-solid fa-map-location-dot w-4 text-emerald-300"></i> Peta
       </a>
-      <a href="index.html#wisata" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
-        <i class="fa-solid fa-umbrella-beach w-4 text-emerald-300"></i> Wisata & Potensi Desa
+      <a href="index.html#wisata" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-white/10 flex items-center gap-3">
+        <i class="fa-solid fa-umbrella-beach w-4 text-emerald-300"></i> Wisata
       </a>
-      <a href="index.html#umkm" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
-        <i class="fa-solid fa-basket-shopping w-4 text-emerald-300"></i> Belanja Produk UMKM
+      <a href="index.html#umkm" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-white/10 flex items-center gap-3">
+        <i class="fa-solid fa-basket-shopping w-4 text-emerald-300"></i> UMKM
       </a>
-      <a href="index.html#berita" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-brand-800 flex items-center gap-2.5">
-        <i class="fa-solid fa-newspaper w-4 text-emerald-300"></i> Berita & Kabar Desa
+      <a href="index.html#berita" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-white/10 flex items-center gap-3">
+        <i class="fa-solid fa-newspaper w-4 text-emerald-300"></i> Berita
       </a>
-      <a href="publikasi.html" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white/20 text-white font-bold hover:bg-brand-800 flex items-center gap-2.5">
-        <i class="fa-solid fa-book-bookmark w-4 text-emerald-300"></i> Buku Publikasi Desa (PDF)
+      <a href="publikasi.html" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white/20 text-white font-bold flex items-center gap-3 border border-white/20">
+        <i class="fa-solid fa-book-bookmark w-4 text-emerald-300"></i> Publikasi
       </a>
-      <button type="button" onclick="handleKlikLayananSurat()" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white text-black font-black hover:bg-emerald-100 flex items-center gap-2.5 shadow-sm" style="color: #000000 !important;">
-        <i class="fa-solid fa-file-pen w-4 text-black" style="color: #000000 !important;"></i>
-        <span class="text-black font-black" style="color: #000000 !important;">Layanan Surat Mandiri</span>
-      </button>
-    </div>
-  </header>
+      <a href="index.html#pembangunan" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-white/10 flex items-center gap-3">
+        <i class="fa-solid fa-person-digging w-4 text-emerald-300"></i> Pembangunan
+      </a>
+      <div class="pt-2">
+        <a href="index.html#layanan-surat" class="w-full text-center px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-amber-300 to-amber-400 text-slate-950 font-black flex items-center justify-center gap-2 shadow-md">
+          <i class="fa-solid fa-file-signature text-slate-950"></i>
+          <span>Layanan Surat Mandiri</span>
+        </a>
+      </div>
+    </div></header>
 
   <!-- HERO SECTION: PERPUSTAKAAN DIGITAL -->
   <section class="relative bg-gradient-to-b from-[#1b4e05] via-[#245e07] to-[#2b6d08] text-white py-16 sm:py-20 overflow-hidden">
@@ -1358,7 +1404,7 @@
         <i class="fa-solid fa-user-check text-xs"></i>
       </div>
       <div class="text-xl font-black text-blue-300" id="stat-val-today">
-        207
+        212
       </div>
       <span class="text-[9px] text-slate-400">Pengunjung</span>
     </div>
@@ -1370,7 +1416,7 @@
         <i class="fa-solid fa-calendar-week text-xs"></i>
       </div>
       <div class="text-xl font-black text-amber-300" id="stat-val-week">
-        1.299
+        1.304
       </div>
       <span class="text-[9px] text-slate-400">7 hari terakhir</span>
     </div>
@@ -1382,7 +1428,7 @@
         <i class="fa-solid fa-calendar-days text-xs"></i>
       </div>
       <div class="text-xl font-black text-emerald-300" id="stat-val-month">
-        4.201
+        4.206
       </div>
       <span class="text-[9px] text-slate-400">Bulan berjalan</span>
     </div>
@@ -1394,7 +1440,7 @@
         <i class="fa-solid fa-globe text-xs"></i>
       </div>
       <div class="text-xl font-black text-purple-300" id="stat-val-total">
-        28.880
+        28.885
       </div>
       <span class="text-[9px] text-slate-400">Total Kunjungan</span>
     </div>
@@ -1421,7 +1467,7 @@
     <i class="fa-solid fa-chart-simple text-emerald-400 text-sm"></i>
     <span class="hidden sm:inline text-slate-200">Kunjungan:</span>
     <span class="text-emerald-300 font-black" id="pill-stat-today">
-      207
+      212
     </span>
     <span class="text-slate-400 text-[10px] hidden sm:inline">Hari Ini</span>
     <i class="fa-solid fa-chevron-up text-[9px] text-slate-400 group-hover:text-white transition transform group-hover:-translate-y-0.5"></i>
