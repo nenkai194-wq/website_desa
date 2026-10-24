@@ -33,11 +33,16 @@ window.updateThemeToggleUI = function(isDark) {
   // Header Desktop
   const icon = document.getElementById('theme-toggle-icon');
   const text = document.getElementById('theme-toggle-text');
+  const btn = document.getElementById('theme-toggle-btn');
   if (icon) {
-    icon.className = isDark ? 'fa-solid fa-sun text-amber-300 text-xs animate-spin-slow' : 'fa-solid fa-moon text-amber-200 text-xs';
+    icon.className = isDark ? 'fa-solid fa-sun text-amber-300 text-sm sm:text-base animate-spin-slow' : 'fa-solid fa-moon text-amber-200 text-sm sm:text-base';
   }
   if (text) {
     text.innerText = isDark ? 'Mode Terang' : 'Mode Gelap';
+  }
+  if (btn) {
+    btn.title = isDark ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap';
+    btn.setAttribute('aria-label', isDark ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap');
   }
 
   // Mobile Drawer
