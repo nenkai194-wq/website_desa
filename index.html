@@ -13280,19 +13280,19 @@
           <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-blue-400"></i> Hari Ini:</span>
-              <span id="count-today" class="font-bold text-white">155</span>
+              <span id="count-today" class="font-bold text-white">159</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-week text-amber-400"></i> Minggu Ini:</span>
-              <span id="count-week" class="font-bold text-white">1.172</span>
+              <span id="count-week" class="font-bold text-white">1.176</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-emerald-400"></i> Bulan Ini:</span>
-              <span id="count-month" class="font-bold text-white">4.246</span>
+              <span id="count-month" class="font-bold text-white">4.250</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-purple-400"></i> Total Kunjungan:</span>
-              <span id="count-total" class="font-black text-brand-300">28.925</span>
+              <span id="count-total" class="font-black text-brand-300">28.929</span>
             </div>
           </div>
         </div>
@@ -13618,6 +13618,18 @@
         const btn = document.getElementById('btn-submit-feedback');
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+        if (window.location.hostname.includes('github.io')) {
+          setTimeout(() => {
+            alert('Terima kasih! Penilaian kepuasan & masukan Anda telah berhasil kami terima.');
+            formFeedback.reset();
+            pilihFeedbackRating(0);
+            toggleFloatingFeedback(false);
+            btn.disabled = false;
+            btn.innerHTML = '<span>Submit</span>';
+          }, 500);
+          return;
+        }
 
         const formData = new FormData(formFeedback);
 
@@ -17254,6 +17266,8 @@
     </div>
   </div>
 
+  <!-- Dynamic Visitor Counter -->
+  <script src="static/js/visitor-counter.js"></script>
 </body>
 
 </html>

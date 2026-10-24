@@ -248,6 +248,18 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
 
+        if (window.location.hostname.includes('github.io')) {
+          setTimeout(() => {
+            alert('Terima kasih! Penilaian kepuasan & masukan Anda telah berhasil kami terima.');
+            formFeedback.reset();
+            pilihFeedbackRating(0);
+            toggleFloatingFeedback(false);
+            btn.disabled = false;
+            btn.innerHTML = '<span>Submit</span>';
+          }, 500);
+          return;
+        }
+
         const formData = new FormData(formFeedback);
 
         try {

@@ -141,13 +141,7 @@ window.prevSlide = function() {
    2. VISITOR COUNTER
    ========================================================== */
 function initVisitorCounter() {
-  const today = document.getElementById('count-today');
-  const month = document.getElementById('count-month');
-  const total = document.getElementById('count-total');
-  
-  if (today) today.innerText = "142";
-  if (month) month.innerText = "3.840";
-  if (total) total.innerText = "28.519";
+  // Dikelola secara dinamis oleh visitor-counter.js
 }
 
 /* ==========================================================
