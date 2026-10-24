@@ -13283,20 +13283,77 @@
           </ul>
         </div>
 
-        <div>
-          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-link text-brand-500"></i> Menu Cepat
+                <div>
+          <h4 class="text-white font-extrabold text-sm mb-4 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs shadow-xs">
+              <i class="fa-solid fa-bolt-lightning"></i>
+            </span>
+            <span class="bg-gradient-to-r from-emerald-300 via-teal-200 to-white bg-clip-text text-transparent font-black tracking-wide">Menu Cepat</span>
           </h4>
-          <ul class="space-y-2">
-            <li><a href="#admin-modal" onclick="alert('Panel Admin CMS berbasis server Python Flask. Pada hosting statis GitHub Pages, silakan jalankan website di komputer lokal atau deploy ke server cloud backend untuk mengakses Dashboard CMS Admin.'); return false;" class="text-emerald-400 font-bold hover:underline">Masuk Panel Admin CMS</a></li>
-            <li><a href="peta.html" class="hover:text-brand-300 transition text-emerald-300 font-semibold"><i class="fa-solid fa-map-location-dot mr-1"></i> Peta Desa & SLS Poligon (26 RT)</a></li>
-            <li><a href="publikasi.html" class="hover:text-brand-300 transition">Buku & Publikasi Desa (PDF)</a></li>
-            <li><a href="javascript:void(0)" onclick="navigateToView('pembangunan')" class="hover:text-brand-300 transition text-emerald-300 font-semibold"><i class="fa-solid fa-person-digging mr-1"></i> Pembangunan Desa (Progres & Foto)</a></li>
-
-            <li><a href="javascript:void(0)" onclick="navigateToView('layanan-surat')" class="hover:text-brand-300 transition">Pengajuan Surat Mandiri</a></li>
-            <li><a href="javascript:void(0)" onclick="navigateToView('wisata')" class="hover:text-brand-300 transition">Destinasi Wisata Desa</a></li>
-            <li><a href="#umkm" class="hover:text-brand-300 transition">Katalog Produk UMKM</a></li>
-            <li><a href="#apbdes" class="hover:text-brand-300 transition">Transparansi Anggaran APBDes</a></li>
+          <ul class="space-y-2.5 text-xs">
+            <li>
+              <a href="index.html#peta" onclick="if(window.navigateToView){navigateToView('peta'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-emerald-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 flex items-center justify-center text-xs group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-map-location-dot"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Peta Desa &amp; SLS Poligon (26 RT)</span>
+              </a>
+            </li>
+            <li>
+              <a href="publikasi.html"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-indigo-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-indigo-500/15 text-indigo-400 border border-indigo-500/25 flex items-center justify-center text-xs group-hover:bg-indigo-500 group-hover:text-white transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-book-bookmark"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Buku &amp; Publikasi Desa (PDF)</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#pembangunan" onclick="if(window.navigateToView){navigateToView('pembangunan'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-teal-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-teal-500/15 text-teal-400 border border-teal-500/25 flex items-center justify-center text-xs group-hover:bg-teal-500 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-person-digging"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Pembangunan Desa (Progres &amp; Foto)</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#layanan-surat" onclick="if(window.navigateToView){navigateToView('layanan-surat'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-emerald-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 flex items-center justify-center text-xs group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-file-signature"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Pengajuan Surat Mandiri</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#wisata" onclick="if(window.navigateToView){navigateToView('wisata'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-amber-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-amber-500/15 text-amber-400 border border-amber-500/25 flex items-center justify-center text-xs group-hover:bg-amber-500 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-umbrella-beach"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Destinasi Wisata Desa</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#umkm" onclick="if(window.navigateToView){navigateToView('umkm'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-purple-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-purple-500/15 text-purple-400 border border-purple-500/25 flex items-center justify-center text-xs group-hover:bg-purple-500 group-hover:text-white transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-basket-shopping"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Katalog Produk UMKM</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#infografis" onclick="if(window.navigateToView){navigateToView('infografis'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-sky-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-sky-500/15 text-sky-400 border border-sky-500/25 flex items-center justify-center text-xs group-hover:bg-sky-500 group-hover:text-white transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-chart-pie"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Transparansi Anggaran APBDes</span>
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -13307,19 +13364,19 @@
           <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-blue-400"></i> Hari Ini:</span>
-              <span id="count-today" class="font-bold text-white">197</span>
+              <span id="count-today" class="font-bold text-white">201</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-week text-amber-400"></i> Minggu Ini:</span>
-              <span id="count-week" class="font-bold text-white">1.289</span>
+              <span id="count-week" class="font-bold text-white">1.293</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-emerald-400"></i> Bulan Ini:</span>
-              <span id="count-month" class="font-bold text-white">4.191</span>
+              <span id="count-month" class="font-bold text-white">4.195</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-purple-400"></i> Total Kunjungan:</span>
-              <span id="count-total" class="font-black text-brand-300">28.870</span>
+              <span id="count-total" class="font-black text-brand-300">28.874</span>
             </div>
           </div>
         </div>
@@ -15736,6 +15793,10 @@
 
     // Handle browser Back/Forward buttons and direct hash URLs
     window.addEventListener('popstate', () => {
+      const hash = window.location.hash.replace('#', '') || 'beranda';
+      navigateToView(hash);
+    });
+    window.addEventListener('hashchange', () => {
       const hash = window.location.hash.replace('#', '') || 'beranda';
       navigateToView(hash);
     });

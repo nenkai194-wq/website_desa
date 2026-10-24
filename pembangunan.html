@@ -907,10 +907,136 @@
   <!-- ======================================================== -->
   <!-- FOOTER -->
   <!-- ======================================================== -->
-  <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
-      <p class="text-slate-300 font-bold">Pemerintah Desa Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya</p>
-      <p class="text-[11px] text-slate-500">Transparansi Penyelenggaraan Pemerintahan dan Pelaksanaan Pembangunan Desa © 2026</p>
+    <footer class="bg-slate-950 text-slate-300 pt-16 pb-8 border-t border-slate-800 text-xs mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <img src="static/images/logo_tasikmalaya.png" alt="Logo Papayan" class="w-10 h-10 object-contain brightness-110" />
+            <div>
+              <h3 class="text-white font-bold text-sm">Pemerintah Desa Papayan</h3>
+              <p class="text-[11px] text-brand-400">Tasikmalaya, Jawa Barat</p>
+            </div>
+          </div>
+          <p class="text-slate-400 leading-relaxed text-xs">
+            Desa Papayan terletak di Kecamatan Jatiwaras, Kabupaten Tasikmalaya, Jawa Barat. .
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-building-columns text-brand-500"></i> Kontak Kantor Desa
+          </h4>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-location-dot text-brand-500 mt-1"></i>
+              <span>Jalan Raya Papayan No. 1, Desa Papayan, Kecamatan Jatiwaras</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i class="fa-solid fa-phone text-brand-500"></i>
+              <a href="tel:0821-1991-8783" class="hover:text-white">0821-1991-8783</a>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i class="fa-solid fa-envelope text-brand-500"></i>
+              <a href="mailto:pemdes@papayan.desa.id" class="hover:text-white">pemdes@papayan.desa.id</a>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i class="fa-regular fa-clock text-brand-500 mt-1"></i>
+              <span>Senin - Kamis (08.00 - 15.00) &amp; Jum&#39;at (08.00 - 11.00) WIB</span>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-extrabold text-sm mb-4 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs shadow-xs">
+              <i class="fa-solid fa-bolt-lightning"></i>
+            </span>
+            <span class="bg-gradient-to-r from-emerald-300 via-teal-200 to-white bg-clip-text text-transparent font-black tracking-wide">Menu Cepat</span>
+          </h4>
+          <ul class="space-y-2.5 text-xs">
+            <li>
+              <a href="index.html#peta" onclick="if(window.navigateToView){navigateToView('peta'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-emerald-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 flex items-center justify-center text-xs group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-map-location-dot"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Peta Desa &amp; SLS Poligon (26 RT)</span>
+              </a>
+            </li>
+            <li>
+              <a href="publikasi.html"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-indigo-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-indigo-500/15 text-indigo-400 border border-indigo-500/25 flex items-center justify-center text-xs group-hover:bg-indigo-500 group-hover:text-white transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-book-bookmark"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Buku &amp; Publikasi Desa (PDF)</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#pembangunan" onclick="if(window.navigateToView){navigateToView('pembangunan'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-teal-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-teal-500/15 text-teal-400 border border-teal-500/25 flex items-center justify-center text-xs group-hover:bg-teal-500 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-person-digging"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Pembangunan Desa (Progres &amp; Foto)</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#layanan-surat" onclick="if(window.navigateToView){navigateToView('layanan-surat'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-emerald-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 flex items-center justify-center text-xs group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-file-signature"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Pengajuan Surat Mandiri</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#wisata" onclick="if(window.navigateToView){navigateToView('wisata'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-amber-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-amber-500/15 text-amber-400 border border-amber-500/25 flex items-center justify-center text-xs group-hover:bg-amber-500 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-umbrella-beach"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Destinasi Wisata Desa</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#umkm" onclick="if(window.navigateToView){navigateToView('umkm'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-purple-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-purple-500/15 text-purple-400 border border-purple-500/25 flex items-center justify-center text-xs group-hover:bg-purple-500 group-hover:text-white transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-basket-shopping"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Katalog Produk UMKM</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#infografis" onclick="if(window.navigateToView){navigateToView('infografis'); return false;}"
+                 class="group flex items-center gap-2.5 text-slate-300 hover:text-sky-300 transition-all duration-200">
+                <span class="w-6 h-6 rounded-lg bg-sky-500/15 text-sky-400 border border-sky-500/25 flex items-center justify-center text-xs group-hover:bg-sky-500 group-hover:text-white transition-all duration-200 shadow-2xs">
+                  <i class="fa-solid fa-chart-pie"></i>
+                </span>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">Transparansi Anggaran APBDes</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-brand-500"></i> Transparansi Pembangunan
+          </h4>
+          <p class="text-slate-400 leading-relaxed text-xs">
+            Seluruh data pelaksanaan proyek fisik, lokasi, anggaran APBDes, serta progres 3 fase visual dipublikasikan secara terbuka untuk pengawasan warga dan akuntabilitas publik.
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px]">
+        <p>Â© 2026 Pemerintah Desa Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya.</p>
+        <p class="text-slate-500">Transparansi Penyelenggaraan Pemerintahan dan Pelaksanaan Pembangunan Desa.</p>
+      </div>
+
     </div>
   </footer>
 
