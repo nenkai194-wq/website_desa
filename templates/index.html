@@ -2840,50 +2840,36 @@
   <!-- ==================== VIEW 8: BERITA DESA ==================== -->
   <div id="view-berita" class="page-view-container hidden">
 
-    <!-- SUB-NAVIGASI HEADER BERITA & GALERI DESA -->
-    <div class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-950 text-white py-10 px-4 sm:px-6 lg:px-8 border-b border-emerald-700/60 shadow-inner">
-      <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-700/60 text-emerald-200 text-xs font-semibold backdrop-blur-sm border border-emerald-600/40 mb-3">
-              <i class="fa-solid fa-newspaper text-emerald-300"></i> Publikasi & Dokumentasi Resmi
-            </div>
-            <h1 class="text-2xl sm:text-4xl font-black tracking-tight text-white flex items-center gap-3">
-              <span>Warta, Galeri & Penghargaan Desa</span>
-            </h1>
-            <p class="text-xs sm:text-sm text-emerald-100/90 mt-2 max-w-2xl leading-relaxed">
-              Jendela informasi terpadu: warta kegiatan harian, album dokumentasi foto bersama masyarakat, serta jejak prestasi & piagam penghargaan resmi Pemerintah Desa {{ profil.nama_desa }}.
-            </p>
-          </div>
-          
-          <!-- Tombol Aksi Cepat Pengajuan Foto Warga -->
-          <div class="flex flex-wrap items-center gap-3">
-            <button type="button" onclick="bukaModalPengajuanGaleriWarga()" 
-                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold text-xs shadow-lg shadow-amber-900/30 transition-all transform hover:-translate-y-0.5 cursor-pointer">
-              <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
-              <span>+ Ajukan Foto Warga</span>
-            </button>
-          </div>
+    <!-- Header Section Berita (Clean & Seragam dengan Menu Lainnya) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-4">
+      <div class="flex flex-col md:flex-row md:items-end justify-between pb-6 border-b border-slate-200/80 gap-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Publikasi &amp; Kabar Desa</span>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 mt-2">Warta &amp; Dokumentasi Desa {{ profil.nama_desa }}</h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Informasi kegiatan pemerintahan desa, album foto gotong royong warga, serta jejak prestasi resmi Desa {{ profil.nama_desa }}.</p>
         </div>
 
-        <!-- Tab Selector Submenu -->
-        <div class="flex flex-wrap gap-2.5 mt-8 pt-5 border-t border-emerald-700/50" id="tabs-submenu-berita">
+        <!-- Filter Sub-Tab & Tombol Tambah Foto -->
+        <div class="flex flex-wrap items-center gap-2" id="tabs-submenu-berita">
           <button type="button" onclick="gantiSubmenuBerita('warta')" id="btn-sub-warta"
-                  class="subtab-berita-btn px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-white text-emerald-900 shadow-md">
+                  class="subtab-berita-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-brand-700 text-white shadow-xs">
             <i class="fa-regular fa-newspaper"></i>
-            <span>Warta & Berita Desa</span>
+            <span>Warta &amp; Berita</span>
           </button>
           <button type="button" onclick="gantiSubmenuBerita('galeri')" id="btn-sub-galeri"
-                  class="subtab-berita-btn px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-emerald-900/60 hover:bg-emerald-700/60 text-emerald-100 border border-emerald-600/40">
+                  class="subtab-berita-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200">
             <i class="fa-solid fa-camera-retro"></i>
-            <span>Galeri Dokumentasi</span>
-            <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-700 text-emerald-200 font-bold">{{ galeri_list|length }}</span>
+            <span>Galeri ({{ galeri_list|length }})</span>
           </button>
           <button type="button" onclick="gantiSubmenuBerita('penghargaan')" id="btn-sub-penghargaan"
-                  class="subtab-berita-btn px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-emerald-900/60 hover:bg-emerald-700/60 text-emerald-100 border border-emerald-600/40">
-            <i class="fa-solid fa-award text-amber-300"></i>
-            <span>Sub-Galeri Piagam & Prestasi</span>
-            <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500 text-amber-950 font-extrabold">{{ penghargaan_list|length }}</span>
+                  class="subtab-berita-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200">
+            <i class="fa-solid fa-award text-amber-500"></i>
+            <span>Prestasi ({{ penghargaan_list|length }})</span>
+          </button>
+          <button type="button" onclick="bukaModalPengajuanGaleriWarga()" 
+                  class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow-xs transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>+ Ajukan Foto</span>
           </button>
         </div>
       </div>
@@ -2891,18 +2877,7 @@
 
     <!-- PANEL 1: WARTA & BERITA DESA -->
     <div id="panel-sub-warta" class="subpanel-berita">
-      <section id="berita" class="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-          <div>
-            <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Kabar Desa</span>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Warta & Kabar Terkini Desa {{ profil.nama_desa }}</h2>
-            <p class="text-xs sm:text-sm text-slate-500 mt-1">Kegiatan pemerintahan desa, festival wisata pesisir, dan program kemasyarakatan terbaru.</p>
-          </div>
-          <a href="#berita" class="text-xs font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1.5">
-            Lihat Semua Berita <i class="fa-solid fa-arrow-right"></i>
-          </a>
-        </div>
-
+      <section id="berita" class="pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           {% for b in berita %}
           <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 card-hover flex flex-col group cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5"
@@ -3241,28 +3216,17 @@
   <!-- ==================== VIEW 9B: PEMBANGUNAN DESA ==================== -->
   <div id="view-pembangunan" class="page-view-container hidden">
 
-    <!-- Header Banner -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
-      <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-800/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <!-- Header Section Pembangunan (Disamakan dengan Menu Lainnya) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-2 gap-4">
         <div>
-          <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold mb-2">
-            <button type="button" onclick="navigateToView('beranda')" class="hover:underline flex items-center gap-1.5 text-emerald-300">
-              <i class="fa-solid fa-house"></i> Beranda
-            </button>
-            <span class="text-emerald-600">/</span>
-            <span class="text-white">Pembangunan Desa</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-3">
-            <i class="fa-solid fa-person-digging text-emerald-400"></i>
-            Transparansi Pembangunan & Proyek Fisik
-          </h2>
-          <p class="text-xs sm:text-sm text-emerald-200/80 mt-1 max-w-2xl leading-relaxed">
-            Informasi publik dokumentasi pekerjaan desa yang <strong>sedang dikerjakan</strong> maupun <strong>sudah selesai</strong> dengan komparasi visual 3 fase (Sebelum, Proses, Akhir).
-          </p>
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Infrastruktur &amp; Pembangunan</span>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 mt-2">Pembangunan Desa {{ profil.nama_desa }}</h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Informasi publik dokumentasi pekerjaan desa yang sedang dikerjakan maupun sudah selesai dengan komparasi visual 3 fase (Sebelum, Proses, Akhir).</p>
         </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <span class="text-xs bg-white/10 text-emerald-300 font-bold px-3.5 py-2 rounded-2xl border border-white/15 flex items-center gap-2 shadow-sm">
-            <i class="fa-solid fa-circle-check text-emerald-400"></i> Publik & Akuntabel
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+          <span class="text-xs bg-emerald-50 text-emerald-800 font-bold px-3.5 py-2 rounded-2xl border border-emerald-200 flex items-center gap-2 shadow-xs">
+            <i class="fa-solid fa-circle-check text-emerald-600"></i> Publik &amp; Akuntabel
           </span>
         </div>
       </div>
@@ -6849,8 +6813,8 @@
       const btnGaleri = document.getElementById('btn-sub-galeri');
       const btnPenghargaan = document.getElementById('btn-sub-penghargaan');
 
-      const inactiveClass = "subtab-berita-btn px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-emerald-900/60 hover:bg-emerald-700/60 text-emerald-100 border border-emerald-600/40";
-      const activeClass = "subtab-berita-btn px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-white text-emerald-900 shadow-md";
+      const inactiveClass = "subtab-berita-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200";
+      const activeClass = "subtab-berita-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-brand-700 text-white shadow-xs";
 
       if (panelWarta) panelWarta.classList.add('hidden');
       if (panelGaleri) panelGaleri.classList.add('hidden');

@@ -105,49 +105,65 @@
   </header>
 
   <!-- ======================================================== -->
-  <!-- HERO BANNER SECTION -->
+  <!-- HEADER SECTION PEMBANGUNAN (Clean & Seragam) -->
   <!-- ======================================================== -->
-  <section class="relative bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white py-10 sm:py-16 overflow-hidden border-b border-slate-800">
-    <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#34d399_1px,transparent_1px)] [background-size:16px_16px]"></div>
-    
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-4">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold backdrop-blur-md">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        Transparansi Anggaran & Akuntabilitas Publik
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-4">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-slate-200/80 gap-4">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-widest text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Infrastruktur &amp; Pembangunan</span>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 mt-2">Pembangunan Desa {{ profil.nama_desa or 'Papayan' }}</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Dokumentasi transparansi pekerjaan desa yang sedang dikerjakan maupun selesai dengan komparasi visual 3 fase (Sebelum, Proses, Akhir).</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+        <span class="text-xs bg-emerald-50 text-emerald-800 font-bold px-3.5 py-2 rounded-2xl border border-emerald-200 flex items-center gap-2 shadow-xs">
+          <i class="fa-solid fa-circle-check text-emerald-600"></i> Publik &amp; Akuntabel
+        </span>
+      </div>
+    </div>
+
+    <!-- KPI METRICS BAR (Light Card Design) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <!-- Total Kegiatan -->
+      <div class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm flex items-center gap-3.5">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-emerald-100">
+          <i class="fa-solid fa-person-digging"></i>
+        </div>
+        <div>
+          <span class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider block">Total Kegiatan</span>
+          <span class="text-lg sm:text-2xl font-black text-slate-900 leading-tight">{{ total_proyek }} Proyek</span>
+        </div>
       </div>
 
-      <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight max-w-3xl mx-auto leading-tight">
-        Laporan Kegiatan & Progres Pembangunan Desa
-      </h2>
-
-      <p class="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
-        Dokumentasi komprehensif pekerjaan fisik, sarana publik, dan infrastruktur desa yang <strong>sedang dikerjakan</strong> maupun <strong>sudah selesai</strong> dengan komparasi visual 3 fase (Sebelum, Proses, dan Akhir).
-      </p>
-
-      <!-- KPI METRICS BAR -->
-      <div class="pt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
-        <!-- Total Kegiatan -->
-        <div class="bg-white/5 border border-white/10 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl text-left">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Kegiatan</span>
-          <span class="text-xl sm:text-2xl font-black text-white mt-1 block">{{ total_proyek }} Proyek</span>
+      <!-- Sedang Berjalan -->
+      <div class="bg-white p-4 rounded-3xl border border-amber-200/80 shadow-sm flex items-center gap-3.5">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-amber-100">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
         </div>
-
-        <!-- Sedang Berjalan -->
-        <div class="bg-amber-500/10 border border-amber-500/20 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl text-left">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-300 block">Sedang Berjalan</span>
-          <span class="text-xl sm:text-2xl font-black text-amber-400 mt-1 block">{{ sedang_dikerjakan }} Kegiatan</span>
+        <div>
+          <span class="text-[10px] sm:text-xs text-amber-700 font-bold uppercase tracking-wider block">Sedang Berjalan</span>
+          <span class="text-lg sm:text-2xl font-black text-amber-600 leading-tight">{{ sedang_dikerjakan }} Kegiatan</span>
         </div>
+      </div>
 
-        <!-- Selesai -->
-        <div class="bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl text-left">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-300 block">Sudah Selesai</span>
-          <span class="text-xl sm:text-2xl font-black text-emerald-400 mt-1 block">{{ selesai }} Kegiatan</span>
+      <!-- Selesai -->
+      <div class="bg-white p-4 rounded-3xl border border-emerald-200/80 shadow-sm flex items-center gap-3.5">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-emerald-100">
+          <i class="fa-solid fa-circle-check"></i>
         </div>
+        <div>
+          <span class="text-[10px] sm:text-xs text-emerald-700 font-bold uppercase tracking-wider block">Sudah Selesai</span>
+          <span class="text-lg sm:text-2xl font-black text-emerald-600 leading-tight">{{ selesai }} Kegiatan</span>
+        </div>
+      </div>
 
-        <!-- Total Anggaran -->
-        <div class="bg-white/5 border border-white/10 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl text-left">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Realisasi</span>
-          <span class="text-sm sm:text-lg font-black text-emerald-400 mt-1 truncate block">Rp {{ "{:,.0f}".format(total_anggaran).replace(",", ".") }}</span>
+      <!-- Total Anggaran -->
+      <div class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm flex items-center gap-3.5">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg sm:text-xl shrink-0 border border-blue-100">
+          <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+        <div class="min-w-0">
+          <span class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider block">Total Realisasi</span>
+          <span class="text-base sm:text-lg font-black text-slate-900 leading-tight truncate block">Rp {{ "{:,.0f}".format(total_anggaran).replace(",", ".") }}</span>
         </div>
       </div>
     </div>
