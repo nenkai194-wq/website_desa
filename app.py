@@ -206,14 +206,14 @@ def inject_global_data():
         # Popup Informasi Aktif (Tayang & Masih dalam batas waktu yang valid)
         cursor.execute("SELECT * FROM popup_informasi WHERE status = 'Tayang' ORDER BY urutan ASC, id DESC")
         pop_candidates = [dict(r) for r in cursor.fetchall()]
-        popup_aktif = None
+        popup_list_aktif = []
         for p in pop_candidates:
             st = hitung_status_waktu_popup(p)
             if st['is_aktif']:
-                popup_aktif = p
-                popup_aktif['status_info'] = st
-                break
-        data['popup_aktif_global'] = popup_aktif
+                p['status_info'] = st
+                popup_list_aktif.append(p)
+        data['popup_list_aktif_global'] = popup_list_aktif
+        data['popup_aktif_global'] = popup_list_aktif[0] if popup_list_aktif else None
 
         # Banner Slider Aktif (Tayang)
         cursor.execute("SELECT * FROM banner_slider WHERE is_active = 1 ORDER BY urutan ASC, id ASC")

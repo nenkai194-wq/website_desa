@@ -96,7 +96,7 @@
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
         {% if active_popup.gambar %}
         <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-white/10 flex-shrink-0 border-2 border-white/20 shadow-md">
-          <img src="{{ active_popup.gambar }}" alt="{{ active_popup.judul }}" class="w-full h-full object-cover" onerror="this.src='/static/images/banner1.png'">
+          <img src="/{{ active_popup.gambar.lstrip('/') }}" alt="{{ active_popup.judul }}" class="w-full h-full object-cover" onerror="this.src='/static/images/banner1.png'">
         </div>
         {% else %}
         <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-emerald-800/80 flex items-center justify-center flex-shrink-0 border-2 border-white/20 text-3xl text-emerald-200">
@@ -201,7 +201,7 @@
             <td class="p-4">
               {% if p.gambar %}
               <div class="w-20 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 relative group cursor-pointer" onclick="bukaModalPreviewPopup({{ p.id }})">
-                <img src="{{ p.gambar }}" alt="{{ p.judul }}" class="w-full h-full object-cover group-hover:scale-105 transition" onerror="this.src='/static/images/banner1.png'">
+                <img src="/{{ p.gambar.lstrip('/') }}" alt="{{ p.judul }}" class="w-full h-full object-cover group-hover:scale-105 transition" onerror="this.src='/static/images/banner1.png'">
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
                   <i class="fa-solid fa-magnifying-glass-plus"></i>
                 </div>
@@ -691,60 +691,70 @@
 </div>
 
 <!-- =======================================================
-     MODAL 3: PRATINJAU SIMULASI POP-UP DI BACKEND
+     MODAL 3: PRATINJAU FORMAT RESMI BPS TASIKMALAYA STYLE
      ======================================================= -->
-<div id="modal-preview-popup" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden" onclick="if(event.target === this) tutupModalPreviewPopup();">
-  <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] overflow-hidden shadow-2xl relative flex flex-col border border-slate-200 animate-fade-in">
-    <!-- Close button -->
-    <button type="button" onclick="tutupModalPreviewPopup()" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white flex items-center justify-center text-sm font-bold transition shadow-md">
+<div id="modal-preview-popup" class="fixed inset-0 z-50 bg-black/65 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden transition-opacity duration-300 opacity-0" onclick="if(event.target === this) tutupModalPreviewPopup();">
+  
+  <!-- Left arrow mockup (Persis seperti BPS) -->
+  <button type="button" class="fixed left-3 sm:left-8 top-1/2 -translate-y-1/2 z-[10002] w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/20 text-white flex items-center justify-center text-lg sm:text-xl transition backdrop-blur-sm shadow-xl focus:outline-none pointer-events-none opacity-80" title="Sebelumnya">
+    <i class="fa-solid fa-chevron-left"></i>
+  </button>
+
+  <div class="relative z-[10001] flex flex-col items-center max-w-[460px] w-full mx-auto select-none">
+    
+    <!-- Tombol Tutup Silang (X) di Atas Kanan -->
+    <button type="button" onclick="tutupModalPreviewPopup()" 
+            class="absolute -top-3.5 -right-3.5 z-30 w-8 h-8 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center text-sm font-bold transition shadow-xl border border-white/20 focus:outline-none" 
+            title="Tutup Pratinjau">
       <i class="fa-solid fa-xmark"></i>
     </button>
 
-    <!-- Banner Image Preview -->
-    <div id="preview-popup-img-container" class="w-full h-48 sm:h-56 bg-slate-100 overflow-hidden relative hidden">
-      <img id="preview-popup-img" src="" alt="Banner Preview" class="w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-      <div class="absolute bottom-3 left-4 flex flex-wrap items-center gap-2">
-        <span id="preview-popup-kategori" class="px-3 py-1 rounded-full bg-emerald-600 text-white font-extrabold text-[11px] uppercase tracking-wider shadow-sm">
-          PENGUMUMAN
-        </span>
-        <span id="preview-popup-jadwal-badge" class="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-amber-300 font-bold text-[10px] hidden"></span>
-      </div>
-    </div>
-
-    <!-- Body Preview -->
-    <div class="p-6 space-y-3 overflow-y-auto max-h-[60vh]">
-      <div id="preview-popup-kategori-text-container" class="flex flex-wrap items-center gap-2">
-        <span id="preview-popup-kategori-text" class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-extrabold text-[10px] uppercase tracking-wider">
-          PENGUMUMAN
-        </span>
-        <span id="preview-popup-jadwal-badge-alt" class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 font-bold text-[10px] hidden"></span>
-      </div>
-      <h3 id="preview-popup-judul" class="text-lg sm:text-xl font-black text-slate-900 leading-tight">
-        Judul Pop-up Pengumuman
-      </h3>
-      <p id="preview-popup-subjudul" class="text-xs text-slate-500 font-semibold flex items-center gap-1.5">
-        <i class="fa-regular fa-calendar-check text-brand-600"></i>
-        <span>Keterangan Waktu</span>
-      </p>
-      <div id="preview-popup-isi" class="text-xs text-slate-700 leading-relaxed font-medium pt-1">
-        Deskripsi isi pengumuman akan ditampilkan di sini.
-      </div>
-    </div>
-
-    <!-- Footer Action Buttons -->
-    <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-3">
-      <span class="text-[11px] text-slate-400 font-medium">Pratinjau Layar Pengunjung</span>
-      <div class="flex items-center gap-2">
-        <button type="button" onclick="tutupModalPreviewPopup()" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs">
-          Tutup
-        </button>
-        <a id="preview-popup-link-btn" href="#" target="_blank" class="px-4 py-2 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs shadow-sm flex items-center gap-1.5">
-          <span id="preview-popup-link-text">Lihat Selengkapnya</span>
-          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+    <!-- Kartu Flyer / Banner Poster Bersih (Persis Format BPS Tasikmalaya) -->
+    <div class="w-full bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden relative border border-slate-100 flex flex-col items-center">
+      
+      <!-- Container Gambar Poster Penuh (Tanpa Gradien Pemotong) -->
+      <div id="preview-popup-img-container" class="w-full hidden">
+        <a id="preview-popup-img-link" href="#" target="_blank" class="block w-full">
+          <img id="preview-popup-img" src="" alt="Poster Pengumuman" class="w-full h-auto max-h-[72vh] sm:max-h-[76vh] object-contain mx-auto" />
         </a>
       </div>
+
+      <!-- Container Teks jika Pop-up Tanpa Poster Gambar -->
+      <div id="preview-popup-text-container" class="p-6 sm:p-7 text-center space-y-3 max-h-[70vh] overflow-y-auto hidden">
+        <span id="preview-popup-kategori" class="inline-block px-3 py-1 rounded-full bg-brand-50 text-brand-800 text-[11px] font-bold uppercase tracking-wider">
+          PENGUMUMAN RESMI
+        </span>
+        <h3 id="preview-popup-judul" class="text-lg sm:text-xl font-black text-slate-900 leading-tight">
+          Judul Pop-up Pengumuman
+        </h3>
+        <p id="preview-popup-subjudul" class="text-xs text-slate-500 font-semibold"></p>
+        <div id="preview-popup-isi" class="text-xs text-slate-700 leading-relaxed font-medium pt-2"></div>
+      </div>
+
+      <!-- Titik Indikator Pagination Dots (Persis BPS) -->
+      <div class="flex items-center justify-center gap-1.5 py-2.5 bg-slate-50/90 w-full border-t border-slate-100">
+        <span class="h-2 w-5 bg-sky-600 rounded-full transition-all"></span>
+        <span class="h-2 w-2 bg-slate-300 rounded-full"></span>
+        <span class="h-2 w-2 bg-slate-300 rounded-full"></span>
+        <span class="h-2 w-2 bg-slate-300 rounded-full"></span>
+        <span class="h-2 w-2 bg-slate-300 rounded-full"></span>
+      </div>
     </div>
+
+    <!-- Right arrow mockup (Persis seperti BPS) -->
+    <button type="button" class="fixed right-3 sm:right-8 top-1/2 -translate-y-1/2 z-[10002] w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/20 text-white flex items-center justify-center text-lg sm:text-xl transition backdrop-blur-sm shadow-xl focus:outline-none pointer-events-none opacity-80" title="Berikutnya">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+    <!-- Tombol Tutup Biru di Bawah Tengah (Persis BPS Tasikmalaya) -->
+    <div class="mt-3.5 flex flex-col items-center gap-1.5">
+      <button type="button" onclick="tutupModalPreviewPopup()" 
+              class="px-8 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] active:scale-95 text-white font-bold text-sm shadow-lg transition-all flex items-center justify-center tracking-wide">
+        Tutup
+      </button>
+      <span class="text-white/80 text-[11px] pt-0.5">Pratinjau Layar Pengunjung (Format BPS)</span>
+    </div>
+
   </div>
 </div>
 
@@ -812,7 +822,7 @@
     const imgPreviewContainer = document.getElementById('edit-popup-gambar-preview');
     const imgThumb = document.getElementById('edit-popup-gambar-thumb');
     if (p.gambar) {
-      imgThumb.src = p.gambar;
+      let eSrc = p.gambar.trim(); if (!eSrc.startsWith('http') && !eSrc.startsWith('/')) { eSrc = '/' + eSrc; } imgThumb.src = eSrc;
       imgPreviewContainer.classList.remove('hidden');
     } else {
       imgPreviewContainer.classList.add('hidden');
@@ -826,67 +836,55 @@
     document.getElementById('modal-edit-popup').classList.add('hidden');
   }
 
-  function bukaModalPreviewPopup(id) {
+    function bukaModalPreviewPopup(id) {
     const p = popupDataMap[id];
     if (!p) return;
 
-    document.getElementById('preview-popup-judul').textContent = p.judul || '';
-    
-    const subjudulEl = document.getElementById('preview-popup-subjudul');
-    if (p.subjudul) {
-      subjudulEl.innerHTML = '<i class="fa-regular fa-calendar-check text-brand-600 mr-1"></i> ' + p.subjudul;
-      subjudulEl.classList.remove('hidden');
-    } else {
-      subjudulEl.classList.add('hidden');
-    }
-
-    document.getElementById('preview-popup-isi').textContent = p.isi || '';
-
-    const katImg = document.getElementById('preview-popup-kategori');
-    const katText = document.getElementById('preview-popup-kategori-text');
-    const katTextContainer = document.getElementById('preview-popup-kategori-text-container');
-    const kategoriVal = p.kategori || 'PENGUMUMAN';
-    if (katImg) katImg.textContent = kategoriVal;
-    if (katText) katText.textContent = kategoriVal;
-
-    // Badge Jadwal
-    const badgeImg = document.getElementById('preview-popup-jadwal-badge');
-    const badgeText = document.getElementById('preview-popup-jadwal-badge-alt');
-    if (p.tanggal_selesai) {
-      const textJadwal = 'Batas: ' + p.tanggal_selesai.replace('T', ' ');
-      if (badgeImg) { badgeImg.textContent = textJadwal; badgeImg.classList.remove('hidden'); }
-      if (badgeText) { badgeText.textContent = textJadwal; badgeText.classList.remove('hidden'); }
-    } else {
-      if (badgeImg) badgeImg.classList.add('hidden');
-      if (badgeText) badgeText.classList.add('hidden');
-    }
-
+    const modal = document.getElementById('modal-preview-popup');
     const imgContainer = document.getElementById('preview-popup-img-container');
+    const textContainer = document.getElementById('preview-popup-text-container');
     const imgEl = document.getElementById('preview-popup-img');
+    const linkEl = document.getElementById('preview-popup-img-link');
+
     if (p.gambar) {
-      imgEl.src = p.gambar;
+      let src = p.gambar.trim();
+      if (!src.startsWith('http') && !src.startsWith('/')) {
+        src = '/' + src;
+      }
+      imgEl.src = src;
+      if (p.link_url) {
+        linkEl.href = p.link_url;
+        linkEl.title = p.link_teks || p.judul;
+        linkEl.style.cursor = 'pointer';
+      } else {
+        linkEl.removeAttribute('href');
+        linkEl.style.cursor = 'default';
+      }
       imgContainer.classList.remove('hidden');
-      if (katTextContainer) katTextContainer.classList.add('hidden');
+      textContainer.classList.add('hidden');
     } else {
+      document.getElementById('preview-popup-judul').textContent = p.judul || '';
+      document.getElementById('preview-popup-kategori').textContent = p.kategori || 'PENGUMUMAN RESMI';
+      document.getElementById('preview-popup-subjudul').textContent = p.subjudul || '';
+      document.getElementById('preview-popup-isi').textContent = p.isi || '';
       imgContainer.classList.add('hidden');
-      if (katTextContainer) katTextContainer.classList.remove('hidden');
+      textContainer.classList.remove('hidden');
     }
 
-    const linkBtn = document.getElementById('preview-popup-link-btn');
-    const linkText = document.getElementById('preview-popup-link-text');
-    if (p.link_url) {
-      linkBtn.href = p.link_url;
-      linkText.textContent = p.link_teks || 'Lihat Selengkapnya';
-      linkBtn.classList.remove('hidden');
-    } else {
-      linkBtn.classList.add('hidden');
-    }
-
-    document.getElementById('modal-preview-popup').classList.remove('hidden');
+    modal.classList.remove('hidden');
+    setTimeout(function() {
+      modal.classList.remove('opacity-0');
+      modal.classList.add('opacity-100');
+    }, 20);
   }
 
   function tutupModalPreviewPopup() {
-    document.getElementById('modal-preview-popup').classList.add('hidden');
+    const modal = document.getElementById('modal-preview-popup');
+    modal.classList.remove('opacity-100');
+    modal.classList.add('opacity-0');
+    setTimeout(function() {
+      modal.classList.add('hidden');
+    }, 250);
   }
 
   // Close modals on Escape key
