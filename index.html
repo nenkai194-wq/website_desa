@@ -13253,19 +13253,19 @@
           <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-blue-400"></i> Hari Ini:</span>
-              <span id="count-today" class="font-bold text-white">144</span>
+              <span id="count-today" class="font-bold text-white">148</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-week text-amber-400"></i> Minggu Ini:</span>
-              <span id="count-week" class="font-bold text-white">1.236</span>
+              <span id="count-week" class="font-bold text-white">1.240</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-emerald-400"></i> Bulan Ini:</span>
-              <span id="count-month" class="font-bold text-white">4.138</span>
+              <span id="count-month" class="font-bold text-white">4.142</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-purple-400"></i> Total Kunjungan:</span>
-              <span id="count-total" class="font-black text-brand-300">28.817</span>
+              <span id="count-total" class="font-black text-brand-300">28.821</span>
             </div>
           </div>
         </div>
@@ -13886,6 +13886,165 @@
 <!-- MODAL POP-UP BANNER INFORMASI & PENGUMUMAN (FRONTEND FIRST VISIT)        -->
 <!-- ========================================================================= -->
 
+
+<div id="modal-popup-informasi-front" class="fixed inset-0 z-[9999] bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0" onclick="if(event.target === this) tutupPopupInformasiFrontend();">
+  
+  <div id="modal-popup-informasi-card" class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] overflow-hidden shadow-2xl relative flex flex-col border border-slate-100 transform transition-all duration-300 scale-95">
+    
+    <!-- Tombol Tutup Silang (X) di Pojok Atas -->
+    <button type="button" onclick="tutupPopupInformasiFrontend()" 
+            class="absolute top-3.5 right-3.5 z-20 w-8 h-8 rounded-full bg-slate-950/60 hover:bg-slate-900 text-white flex items-center justify-center text-sm font-bold transition shadow-lg focus:outline-none" 
+            title="Tutup Pengumuman">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <!-- Banner Poster Gambar (Jika Ada) -->
+    
+    <div class="w-full h-48 sm:h-56 bg-slate-100 overflow-hidden relative flex-shrink-0">
+      <img src="static/images/banner1.png" alt="Selamat Datang di Portal Resmi Desa Papayan" class="w-full h-full object-cover" onerror="this.parentElement.style.display='none'">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+      <div class="absolute bottom-3 left-4">
+        <span class="px-3 py-1 rounded-full bg-emerald-600 text-white font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider shadow-sm">
+          Pengumuman Resmi
+        </span>
+      </div>
+    </div>
+    
+
+    <!-- Konten Isi Pengumuman -->
+    <div class="p-5 sm:p-6 space-y-3 overflow-y-auto max-h-[55vh]">
+      
+
+      <h3 class="text-base sm:text-xl font-black text-slate-900 leading-tight">
+        Selamat Datang di Portal Resmi Desa Papayan
+      </h3>
+
+      
+      <p class="text-xs text-slate-500 font-semibold flex items-center gap-1.5">
+        <i class="fa-regular fa-calendar-check text-brand-600"></i>
+        <span>Pusat Informasi &amp; Pelayanan Administrasi Publik Desa Papayan</span>
+      </p>
+      
+
+      
+      <div class="text-xs text-slate-700 leading-relaxed font-medium pt-1 space-y-2">
+        
+          
+          <p>Pengumuman uji coba.</p>
+          
+        
+      </div>
+      
+    </div>
+
+    <!-- Footer Tombol Aksi -->
+    <div class="p-4 sm:p-5 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
+      <!-- Opsi Jangan Tampilkan Lagi pada Sesi Ini -->
+      <label class="flex items-center gap-2 cursor-pointer select-none">
+        <input type="checkbox" id="cb-popup-jangan-tampil" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-slate-300" checked />
+        <span class="text-[11px] text-slate-500 font-medium">Jangan tampilkan lagi pada sesi ini</span>
+      </label>
+
+      <!-- Tombol Aksi -->
+      <div class="flex items-center gap-2 justify-end">
+        <button type="button" onclick="tutupPopupInformasiFrontend()" class="px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition">
+          Tutup
+        </button>
+        
+        <a href="#layanan" onclick="tutupPopupInformasiFrontend(true)" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5">
+          <span>Jelajahi Layanan Desa</span>
+          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+        
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    const popupId = 1;
+    const tampilSekali = 1;
+    const modalEl = document.getElementById('modal-popup-informasi-front');
+    const cardEl = document.getElementById('modal-popup-informasi-card');
+
+    if (!modalEl || !cardEl) return;
+
+    // Cek apakah pop-up sudah pernah ditutup pada sesi ini
+    const keySession = 'desa_popup_seen_' + popupId;
+    const keyLocal = 'desa_popup_dont_show_' + popupId;
+
+    const isSeenSession = sessionStorage.getItem(keySession);
+    const isClosedLocal = localStorage.getItem(keyLocal);
+
+    // Cek batas waktu tayang client-side (otomatis terhenti sistem)
+    
+    const tMulaiStr = "2026-10-24T00:00".replace(' ', 'T');
+    const dtMulai = new Date(tMulaiStr);
+    if (!isNaN(dtMulai.getTime()) && new Date() < dtMulai) {
+      return; // Belum masuk jadwal tayang
+    }
+    
+
+    
+    const tSelesaiStr = "2026-10-31T23:59".replace(' ', 'T');
+    const dtSelesai = new Date(tSelesaiStr);
+    if (!isNaN(dtSelesai.getTime()) && new Date() > dtSelesai) {
+      return; // Sudah melewati batas waktu tayang (otomatis berhenti)
+    }
+    
+
+    // Jika tampil_sekali = 1, cek session storage & local storage
+    if (tampilSekali === 1 && (isSeenSession === '1' || isClosedLocal === '1')) {
+      return; // Jangan tampilkan
+    }
+
+    // Tampilkan pop-up setelah 600ms dari waktu halaman selesai dimuat
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        modalEl.classList.remove('hidden');
+        setTimeout(function() {
+          modalEl.classList.remove('opacity-0');
+          modalEl.classList.add('opacity-100');
+          cardEl.classList.remove('scale-95');
+          cardEl.classList.add('scale-100');
+        }, 20);
+      }, 600);
+    });
+
+    window.tutupPopupInformasiFrontend = function(isLinkClick) {
+      const cbJanganTampil = document.getElementById('cb-popup-jangan-tampil');
+      const isChecked = cbJanganTampil ? cbJanganTampil.checked : true;
+
+      if (isChecked || tampilSekali === 1) {
+        try {
+          sessionStorage.setItem(keySession, '1');
+          if (isChecked) {
+            localStorage.setItem(keyLocal, '1');
+          }
+        } catch (e) {}
+      }
+
+      cardEl.classList.remove('scale-100');
+      cardEl.classList.add('scale-95');
+      modalEl.classList.remove('opacity-100');
+      modalEl.classList.add('opacity-0');
+
+      setTimeout(function() {
+        modalEl.classList.add('hidden');
+      }, 250);
+    };
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !modalEl.classList.contains('hidden')) {
+        window.tutupPopupInformasiFrontend();
+      }
+    });
+  })();
+</script>
 
 
   <!-- GENERAL MODAL CONTAINER -->

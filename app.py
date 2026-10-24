@@ -3501,8 +3501,6 @@ def admin_popup_tambah():
     urutan = request.form.get('urutan', type=int) or 1
     tanggal_mulai = request.form.get('tanggal_mulai', '').strip() or None
     tanggal_selesai = request.form.get('tanggal_selesai', '').strip() or None
-    tanggal_mulai = request.form.get('tanggal_mulai', '').strip() or None
-    tanggal_selesai = request.form.get('tanggal_selesai', '').strip() or None
 
     if not judul:
         flash('Judul pop-up pengumuman wajib diisi.', 'danger')
@@ -3562,6 +3560,8 @@ def admin_popup_edit(id):
     status = request.form.get('status', 'Tayang').strip()
     tampil_sekali = 1 if request.form.get('tampil_sekali') == '1' else 0
     urutan = request.form.get('urutan', type=int) or 1
+    tanggal_mulai = request.form.get('tanggal_mulai', '').strip() or None
+    tanggal_selesai = request.form.get('tanggal_selesai', '').strip() or None
 
     if not judul:
         flash('Judul pop-up pengumuman wajib diisi.', 'danger')
