@@ -60,6 +60,26 @@
 
   <!-- MAIN HEADER / NAVBAR: GRADASI HIJAU SESUAI SCREENSHOT -->
   <header class="sticky top-0 z-50 bg-gradient-to-b from-[#1b5e20] via-[#164e1a] to-[#0f3813] text-white shadow-xl shadow-black/20 transition-all duration-300 border-b border-black/40">
+  <!-- TOP UTILITY BAR: POJOK KANAN ATAS MODE PENCAHAYAAN (TERANG / GELAP) -->
+  <div class="bg-[#0b2809] dark:bg-[#061108] text-white/90 text-[11px] py-1 border-b border-white/10 px-4 sm:px-6">
+    <div class="max-w-[1440px] mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-medium hidden sm:inline text-white/90">Portal Resmi Pemerintah Desa {{ profil.nama_desa }} - Kecamatan {{ profil.kecamatan }}, Kabupaten {{ profil.kabupaten }}</span>
+        <span class="font-medium sm:hidden text-white/90">Desa {{ profil.nama_desa }}</span>
+      </div>
+
+      <!-- POJOK KANAN ATAS: PENGATUR PENCAHAYAAN (TERANG / GELAP) -->
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="toggleThemeMode()" id="theme-toggle-btn"
+                class="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-[11px] font-bold transition border border-white/20 shadow-xs cursor-pointer group"
+                title="Atur Pencahayaan (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
+          <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-300 text-xs transition-transform duration-300 group-hover:rotate-12"></i>
+          <span id="theme-toggle-text">Mode Gelap</span>
+        </button>
+      </div>
+    </div>
+  </div>
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6">
       <div class="flex items-center justify-between py-2 sm:py-2.5 min-h-[72px] gap-3">
         
@@ -148,13 +168,6 @@
 
         <!-- Bagian Kanan: Toggle Mobile & Tombol Kuning Layanan Surat -->
         <div class="flex items-center shrink-0">
-          <!-- Tombol Pengatur Pencahayaan (Terang / Gelap) Desktop -->
-          <button type="button" onclick="toggleThemeMode()" id="theme-toggle-btn"
-                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition border border-white/20 text-xs font-bold mr-2 sm:mr-3 shadow-xs cursor-pointer focus:outline-none"
-                  title="Atur Pencahayaan (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
-            <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-200 text-xs"></i>
-            <span id="theme-toggle-text" class="hidden sm:inline text-[11px] font-semibold tracking-wide">Mode Gelap</span>
-          </button>
           <!-- Mobile Toggle Button (hidden di layar desktop xl+) -->
           <button id="mobile-menu-toggle" type="button" 
                   class="xl:hidden p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15 mr-2 sm:mr-3" aria-label="Buka Menu Navigasi">
