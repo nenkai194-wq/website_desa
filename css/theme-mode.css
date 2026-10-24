@@ -465,3 +465,125 @@ html.dark .bar-ringkasan-prestasi .piagam-badge-status {
   border-color: rgba(16, 185, 129, 0.4) !important;
 }
 
+
+/* ==========================================================================
+   16. PANEL ADMIN TERPADU - MODE GELAP ERGONOMIS & GRADASI WARNA HARMONIS
+   ========================================================================== */
+
+/* Latar Belakang & Header Topbar Admin */
+html.dark header.bg-white,
+html.dark header[class*="bg-white"] {
+  background: linear-gradient(90deg, #0a0f1d 0%, #0f172a 100%) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Sidebar Admin di Mode Gelap */
+html.dark aside.bg-slate-900 {
+  background: #070b14 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Kartu & Box Kontainer Admin di Mode Gelap */
+html.dark main .bg-white,
+html.dark .admin-card {
+  background: linear-gradient(145deg, #0e172a 0%, #111e38 100%) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Tabel Admin di Mode Gelap */
+html.dark table thead,
+html.dark table thead tr,
+html.dark table thead th {
+  background-color: #090e1a !important;
+  color: #94a3b8 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark table tbody tr {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+html.dark table tbody tr:hover,
+html.dark table tbody tr.hover\:bg-slate-50:hover {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+html.dark table td {
+  color: #e2e8f0 !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Input, Textarea, Select pada Form Admin */
+html.dark .form-input,
+html.dark main input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+html.dark main textarea,
+html.dark main select {
+  background-color: #090e1c !important;
+  border-color: #26334d !important;
+  color: #f8fafc !important;
+}
+
+html.dark main input:focus,
+html.dark main textarea:focus,
+html.dark main select:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
+}
+
+html.dark main select option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+/* Modal Dialog Admin */
+html.dark [id^="modal"],
+html.dark .admin-modal-content {
+  background: linear-gradient(145deg, #0e172a 0%, #131f3b 100%) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Tombol Aksi & Badge Kontras Tinggi */
+html.dark .btn-admin-secondary,
+html.dark main .bg-slate-100 {
+  background-color: #141f36 !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark main .hover\:bg-slate-200:hover {
+  background-color: #1e2d4d !important;
+  color: #ffffff !important;
+}
+
+/* Pastikan Teks Judul & Label Tajam, Bebas Bias */
+html.dark main h1, 
+html.dark main h2, 
+html.dark main h3, 
+html.dark main h4, 
+html.dark main h5 {
+  color: #ffffff !important;
+}
+
+html.dark main .text-slate-800,
+html.dark main .text-slate-900 {
+  color: #f8fafc !important;
+}
+
+html.dark main .text-slate-700,
+html.dark main .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark main .text-slate-500,
+html.dark main .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+/* Sub-card Slate 50 dalam Mode Gelap */
+html.dark main .bg-slate-50 {
+  background-color: #0a1120 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}

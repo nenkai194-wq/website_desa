@@ -1096,48 +1096,95 @@ def admin_dashboard():
     cursor = conn.cursor()
 
     # 1. Permohonan Surat
-    cursor.execute("SELECT COUNT(*) FROM layanan_surat")
-    total_surat = cursor.fetchone()[0] or 0
-
-    cursor.execute("SELECT COUNT(*) FROM layanan_surat WHERE status = 'Menunggu'")
-    surat_pending = cursor.fetchone()[0] or 0
-
-    cursor.execute("SELECT COUNT(*) FROM layanan_surat WHERE status = 'Diproses'")
-    surat_proses = cursor.fetchone()[0] or 0
-
-    cursor.execute("SELECT COUNT(*) FROM layanan_surat WHERE status = 'Selesai'")
-    surat_selesai = cursor.fetchone()[0] or 0
+    cursor.execute("SELECT COUNT(*), SUM(CASE WHEN status='Menunggu' THEN 1 ELSE 0 END), SUM(CASE WHEN status='Diproses' THEN 1 ELSE 0 END), SUM(CASE WHEN status='Selesai' THEN 1 ELSE 0 END) FROM layanan_surat")
+    s_row = cursor.fetchone() or (0, 0, 0, 0)
+    total_surat = s_row[0] or 0
+    surat_pending = s_row[1] or 0
+    surat_proses = s_row[2] or 0
+    surat_selesai = s_row[3] or 0
 
     # 2. Aspirasi & Pengaduan
-    cursor.execute("SELECT COUNT(*) FROM pengaduan")
-    total_aduan = cursor.fetchone()[0] or 0
+    cursor.execute("SELECT COUNT(*), SUM(CASE WHEN status='Belum Ditanggapi' OR status='Menunggu' THEN 1 ELSE 0 END), SUM(CASE WHEN status='Perlu Perlakuan Khusus' THEN 1 ELSE 0 END), SUM(CASE WHEN status='Sudah Diselesaikan' OR status='Selesai' THEN 1 ELSE 0 END) FROM pengaduan")
+    p_row = cursor.fetchone() or (0, 0, 0, 0)
+    total_aduan = p_row[0] or 0
+    aduan_pending = p_row[1] or 0
+    aduan_khusus = p_row[2] or 0
+    aduan_selesai = p_row[3] or 0
 
-    cursor.execute("SELECT COUNT(*) FROM pengaduan WHERE status = 'Belum Ditanggapi' OR status = 'Menunggu'")
-    aduan_pending = cursor.fetchone()[0] or 0
+    # 3. Feedback Kepuasan Warga
+    cursor.execute("SELECT COUNT(*), COALESCE(AVG(rating), 5.0), COALESCE(SUM(CASE WHEN rating >= 4 THEN 1 ELSE 0 END), 0) FROM feedback_kepuasan")
+    fb_row = cursor.fetchone() or (0, 5.0, 0)
+    total_feedback = fb_row[0] or 0
+    avg_feedback_rating = round(fb_row[1], 1) if total_feedback > 0 else 5.0
+    puas_feedback_pct = round((fb_row[2] / total_feedback * 100), 1) if total_feedback > 0 else 100.0
 
-    cursor.execute("SELECT COUNT(*) FROM pengaduan WHERE status = 'Perlu Perlakuan Khusus'")
-    aduan_khusus = cursor.fetchone()[0] or 0
-
-    cursor.execute("SELECT COUNT(*) FROM pengaduan WHERE status = 'Sudah Diselesaikan' OR status = 'Selesai'")
-    aduan_selesai = cursor.fetchone()[0] or 0
-
-    # 3. Berita, UMKM, Wisata, Publikasi, Perangkat
+    # 4. Berita, Galeri & Piagam Prestasi
     cursor.execute("SELECT COUNT(*) FROM berita")
     total_berita = cursor.fetchone()[0] or 0
 
-    cursor.execute("SELECT COUNT(*) FROM umkm")
-    total_umkm = cursor.fetchone()[0] or 0
+    cursor.execute("SELECT COUNT(*), COALESCE(SUM(CASE WHEN tipe = 'penghargaan' OR kategori = 'Piagam & Penghargaan' THEN 1 ELSE 0 END), 0), COALESCE(SUM(CASE WHEN status = 'Menunggu' OR status = 'pending' THEN 1 ELSE 0 END), 0) FROM galeri")
+    g_row = cursor.fetchone() or (0, 0, 0)
+    total_galeri = g_row[0] or 0
+    total_prestasi = g_row[1] or 0
+    pending_galeri = g_row[2] or 0
 
-    cursor.execute("SELECT COUNT(*) FROM wisata")
-    total_wisata = cursor.fetchone()[0] or 0
+    # 5. UMKM, Wisata & Publikasi Digital
+    cursor.execute("SELECT COUNT(*), COALESCE(SUM(CASE WHEN status='Disetujui' OR status='disetujui' OR status='aktif' THEN 1 ELSE 0 END), 0), COALESCE(SUM(CASE WHEN status='Menunggu Approval' OR status='pending' THEN 1 ELSE 0 END), 0) FROM umkm")
+    u_row = cursor.fetchone() or (0, 0, 0)
+    total_umkm = u_row[0] or 0
+    umkm_disetujui = u_row[1] or 0
+    umkm_pending = u_row[2] or 0
 
-    cursor.execute("SELECT COUNT(*) FROM buku_publikasi")
-    total_publikasi = cursor.fetchone()[0] or 0
+    cursor.execute("SELECT COUNT(*), COALESCE(SUM(CASE WHEN status='Disetujui' OR status='disetujui' OR status='aktif' THEN 1 ELSE 0 END), 0) FROM wisata")
+    w_row = cursor.fetchone() or (0, 0)
+    total_wisata = w_row[0] or 0
+    wisata_aktif = w_row[1] or 0
+
+    cursor.execute("SELECT COUNT(*), COALESCE(SUM(jumlah_unduh), 0), COALESCE(SUM(jumlah_baca), 0) FROM buku_publikasi")
+    pub_row = cursor.fetchone() or (0, 0, 0)
+    total_publikasi = pub_row[0] or 0
+    publikasi_unduh = pub_row[1] or 0
+    publikasi_baca = pub_row[2] or 0
 
     cursor.execute("SELECT COUNT(*) FROM perangkat_desa")
     total_perangkat = cursor.fetchone()[0] or 0
 
-    # 4. Kependudukan (Statistik Penduduk 2026 atau data terbaru yang terisi)
+    # 6. Pembangunan & Realisasi Fisik
+    cursor.execute("""
+        SELECT 
+            COUNT(*),
+            COALESCE(SUM(anggaran), 0),
+            COALESCE(SUM(CASE WHEN status_progres = 'Selesai' THEN anggaran ELSE (anggaran * progres_persen / 100.0) END), 0),
+            COALESCE(SUM(CASE WHEN status_progres = 'Selesai' THEN 1 ELSE 0 END), 0),
+            COALESCE(SUM(CASE WHEN status_progres = 'Sedang Dikerjakan' OR status_progres = 'Sedang Berjalan' THEN 1 ELSE 0 END), 0),
+            COALESCE(SUM(CASE WHEN status_progres = 'Rencana' THEN 1 ELSE 0 END), 0),
+            COALESCE(AVG(progres_persen), 0)
+        FROM pembangunan_desa
+    """)
+    pb_row = cursor.fetchone() or (0, 0, 0, 0, 0, 0, 0)
+    pembangunan_total = pb_row[0] or 0
+    pembangunan_anggaran = pb_row[1] or 0
+    pembangunan_realisasi = pb_row[2] or 0
+    pembangunan_selesai = pb_row[3] or 0
+    pembangunan_berjalan = pb_row[4] or 0
+    pembangunan_rencana = pb_row[5] or 0
+    pembangunan_avg_progres = round(pb_row[6], 1) if pembangunan_total > 0 else 0
+
+    # 7. Media Interaktif & Trafik
+    cursor.execute("SELECT COUNT(*) FROM running_texts WHERE is_active = 1")
+    rt_count = cursor.fetchone()[0] or 0
+
+    cursor.execute("SELECT COUNT(*) FROM banner_slider WHERE is_active = 1")
+    slider_count = cursor.fetchone()[0] or 0
+
+    cursor.execute("SELECT COUNT(*) FROM popup_informasi WHERE status = 'aktif'")
+    popup_count = cursor.fetchone()[0] or 0
+
+    cursor.execute("SELECT total_hits FROM visitor_totals WHERE id = 1")
+    v_row = cursor.fetchone()
+    total_hits = v_row[0] if v_row else 28933
+
+    # 8. Kependudukan (Statistik Penduduk 2026 atau data terbaru)
     cursor.execute("SELECT * FROM statistik WHERE total_penduduk > 0 ORDER BY tahun DESC LIMIT 1")
     stat_row = cursor.fetchone()
     if not stat_row:
@@ -1148,7 +1195,7 @@ def admin_dashboard():
     cursor.execute("SELECT COUNT(*) FROM statistik_sls WHERE tahun = ?", (stat_penduduk.get('tahun', 2026),))
     total_sls = cursor.fetchone()[0] or 26
 
-    # 5. Stunting, Gizi Buruk, Anak Yatim (tahun aktif)
+    # 9. Stunting, Gizi Buruk, Anak Yatim (tahun aktif)
     tahun_stat = stat_penduduk.get('tahun', 2026)
     cursor.execute("SELECT SUM(anak_stunting), SUM(jumlah_anak_balita) FROM statistik_stunting WHERE tahun = ?", (tahun_stat,))
     stunt_res = cursor.fetchone()
@@ -1166,20 +1213,26 @@ def admin_dashboard():
     anak_yp = (anak_res[2] if anak_res and anak_res[2] is not None else 0)
     total_yatim_semua = anak_yatim + anak_piatu + anak_yp
 
-    # 6. APBDes
+    # 10. APBDes
     cursor.execute("SELECT * FROM apbdes WHERE id = 1")
     apbdes_row = cursor.fetchone()
     apbdes_data = dict(apbdes_row or {})
 
-    # 7. Recent Items
+    # 11. Recent Items
     cursor.execute("SELECT * FROM layanan_surat ORDER BY id DESC LIMIT 5")
     recent_surat = [dict(row) for row in cursor.fetchall()]
 
     cursor.execute("SELECT * FROM pengaduan ORDER BY id DESC LIMIT 5")
     recent_aduan = [dict(row) for row in cursor.fetchall()]
 
-    # 8. Activity logs & Backups (untuk Super Admin widget)
-    cursor.execute("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 4")
+    cursor.execute("SELECT id, nama_kegiatan, kategori, dusun, anggaran, progres_persen, status_progres FROM pembangunan_desa ORDER BY id DESC LIMIT 4")
+    recent_pembangunan = [dict(row) for row in cursor.fetchall()]
+
+    cursor.execute("SELECT id, judul, kategori, tipe, status, gambar, created_at FROM galeri ORDER BY id DESC LIMIT 4")
+    recent_galeri = [dict(row) for row in cursor.fetchall()]
+
+    # 12. Activity logs & Backups (untuk Super Admin widget)
+    cursor.execute("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 5")
     recent_logs = [dict(r) for r in cursor.fetchall()]
 
     cursor.execute("SELECT COUNT(*) FROM users")
@@ -1199,11 +1252,33 @@ def admin_dashboard():
         'aduan_pending': aduan_pending,
         'aduan_khusus': aduan_khusus,
         'aduan_selesai': aduan_selesai,
+        'total_feedback': total_feedback,
+        'avg_feedback_rating': avg_feedback_rating,
+        'puas_feedback_pct': puas_feedback_pct,
         'total_berita': total_berita,
+        'total_galeri': total_galeri,
+        'total_prestasi': total_prestasi,
+        'pending_galeri': pending_galeri,
         'total_umkm': total_umkm,
+        'umkm_disetujui': umkm_disetujui,
+        'umkm_pending': umkm_pending,
         'total_wisata': total_wisata,
+        'wisata_aktif': wisata_aktif,
         'total_publikasi': total_publikasi,
+        'publikasi_unduh': publikasi_unduh,
+        'publikasi_baca': publikasi_baca,
         'total_perangkat': total_perangkat,
+        'pembangunan_total': pembangunan_total,
+        'pembangunan_anggaran': pembangunan_anggaran,
+        'pembangunan_realisasi': pembangunan_realisasi,
+        'pembangunan_selesai': pembangunan_selesai,
+        'pembangunan_berjalan': pembangunan_berjalan,
+        'pembangunan_rencana': pembangunan_rencana,
+        'pembangunan_avg_progres': pembangunan_avg_progres,
+        'rt_count': rt_count,
+        'slider_count': slider_count,
+        'popup_count': popup_count,
+        'total_hits': total_hits,
         'stat_penduduk': stat_penduduk,
         'total_sls': total_sls,
         'total_stunting': total_stunting,
@@ -1223,6 +1298,8 @@ def admin_dashboard():
         metrics=metrics,
         recent_surat=recent_surat,
         recent_aduan=recent_aduan,
+        recent_pembangunan=recent_pembangunan,
+        recent_galeri=recent_galeri,
         recent_logs=recent_logs
     )
 

@@ -56,10 +56,10 @@
     body { font-family: 'Outfit', sans-serif; }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 antialiased flex h-screen overflow-hidden">
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased flex h-screen overflow-hidden">
 
   <!-- SIDEBAR -->
-  <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 border-r border-slate-800 transition-all duration-300">
+  <aside class="w-64 bg-slate-900 dark:bg-slate-950 text-slate-300 flex flex-col flex-shrink-0 border-r border-slate-800 transition-all duration-300">
     <!-- Header Sidebar -->
     <div class="h-20 flex items-center gap-3 px-6 bg-slate-950 border-b border-slate-800">
       <img src="{{ url_for('static', filename=profil_global.logo_website.replace('static/', '')) if profil_global.logo_website and profil_global.logo_website.startswith('static/') else (profil_global.logo_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" class="w-9 h-9 object-contain" alt="Logo" onerror="this.src='{{ url_for('static', filename='images/logo_tasikmalaya.png') }}'" />
@@ -173,10 +173,10 @@
   <div class="flex-1 flex flex-col h-screen overflow-hidden">
     
     <!-- Topbar -->
-    <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0">
+    <header class="h-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 flex-shrink-0">
       <div>
-        <h1 class="text-xl font-bold text-slate-900 leading-tight">{% block header_title %}Dashboard Pengelolaan Desa{% endblock %}</h1>
-        <p class="text-xs text-slate-500">Kelola informasi publik, surat mandiri, dan UMKM Desa.</p>
+        <h1 class="text-xl font-bold text-slate-900 dark:text-white leading-tight">{% block header_title %}Dashboard Pengelolaan Desa{% endblock %}</h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Kelola informasi publik, surat mandiri, dan UMKM Desa.</p>
       </div>
       <div class="flex items-center gap-4">
         <a href="{{ url_for('index') }}" target="_blank" class="hidden sm:inline-flex items-center gap-2 text-xs font-bold bg-brand-50 text-brand-800 border border-brand-200 px-3.5 py-2 rounded-xl hover:bg-brand-100 transition">
@@ -192,7 +192,7 @@
             {{ session.get('username', 'A')[0].upper() }}
           </div>
           <div class="hidden sm:block text-left text-xs">
-            <span class="font-bold text-slate-800 block">{{ session.get('nama', 'Administrator') }}</span>
+            <span class="font-bold text-slate-800 dark:text-white block">{{ session.get('nama', 'Administrator') }}</span>
             <span class="{% if session.get('role') == 'superadmin' %}text-amber-700 font-bold{% else %}text-slate-400{% endif %} text-[10px]">
               {% if session.get('role') == 'superadmin' %}Super Admin (Full Access){% else %}Admin Operator Pelayanan{% endif %}
             </span>
@@ -216,7 +216,7 @@
     </div>
 
     <!-- Body Scrollable Content -->
-    <main class="flex-1 overflow-y-auto px-8 py-6">
+    <main class="flex-1 overflow-y-auto px-8 py-6 bg-slate-100 dark:bg-slate-950">
       {% block content %}{% endblock %}
     </main>
 

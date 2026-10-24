@@ -4,142 +4,190 @@
 {% block header_title %}Ringkasan Pelayanan & Pusat Kendali Desa{% endblock %}
 
 {% block content %}
-<div class="space-y-8">
+<div class="space-y-8 pb-10">
 
-  <!-- TOP HERO WELCOME BANNER -->
-  <div class="bg-gradient-to-r from-slate-900 via-brand-900 to-slate-900 text-white rounded-3xl p-6 sm:p-7 shadow-xl border border-slate-800 relative overflow-hidden">
+  <!-- TOP HERO WELCOME BANNER (Executive Gradient with Harmonious Dark Mode) -->
+  <div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80 dark:border-slate-800 bg-gradient-to-r from-slate-900 via-brand-950 to-slate-900 dark:from-slate-950 dark:via-emerald-950/40 dark:to-slate-950 text-white">
+    <!-- Ambient Glow Accent -->
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
       <div>
-        <div class="flex items-center gap-2 mb-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-300">Pusat Kendali Administrasi Terpadu</span>
-          <span class="text-slate-400">•</span>
-          <span class="text-xs font-semibold text-slate-300">Pemerintah Desa {{ profil_global.nama_desa or 'Papayan' }}, Kecamatan {{ profil_global.kecamatan or 'Marang Kayu' }}</span>
+        <div class="flex flex-wrap items-center gap-2 mb-2.5">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Pusat Kendali Administrasi Terpadu
+          </span>
+          <span class="text-slate-400 text-xs">•</span>
+          <span class="text-xs font-semibold text-slate-300">Desa {{ profil_global.nama_desa or 'Papayan' }}, Kec. {{ profil_global.kecamatan or 'Marang Kayu' }}</span>
         </div>
-        <h2 class="text-xl sm:text-2xl font-black text-white">Selamat Datang, {{ session.get('nama') or 'Administrator' }}</h2>
-        <p class="text-xs text-slate-300 max-w-2xl mt-1 leading-relaxed">
-          Pantau seluruh aktivitas pelayanan surat online mandiri, tindak lanjut pengaduan masyarakat, demografi penduduk, transparansi APBDes, serta statistik kesehatan generasi desa secara *real-time*.
+        <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          Selamat Datang, {{ session.get('nama') or 'Administrator' }}
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-300 dark:text-slate-300 max-w-3xl mt-1.5 leading-relaxed">
+          Pantau seluruh aktivitas pelayanan surat mandiri, aspirasi pengaduan, pelaksanaan pembangunan fisik, transparansi keuangan APBDes, statistik kependudukan SLS, hingga publikasi berita & potensi desa secara *real-time*.
         </p>
       </div>
 
       <div class="flex flex-wrap items-center gap-2.5 shrink-0">
-        <a href="{{ url_for('admin_surat') }}" class="px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs flex items-center gap-2 shadow-lg transition">
+        <a href="{{ url_for('admin_surat') }}" class="px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-brand-900/30 transition transform hover:-translate-y-0.5">
           <i class="fa-solid fa-file-circle-check"></i> Layanan Surat Warga
         </a>
-        <a href="{{ url_for('admin_pengaduan') }}" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 border border-white/20 transition">
+        <a href="{{ url_for('admin_pengaduan') }}" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 border border-white/20 transition transform hover:-translate-y-0.5">
           <i class="fa-solid fa-headset"></i> Respon Pengaduan
         </a>
+        <a href="{{ url_for('admin_pembangunan') }}" class="px-4 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-bold text-xs flex items-center gap-2 transition transform hover:-translate-y-0.5">
+          <i class="fa-solid fa-person-digging text-amber-400"></i> Pembangunan Desa
+        </a>
         {% if session.get('role') == 'superadmin' %}
-        <a href="{{ url_for('admin_backup') }}" class="px-4 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 font-bold text-xs flex items-center gap-2 transition">
-          <i class="fa-solid fa-database"></i> Backup Data
+        <a href="{{ url_for('admin_backup') }}" class="px-4 py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 font-bold text-xs flex items-center gap-2 transition transform hover:-translate-y-0.5">
+          <i class="fa-solid fa-database"></i> Backup Sistem
         </a>
         {% endif %}
       </div>
     </div>
   </div>
 
-  <!-- ROW 1: 4 KARTU METRIK UTAMA PELAYANAN & AKTIVITAS -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+  <!-- ROW 1: 5 KARTU METRIK UTAMA PELAYANAN & AKTIVITAS -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
     
-    <!-- Permohonan Surat -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 transition group">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Permohonan Surat</span>
-        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg group-hover:scale-110 transition">
-          <i class="fa-solid fa-file-signature"></i>
+    <!-- 1. Permohonan Surat -->
+    <div class="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 transition-all group">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Layanan Surat</span>
+          <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-base group-hover:scale-110 transition border border-blue-100 dark:border-blue-500/20">
+            <i class="fa-solid fa-file-signature"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-black text-slate-900 dark:text-white">{{ metrics.total_surat }}</span>
+            <span class="text-[11px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-500/30">
+              {{ metrics.surat_pending }} Menunggu
+            </span>
+          </div>
+          <div class="flex items-center gap-2 mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+            <span><strong class="text-blue-600 dark:text-blue-400">{{ metrics.surat_proses }}</strong> Proses</span>
+            <span>•</span>
+            <span><strong class="text-emerald-600 dark:text-emerald-400">{{ metrics.surat_selesai }}</strong> Selesai</span>
+          </div>
         </div>
       </div>
-      <div class="mt-2">
-        <div class="flex items-baseline gap-2">
-          <span class="text-3xl font-black text-slate-900">{{ metrics.total_surat }}</span>
-          <span class="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-            {{ metrics.surat_pending }} Menunggu
-          </span>
-        </div>
-        <div class="flex items-center gap-3 mt-2 text-[11px] text-slate-500">
-          <span><strong class="text-blue-600">{{ metrics.surat_proses }}</strong> Diproses</span>
-          <span>•</span>
-          <span><strong class="text-emerald-600">{{ metrics.surat_selesai }}</strong> Selesai</span>
-        </div>
-      </div>
-      <a href="{{ url_for('admin_surat') }}" class="mt-3 pt-2.5 border-t border-slate-100 text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center justify-between">
-        <span>Kelola Surat Warga</span>
+      <a href="{{ url_for('admin_surat') }}" class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center justify-between">
+        <span>Kelola Permohonan</span>
         <i class="fa-solid fa-arrow-right text-[10px]"></i>
       </a>
     </div>
 
-    <!-- Aspirasi & Pengaduan Warga -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-purple-300 transition group">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Aspirasi & Pengaduan</span>
-        <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg group-hover:scale-110 transition">
-          <i class="fa-solid fa-comments"></i>
+    <!-- 2. Aspirasi & Pengaduan Warga + Rating Feedback -->
+    <div class="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:border-purple-400 dark:hover:border-purple-500 transition-all group">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Aspirasi & Aduan</span>
+          <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base group-hover:scale-110 transition border border-purple-100 dark:border-purple-500/20">
+            <i class="fa-solid fa-comments"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-black text-slate-900 dark:text-white">{{ metrics.total_aduan }}</span>
+            <span class="text-[11px] font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-500/20 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-500/30">
+              {{ metrics.aduan_pending }} Pending
+            </span>
+          </div>
+          <div class="flex items-center gap-1.5 mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+            <span class="text-amber-500"><i class="fa-solid fa-star"></i> {{ metrics.avg_feedback_rating }}</span>
+            <span>•</span>
+            <span><strong class="text-emerald-600 dark:text-emerald-400">{{ metrics.puas_feedback_pct }}%</strong> Puas</span>
+          </div>
         </div>
       </div>
-      <div class="mt-2">
-        <div class="flex items-baseline gap-2">
-          <span class="text-3xl font-black text-slate-900">{{ metrics.total_aduan }}</span>
-          <span class="text-[11px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
-            {{ metrics.aduan_pending }} Belum Ditanggapi
-          </span>
-        </div>
-        <div class="flex items-center gap-3 mt-2 text-[11px] text-slate-500">
-          <span><strong class="text-amber-600">{{ metrics.aduan_khusus }}</strong> Perlu Khusus</span>
-          <span>•</span>
-          <span><strong class="text-emerald-600">{{ metrics.aduan_selesai }}</strong> Selesai</span>
-        </div>
-      </div>
-      <a href="{{ url_for('admin_pengaduan') }}" class="mt-3 pt-2.5 border-t border-slate-100 text-[11px] font-bold text-purple-600 hover:text-purple-800 flex items-center justify-between">
-        <span>Tanggapi Aspirasi Warga</span>
+      <a href="{{ url_for('admin_pengaduan') }}" class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] font-bold text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 flex items-center justify-between">
+        <span>Respon Aduan & Survei</span>
         <i class="fa-solid fa-arrow-right text-[10px]"></i>
       </a>
     </div>
 
-    <!-- Berita & Publikasi Desa -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-emerald-300 transition group">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Kabar & Publikasi</span>
-        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg group-hover:scale-110 transition">
-          <i class="fa-solid fa-newspaper"></i>
+    <!-- 3. Pembangunan Desa & Anggaran -->
+    <div class="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:border-amber-400 dark:hover:border-amber-500 transition-all group">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pembangunan</span>
+          <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base group-hover:scale-110 transition border border-amber-100 dark:border-amber-500/20">
+            <i class="fa-solid fa-person-digging"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-black text-slate-900 dark:text-white">{{ metrics.pembangunan_total }}</span>
+            <span class="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/30">
+              {{ metrics.pembangunan_avg_progres }}% Progres
+            </span>
+          </div>
+          <div class="flex items-center gap-2 mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+            <span><strong class="text-emerald-600 dark:text-emerald-400">{{ metrics.pembangunan_selesai }}</strong> Selesai</span>
+            <span>•</span>
+            <span><strong class="text-amber-600 dark:text-amber-400">{{ metrics.pembangunan_berjalan }}</strong> Berjalan</span>
+          </div>
         </div>
       </div>
-      <div class="mt-2">
-        <div class="flex items-baseline gap-2">
-          <span class="text-3xl font-black text-slate-900">{{ metrics.total_berita }}</span>
-          <span class="text-[11px] font-semibold text-slate-500">Berita Terbit</span>
-        </div>
-        <div class="flex items-center gap-3 mt-2 text-[11px] text-slate-500">
-          <span><strong class="text-emerald-600">{{ metrics.total_publikasi }}</strong> Dokumen Perdes</span>
-          <span>•</span>
-          <span><strong class="text-slate-700">{{ metrics.total_perangkat }}</strong> Perangkat Desa</span>
-        </div>
-      </div>
-      <a href="{{ url_for('admin_berita') }}" class="mt-3 pt-2.5 border-t border-slate-100 text-[11px] font-bold text-emerald-600 hover:text-emerald-800 flex items-center justify-between">
-        <span>Kelola Berita & Publikasi</span>
+      <a href="{{ url_for('admin_pembangunan') }}" class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 flex items-center justify-between">
+        <span>Monitor Fisik & Pagu</span>
         <i class="fa-solid fa-arrow-right text-[10px]"></i>
       </a>
     </div>
 
-    <!-- Ekonomi & Potensi Desa -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-amber-300 transition group">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ekonomi & Pariwisata</span>
-        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg group-hover:scale-110 transition">
-          <i class="fa-solid fa-store"></i>
+    <!-- 4. Warta, Galeri & Piagam Prestasi -->
+    <div class="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:border-emerald-400 dark:hover:border-emerald-500 transition-all group">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Kabar & Prestasi</span>
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-base group-hover:scale-110 transition border border-emerald-100 dark:border-emerald-500/20">
+            <i class="fa-solid fa-newspaper"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-black text-slate-900 dark:text-white">{{ metrics.total_berita }}</span>
+            <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Berita Terbit</span>
+          </div>
+          <div class="flex items-center gap-2 mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+            <span><strong class="text-amber-600 dark:text-amber-400">{{ metrics.total_prestasi }}</strong> Piagam</span>
+            <span>•</span>
+            <span><strong class="text-teal-600 dark:text-teal-400">{{ metrics.total_galeri }}</strong> Galeri</span>
+          </div>
         </div>
       </div>
-      <div class="mt-2">
-        <div class="flex items-baseline gap-2">
-          <span class="text-3xl font-black text-slate-900">{{ metrics.total_umkm }}</span>
-          <span class="text-[11px] font-semibold text-slate-500">Produk UMKM</span>
+      <a href="{{ url_for('admin_berita') }}" class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 flex items-center justify-between">
+        <span>Kelola Berita & Galeri</span>
+        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+      </a>
+    </div>
+
+    <!-- 5. Ekonomi UMKM, Wisata & Pengunjung -->
+    <div class="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:border-teal-400 dark:hover:border-teal-500 transition-all group">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Potensi & Trafik</span>
+          <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center text-base group-hover:scale-110 transition border border-teal-100 dark:border-teal-500/20">
+            <i class="fa-solid fa-store"></i>
+          </div>
         </div>
-        <div class="flex items-center gap-3 mt-2 text-[11px] text-slate-500">
-          <span><strong class="text-amber-600">{{ metrics.total_wisata }}</strong> Destinasi Wisata</span>
-          <span>•</span>
-          <span><strong class="text-brand-700">Aktif</strong> di Katalog</span>
+        <div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-black text-slate-900 dark:text-white">{{ metrics.total_umkm }}</span>
+            <span class="text-[11px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-500/20 px-2 py-0.5 rounded-full border border-teal-200 dark:border-teal-500/30">
+              {{ metrics.total_wisata }} Wisata
+            </span>
+          </div>
+          <div class="flex items-center gap-2 mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+            <span><strong class="text-blue-600 dark:text-blue-400">{{ "{:,.0f}".format(metrics.total_hits).replace(',', '.') }}</strong> Hits Kunjungan</span>
+          </div>
         </div>
       </div>
-      <a href="{{ url_for('admin_umkm') }}" class="mt-3 pt-2.5 border-t border-slate-100 text-[11px] font-bold text-amber-600 hover:text-amber-800 flex items-center justify-between">
+      <a href="{{ url_for('admin_umkm') }}" class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] font-bold text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 flex items-center justify-between">
         <span>Katalog UMKM & Wisata</span>
         <i class="fa-solid fa-arrow-right text-[10px]"></i>
       </a>
@@ -147,315 +195,345 @@
 
   </div>
 
-  <!-- ROW 2: MENU AKSI CEPAT TERPADU (QUICK ACTIONS) -->
-  <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-    <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+  <!-- ROW 2: PINTASAN AKSI CEPAT TERPADU (QUICK ACTION SHORTCUTS) -->
+  <div class="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
       <div class="flex items-center gap-2">
-        <span class="w-7 h-7 rounded-lg bg-brand-50 text-brand-700 flex items-center justify-center text-xs font-bold">
+        <span class="w-7 h-7 rounded-lg bg-brand-50 dark:bg-emerald-500/10 text-brand-700 dark:text-emerald-400 flex items-center justify-center text-xs font-bold border border-brand-200/60 dark:border-emerald-500/20">
           <i class="fa-solid fa-bolt"></i>
         </span>
-        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800">Menu & Aksi Cepat Administrasi</h3>
+        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-slate-200">Pusat Navigasi & Aksi Cepat Administrasi</h3>
       </div>
-      <span class="text-[11px] text-slate-400">Pintasan navigasi langsung ke menu utama</span>
+      <span class="text-[11px] text-slate-400 dark:text-slate-500">Akses langsung ke seluruh formulir input data CMS Desa</span>
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-      <a href="{{ url_for('admin_surat') }}" class="p-3 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-center transition group">
-        <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
+      <!-- Surat -->
+      <a href="{{ url_for('admin_surat') }}" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-blue-50 dark:hover:bg-blue-900/30 border border-slate-200/80 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 text-center transition group">
+        <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
           <i class="fa-solid fa-envelope-open-text"></i>
         </div>
-        <span class="text-[11px] font-bold text-slate-700 block truncate">Surat Masuk</span>
-        <span class="text-[9px] text-slate-400 block">Verifikasi</span>
+        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 block truncate">Surat Masuk</span>
+        <span class="text-[9px] text-slate-400 dark:text-slate-400 block">{{ metrics.surat_pending }} Perlu Verif</span>
       </a>
 
-      <a href="{{ url_for('admin_pengaduan') }}" class="p-3 rounded-xl bg-slate-50 hover:bg-purple-50 border border-slate-200 hover:border-purple-300 text-center transition group">
-        <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
+      <!-- Pengaduan -->
+      <a href="{{ url_for('admin_pengaduan') }}" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-purple-50 dark:hover:bg-purple-900/30 border border-slate-200/80 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-600 text-center transition group">
+        <div class="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
           <i class="fa-solid fa-headset"></i>
         </div>
-        <span class="text-[11px] font-bold text-slate-700 block truncate">Pengaduan</span>
-        <span class="text-[9px] text-slate-400 block">Monitoring</span>
+        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 block truncate">Pengaduan</span>
+        <span class="text-[9px] text-slate-400 dark:text-slate-400 block">{{ metrics.aduan_pending }} Menunggu</span>
       </a>
 
-      <a href="{{ url_for('admin_berita') }}" class="p-3 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-center transition group">
-        <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
-          <i class="fa-solid fa-pen-nib"></i>
+      <!-- Pembangunan -->
+      <a href="{{ url_for('admin_pembangunan') }}" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-amber-50 dark:hover:bg-amber-900/30 border border-slate-200/80 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-600 text-center transition group">
+        <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
+          <i class="fa-solid fa-person-digging"></i>
         </div>
-        <span class="text-[11px] font-bold text-slate-700 block truncate">Tulis Berita</span>
-        <span class="text-[9px] text-slate-400 block">Kabar Desa</span>
+        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 block truncate">Pembangunan</span>
+        <span class="text-[9px] text-slate-400 dark:text-slate-400 block">{{ metrics.pembangunan_total }} Kegiatan</span>
       </a>
 
-      <a href="{{ url_for('admin_umkm') }}" class="p-3 rounded-xl bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-center transition group">
-        <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
-          <i class="fa-solid fa-bag-shopping"></i>
+      <!-- Berita & Galeri -->
+      <a href="{{ url_for('admin_berita') }}" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 border border-slate-200/80 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-600 text-center transition group">
+        <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
+          <i class="fa-solid fa-newspaper"></i>
         </div>
-        <span class="text-[11px] font-bold text-slate-700 block truncate">Produk UMKM</span>
-        <span class="text-[9px] text-slate-400 block">Pemberdayaan</span>
+        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 block truncate">Warta & Galeri</span>
+        <span class="text-[9px] text-slate-400 dark:text-slate-400 block">{{ metrics.total_berita }} Terbit</span>
       </a>
 
-      <a href="{{ url_for('admin_wisata') }}" class="p-3 rounded-xl bg-slate-50 hover:bg-cyan-50 border border-slate-200 hover:border-cyan-300 text-center transition group">
-        <div class="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-700 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
-          <i class="fa-solid fa-umbrella-beach"></i>
+      <!-- UMKM -->
+      <a href="{{ url_for('admin_umkm') }}" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-amber-50 dark:hover:bg-amber-900/30 border border-slate-200/80 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-600 text-center transition group">
+        <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
+          <i class="fa-solid fa-basket-shopping"></i>
         </div>
-        <span class="text-[11px] font-bold text-slate-700 block truncate">Wisata Desa</span>
-        <span class="text-[9px] text-slate-400 block">Destinasi</span>
+        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 block truncate">Produk UMKM</span>
+        <span class="text-[9px] text-slate-400 dark:text-slate-400 block">{{ metrics.total_umkm }} Terdaftar</span>
       </a>
 
-      <a href="{{ url_for('admin_statistik') }}" class="p-3 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-center transition group">
-        <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
-          <i class="fa-solid fa-chart-pie"></i>
+      <!-- Publikasi Digital -->
+      <a href="{{ url_for('admin_publikasi') }}" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 border border-slate-200/80 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 text-center transition group">
+        <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
+          <i class="fa-solid fa-book-bookmark"></i>
         </div>
-        <span class="text-[11px] font-bold text-slate-700 block truncate">Statistik SLS</span>
-        <span class="text-[9px] text-slate-400 block">Penduduk & Stunting</span>
+        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 block truncate">Perpustakaan</span>
+        <span class="text-[9px] text-slate-400 dark:text-slate-400 block">{{ metrics.total_publikasi }} Dokumen</span>
       </a>
 
-      <a href="{{ url_for('admin_peta') }}" class="p-3 rounded-xl bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-teal-300 text-center transition group">
-        <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
+      <!-- Peta & Statistik SLS -->
+      <a href="{{ url_for('admin_peta') }}" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-teal-50 dark:hover:bg-teal-900/30 border border-slate-200/80 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600 text-center transition group">
+        <div class="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-500/20 text-teal-700 dark:text-teal-300 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
           <i class="fa-solid fa-map-location-dot"></i>
         </div>
-        <span class="text-[11px] font-bold text-slate-700 block truncate">Peta Wilayah</span>
-        <span class="text-[9px] text-slate-400 block">Batas RT / KML</span>
+        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 block truncate">Peta & SLS</span>
+        <span class="text-[9px] text-slate-400 dark:text-slate-400 block">{{ metrics.total_sls }} Wilayah RT</span>
       </a>
 
+      <!-- Running Text & Media / Superadmin Backup -->
       {% if session.get('role') == 'superadmin' %}
-      <a href="{{ url_for('admin_backup') }}" class="p-3 rounded-xl bg-slate-50 hover:bg-rose-50 border border-slate-200 hover:border-rose-300 text-center transition group">
-        <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
+      <a href="{{ url_for('admin_backup') }}" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-rose-50 dark:hover:bg-rose-900/30 border border-slate-200/80 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 text-center transition group">
+        <div class="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
           <i class="fa-solid fa-shield-halved"></i>
         </div>
-        <span class="text-[11px] font-bold text-slate-700 block truncate">Cadangan & Log</span>
-        <span class="text-[9px] text-slate-400 block">Super Admin</span>
+        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 block truncate">Cadangan & Log</span>
+        <span class="text-[9px] text-slate-400 dark:text-slate-400 block">{{ metrics.total_backups }} Snapshot</span>
       </a>
       {% else %}
-      <a href="{{ url_for('admin_statistik', tab='apbdes') }}" class="p-3 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-center transition group">
-        <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
-          <i class="fa-solid fa-receipt"></i>
+      <a href="{{ url_for('admin_running_text') }}" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-amber-50 dark:hover:bg-amber-900/30 border border-slate-200/80 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-600 text-center transition group">
+        <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 mx-auto mb-2 flex items-center justify-center text-xs group-hover:scale-110 transition">
+          <i class="fa-solid fa-bullhorn"></i>
         </div>
-        <span class="text-[11px] font-bold text-slate-700 block truncate">Data APBDes</span>
-        <span class="text-[9px] text-slate-400 block">Transparansi</span>
+        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 block truncate">Running Text</span>
+        <span class="text-[9px] text-slate-400 dark:text-slate-400 block">{{ metrics.rt_count }} Aktif</span>
       </a>
       {% endif %}
     </div>
   </div>
 
-  <!-- ROW 3: 3 WIDGET VARIATIF (DEMOGRAFI PENDUDUK, STUNTING & GIZI BURUK, TRANSPARANSI APBDES) -->
+  <!-- ROW 3: REKAP MODUL MENYELURUH (3 KOLOM EXECUTIVE SUMMARY) -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-    <!-- WIDGET 1: DEMOGRAFI & SLS WILAYAH -->
-    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+    <!-- WIDGET 1: PROGRES PEMBANGUNAN FISIK & ANGGARAN DESA -->
+    <div class="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm flex flex-col justify-between">
       <div>
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
           <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold">
+            <span class="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs font-bold border border-amber-200/60 dark:border-amber-500/20">
+              <i class="fa-solid fa-trowel-bricks"></i>
+            </span>
+            <div>
+              <h3 class="font-bold text-xs text-slate-900 dark:text-white uppercase tracking-wider">Pembangunan Fisik Desa</h3>
+              <p class="text-[10px] text-slate-400 dark:text-slate-400">Tahun Anggaran 2026</p>
+            </div>
+          </div>
+          <span class="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/20 px-2 py-0.5 rounded-lg border border-emerald-200 dark:border-emerald-500/30">
+            {{ metrics.pembangunan_avg_progres }}% Progres Rata-rata
+          </span>
+        </div>
+
+        <!-- Ringkasan Anggaran & Realisasi -->
+        <div class="space-y-2.5 text-xs">
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div>
+              <span class="text-slate-600 dark:text-slate-300 font-semibold block">Total Pagu Anggaran</span>
+              <span class="text-[10px] text-slate-400 dark:text-slate-400">Total alokasi dana {{ metrics.pembangunan_total }} kegiatan</span>
+            </div>
+            <span class="font-mono font-black text-slate-900 dark:text-white text-xs">
+              Rp {{ "{:,.0f}".format(metrics.pembangunan_anggaran).replace(',', '.') }}
+            </span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-800/40 flex items-center justify-between">
+            <div>
+              <span class="text-emerald-800 dark:text-emerald-300 font-semibold block">Total Realisasi Anggaran</span>
+              <span class="text-[10px] text-emerald-600/80 dark:text-emerald-400">Sesuai capaian progres fisik</span>
+            </div>
+            <span class="font-mono font-black text-emerald-700 dark:text-emerald-300 text-xs">
+              Rp {{ "{:,.0f}".format(metrics.pembangunan_realisasi).replace(',', '.') }}
+            </span>
+          </div>
+
+          <!-- Progress Bar Visual -->
+          <div class="pt-1">
+            <div class="flex items-center justify-between text-[11px] mb-1 font-semibold">
+              <span class="text-slate-600 dark:text-slate-300">Capaian Realisasi Fisik</span>
+              <span class="text-emerald-600 dark:text-emerald-400 font-bold">{{ metrics.pembangunan_avg_progres }}%</span>
+            </div>
+            <div class="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200/60 dark:border-slate-700">
+              <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500" style="width: {{ metrics.pembangunan_avg_progres }}%"></div>
+            </div>
+          </div>
+
+          <!-- Status Kegiatan Badge List -->
+          <div class="grid grid-cols-3 gap-2 pt-1 text-center">
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+              <span class="text-[10px] text-slate-400 block font-semibold">Selesai</span>
+              <span class="text-sm font-black text-emerald-600 dark:text-emerald-400">{{ metrics.pembangunan_selesai }}</span>
+            </div>
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+              <span class="text-[10px] text-slate-400 block font-semibold">Berjalan</span>
+              <span class="text-sm font-black text-amber-600 dark:text-amber-400">{{ metrics.pembangunan_berjalan }}</span>
+            </div>
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+              <span class="text-[10px] text-slate-400 block font-semibold">Rencana</span>
+              <span class="text-sm font-black text-slate-600 dark:text-slate-300">{{ metrics.pembangunan_rencana }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <a href="{{ url_for('admin_pembangunan') }}" class="text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 flex items-center gap-1">
+          <span>Kelola Kegiatan & Foto</span>
+          <i class="fa-solid fa-chevron-right text-[9px]"></i>
+        </a>
+        <a href="{{ url_for('halaman_pembangunan') }}" target="_blank" class="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+          <i class="fa-solid fa-globe"></i> Portal Publik
+        </a>
+      </div>
+    </div>
+
+    <!-- WIDGET 2: DEMOGRAFI SLS & KESEHATAN GENERASI DESA -->
+    <div class="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold border border-blue-200/60 dark:border-blue-500/20">
               <i class="fa-solid fa-users"></i>
             </span>
             <div>
-              <h3 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Demografi Penduduk</h3>
-              <p class="text-[10px] text-slate-400">Tahun {{ metrics.stat_penduduk.tahun or 2026 }} • 26 SLS RT/RW</p>
+              <h3 class="font-bold text-xs text-slate-900 dark:text-white uppercase tracking-wider">Demografi & Kesehatan</h3>
+              <p class="text-[10px] text-slate-400 dark:text-slate-400">Tahun {{ metrics.stat_penduduk.tahun or 2026 }} • 26 SLS RT/RW</p>
             </div>
           </div>
-          <span class="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">
+          <span class="text-xs font-mono font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-500/20 px-2 py-0.5 rounded-lg border border-blue-200 dark:border-blue-500/30">
             {{ "{:,.0f}".format(metrics.stat_penduduk.total_penduduk or 0).replace(',', '.') }} Jiwa
           </span>
         </div>
 
-        <div class="space-y-2.5 text-xs">
-          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100">
-            <span class="text-slate-600 flex items-center gap-1.5">
-              <i class="fa-solid fa-person text-blue-600 text-sm"></i> Laki-laki
+        <div class="space-y-2 text-xs">
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+            <span class="text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-house-user text-amber-600 dark:text-amber-400"></i> Kepala Keluarga (KK)
             </span>
-            <span class="font-bold text-slate-800">{{ "{:,.0f}".format(metrics.stat_penduduk.laki_laki or 0).replace(',', '.') }} Jiwa</span>
+            <span class="font-bold text-slate-800 dark:text-white">{{ "{:,.0f}".format(metrics.stat_penduduk.kepala_keluarga or 0).replace(',', '.') }} KK</span>
           </div>
 
-          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100">
-            <span class="text-slate-600 flex items-center gap-1.5">
-              <i class="fa-solid fa-person-dress text-pink-600 text-sm"></i> Perempuan
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+            <span class="text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-venus-mars text-blue-600 dark:text-blue-400"></i> Gender Rasio
             </span>
-            <span class="font-bold text-slate-800">{{ "{:,.0f}".format(metrics.stat_penduduk.perempuan or 0).replace(',', '.') }} Jiwa</span>
+            <span class="font-semibold text-slate-800 dark:text-white">
+              <span class="text-blue-600 dark:text-blue-400 font-bold">{{ "{:,.0f}".format(metrics.stat_penduduk.laki_laki or 0).replace(',', '.') }} L</span> / 
+              <span class="text-pink-600 dark:text-pink-400 font-bold">{{ "{:,.0f}".format(metrics.stat_penduduk.perempuan or 0).replace(',', '.') }} P</span>
+            </span>
           </div>
 
-          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100">
-            <span class="text-slate-600 flex items-center gap-1.5">
-              <i class="fa-solid fa-house-user text-amber-600 text-sm"></i> Kepala Keluarga (KK)
-            </span>
-            <span class="font-bold text-slate-800">{{ "{:,.0f}".format(metrics.stat_penduduk.kepala_keluarga or 0).replace(',', '.') }} KK</span>
-          </div>
-
-          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100">
-            <span class="text-slate-600 flex items-center gap-1.5">
-              <i class="fa-solid fa-map-pin text-emerald-600 text-sm"></i> Satuan Wilayah (SLS)
-            </span>
-            <span class="font-bold text-slate-800">{{ metrics.total_sls }} RT / RW Terpetakan</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-        <a href="{{ url_for('admin_statistik', tab='penduduk') }}" class="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
-          <span>Kelola Piramida & SLS</span>
-          <i class="fa-solid fa-chevron-right text-[9px]"></i>
-        </a>
-        <a href="{{ url_for('admin_peta') }}" class="text-[11px] font-bold text-slate-500 hover:text-slate-700">
-          <i class="fa-solid fa-map"></i> Buka Peta
-        </a>
-      </div>
-    </div>
-
-    <!-- WIDGET 2: KESEHATAN ANAK & STUNTING / GIZI BURUK -->
-    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
-      <div>
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
-          <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-xs font-bold">
-              <i class="fa-solid fa-heart-pulse"></i>
-            </span>
+          <!-- Indikator Kesehatan -->
+          <div class="p-2.5 rounded-xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-800/40 flex items-center justify-between">
             <div>
-              <h3 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Kesehatan Generasi Desa</h3>
-              <p class="text-[10px] text-slate-400">Intervensi Stunting, Gizi & Yatim</p>
-            </div>
-          </div>
-          <span class="text-[10px] font-bold uppercase tracking-wider text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
-            Target 0%
-          </span>
-        </div>
-
-        <div class="space-y-2.5 text-xs">
-          <!-- Balita Stunting -->
-          <div class="p-2.5 rounded-xl bg-amber-50/60 border border-amber-100 flex items-center justify-between">
-            <div>
-              <span class="font-bold text-slate-800 block">Balita Stunting (≤ 5 Tahun)</span>
-              <span class="text-[10px] text-slate-500">Dari {{ metrics.total_balita }} total balita terdata</span>
+              <span class="font-bold text-rose-900 dark:text-rose-200 block">Stunting & Gizi Buruk</span>
+              <span class="text-[10px] text-rose-700/80 dark:text-rose-400">Dari {{ metrics.total_balita }} total balita terdata</span>
             </div>
             <div class="text-right">
-              <span class="text-base font-black text-amber-700">{{ metrics.total_stunting }}</span>
-              <span class="text-[10px] font-bold text-slate-500 block">Balita</span>
-            </div>
-          </div>
-
-          <!-- Balita Gizi Buruk -->
-          <div class="p-2.5 rounded-xl bg-rose-50/60 border border-rose-100 flex items-center justify-between">
-            <div>
-              <span class="font-bold text-slate-800 block">Balita Gizi Buruk (≤ 5 Tahun)</span>
-              <span class="text-[10px] text-slate-500">Perlu penanganan makanan tambahan</span>
-            </div>
-            <div class="text-right">
-              <span class="text-base font-black text-rose-700">{{ metrics.total_gizi_buruk }}</span>
-              <span class="text-[10px] font-bold text-slate-500 block">Balita</span>
+              <span class="text-sm font-black text-rose-600 dark:text-rose-400">{{ metrics.total_stunting }} Stunting</span>
+              <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 block">• {{ metrics.total_gizi_buruk }} Gizi Buruk</span>
             </div>
           </div>
 
           <!-- Anak Yatim/Piatu -->
-          <div class="p-2.5 rounded-xl bg-indigo-50/60 border border-indigo-100 flex items-center justify-between">
-            <div>
-              <span class="font-bold text-slate-800 block">Anak Yatim / Piatu (≤ 15 Tahun)</span>
-              <span class="text-[10px] text-slate-500">Yatim: {{ metrics.anak_yatim }} | Piatu: {{ metrics.anak_piatu }} | YP: {{ metrics.anak_yp }}</span>
-            </div>
-            <div class="text-right">
-              <span class="text-base font-black text-indigo-700">{{ metrics.total_yatim_semua }}</span>
-              <span class="text-[10px] font-bold text-slate-500 block">Anak</span>
-            </div>
+          <div class="p-2 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-800/40 flex items-center justify-between">
+            <span class="text-slate-700 dark:text-slate-200 flex items-center gap-1.5 font-medium">
+              <i class="fa-solid fa-child-reaching text-indigo-600 dark:text-indigo-400"></i> Anak Yatim / Piatu
+            </span>
+            <span class="font-black text-indigo-700 dark:text-indigo-300">{{ metrics.total_yatim_semua }} Anak</span>
           </div>
         </div>
       </div>
 
-      <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-        <a href="{{ url_for('admin_statistik', tab='stunting') }}" class="text-[11px] font-bold text-rose-600 hover:text-rose-800 flex items-center gap-1">
-          <span>Tabel Stunting Per SLS</span>
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <a href="{{ url_for('admin_statistik', tab='penduduk') }}" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-1">
+          <span>Kelola Statistik & SLS</span>
           <i class="fa-solid fa-chevron-right text-[9px]"></i>
         </a>
-        <a href="{{ url_for('admin_statistik', tab='anak') }}" class="text-[11px] font-bold text-slate-500 hover:text-slate-700">
-          Status Anak Yatim &rarr;
+        <a href="{{ url_for('admin_peta') }}" class="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+          <i class="fa-solid fa-map"></i> Buka Peta SLS
         </a>
       </div>
     </div>
 
-    <!-- WIDGET 3: TRANSPARANSI ANGGARAN APBDES -->
-    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+    <!-- WIDGET 3: PARTISIPASI WARGA, SURVEI & PUBLIKASI DIGITAL -->
+    <div class="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm flex flex-col justify-between">
       <div>
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
           <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs font-bold">
-              <i class="fa-solid fa-scale-balanced"></i>
+            <span class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-200/60 dark:border-emerald-500/20">
+              <i class="fa-solid fa-heart-circle-check"></i>
             </span>
             <div>
-              <h3 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Transparansi APBDes</h3>
-              <p class="text-[10px] text-slate-400">Realisasi Anggaran Tahun {{ metrics.apbdes_data.tahun or 2026 }}</p>
+              <h3 class="font-bold text-xs text-slate-900 dark:text-white uppercase tracking-wider">Survei Warga & Publikasi</h3>
+              <p class="text-[10px] text-slate-400 dark:text-slate-400">Indeks Kepuasan & Dokumen Perdes</p>
             </div>
           </div>
-          {% set selisih = (metrics.apbdes_data.pendapatan_total or 0) - (metrics.apbdes_data.belanja_total or 0) %}
-          <span class="text-[10px] font-bold uppercase tracking-wider {% if selisih >= 0 %}text-emerald-700 bg-emerald-50 border-emerald-200{% else %}text-rose-700 bg-rose-50 border-rose-200{% endif %} px-2 py-0.5 rounded-full border">
-            {% if selisih >= 0 %}Surplus{% else %}Defisit{% endif %}
+          <span class="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-500/20 px-2 py-0.5 rounded-lg border border-amber-200 dark:border-amber-500/30 flex items-center gap-1">
+            <i class="fa-solid fa-star text-amber-400"></i> {{ metrics.avg_feedback_rating }} / 5.0
           </span>
         </div>
 
         <div class="space-y-2.5 text-xs">
-          <!-- Total Pendapatan -->
-          <div class="p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-100 flex items-center justify-between">
+          <!-- Indeks Kepuasan -->
+          <div class="p-2.5 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-800/40 flex items-center justify-between">
             <div>
-              <span class="font-bold text-slate-800 block">Total Pendapatan Desa</span>
-              <span class="text-[10px] text-slate-500">Dana Desa, ADD, PADes & Bagi Hasil</span>
+              <span class="font-bold text-slate-800 dark:text-white block">Indeks Kepuasan Pelayanan</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400">Berdasarkan {{ metrics.total_feedback }} ulasan masyarakat</span>
             </div>
-            <span class="text-xs font-black text-emerald-700 font-mono">
-              Rp {{ "{:,.0f}".format(metrics.apbdes_data.pendapatan_total or 0).replace(',', '.') }}
+            <span class="text-sm font-black text-amber-600 dark:text-amber-400 font-mono">
+              {{ metrics.puas_feedback_pct }}% Sangat Puas
             </span>
           </div>
 
-          <!-- Total Belanja -->
-          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+          <!-- Buku Publikasi & Unduhan -->
+          <div class="p-2.5 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-800/40 flex items-center justify-between">
             <div>
-              <span class="font-bold text-slate-800 block">Total Belanja Desa</span>
-              <span class="text-[10px] text-slate-500">Pembangunan, Pelayanan, & Bencana</span>
+              <span class="font-bold text-slate-800 dark:text-white block">Perpustakaan & Buku Digital</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400">{{ metrics.total_publikasi }} E-Book & Peraturan Desa</span>
             </div>
-            <span class="text-xs font-black text-slate-800 font-mono">
-              Rp {{ "{:,.0f}".format(metrics.apbdes_data.belanja_total or 0).replace(',', '.') }}
-            </span>
+            <div class="text-right">
+              <span class="text-xs font-black text-indigo-700 dark:text-indigo-300 font-mono">{{ metrics.publikasi_unduh }} Unduhan</span>
+              <span class="text-[10px] text-slate-400 block">• {{ metrics.publikasi_baca }} Pembaca</span>
+            </div>
           </div>
 
-          <!-- Pembiayaan Netto / Sisa -->
-          <div class="p-2.5 rounded-xl bg-blue-50/50 border border-blue-100 flex items-center justify-between">
+          <!-- Media Dinamis & Running Text -->
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <div>
-              <span class="font-bold text-slate-800 block">Surplus / Selisih Bersih</span>
-              <span class="text-[10px] text-slate-500">Keseimbangan Anggaran Kas</span>
+              <span class="font-bold text-slate-800 dark:text-white block">Media Informasi Interaktif</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400">Banner, Teks Berjalan & Popup Info</span>
             </div>
-            <span class="text-xs font-black text-blue-700 font-mono">
-              Rp {{ "{:,.0f}".format(selisih).replace(',', '.') }}
-            </span>
+            <div class="flex items-center gap-1.5 text-[10px] font-bold">
+              <span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300">{{ metrics.rt_count }} Teks</span>
+              <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300">{{ metrics.slider_count }} Slider</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-        <a href="{{ url_for('admin_statistik', tab='apbdes') }}" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-800 flex items-center gap-1">
-          <span>Kelola Transparansi APBDes</span>
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <a href="{{ url_for('admin_publikasi') }}" class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 flex items-center gap-1">
+          <span>Kelola Publikasi Digital</span>
           <i class="fa-solid fa-chevron-right text-[9px]"></i>
         </a>
-        <a href="{{ url_for('admin_publikasi') }}" class="text-[11px] font-bold text-slate-500 hover:text-slate-700">
-          Buku Publikasi &rarr;
+        <a href="{{ url_for('publikasi') }}" target="_blank" class="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+          <i class="fa-solid fa-book-open"></i> Buka Perpus Web
         </a>
       </div>
     </div>
 
   </div>
 
-  <!-- ROW 4: TWO COLUMNS - RECENT SURAT & RECENT ADUAN -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+  <!-- ROW 4: DATA INPUT TERKINI - SURAT MASUK & ASPIRASI PENGADUAN -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
     
-    <!-- Kolom Surat Masuk Terbaru -->
-    <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
-        <div class="flex items-center gap-2">
-          <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold">
+    <!-- Kolom Surat Masuk Terbaru (Col 7) -->
+    <div class="lg:col-span-7 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-bold border border-blue-200/60 dark:border-blue-500/20">
             <i class="fa-solid fa-inbox"></i>
           </span>
           <div>
-            <h3 class="font-bold text-sm text-slate-900">Permohonan Surat Masuk Terbaru</h3>
-            <p class="text-xs text-slate-400">Pengajuan mandiri online dari warga</p>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Permohonan Surat Mandiri Terbaru</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-400">Pengajuan mandiri online warga Desa Papayan</p>
           </div>
         </div>
-        <a href="{{ url_for('admin_surat') }}" class="text-xs font-bold text-brand-700 hover:underline">Lihat Semua</a>
+        <a href="{{ url_for('admin_surat') }}" class="text-xs font-bold text-brand-700 dark:text-emerald-400 hover:underline">Lihat Semua</a>
       </div>
 
       <div class="overflow-x-auto">
         <table class="w-full text-xs text-left">
-          <thead class="text-[10px] uppercase text-slate-400 bg-slate-50 border-b border-slate-100 font-bold tracking-wider">
+          <thead class="text-[10px] uppercase text-slate-400 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 font-bold tracking-wider">
             <tr>
               <th class="py-2.5 px-3">No. Registrasi</th>
               <th class="py-2.5 px-3">Pemohon</th>
@@ -464,32 +542,32 @@
               <th class="py-2.5 px-3 text-center">Aksi</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-100">
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
             {% for s in recent_surat %}
-            <tr class="hover:bg-slate-50 transition">
-              <td class="py-3 px-3 font-mono font-bold text-brand-800 whitespace-nowrap">{{ s.no_reg }}</td>
-              <td class="py-3 px-3 font-semibold text-slate-800">{{ s.nama }}</td>
-              <td class="py-3 px-3 text-slate-600">{{ s.jenis_surat }}</td>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+              <td class="py-3 px-3 font-mono font-bold text-brand-800 dark:text-emerald-400 whitespace-nowrap">{{ s.no_reg }}</td>
+              <td class="py-3 px-3 font-semibold text-slate-800 dark:text-slate-200">{{ s.nama }}</td>
+              <td class="py-3 px-3 text-slate-600 dark:text-slate-300">{{ s.jenis_surat }}</td>
               <td class="py-3 px-3 whitespace-nowrap">
                 {% if s.status == 'Menunggu' %}
-                  <span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[10px]">Menunggu</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30 font-bold text-[10px]">Menunggu</span>
                 {% elif s.status == 'Diproses' %}
-                  <span class="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-bold text-[10px]">Diproses</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-500/30 font-bold text-[10px]">Diproses</span>
                 {% elif s.status == 'Selesai' %}
-                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[10px]">Selesai</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30 font-bold text-[10px]">Selesai</span>
                 {% else %}
-                  <span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[10px]">{{ s.status }}</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30 font-bold text-[10px]">{{ s.status }}</span>
                 {% endif %}
               </td>
               <td class="py-3 px-3 text-center whitespace-nowrap">
-                <a href="{{ url_for('cetak_surat', no_reg=s.no_reg) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[10px] inline-flex items-center gap-1 transition shadow-sm">
+                <a href="{{ url_for('cetak_surat', no_reg=s.no_reg) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-[10px] inline-flex items-center gap-1 transition shadow-sm border border-slate-200/60 dark:border-slate-700">
                   <i class="fa-solid fa-print"></i> Cetak
                 </a>
               </td>
             </tr>
             {% else %}
             <tr>
-              <td colspan="5" class="py-8 text-center text-slate-400">Belum ada permohonan surat masuk.</td>
+              <td colspan="5" class="py-8 text-center text-slate-400 dark:text-slate-500">Belum ada permohonan surat masuk.</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -497,56 +575,152 @@
       </div>
     </div>
 
-    <!-- Kolom Aspirasi / Aduan Terbaru -->
-    <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
-        <div class="flex items-center gap-2">
-          <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm font-bold">
+    <!-- Kolom Aspirasi / Aduan Terbaru (Col 5) -->
+    <div class="lg:col-span-5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-sm font-bold border border-purple-200/60 dark:border-purple-500/20">
             <i class="fa-solid fa-bullhorn"></i>
           </span>
           <div>
-            <h3 class="font-bold text-sm text-slate-900">Aspirasi & Laporan Warga</h3>
-            <p class="text-xs text-slate-400">Tindak lanjut laporan masyarakat</p>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Aspirasi & Laporan Warga</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-400">Tindak lanjut aspirasi masyarakat</p>
           </div>
         </div>
-        <a href="{{ url_for('admin_pengaduan') }}" class="text-xs font-bold text-brand-700 hover:underline">Lihat Semua</a>
+        <a href="{{ url_for('admin_pengaduan') }}" class="text-xs font-bold text-brand-700 dark:text-emerald-400 hover:underline">Lihat Semua</a>
       </div>
 
       <div class="space-y-3">
         {% for a in recent_aduan %}
-        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 text-xs hover:border-purple-200 transition">
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs hover:border-purple-300 dark:hover:border-purple-600 transition">
           <div class="flex items-center justify-between mb-1">
-            <span class="font-bold text-slate-800">{{ a.nama }}</span>
-            <span class="text-[10px] font-mono text-slate-400">{{ a.no_tiket }}</span>
+            <span class="font-bold text-slate-800 dark:text-white">{{ a.nama }}</span>
+            <span class="text-[10px] font-mono text-slate-400 dark:text-slate-400">{{ a.no_tiket }}</span>
           </div>
-          <span class="inline-block text-[10px] font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md mb-1.5">{{ a.kategori }}</span>
-          <p class="text-slate-600 line-clamp-2 leading-relaxed">{{ a.pesan }}</p>
-          <div class="mt-2 pt-2 border-t border-slate-200/80 flex items-center justify-between text-[11px]">
-            <span class="font-bold {% if a.status == 'Sudah Diselesaikan' or a.status == 'Selesai' %}text-emerald-700{% elif a.status == 'Perlu Perlakuan Khusus' %}text-amber-700{% else %}text-rose-700{% endif %}">
+          <span class="inline-block text-[10px] font-semibold text-brand-700 dark:text-emerald-300 bg-brand-50 dark:bg-emerald-500/20 px-2 py-0.5 rounded-md mb-1.5 border border-brand-200/40 dark:border-emerald-500/30">{{ a.kategori }}</span>
+          <p class="text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">{{ a.pesan }}</p>
+          <div class="mt-2 pt-2 border-t border-slate-200/60 dark:border-slate-700 flex items-center justify-between text-[11px]">
+            <span class="font-bold {% if a.status == 'Sudah Diselesaikan' or a.status == 'Selesai' %}text-emerald-700 dark:text-emerald-400{% elif a.status == 'Perlu Perlakuan Khusus' %}text-amber-700 dark:text-amber-400{% else %}text-rose-700 dark:text-rose-400{% endif %}">
               • Status: {{ a.status }}
             </span>
-            <a href="{{ url_for('admin_pengaduan') }}" class="text-brand-700 font-bold hover:underline">Tanggapi &rarr;</a>
+            <a href="{{ url_for('admin_pengaduan') }}" class="text-brand-700 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1">
+              <span>Tanggapi</span>
+              <i class="fa-solid fa-chevron-right text-[9px]"></i>
+            </a>
           </div>
         </div>
         {% else %}
-        <p class="text-xs text-slate-400 text-center py-8">Belum ada aspirasi atau pengaduan warga.</p>
+        <p class="text-xs text-slate-400 dark:text-slate-500 text-center py-8">Belum ada aspirasi atau pengaduan warga.</p>
         {% endfor %}
       </div>
     </div>
 
   </div>
 
-  <!-- ROW 5 (KHUSUS SUPER ADMIN): STATUS KEAMANAN SIBER & LOG AUDIT SISTEM -->
+  <!-- ROW 5: PROYEK PEMBANGUNAN BERJALAN & GALERI / PRESTASI TERBARU -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+    
+    <!-- Kegiatan Pembangunan Berjalan (Col 7) -->
+    <div class="lg:col-span-7 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm font-bold border border-amber-200/60 dark:border-amber-500/20">
+            <i class="fa-solid fa-helmet-safety"></i>
+          </span>
+          <div>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Proyek Pembangunan Desa Terkini</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-400">Realisasi fisik infrastruktur dan fasilitas warga</p>
+          </div>
+        </div>
+        <a href="{{ url_for('admin_pembangunan') }}" class="text-xs font-bold text-brand-700 dark:text-emerald-400 hover:underline">Kelola Pembangunan</a>
+      </div>
+
+      <div class="space-y-3.5">
+        {% for p in recent_pembangunan %}
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 hover:border-amber-300 dark:hover:border-amber-600 transition">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="font-bold text-slate-800 dark:text-white text-xs line-clamp-1">{{ p.nama_kegiatan }}</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {% if p.status_progres == 'Selesai' %}bg-emerald-50 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30{% elif p.status_progres == 'Sedang Dikerjakan' or p.status_progres == 'Sedang Berjalan' %}bg-amber-50 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30{% else %}bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300{% endif %}">
+              {{ p.status_progres }}
+            </span>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-2 gap-2">
+            <span><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i> Dusun {{ p.dusun or '-' }}</span>
+            <span class="font-mono font-bold text-slate-800 dark:text-slate-200">Rp {{ "{:,.0f}".format(p.anggaran or 0).replace(',', '.') }}</span>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full" style="width: {{ p.progres_persen or 0 }}%"></div>
+          </div>
+          <div class="flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-400 mt-1">
+            <span>Kategori: {{ p.kategori }}</span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ p.progres_persen or 0 }}% Selesai</span>
+          </div>
+        </div>
+        {% else %}
+        <p class="text-xs text-slate-400 dark:text-slate-500 text-center py-6">Belum ada data proyek pembangunan tersimpan.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Galeri & Piagam Prestasi Terbaru (Col 5) -->
+    <div class="lg:col-span-5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm font-bold border border-amber-200/60 dark:border-amber-500/20">
+            <i class="fa-solid fa-award"></i>
+          </span>
+          <div>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Galeri & Piagam Prestasi</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-400">Dokumentasi kegiatan & capaian kejuaraan</p>
+          </div>
+        </div>
+        <a href="{{ url_for('admin_berita', view='galeri') }}" class="text-xs font-bold text-brand-700 dark:text-emerald-400 hover:underline">Kelola Galeri</a>
+      </div>
+
+      <div class="space-y-3">
+        {% for g in recent_galeri %}
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center gap-3 hover:border-amber-300 dark:hover:border-amber-600 transition">
+          <div class="w-14 h-14 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0 border border-slate-200 dark:border-slate-700">
+            <img src="{{ url_for('static', filename=g.gambar.replace('static/', '')) if g.gambar and g.gambar.startswith('static/') else (g.gambar or url_for('static', filename='images/berita_placeholder.jpg')) }}" class="w-full h-full object-cover" alt="{{ g.judul }}" onerror="this.src='{{ url_for('static', filename='images/berita_placeholder.jpg') }}'" />
+          </div>
+          <div class="flex-1 min-w-0 text-xs">
+            <div class="flex items-center gap-1.5 mb-1">
+              {% if g.tipe == 'penghargaan' or g.kategori == 'Piagam & Penghargaan' %}
+                <span class="px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 text-[9px] font-bold border border-amber-300/40">Prestasi</span>
+              {% else %}
+                <span class="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300 text-[9px] font-bold border border-blue-300/40">Dokumentasi</span>
+              {% endif %}
+              <span class="text-[10px] text-slate-400 dark:text-slate-400 truncate">{{ g.kategori }}</span>
+            </div>
+            <h4 class="font-bold text-slate-800 dark:text-white line-clamp-1 leading-tight">{{ g.judul }}</h4>
+            <div class="flex items-center justify-between mt-1 text-[10px] text-slate-400 dark:text-slate-400">
+              <span>{{ g.created_at[:10] if g.created_at else '-' }}</span>
+              <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ g.status }}</span>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <p class="text-xs text-slate-400 dark:text-slate-500 text-center py-6">Belum ada foto galeri.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 6 (KHUSUS SUPER ADMIN): STATUS KEAMANAN SIBER & LOG AUDIT SISTEM -->
   {% if session.get('role') == 'superadmin' %}
-  <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-6 text-white shadow-xl border border-slate-700">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-700/60 mb-5">
+  <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 rounded-3xl p-6 sm:p-7 text-white shadow-xl border border-slate-700/80 dark:border-slate-800">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-700/60 dark:border-slate-800 mb-5">
       <div class="flex items-center gap-3">
         <span class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg border border-emerald-500/30">
           <i class="fa-solid fa-shield-halved"></i>
         </span>
         <div>
           <h3 class="text-sm font-black text-white uppercase tracking-wider">Status Keamanan & Cadangan Sistem (Super Admin)</h3>
-          <p class="text-xs text-slate-400">Monitoring integritas basis data, audit pengguna, dan mitigasi kehilangan data.</p>
+          <p class="text-xs text-slate-400">Monitoring integritas basis data, audit pengguna administrator, dan mitigasi kehilangan data.</p>
         </div>
       </div>
       
@@ -561,9 +735,9 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-xs">
-      <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-between">
+      <div class="p-3.5 rounded-2xl bg-slate-800/80 dark:bg-slate-900/80 border border-slate-700/80 dark:border-slate-800 flex items-center justify-between">
         <div>
-          <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Cadangan Tersimpan</span>
+          <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Cadangan Basis Data</span>
           <span class="text-xl font-black text-white block mt-0.5">{{ metrics.total_backups }} File Snapshot</span>
         </div>
         <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-sm border border-emerald-500/20">
@@ -571,7 +745,7 @@
         </span>
       </div>
 
-      <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-between">
+      <div class="p-3.5 rounded-2xl bg-slate-800/80 dark:bg-slate-900/80 border border-slate-700/80 dark:border-slate-800 flex items-center justify-between">
         <div>
           <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Pengguna Administrator</span>
           <span class="text-xl font-black text-white block mt-0.5">{{ metrics.total_users }} Akun Aktif</span>
@@ -581,7 +755,7 @@
         </span>
       </div>
 
-      <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-between">
+      <div class="p-3.5 rounded-2xl bg-slate-800/80 dark:bg-slate-900/80 border border-slate-700/80 dark:border-slate-800 flex items-center justify-between">
         <div>
           <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Proteksi Anti Brute-Force</span>
           <span class="text-xl font-black text-emerald-400 block mt-0.5">AKTIF & TERLINDUNGI</span>
@@ -594,16 +768,16 @@
 
     <!-- Mini Audit Log -->
     {% if recent_logs %}
-    <div class="rounded-xl bg-slate-950/60 p-3 border border-slate-800">
+    <div class="rounded-xl bg-slate-950/70 p-3.5 border border-slate-800">
       <span class="text-[10px] uppercase tracking-wider font-bold text-slate-400 block mb-2">Aktivitas Terakhir Sistem:</span>
       <div class="space-y-1.5 text-[11px] font-mono">
         {% for log in recent_logs %}
-        <div class="flex items-center justify-between text-slate-300 py-0.5 border-b border-slate-800/50 last:border-none">
-          <span class="flex items-center gap-2">
-            <span class="text-amber-400 font-bold">[{{ log.action }}]</span>
-            <span class="text-slate-200">{{ log.details or '-' }}</span>
+        <div class="flex items-center justify-between text-slate-300 py-1 border-b border-slate-800/60 last:border-none">
+          <span class="flex items-center gap-2 truncate pr-2">
+            <span class="text-amber-400 font-bold shrink-0">[{{ log.action }}]</span>
+            <span class="text-slate-200 truncate">{{ log.details or '-' }}</span>
           </span>
-          <span class="text-slate-500 text-[10px] whitespace-nowrap">{{ log.created_at }} ({{ log.username }})</span>
+          <span class="text-slate-400 text-[10px] whitespace-nowrap shrink-0">{{ log.created_at }} ({{ log.username }})</span>
         </div>
         {% endfor %}
       </div>
