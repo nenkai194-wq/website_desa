@@ -650,80 +650,129 @@ function initLeafletMap() {
     });
   }
 
-  // 3. Load SLS RT Polygons from /api/peta/sls-geojson
-  fetch('/api/peta/sls-geojson')
-    .then(r => {
-      if (!r.ok) throw new Error('Network error');
-      return r.json();
-    })
-    .then(geojson => {
-      if (geojson && geojson.features && geojson.features.length > 0) {
-        const geojsonLayer = L.geoJSON(geojson, {
-          style: function(feat) {
-            const p = feat.properties || {};
-            return {
-              fillColor: p.fill_color || '#10b981',
-              weight: 2,
-              opacity: 0.9,
-              color: '#047857',
-              dashArray: '2',
-              fillOpacity: 0.35
-            };
-          },
-          onEachFeature: function(feat, layer) {
-            const p = feat.properties || {};
-            layer.bindPopup(`
-              <div style="font-family:'Outfit',sans-serif;min-width:200px;padding:4px;">
-                <span style="font-size:10px;text-transform:uppercase;color:#047857;font-weight:800;letter-spacing:0.5px;">${p.dusun || 'Batas RT'}</span>
-                <h4 style="margin:2px 0 6px;font-size:14px;font-weight:800;color:#0f172a;">${p.nama_sls || p.name}</h4>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#f8fafc;padding:6px;border-radius:8px;font-size:11px;margin-bottom:8px;">
-                  <div><span style="color:#64748b;">Penduduk:</span> <strong>${p.total_penduduk || 0}</strong></div>
-                  <div><span style="color:#64748b;">Keluarga:</span> <strong>${p.keluarga || 0}</strong></div>
-                  <div><span style="color:#64748b;">Laki-laki:</span> <strong>${p.laki_laki || 0}</strong></div>
-                  <div><span style="color:#64748b;">Perempuan:</span> <strong>${p.perempuan || 0}</strong></div>
-                </div>
-                <a href="/peta" style="display:block;text-align:center;font-size:11px;font-weight:700;color:white;background:#059669;padding:6px 10px;border-radius:6px;text-decoration:none;">
-                  <i class="fa-solid fa-map-location-dot"></i> Buka Peta SLS Lengkap
-                </a>
-              </div>
-            `);
-            layer.on({
-              mouseover: function(e) {
-                const l = e.target;
-                l.setStyle({ weight: 3, color: '#f59e0b', fillOpacity: 0.6 });
-                l.bringToFront();
-              },
-              mouseout: function(e) {
-                geojsonLayer.resetStyle(e.target);
-              }
-            });
-          }
-        }).addTo(map);
+  // 3. Load & Render Poligon Wilayah Desa Papayan (Google My Maps KML & SLS GeoJSON)
+  let slsGeoJsonLayer = null;
 
-        try {
-          map.fitBounds(geojsonLayer.getBounds(), { padding: [30, 30] });
-        } catch (e) {}
-      }
-    })
-    .catch(err => {
-      console.warn('Gagal memuat poligon SLS di beranda:', err);
-      // Auto fit bounds if multiple points exist
-      if (allLatLngs.length > 1) {
-        try {
-          const bounds = L.latLngBounds(allLatLngs);
-          map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
-        } catch (e) {}
-      }
-    });
-
-  // Auto fit bounds fallback if geojson is still loading
-  if (allLatLngs.length > 1) {
-    try {
-      const bounds = L.latLngBounds(allLatLngs);
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
-    } catch (e) {
-      // fallback
+  function renderSLSPolygons(geojson) {
+    if (!geojson || !geojson.features || geojson.features.length === 0) return false;
+    if (slsGeoJsonLayer) {
+      try { map.removeLayer(slsGeoJsonLayer); } catch (e) {}
     }
+
+    // Skema Pewarnaan Wilayah Google Maps & Dusun
+    const dusunColors = {
+      'DUSUN CIHAUR': '#0F9D58',
+      'DUSUN DEMUNG LANDUNG': '#2563eb',
+      'DUSUN MARGAHAYU': '#7c3aed',
+      'DUSUN RANCA SARI': '#ea580c'
+    };
+
+    slsGeoJsonLayer = L.geoJSON(geojson, {
+      style: function(feat) {
+        const p = feat.properties || {};
+        const dusunKey = (p.dusun || '').toUpperCase().trim();
+        const baseColor = p.fill_color || p.color || dusunColors[dusunKey] || '#0F9D58';
+        return {
+          fillColor: baseColor,
+          weight: 2.2,
+          opacity: 0.95,
+          color: '#0F9D58',
+          dashArray: '2, 4',
+          fillOpacity: 0.38
+        };
+      },
+      onEachFeature: function(feat, layer) {
+        const p = feat.properties || {};
+        const dusunName = p.dusun || 'Desa Papayan';
+        const slsName = p.nama_sls || p.name || 'Wilayah RT';
+        const totPenduduk = p.total_penduduk || p.total || 0;
+        const totKk = p.keluarga || 0;
+        const totLaki = p.laki_laki || 0;
+        const totPerempuan = p.perempuan || 0;
+
+        layer.bindTooltip(`<strong>${slsName}</strong><br><span style="font-size:10px;color:#047857;">${dusunName}</span>`, {
+          sticky: true,
+          direction: 'auto',
+          className: 'sls-map-tooltip'
+        });
+
+        layer.bindPopup(`
+          <div style="font-family:'Outfit',sans-serif;min-width:210px;padding:4px;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0F9D58;"></span>
+              <span style="font-size:10px;text-transform:uppercase;color:#047857;font-weight:800;letter-spacing:0.5px;">${dusunName}</span>
+            </div>
+            <h4 style="margin:2px 0 6px;font-size:14px;font-weight:800;color:#0f172a;">${slsName}</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#f8fafc;padding:6px;border-radius:8px;font-size:11px;margin-bottom:8px;border:1px solid #e2e8f0;">
+              <div><span style="color:#64748b;">Penduduk:</span> <strong style="color:#0f172a;">${totPenduduk} Jiwa</strong></div>
+              <div><span style="color:#64748b;">Keluarga:</span> <strong style="color:#0f172a;">${totKk} KK</strong></div>
+              <div><span style="color:#64748b;">Laki-laki:</span> <strong style="color:#2563eb;">${totLaki}</strong></div>
+              <div><span style="color:#64748b;">Perempuan:</span> <strong style="color:#ec4899;">${totPerempuan}</strong></div>
+            </div>
+            <a href="peta.html" style="display:block;text-align:center;font-size:11px;font-weight:700;color:white;background:#059669;padding:6px 10px;border-radius:6px;text-decoration:none;box-shadow:0 2px 4px rgba(5,150,105,0.25);">
+              <i class="fa-solid fa-map-location-dot"></i> Buka Peta Tematik SLS Lengkap
+            </a>
+          </div>
+        `);
+
+        layer.on({
+          mouseover: function(e) {
+            const l = e.target;
+            l.setStyle({ weight: 3.5, color: '#f59e0b', fillOpacity: 0.65 });
+            l.bringToFront();
+          },
+          mouseout: function(e) {
+            slsGeoJsonLayer.resetStyle(e.target);
+          }
+        });
+      }
+    }).addTo(map);
+
+    try {
+      const b = slsGeoJsonLayer.getBounds();
+      if (b && b.isValid()) {
+        map.fitBounds(b, { padding: [25, 25] });
+      }
+    } catch (e) {}
+
+    return true;
+  }
+
+  // A. Cek payload langsung dari SERVER_DATA (Instan & Tanpa Latency)
+  let polygonRendered = false;
+  if (window.SERVER_DATA && window.SERVER_DATA.sls_geojson && window.SERVER_DATA.sls_geojson.features && window.SERVER_DATA.sls_geojson.features.length > 0) {
+    polygonRendered = renderSLSPolygons(window.SERVER_DATA.sls_geojson);
+  }
+
+  // B. Fallback muat berkas GeoJSON lokal (berfungsi di GitHub Pages maupun server lokal)
+  if (!polygonRendered) {
+    const geojsonStaticPath = (window.location.hostname.includes('github.io') || !window.location.port) 
+      ? 'static/data/peta_sls.geojson' 
+      : '/static/data/peta_sls.geojson';
+
+    fetch(geojsonStaticPath)
+      .then(res => {
+        if (!res.ok) throw new Error('Static GeoJSON response not ok');
+        return res.json();
+      })
+      .then(geojson => {
+        renderSLSPolygons(geojson);
+      })
+      .catch(err => {
+        console.warn('Gagal memuat peta_sls.geojson statis, mencoba endpoint API:', err);
+        fetch('/api/peta/sls-geojson')
+          .then(r => r.json())
+          .then(geojson => renderSLSPolygons(geojson))
+          .catch(e => {
+            console.warn('Gagal memuat poligon dari API:', e);
+            if (allLatLngs.length > 1) {
+              try {
+                const bounds = L.latLngBounds(allLatLngs);
+                map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+              } catch (errB) {}
+            }
+          });
+      });
   }
 }
 

@@ -57,6 +57,9 @@ def export_site():
             message: 'Pengajuan data berhasil diterima.'
           }), { status: 200, headers: { 'Content-Type': 'application/json' } });
         }
+        if (url.includes('/api/peta/sls-geojson')) {
+          return originalFetch('static/data/peta_sls.geojson');
+        }
         if (url.includes('/api/pengaduan/tracking/')) {
           const parts = url.split('/api/pengaduan/tracking/');
           const tiket = parts[1] || 'DEMO';

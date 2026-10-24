@@ -559,8 +559,15 @@ def index():
 
     conn.close()
 
+    try:
+        sls_geojson = buat_geojson_sls_dengan_penduduk(active_year)
+    except Exception as e:
+        print("Warning: Gagal membuat sls_geojson di beranda:", e)
+        sls_geojson = {}
+
     return render_template(
         'index.html',
+        sls_geojson=sls_geojson,
         profil=profil,
         sliders=sliders,
         galeri_list=galeri_list,

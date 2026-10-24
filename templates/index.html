@@ -5037,7 +5037,8 @@
       apbdes: {{ apbdes|tojson }},
       wisata: {{ wisata|tojson }},
       statistik_umur: {{ statistik_umur|tojson }},
-      statistik_sls: {{ statistik_sls|tojson }}
+      statistik_sls: {{ statistik_sls|tojson }},
+      sls_geojson: {{ (sls_geojson or {})|tojson }}
     };
   </script>
 
