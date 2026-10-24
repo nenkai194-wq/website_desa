@@ -927,6 +927,43 @@
           </div>
         </div>
         
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            
+            
+            <div class="lg:col-span-5 h-64 sm:h-80 lg:h-full relative overflow-hidden bg-slate-100 min-h-[260px]">
+              
+              <img src="static/images/banner2.png" alt="Era Transformasi Menuju Desa Mandiri Berkelanjutan" class="w-full h-full object-cover transition duration-500 hover:scale-105" onerror="this.src='static/images/banner1.png'">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent flex items-end p-5">
+                <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                  <i class="fa-solid fa-camera-retro"></i> Dokumentasi &amp; Arsip Historis
+                </span>
+              </div>
+            </div>
+            
+
+            <div class="lg:col-span-7 p-6 sm:p-8 lg:p-10">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="w-7 h-7 rounded-lg bg-amber-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+                  2
+                </span>
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+                  Era Modern (2000 - Sekarang)
+                </span>
+              </div>
+
+              <h3 class="text-xl sm:text-2xl font-black text-slate-900 leading-snug mb-4">
+                Era Transformasi Menuju Desa Mandiri Berkelanjutan
+              </h3>
+
+              <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3 whitespace-pre-line font-normal">
+                Seiring perkembangan zaman dan penataan tata pemerintahan desa, Desa Papayan terus bertransformasi menjadi salah satu desa yang progresif di Kecamatan Jatiwaras. Pembangunan infrastruktur jalan poros desa, sarana air bersih, balai pelayanan umum, serta digitalisasi pelayanan administrasi desa kini terwujud nyata demi kemudahan akses dan kesejahteraan seluruh warga.
+              </div>
+            </div>
+
+          </div>
+        </div>
+        
       </div>
 
     </div>
@@ -13253,19 +13290,19 @@
           <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-blue-400"></i> Hari Ini:</span>
-              <span id="count-today" class="font-bold text-white">157</span>
+              <span id="count-today" class="font-bold text-white">162</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-week text-amber-400"></i> Minggu Ini:</span>
-              <span id="count-week" class="font-bold text-white">1.249</span>
+              <span id="count-week" class="font-bold text-white">1.254</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-emerald-400"></i> Bulan Ini:</span>
-              <span id="count-month" class="font-bold text-white">4.151</span>
+              <span id="count-month" class="font-bold text-white">4.156</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-purple-400"></i> Total Kunjungan:</span>
-              <span id="count-total" class="font-black text-brand-300">28.830</span>
+              <span id="count-total" class="font-black text-brand-300">28.835</span>
             </div>
           </div>
         </div>
@@ -14940,7 +14977,13 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js: Local Static Bundle with CDN Fallback -->
+  <script src="static/js/chart.min.js"></script>
+  <script>
+    if (typeof Chart === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>');
+    }
+  </script>
 
   <script>
     window.SERVER_DATA = {

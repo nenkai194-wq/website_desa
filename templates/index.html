@@ -5020,7 +5020,13 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js: Local Static Bundle with CDN Fallback -->
+  <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+  <script>
+    if (typeof Chart === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>');
+    }
+  </script>
 
   <script>
     window.SERVER_DATA = {

@@ -3981,7 +3981,13 @@
 </div>
 
 <!-- Chart.js CDN for Admin Pyramid -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Chart.js: Local Static Bundle with CDN Fallback -->
+<script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+<script>
+  if (typeof Chart === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>');
+  }
+</script>
 
 <!-- JAVASCRIPT LOGIC -->
 <script>
@@ -4018,8 +4024,8 @@
       }
     });
 
-    if (activeTab === 'umur' && window.piramidaChartInstance) {
-      window.piramidaChartInstance.resize();
+    if (activeTab === 'umur') {
+      setTimeout(renderPiramidaChartAdmin, 60);
     }
   }
 
@@ -4068,81 +4074,110 @@
 
   // Inisialisasi Piramida Penduduk Admin (Chart.js Bilateral Horizontal)
   const rawUmurData = {{ umur_list|tojson }};
-  
-  if (rawUmurData && rawUmurData.length > 0) {
-    const ctxPyramid = document.getElementById('piramidaChartAdmin');
-    if (ctxPyramid) {
-      // Kelompok umur dibalik agar usia tertua (75+) berada di paling atas piramida dan usia termuda (0 - 4) di paling bawah
-      const reversedUmur = [...rawUmurData].reverse();
-      const labels = reversedUmur.map(u => u.kelompok_umur);
-      const dataLaki = reversedUmur.map(u => -Math.abs(u.laki_laki)); // Negatif agar ke kiri
-      const dataPerempuan = reversedUmur.map(u => Math.abs(u.perempuan)); // Positif agar ke kanan
 
-      window.piramidaChartInstance = new Chart(ctxPyramid, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Laki-laki',
-              data: dataLaki,
-              backgroundColor: '#2563eb', // Biru
-              borderRadius: 4,
-              barPercentage: 0.85
-            },
-            {
-              label: 'Perempuan',
-              data: dataPerempuan,
-              backgroundColor: '#ec4899', // Pink
-              borderRadius: 4,
-              barPercentage: 0.85
-            }
-          ]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              stacked: false,
-              ticks: {
-                callback: function(val) {
-                  return Math.abs(val); // Nilai selalu positif di sumbu
-                },
-                font: { size: 10, weight: 'bold' }
+  function renderPiramidaChartAdmin() {
+    if (typeof Chart === 'undefined') {
+      console.warn("Chart.js belum dimuat.");
+      return;
+    }
+    const ctxPyramid = document.getElementById('piramidaChartAdmin');
+    if (!ctxPyramid) return;
+
+    if (window.piramidaChartInstance) {
+      try {
+        window.piramidaChartInstance.resize();
+        window.piramidaChartInstance.update();
+        return;
+      } catch (e) {
+        try { window.piramidaChartInstance.destroy(); } catch (err) {}
+        window.piramidaChartInstance = null;
+      }
+    }
+
+    if (rawUmurData && rawUmurData.length > 0) {
+      try {
+        const reversedUmur = [...rawUmurData].reverse();
+        const labels = reversedUmur.map(u => u.kelompok_umur);
+        const dataLaki = reversedUmur.map(u => -Math.abs(u.laki_laki)); // Negatif agar ke kiri
+        const dataPerempuan = reversedUmur.map(u => Math.abs(u.perempuan)); // Positif agar ke kanan
+
+        window.piramidaChartInstance = new Chart(ctxPyramid, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Laki-laki',
+                data: dataLaki,
+                backgroundColor: '#2563eb', // Biru
+                borderRadius: 4,
+                barPercentage: 0.85
               },
-              grid: {
-                color: function(ctx) {
-                  return ctx.tick.value === 0 ? '#475569' : '#f1f5f9';
+              {
+                label: 'Perempuan',
+                data: dataPerempuan,
+                backgroundColor: '#ec4899', // Pink
+                borderRadius: 4,
+                barPercentage: 0.85
+              }
+            ]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                stacked: false,
+                ticks: {
+                  callback: function(val) {
+                    return Math.abs(val); // Nilai selalu positif di sumbu
+                  },
+                  font: { size: 10, weight: 'bold' }
                 },
-                lineWidth: function(ctx) {
-                  return ctx.tick.value === 0 ? 2 : 1;
+                grid: {
+                  color: function(ctx) {
+                    return ctx.tick.value === 0 ? '#475569' : '#f1f5f9';
+                  },
+                  lineWidth: function(ctx) {
+                    return ctx.tick.value === 0 ? 2 : 1;
+                  }
+                }
+              },
+              y: {
+                stacked: true,
+                grid: { display: false },
+                ticks: {
+                  font: { size: 10, weight: 'bold' },
+                  color: '#1e293b'
                 }
               }
             },
-            y: {
-              stacked: true,
-              grid: { display: false },
-              ticks: {
-                font: { size: 10, weight: 'bold' },
-                color: '#1e293b'
-              }
-            }
-          },
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: function(ctx) {
-                  return ` ${ctx.dataset.label}: ${Math.abs(ctx.raw)} Jiwa`;
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    return ` ${ctx.dataset.label}: ${Math.abs(ctx.raw)} Jiwa`;
+                  }
                 }
               }
             }
           }
-        }
-      });
+        });
+      } catch (err) {
+        console.error("Gagal inisialisasi piramidaChartAdmin:", err);
+      }
     }
+  }
+
+  // Panggil render saat DOM siap
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(renderPiramidaChartAdmin, 50);
+    });
+  } else {
+    setTimeout(renderPiramidaChartAdmin, 50);
   }
 
   // Live filter table SLS
@@ -4703,6 +4738,8 @@
   }
   function tutupModalEditStunting() {
     document.getElementById('modalEditStunting').classList.add('hidden');
+  }
+
   // --- MODALS FOR DATA SERIES ---
   function hitungTotalSeriesTambah() {
     const l = parseInt(document.getElementById('tb_laki')?.value) || 0;
