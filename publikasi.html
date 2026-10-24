@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Theme Mode -->
+  <script src="static/js/theme-mode.js"></script>
+  <link rel="stylesheet" href="static/css/theme-mode.css" />
   <title>Perpustakaan Digital & Buku Publikasi Desa Papayan</title>
   <meta name="description" content="Koleksi buku publikasi resmi Pemerintah Desa Papayan, seperti Profil Desa, Desa Dalam Angka, Laporan Transparansi APBDes, dan panduan warga dalam format PDF gratis." />
   
@@ -21,6 +24,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -347,7 +351,7 @@
         <div class="lg:col-span-4 flex justify-center">
           <div onclick="bukaModalDetailBuku(4)" class="book-3d-wrapper w-52 sm:w-60 cursor-pointer" title="Klik untuk melihat detail lengkap">
             <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border-2 border-white/80">
-              <img src="static/images/banner2.png" 
+              <img src="static/images/uploads/b3_1792274617.jpg" 
                    alt="Buku Panduan Potensi Pertanian &amp; UMKM Papayan" 
                    class="w-full h-full object-cover" 
                    onerror="this.src='static/images/kantor_desa.jpg'" />
@@ -503,7 +507,7 @@
             
             <div class="book-3d-wrapper w-36 sm:w-40 py-2">
               <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border border-slate-300">
-                <img src="static/images/banner2.png" 
+                <img src="static/images/uploads/b3_1792274617.jpg" 
                      alt="Buku Panduan Potensi Pertanian &amp; UMKM Papayan" 
                      class="w-full h-full object-cover" 
                      onerror="this.src='static/images/kantor_desa.jpg'" />
@@ -579,7 +583,7 @@
             
             <div class="book-3d-wrapper w-36 sm:w-40 py-2">
               <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border border-slate-300">
-                <img src="static/images/banner1.png" 
+                <img src="static/images/uploads/b1_1792274448.jpeg" 
                      alt="Buku Profil Desa Papayan 2026" 
                      class="w-full h-full object-cover" 
                      onerror="this.src='static/images/kantor_desa.jpg'" />
@@ -655,7 +659,7 @@
             
             <div class="book-3d-wrapper w-36 sm:w-40 py-2">
               <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border border-slate-300">
-                <img src="static/images/banner1.png" 
+                <img src="static/images/uploads/b1_1792274448.jpeg" 
                      alt="Laporan Akuntabilitas &amp; Realisasi APBDes 2026" 
                      class="w-full h-full object-cover" 
                      onerror="this.src='static/images/kantor_desa.jpg'" />
@@ -731,7 +735,7 @@
             
             <div class="book-3d-wrapper w-36 sm:w-40 py-2">
               <div class="book-3d-cover aspect-[3/4.2] overflow-hidden bg-slate-900 border border-slate-300">
-                <img src="static/images/banner2.png" 
+                <img src="static/images/uploads/b2_1792274407.jpeg" 
                      alt="Desa Papayan Dalam Angka 2026" 
                      class="w-full h-full object-cover" 
                      onerror="this.src='static/images/kantor_desa.jpg'" />
@@ -1082,7 +1086,7 @@
         sinopsis: "Buku panduan praktis sentra budidaya pertanian, produk olahan pangan lokal, dan direktori UMKM binaan Desa Papayan.",
         jumlah_unduh: 116,
         jumlah_baca: 265,
-        cover_buku: "static/images/banner2.png",
+        cover_buku: "static/images/uploads/b3_1792274617.jpg",
         file_pdf: "static/docs/publikasi/buku_saku_panduan_wisata_papayan.pdf",
         url_unduh: "static/docs/publikasi/buku_saku_panduan_wisata_papayan.pdf"
       },
@@ -1100,7 +1104,7 @@
         sinopsis: "Buku panduan praktis sentra budidaya pertanian, produk olahan pangan lokal, dan direktori UMKM binaan Desa Papayan.",
         jumlah_unduh: 116,
         jumlah_baca: 265,
-        cover_buku: "static/images/banner2.png",
+        cover_buku: "static/images/uploads/b3_1792274617.jpg",
         file_pdf: "static/docs/publikasi/buku_saku_panduan_wisata_papayan.pdf",
         url_unduh: "static/docs/publikasi/buku_saku_panduan_wisata_papayan.pdf"
       },
@@ -1117,7 +1121,7 @@
         sinopsis: "Buku dokumentasi komprehensif mengenai gambaran umum wilayah, kependudukan, kelembagaan, dan potensi Desa Papayan, Kecamatan Jatiwaras, Kabupaten Tasikmalaya.",
         jumlah_unduh: 145,
         jumlah_baca: 331,
-        cover_buku: "static/images/banner1.png",
+        cover_buku: "static/images/uploads/b1_1792274448.jpeg",
         file_pdf: "static/docs/publikasi/buku_profil_desa_papayan_2026.pdf",
         url_unduh: "static/docs/publikasi/buku_profil_desa_papayan_2026.pdf"
       },
@@ -1134,7 +1138,7 @@
         sinopsis: "Laporan pertanggungjawaban realisasi penerimaan Dana Desa (APBN), Alokasi Dana Desa (ADD Kab. Tasikmalaya), dan PADes untuk pembangunan infrastruktur desa serta ketahanan pangan.",
         jumlah_unduh: 65,
         jumlah_baca: 187,
-        cover_buku: "static/images/banner1.png",
+        cover_buku: "static/images/uploads/b1_1792274448.jpeg",
         file_pdf: "static/docs/publikasi/laporan_transparansi_apbdes_2025_2026.pdf",
         url_unduh: "static/docs/publikasi/laporan_transparansi_apbdes_2025_2026.pdf"
       },
@@ -1151,7 +1155,7 @@
         sinopsis: "Publikasi statistik resmi tahunan yang memuat data sektoral kependudukan, pertanian, perkebunan rakyat, sarana pendidikan, dan peta perekonomian Desa Papayan.",
         jumlah_unduh: 89,
         jumlah_baca: 240,
-        cover_buku: "static/images/banner2.png",
+        cover_buku: "static/images/uploads/b2_1792274407.jpeg",
         file_pdf: "static/docs/publikasi/buku_desa_papayan_dalam_angka_2026.pdf",
         url_unduh: "static/docs/publikasi/buku_desa_papayan_dalam_angka_2026.pdf"
       }
@@ -1331,7 +1335,7 @@
         <i class="fa-solid fa-user-check text-xs"></i>
       </div>
       <div class="text-xl font-black text-blue-300" id="stat-val-today">
-        170
+        178
       </div>
       <span class="text-[9px] text-slate-400">Pengunjung</span>
     </div>
@@ -1343,7 +1347,7 @@
         <i class="fa-solid fa-calendar-week text-xs"></i>
       </div>
       <div class="text-xl font-black text-amber-300" id="stat-val-week">
-        1.262
+        1.270
       </div>
       <span class="text-[9px] text-slate-400">7 hari terakhir</span>
     </div>
@@ -1355,7 +1359,7 @@
         <i class="fa-solid fa-calendar-days text-xs"></i>
       </div>
       <div class="text-xl font-black text-emerald-300" id="stat-val-month">
-        4.164
+        4.172
       </div>
       <span class="text-[9px] text-slate-400">Bulan berjalan</span>
     </div>
@@ -1367,7 +1371,7 @@
         <i class="fa-solid fa-globe text-xs"></i>
       </div>
       <div class="text-xl font-black text-purple-300" id="stat-val-total">
-        28.843
+        28.851
       </div>
       <span class="text-[9px] text-slate-400">Total Kunjungan</span>
     </div>
@@ -1394,7 +1398,7 @@
     <i class="fa-solid fa-chart-simple text-emerald-400 text-sm"></i>
     <span class="hidden sm:inline text-slate-200">Kunjungan:</span>
     <span class="text-emerald-300 font-black" id="pill-stat-today">
-      170
+      178
     </span>
     <span class="text-slate-400 text-[10px] hidden sm:inline">Hari Ini</span>
     <i class="fa-solid fa-chevron-up text-[9px] text-slate-400 group-hover:text-white transition transform group-hover:-translate-y-0.5"></i>
@@ -1718,6 +1722,17 @@
     document.getElementById('float_nama').focus();
   }
 </script>
+
+
+  <!-- Floating Theme Switcher Quick Control (Anti-Glare / Ramah Mata) -->
+  <div class="floating-theme-toggle">
+    <button type="button" onclick="toggleThemeMode()" 
+            class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-900/90 hover:bg-slate-900 dark:bg-white/95 dark:hover:bg-white text-white dark:text-slate-900 shadow-xl border border-white/20 dark:border-slate-300 text-xs font-extrabold backdrop-blur-md transition cursor-pointer"
+            title="Atur Pencahayaan Layar (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
+      <i id="theme-toggle-icon-float" class="fa-solid fa-moon text-amber-300 dark:text-amber-600"></i>
+      <span id="theme-toggle-text-float" class="hidden md:inline font-bold">Mode Gelap</span>
+    </button>
+  </div>
 
 </body>
 </html>

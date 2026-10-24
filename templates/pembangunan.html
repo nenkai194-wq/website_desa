@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Theme Mode -->
+  <script src="{{ url_for('static', filename='js/theme-mode.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-mode.css') }}" />
   <title>Transparansi Pembangunan & Proyek Fisik Desa {{ profil.nama_desa or 'Papayan' }}</title>
   <meta name="description" content="Informasi publik transparansi kegiatan dan proyek pembangunan desa yang sedang dan sudah dikerjakan di Desa {{ profil.nama_desa or 'Papayan' }}, lengkap dengan foto 3 fase (Sebelum, Proses, Akhir), rincian anggaran, dan progres fisik." />
   
@@ -21,6 +24,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -555,6 +559,17 @@
       }
     });
   </script>
+
+
+  <!-- Floating Theme Switcher Quick Control (Anti-Glare / Ramah Mata) -->
+  <div class="floating-theme-toggle">
+    <button type="button" onclick="toggleThemeMode()" 
+            class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-900/90 hover:bg-slate-900 dark:bg-white/95 dark:hover:bg-white text-white dark:text-slate-900 shadow-xl border border-white/20 dark:border-slate-300 text-xs font-extrabold backdrop-blur-md transition cursor-pointer"
+            title="Atur Pencahayaan Layar (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
+      <i id="theme-toggle-icon-float" class="fa-solid fa-moon text-amber-300 dark:text-amber-600"></i>
+      <span id="theme-toggle-text-float" class="hidden md:inline font-bold">Mode Gelap</span>
+    </button>
+  </div>
 
 </body>
 </html>

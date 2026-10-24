@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Theme Mode -->
+  <script src="static/js/theme-mode.js"></script>
+  <link rel="stylesheet" href="static/css/theme-mode.css" />
   <title>Transparansi Pembangunan & Proyek Fisik Desa Papayan</title>
   <meta name="description" content="Informasi publik transparansi kegiatan dan proyek pembangunan desa yang sedang dan sudah dikerjakan di Desa Papayan, lengkap dengan foto 3 fase (Sebelum, Proses, Akhir), rincian anggaran, dan progres fisik." />
   
@@ -21,6 +24,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -329,9 +333,9 @@
             <!-- 1. FASE SEBELUM -->
             <div id="card-fase-sebelum-1" class="space-y-3">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/banner1.png', 'Fase 1: Kondisi Sebelum Pembangunan')">
+                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/uploads/b1_1792274448.jpeg', 'Fase 1: Kondisi Sebelum Pembangunan')">
                   
-                  <img src="static/images/banner1.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                  <img src="static/images/uploads/b1_1792274448.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
                   <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
                   <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                     Foto 1 - Sebelum
@@ -342,9 +346,9 @@
                 </div>
 
                 
-                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/banner2.png', 'Fase 1: Foto Tambahan Sebelum Pembangunan')">
+                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/uploads/b3_1792274617.jpg', 'Fase 1: Foto Tambahan Sebelum Pembangunan')">
                   
-                  <img src="static/images/banner2.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                  <img src="static/images/uploads/b3_1792274617.jpg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
                   <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                     Foto 2 - Sebelum
                   </span>
@@ -365,9 +369,9 @@
             <!-- 2. FASE PROSES -->
             <div id="card-fase-proses-1" class="space-y-3 hidden">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/banner3.png', 'Fase 2: Proses Konstruksi')">
+                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/uploads/b2_1792274407.jpeg', 'Fase 2: Proses Konstruksi')">
                   
-                  <img src="static/images/banner3.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner2.png'">
+                  <img src="static/images/uploads/b2_1792274407.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner2.png'">
                   <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
                   <span class="absolute bottom-2 left-2 bg-amber-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                     Foto 1 - Proses
@@ -532,9 +536,9 @@
             <!-- 1. FASE SEBELUM -->
             <div id="card-fase-sebelum-2" class="space-y-3">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/banner2.png', 'Fase 1: Kondisi Sebelum Pembangunan')">
+                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/uploads/b2_1792274407.jpeg', 'Fase 1: Kondisi Sebelum Pembangunan')">
                   
-                  <img src="static/images/banner2.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                  <img src="static/images/uploads/b2_1792274407.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
                   <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
                   <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                     Foto 1 - Sebelum
@@ -545,9 +549,9 @@
                 </div>
 
                 
-                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/banner3.png', 'Fase 1: Foto Tambahan Sebelum Pembangunan')">
+                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/uploads/b1_1792274448.jpeg', 'Fase 1: Foto Tambahan Sebelum Pembangunan')">
                   
-                  <img src="static/images/banner3.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                  <img src="static/images/uploads/b1_1792274448.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
                   <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                     Foto 2 - Sebelum
                   </span>
@@ -568,9 +572,9 @@
             <!-- 2. FASE PROSES -->
             <div id="card-fase-proses-2" class="space-y-3 hidden">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/banner1.png', 'Fase 2: Proses Konstruksi')">
+                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/uploads/b3_1792274617.jpg', 'Fase 2: Proses Konstruksi')">
                   
-                  <img src="static/images/banner1.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner2.png'">
+                  <img src="static/images/uploads/b3_1792274617.jpg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner2.png'">
                   <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
                   <span class="absolute bottom-2 left-2 bg-amber-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                     Foto 1 - Proses
@@ -735,9 +739,9 @@
             <!-- 1. FASE SEBELUM -->
             <div id="card-fase-sebelum-3" class="space-y-3">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/banner3.png', 'Fase 1: Kondisi Sebelum Pembangunan')">
+                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/uploads/b3_1792274617.jpg', 'Fase 1: Kondisi Sebelum Pembangunan')">
                   
-                  <img src="static/images/banner3.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                  <img src="static/images/uploads/b3_1792274617.jpg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
                   <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
                   <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                     Foto 1 - Sebelum
@@ -748,9 +752,9 @@
                 </div>
 
                 
-                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/banner1.png', 'Fase 1: Foto Tambahan Sebelum Pembangunan')">
+                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/uploads/b2_1792274407.jpeg', 'Fase 1: Foto Tambahan Sebelum Pembangunan')">
                   
-                  <img src="static/images/banner1.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
+                  <img src="static/images/uploads/b2_1792274407.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner1.png'">
                   <span class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                     Foto 2 - Sebelum
                   </span>
@@ -771,9 +775,9 @@
             <!-- 2. FASE PROSES -->
             <div id="card-fase-proses-3" class="space-y-3 hidden">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/banner2.png', 'Fase 2: Proses Konstruksi')">
+                <div class="h-44 sm:h-52 rounded-2xl overflow-hidden bg-slate-900 relative group cursor-pointer" onclick="bukaLightbox('static/images/uploads/b1_1792274448.jpeg', 'Fase 2: Proses Konstruksi')">
                   
-                  <img src="static/images/banner2.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner2.png'">
+                  <img src="static/images/uploads/b1_1792274448.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='static/images/banner2.png'">
                   <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
                   <span class="absolute bottom-2 left-2 bg-amber-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                     Foto 1 - Proses
@@ -994,6 +998,17 @@
       }
     });
   </script>
+
+
+  <!-- Floating Theme Switcher Quick Control (Anti-Glare / Ramah Mata) -->
+  <div class="floating-theme-toggle">
+    <button type="button" onclick="toggleThemeMode()" 
+            class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-900/90 hover:bg-slate-900 dark:bg-white/95 dark:hover:bg-white text-white dark:text-slate-900 shadow-xl border border-white/20 dark:border-slate-300 text-xs font-extrabold backdrop-blur-md transition cursor-pointer"
+            title="Atur Pencahayaan Layar (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
+      <i id="theme-toggle-icon-float" class="fa-solid fa-moon text-amber-300 dark:text-amber-600"></i>
+      <span id="theme-toggle-text-float" class="hidden md:inline font-bold">Mode Gelap</span>
+    </button>
+  </div>
 
 </body>
 </html>

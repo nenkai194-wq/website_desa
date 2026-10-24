@@ -1,0 +1,171 @@
+/* ==========================================================
+   MODE PENCAHAYAAN (LIGHT & DARK THEME) - DESA PAPAYAN
+   Desain ramah mata (anti-glare & eye-friendly comfort)
+   ========================================================== */
+
+/* Transisi halus saat beralih mode */
+html, body, div, section, header, nav, footer, button, input, select, textarea, .card {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, box-shadow 0.25s ease;
+}
+
+/* ==========================================================
+   DARK MODE RULES (Ketika class "dark" aktif pada <html>)
+   ========================================================== */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #0b1120 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Background Containers */
+html.dark .bg-white {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-gray-50 {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+}
+
+html.dark .bg-slate-100,
+html.dark .bg-gray-100 {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html.dark .bg-slate-200,
+html.dark .bg-gray-200 {
+  background-color: #334155 !important;
+}
+
+/* Glassmorphism containers in dark mode */
+html.dark .backdrop-blur-md,
+html.dark .backdrop-blur-lg,
+html.dark .backdrop-blur-xl {
+  background-color: rgba(15, 23, 42, 0.88) !important;
+  border-color: rgba(51, 65, 85, 0.7) !important;
+}
+
+/* Text Colors */
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-gray-900,
+html.dark .text-gray-800 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-slate-700,
+html.dark .text-slate-600,
+html.dark .text-gray-700,
+html.dark .text-gray-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-500,
+html.dark .text-gray-500 {
+  color: #94a3b8 !important;
+}
+
+html.dark .text-slate-400,
+html.dark .text-gray-400 {
+  color: #94a3b8 !important;
+}
+
+/* Borders */
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-300,
+html.dark .border-gray-100,
+html.dark .border-gray-200,
+html.dark .border-gray-300 {
+  border-color: #334155 !important;
+}
+
+/* Form Inputs, Selects, and Textareas */
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+html.dark textarea,
+html.dark select {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #475569 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Modals & Dialogs */
+html.dark .modal-content,
+html.dark [id^="modal"],
+html.dark [id^="lightbox"] {
+  border-color: #334155 !important;
+}
+
+/* Tables */
+html.dark table thead th {
+  background-color: #0f172a !important;
+  color: #cbd5e1 !important;
+  border-color: #334155 !important;
+}
+
+html.dark table tbody tr {
+  border-color: #334155 !important;
+}
+
+html.dark table tbody tr:hover {
+  background-color: rgba(51, 65, 85, 0.4) !important;
+}
+
+/* Leaflet Map Controls & Popups */
+html.dark .leaflet-container {
+  background: #0f172a !important;
+}
+
+html.dark .leaflet-popup-content-wrapper,
+html.dark .leaflet-popup-tip {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+}
+
+html.dark .leaflet-popup-content h4,
+html.dark .leaflet-popup-content div,
+html.dark .leaflet-popup-content p,
+html.dark .leaflet-popup-content span {
+  color: #f8fafc !important;
+}
+
+html.dark .leaflet-popup-content strong {
+  color: #34d399 !important;
+}
+
+html.dark .sls-map-tooltip {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+}
+
+/* Floating Quick Toggle Pill */
+.floating-theme-toggle {
+  position: fixed;
+  bottom: 84px;
+  right: 20px;
+  z-index: 45;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 12s linear infinite;
+}
