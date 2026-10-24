@@ -192,7 +192,7 @@
         </div>
         <div>
           <span class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider block">Total Kegiatan</span>
-          <span class="text-lg sm:text-2xl font-black text-slate-900 leading-tight">3 Proyek</span>
+          <span id="kpi-pemb-total" class="text-lg sm:text-2xl font-black text-slate-900 leading-tight">3 Proyek</span>
         </div>
       </div>
 
@@ -203,7 +203,7 @@
         </div>
         <div>
           <span class="text-[10px] sm:text-xs text-amber-700 font-bold uppercase tracking-wider block">Sedang Berjalan</span>
-          <span class="text-lg sm:text-2xl font-black text-amber-600 leading-tight">1 Kegiatan</span>
+          <span id="kpi-pemb-sedang" class="text-lg sm:text-2xl font-black text-amber-600 leading-tight">1 Kegiatan</span>
         </div>
       </div>
 
@@ -214,7 +214,7 @@
         </div>
         <div>
           <span class="text-[10px] sm:text-xs text-emerald-700 font-bold uppercase tracking-wider block">Sudah Selesai</span>
-          <span class="text-lg sm:text-2xl font-black text-emerald-600 leading-tight">2 Kegiatan</span>
+          <span id="kpi-pemb-selesai" class="text-lg sm:text-2xl font-black text-emerald-600 leading-tight">2 Kegiatan</span>
         </div>
       </div>
 
@@ -225,7 +225,7 @@
         </div>
         <div class="min-w-0">
           <span class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider block">Total Realisasi</span>
-          <span class="text-base sm:text-lg font-black text-slate-900 leading-tight truncate block">Rp 309.500.000</span>
+          <span id="kpi-pemb-anggaran" class="text-base sm:text-lg font-black text-slate-900 leading-tight truncate block">Rp 309.500.000</span>
         </div>
       </div>
     </div>
@@ -249,7 +249,7 @@
         <!-- Filter Dropdowns -->
         <div class="flex flex-wrap items-center gap-2">
           <!-- Status Filter -->
-          <select id="filterPublikStatus" onchange="terapkanFilterPublik()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold py-2.5 px-3 rounded-xl focus:outline-none focus:border-brand-500">
+          <select id="filterPublikStatus" onchange="filterPembangunanPublik()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold py-2.5 px-3 rounded-xl focus:outline-none focus:border-brand-500">
             <option value="Semua" selected>Semua Status</option>
             <option value="Sedang Dikerjakan" >Sedang Dikerjakan</option>
             <option value="Selesai" >Sudah Selesai</option>
@@ -257,7 +257,7 @@
           </select>
 
           <!-- Dusun Filter -->
-          <select id="filterPublikDusun" onchange="terapkanFilterPublik()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold py-2.5 px-3 rounded-xl focus:outline-none focus:border-brand-500">
+          <select id="filterPublikDusun" onchange="filterPembangunanPublik()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold py-2.5 px-3 rounded-xl focus:outline-none focus:border-brand-500">
             <option value="Semua" selected>Seluruh Dusun</option>
             
             <option value="Dusun Ranca Sari" >Dusun Ranca Sari</option>
@@ -271,7 +271,7 @@
           </select>
 
           <!-- Tahun Filter -->
-          <select id="filterPublikTahun" onchange="terapkanFilterPublik()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold py-2.5 px-3 rounded-xl focus:outline-none focus:border-brand-500">
+          <select id="filterPublikTahun" onchange="filterPembangunanPublik()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold py-2.5 px-3 rounded-xl focus:outline-none focus:border-brand-500">
             <option value="Semua" selected>Semua Tahun</option>
             
             <option value="2026" >TA 2026</option>
@@ -292,7 +292,10 @@
       <div class="pembangunan-item bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between"
            data-nama="pembangunan jalan rabat beton poros dusun ranca sari"
            data-lokasi="jalan poros dusun ranca sari rt 002 / rw 001"
-           data-dusun="dusun ranca sari">
+           data-dusun="dusun ranca sari"
+           data-status="Sedang Dikerjakan"
+           data-tahun="2026"
+           data-anggaran="148500000">
         
         <div>
           <!-- Header Card Info -->
@@ -495,7 +498,10 @@
       <div class="pembangunan-item bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between"
            data-nama="pembangunan &amp; normalisasi saluran irigasi tersier dusun demung landung"
            data-lokasi="blok sawah demung kidul rt 003 / rw 001"
-           data-dusun="dusun demung landung">
+           data-dusun="dusun demung landung"
+           data-status="Selesai"
+           data-tahun="2026"
+           data-anggaran="96200000">
         
         <div>
           <!-- Header Card Info -->
@@ -698,7 +704,10 @@
       <div class="pembangunan-item bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between"
            data-nama="peningkatan &amp; rehabilitasi sarana posyandu terpadu dusun cihaur"
            data-lokasi="komplek kantor rw 004 dusun cihaur"
-           data-dusun="dusun cihaur">
+           data-dusun="dusun cihaur"
+           data-status="Selesai"
+           data-tahun="2025"
+           data-anggaran="64800000">
         
         <div>
           <!-- Header Card Info -->
@@ -1073,26 +1082,67 @@
     }
 
     // Filter Logic
-    function terapkanFilterPublik() {
-      const status = document.getElementById('filterPublikStatus').value;
-      const dusun = document.getElementById('filterPublikDusun').value;
-      const tahun = document.getElementById('filterPublikTahun').value;
-      window.location.href = `/pembangunan?status=${encodeURIComponent(status)}&dusun=${encodeURIComponent(dusun)}&tahun=${encodeURIComponent(tahun)}`;
+    function formatRupiahPembangunan(num) {
+      return 'Rp ' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
     function filterPembangunanPublik() {
-      const q = document.getElementById('pencarianPublikPembangunan').value.toLowerCase();
+      const qInput = document.getElementById('pencarianPublikPembangunan');
+      const q = qInput ? qInput.value.toLowerCase().trim() : '';
+      const statusSelect = document.getElementById('filterPublikStatus');
+      const selectedStatus = statusSelect ? statusSelect.value : 'Semua';
+      const dusunSelect = document.getElementById('filterPublikDusun');
+      const selectedDusun = dusunSelect ? dusunSelect.value.toLowerCase() : 'semua';
+      const tahunSelect = document.getElementById('filterPublikTahun');
+      const selectedTahun = tahunSelect ? tahunSelect.value : 'Semua';
+
       const items = document.querySelectorAll('.pembangunan-item');
+      let countTotal = 0;
+      let countSedang = 0;
+      let countSelesai = 0;
+      let totalRealisasi = 0;
+
       items.forEach(it => {
         const nama = it.getAttribute('data-nama') || '';
         const lokasi = it.getAttribute('data-lokasi') || '';
         const dusun = it.getAttribute('data-dusun') || '';
-        if (nama.includes(q) || lokasi.includes(q) || dusun.includes(q)) {
+        const status = it.getAttribute('data-status') || '';
+        const tahun = it.getAttribute('data-tahun') || '';
+        const anggaran = parseFloat(it.getAttribute('data-anggaran')) || 0;
+
+        const cocokKeyword = !q || nama.includes(q) || lokasi.includes(q) || dusun.includes(q);
+        const cocokStatus = (selectedStatus === 'Semua') || (status === selectedStatus);
+        const cocokDusun = (selectedDusun === 'semua') || (dusun.includes(selectedDusun));
+        const cocokTahun = (selectedTahun === 'Semua') || (tahun === selectedTahun);
+
+        if (cocokKeyword && cocokStatus && cocokDusun && cocokTahun) {
           it.style.display = '';
+          countTotal++;
+          if (status === 'Sedang Dikerjakan') {
+            countSedang++;
+          } else if (status === 'Selesai') {
+            countSelesai++;
+          }
+          totalRealisasi += anggaran;
         } else {
           it.style.display = 'none';
         }
       });
+
+      // Update 4 KPI Summary Cards dinamis
+      const elTotal = document.getElementById('kpi-pemb-total');
+      const elSedang = document.getElementById('kpi-pemb-sedang');
+      const elSelesai = document.getElementById('kpi-pemb-selesai');
+      const elAnggaran = document.getElementById('kpi-pemb-anggaran');
+
+      if (elTotal) elTotal.innerText = countTotal + ' Proyek';
+      if (elSedang) elSedang.innerText = countSedang + ' Kegiatan';
+      if (elSelesai) elSelesai.innerText = countSelesai + ' Kegiatan';
+      if (elAnggaran) elAnggaran.innerText = formatRupiahPembangunan(totalRealisasi);
+    }
+
+    function terapkanFilterPublik() {
+      filterPembangunanPublik();
     }
 
     // Keyboard support Esc

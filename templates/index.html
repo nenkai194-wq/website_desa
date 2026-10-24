@@ -3219,7 +3219,7 @@
           </div>
           <div>
             <span class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider block">Total Kegiatan</span>
-            <span class="text-lg sm:text-2xl font-black text-slate-900 leading-tight">{{ total_proyek }} Proyek</span>
+            <span id="kpi-pemb-total" class="text-lg sm:text-2xl font-black text-slate-900 leading-tight">{{ total_proyek }} Proyek</span>
           </div>
         </div>
 
@@ -3229,7 +3229,7 @@
           </div>
           <div>
             <span class="text-[10px] sm:text-xs text-amber-700 font-bold uppercase tracking-wider block">Sedang Berjalan</span>
-            <span class="text-lg sm:text-2xl font-black text-amber-600 leading-tight">{{ sedang_proyek }} Kegiatan</span>
+            <span id="kpi-pemb-sedang" class="text-lg sm:text-2xl font-black text-amber-600 leading-tight">{{ sedang_proyek }} Kegiatan</span>
           </div>
         </div>
 
@@ -3239,7 +3239,7 @@
           </div>
           <div>
             <span class="text-[10px] sm:text-xs text-emerald-700 font-bold uppercase tracking-wider block">Sudah Selesai</span>
-            <span class="text-lg sm:text-2xl font-black text-emerald-600 leading-tight">{{ selesai_proyek }} Kegiatan</span>
+            <span id="kpi-pemb-selesai" class="text-lg sm:text-2xl font-black text-emerald-600 leading-tight">{{ selesai_proyek }} Kegiatan</span>
           </div>
         </div>
 
@@ -3249,7 +3249,7 @@
           </div>
           <div class="min-w-0">
             <span class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider block">Total Realisasi</span>
-            <span class="text-base sm:text-lg font-black text-slate-900 leading-tight truncate block">Rp {{ "{:,.0f}".format(total_dana.val).replace(",", ".") }}</span>
+            <span id="kpi-pemb-anggaran" class="text-base sm:text-lg font-black text-slate-900 leading-tight truncate block">Rp {{ "{:,.0f}".format(total_dana.val).replace(",", ".") }}</span>
           </div>
         </div>
       </div>
@@ -3298,7 +3298,8 @@
              data-lokasi="{{ p.lokasi|lower }}"
              data-dusun="{{ p.dusun|lower }}"
              data-status="{{ p.status_progres }}"
-             data-tahun="{{ p.tahun_anggaran }}">
+             data-tahun="{{ p.tahun_anggaran }}"
+             data-anggaran="{{ p.anggaran or 0 }}">
 
           
           <div>
@@ -5816,6 +5817,10 @@
       filterSpaPembangunan();
     }
 
+    function formatRupiahPembangunan(num) {
+      return 'Rp ' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
     function filterSpaPembangunan() {
       const qInput = document.getElementById('pencarianSpaPembangunan');
       const q = qInput ? qInput.value.toLowerCase().trim() : '';
@@ -5823,12 +5828,18 @@
       const selectedTahun = tahunSelect ? tahunSelect.value : 'Semua';
 
       const items = document.querySelectorAll('.spa-pembangunan-item');
+      let countTotal = 0;
+      let countSedang = 0;
+      let countSelesai = 0;
+      let totalRealisasi = 0;
+
       items.forEach(it => {
         const nama = it.getAttribute('data-nama') || '';
         const lokasi = it.getAttribute('data-lokasi') || '';
         const dusun = it.getAttribute('data-dusun') || '';
         const status = it.getAttribute('data-status') || '';
         const tahun = it.getAttribute('data-tahun') || '';
+        const anggaran = parseFloat(it.getAttribute('data-anggaran')) || 0;
 
         const cocokKeyword = !q || nama.includes(q) || lokasi.includes(q) || dusun.includes(q);
         const cocokStatus = (statusFilterSpaAktif === 'Semua') || (status === statusFilterSpaAktif);
@@ -5836,10 +5847,28 @@
 
         if (cocokKeyword && cocokStatus && cocokTahun) {
           it.style.display = '';
+          countTotal++;
+          if (status === 'Sedang Dikerjakan') {
+            countSedang++;
+          } else if (status === 'Selesai') {
+            countSelesai++;
+          }
+          totalRealisasi += anggaran;
         } else {
           it.style.display = 'none';
         }
       });
+
+      // Update 4 KPI Summary Cards dinamis
+      const elTotal = document.getElementById('kpi-pemb-total');
+      const elSedang = document.getElementById('kpi-pemb-sedang');
+      const elSelesai = document.getElementById('kpi-pemb-selesai');
+      const elAnggaran = document.getElementById('kpi-pemb-anggaran');
+
+      if (elTotal) elTotal.innerText = countTotal + ' Proyek';
+      if (elSedang) elSedang.innerText = countSedang + ' Kegiatan';
+      if (elSelesai) elSelesai.innerText = countSelesai + ' Kegiatan';
+      if (elAnggaran) elAnggaran.innerText = formatRupiahPembangunan(totalRealisasi);
     }
 
     // Modal Rincian Penuh Pembangunan (Popup tanpa membuka halaman baru)
