@@ -11456,17 +11456,17 @@
     <!-- PANEL 3: SUB-GALERI KHUSUS PIAGAM PENGHARGAAN & PRESTASI PEMERINTAH DESA -->
     <div id="panel-sub-penghargaan" class="subpanel-berita hidden">
       <section class="pb-16 pt-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Bar Ringkasan Prestasi -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-slate-200/80 text-xs">
-          <div class="flex items-center gap-2 font-bold text-amber-700">
+<!-- Bar Ringkasan Prestasi -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-slate-200/80 text-xs bar-ringkasan-prestasi">
+          <div class="flex items-center gap-2 font-bold text-amber-700 piagam-bar-label">
             <i class="fa-solid fa-award text-amber-500 text-base"></i>
             <span>Dokumentasi Resmi Capaian &amp; Apresiasi Prestasi Pemerintahan Desa</span>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 text-amber-800 font-bold border border-amber-200/80">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 text-amber-800 font-bold border border-amber-200/80 piagam-badge-count">
               <i class="fa-solid fa-trophy text-amber-500"></i> 3 Prestasi Tercatat
             </span>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-50 text-emerald-800 font-bold border border-emerald-200/80">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-50 text-emerald-800 font-bold border border-emerald-200/80 piagam-badge-status">
               <i class="fa-solid fa-circle-check text-emerald-600"></i> Terverifikasi Resmi
             </span>
           </div>
@@ -11474,14 +11474,21 @@
         <!-- Grid Kartu Piagam Penghargaan -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           
-          <div class="bg-gradient-to-b from-amber-50/60 to-white rounded-3xl overflow-hidden border-2 border-amber-200/80 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col group cursor-pointer"
+          <div class="card-piagam bg-white rounded-3xl overflow-hidden border border-amber-200/80 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col group cursor-pointer"
                onclick="bukaLightboxFrontend('static/images/logo_tasikmalaya.png', 'Penghargaan Desa Cinta Statistik (Desa Cantik) Terbaik', 'Piagam & Penghargaan', '2026-01-18', 'Badan Pusat Statistik (BPS)', 'Penghargaan resmi dari Badan Pusat Statistik (BPS) atas digitalisasi data statistik desa berbasis SLS dan keterbukaan informasi statistik kependudukan.')">
             
-            <!-- Frame Piagam dengan aksen Gold Ribbon -->
-            <div class="relative h-64 overflow-hidden bg-slate-900 border-b border-amber-200/70">
+            <!-- Frame Piagam / Foto Prestasi (Elegantly Framed, No Awkward Cropping) -->
+            <div class="relative h-64 overflow-hidden bg-slate-950 flex items-center justify-center border-b border-amber-500/20 p-4">
+              <!-- Blurred background from image to fill stage -->
+              <img src="static/images/logo_tasikmalaya.png" 
+                   alt="" 
+                   aria-hidden="true"
+                   class="absolute inset-0 w-full h-full object-cover opacity-25 blur-lg pointer-events-none transform scale-110">
+
+              <!-- Main Certificate / Logo Photo (Crisp, Contained, Centered) -->
               <img src="static/images/logo_tasikmalaya.png" 
                    alt="Penghargaan Desa Cinta Statistik (Desa Cantik) Terbaik" 
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   class="relative z-1 max-h-full max-w-full object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-500 rounded-lg p-1"
                    onerror="this.src='static/images/banner1.png'">
               
               <!-- Badge Tahun -->
@@ -11498,7 +11505,7 @@
               </div>
 
               <!-- Hover overlay with zoom icon -->
-              <div class="absolute inset-0 bg-amber-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
                 <span class="px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs shadow-xl flex items-center gap-2 transform scale-90 group-hover:scale-100 transition-transform duration-300">
                   <i class="fa-solid fa-magnifying-glass-plus"></i> Lihat Pratinjau Piagam
                 </span>
@@ -11508,35 +11515,43 @@
             <!-- Detail Piagam -->
             <div class="p-6 flex-1 flex flex-col justify-between">
               <div>
-                <div class="flex items-center gap-2 text-xs text-amber-800 font-bold mb-2">
+                <div class="flex items-center gap-2 text-xs font-bold mb-2 piagam-instansi text-amber-700">
                   <i class="fa-solid fa-building-columns text-amber-600"></i>
                   <span class="truncate">Badan Pusat Statistik (BPS)</span>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg leading-snug group-hover:text-amber-700 transition line-clamp-2 mb-2">
+                <h3 class="font-extrabold text-slate-900 text-lg leading-snug group-hover:text-amber-600 transition line-clamp-2 mb-2 piagam-judul">
                   Penghargaan Desa Cinta Statistik (Desa Cantik) Terbaik
                 </h3>
                 
-                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">Penghargaan resmi dari Badan Pusat Statistik (BPS) atas digitalisasi data statistik desa berbasis SLS dan keterbukaan informasi statistik kependudukan.</p>
+                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed piagam-deskripsi">Penghargaan resmi dari Badan Pusat Statistik (BPS) atas digitalisasi data statistik desa berbasis SLS dan keterbukaan informasi statistik kependudukan.</p>
                 
               </div>
 
-              <div class="mt-5 pt-3 border-t border-amber-100 flex items-center justify-between text-xs font-bold text-amber-700">
-                <span class="flex items-center gap-1"><i class="fa-regular fa-calendar-days text-[11px]"></i> 2026-01-18</span>
+              <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-amber-700 piagam-footer">
+                <span class="flex items-center gap-1 text-slate-400 piagam-tanggal"><i class="fa-regular fa-calendar-days text-[11px]"></i> 2026-01-18</span>
                 <span class="flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-200">
                   Buka Piagam <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </span>
               </div>
             </div>
           </div>
+
           
-          <div class="bg-gradient-to-b from-amber-50/60 to-white rounded-3xl overflow-hidden border-2 border-amber-200/80 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col group cursor-pointer"
+          <div class="card-piagam bg-white rounded-3xl overflow-hidden border border-amber-200/80 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col group cursor-pointer"
                onclick="bukaLightboxFrontend('static/images/logo_tasikmalaya.png', 'Piagam Juara I Tata Kelola Administrasi &amp; Keterbukaan Informasi Publik', 'Piagam & Penghargaan', '2025-12-15', 'Pemerintah Kabupaten Tasikmalaya', 'Penghargaan dari Pemerintah Kabupaten Tasikmalaya atas inovasi pelayanan surat mandiri digital dan tata kelola pemerintahan desa yang akuntabel.')">
             
-            <!-- Frame Piagam dengan aksen Gold Ribbon -->
-            <div class="relative h-64 overflow-hidden bg-slate-900 border-b border-amber-200/70">
+            <!-- Frame Piagam / Foto Prestasi (Elegantly Framed, No Awkward Cropping) -->
+            <div class="relative h-64 overflow-hidden bg-slate-950 flex items-center justify-center border-b border-amber-500/20 p-4">
+              <!-- Blurred background from image to fill stage -->
+              <img src="static/images/logo_tasikmalaya.png" 
+                   alt="" 
+                   aria-hidden="true"
+                   class="absolute inset-0 w-full h-full object-cover opacity-25 blur-lg pointer-events-none transform scale-110">
+
+              <!-- Main Certificate / Logo Photo (Crisp, Contained, Centered) -->
               <img src="static/images/logo_tasikmalaya.png" 
                    alt="Piagam Juara I Tata Kelola Administrasi &amp; Keterbukaan Informasi Publik" 
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   class="relative z-1 max-h-full max-w-full object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-500 rounded-lg p-1"
                    onerror="this.src='static/images/banner1.png'">
               
               <!-- Badge Tahun -->
@@ -11553,7 +11568,7 @@
               </div>
 
               <!-- Hover overlay with zoom icon -->
-              <div class="absolute inset-0 bg-amber-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
                 <span class="px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs shadow-xl flex items-center gap-2 transform scale-90 group-hover:scale-100 transition-transform duration-300">
                   <i class="fa-solid fa-magnifying-glass-plus"></i> Lihat Pratinjau Piagam
                 </span>
@@ -11563,35 +11578,43 @@
             <!-- Detail Piagam -->
             <div class="p-6 flex-1 flex flex-col justify-between">
               <div>
-                <div class="flex items-center gap-2 text-xs text-amber-800 font-bold mb-2">
+                <div class="flex items-center gap-2 text-xs font-bold mb-2 piagam-instansi text-amber-700">
                   <i class="fa-solid fa-building-columns text-amber-600"></i>
                   <span class="truncate">Pemerintah Kabupaten Tasikmalaya</span>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg leading-snug group-hover:text-amber-700 transition line-clamp-2 mb-2">
+                <h3 class="font-extrabold text-slate-900 text-lg leading-snug group-hover:text-amber-600 transition line-clamp-2 mb-2 piagam-judul">
                   Piagam Juara I Tata Kelola Administrasi &amp; Keterbukaan Informasi Publik
                 </h3>
                 
-                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">Penghargaan dari Pemerintah Kabupaten Tasikmalaya atas inovasi pelayanan surat mandiri digital dan tata kelola pemerintahan desa yang akuntabel.</p>
+                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed piagam-deskripsi">Penghargaan dari Pemerintah Kabupaten Tasikmalaya atas inovasi pelayanan surat mandiri digital dan tata kelola pemerintahan desa yang akuntabel.</p>
                 
               </div>
 
-              <div class="mt-5 pt-3 border-t border-amber-100 flex items-center justify-between text-xs font-bold text-amber-700">
-                <span class="flex items-center gap-1"><i class="fa-regular fa-calendar-days text-[11px]"></i> 2025-12-15</span>
+              <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-amber-700 piagam-footer">
+                <span class="flex items-center gap-1 text-slate-400 piagam-tanggal"><i class="fa-regular fa-calendar-days text-[11px]"></i> 2025-12-15</span>
                 <span class="flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-200">
                   Buka Piagam <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </span>
               </div>
             </div>
           </div>
+
           
-          <div class="bg-gradient-to-b from-amber-50/60 to-white rounded-3xl overflow-hidden border-2 border-amber-200/80 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col group cursor-pointer"
+          <div class="card-piagam bg-white rounded-3xl overflow-hidden border border-amber-200/80 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col group cursor-pointer"
                onclick="bukaLightboxFrontend('static/images/logo_tasikmalaya.png', 'Apresiasi Desa Berprestasi Tata Kelola Keterbukaan Informasi', 'Piagam & Penghargaan', '2025-10-24', 'Kementerian LHK Republik Indonesia', 'Penghargaan atas komitmen Pemerintah Desa Papayan dalam menghadirkan keterbukaan informasi publik dan digitalisasi data statistik desa.')">
             
-            <!-- Frame Piagam dengan aksen Gold Ribbon -->
-            <div class="relative h-64 overflow-hidden bg-slate-900 border-b border-amber-200/70">
+            <!-- Frame Piagam / Foto Prestasi (Elegantly Framed, No Awkward Cropping) -->
+            <div class="relative h-64 overflow-hidden bg-slate-950 flex items-center justify-center border-b border-amber-500/20 p-4">
+              <!-- Blurred background from image to fill stage -->
+              <img src="static/images/logo_tasikmalaya.png" 
+                   alt="" 
+                   aria-hidden="true"
+                   class="absolute inset-0 w-full h-full object-cover opacity-25 blur-lg pointer-events-none transform scale-110">
+
+              <!-- Main Certificate / Logo Photo (Crisp, Contained, Centered) -->
               <img src="static/images/logo_tasikmalaya.png" 
                    alt="Apresiasi Desa Berprestasi Tata Kelola Keterbukaan Informasi" 
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   class="relative z-1 max-h-full max-w-full object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-500 rounded-lg p-1"
                    onerror="this.src='static/images/banner1.png'">
               
               <!-- Badge Tahun -->
@@ -11608,7 +11631,7 @@
               </div>
 
               <!-- Hover overlay with zoom icon -->
-              <div class="absolute inset-0 bg-amber-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
                 <span class="px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs shadow-xl flex items-center gap-2 transform scale-90 group-hover:scale-100 transition-transform duration-300">
                   <i class="fa-solid fa-magnifying-glass-plus"></i> Lihat Pratinjau Piagam
                 </span>
@@ -11618,26 +11641,27 @@
             <!-- Detail Piagam -->
             <div class="p-6 flex-1 flex flex-col justify-between">
               <div>
-                <div class="flex items-center gap-2 text-xs text-amber-800 font-bold mb-2">
+                <div class="flex items-center gap-2 text-xs font-bold mb-2 piagam-instansi text-amber-700">
                   <i class="fa-solid fa-building-columns text-amber-600"></i>
                   <span class="truncate">Kementerian LHK Republik Indonesia</span>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg leading-snug group-hover:text-amber-700 transition line-clamp-2 mb-2">
+                <h3 class="font-extrabold text-slate-900 text-lg leading-snug group-hover:text-amber-600 transition line-clamp-2 mb-2 piagam-judul">
                   Apresiasi Desa Berprestasi Tata Kelola Keterbukaan Informasi
                 </h3>
                 
-                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">Penghargaan atas komitmen Pemerintah Desa Papayan dalam menghadirkan keterbukaan informasi publik dan digitalisasi data statistik desa.</p>
+                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed piagam-deskripsi">Penghargaan atas komitmen Pemerintah Desa Papayan dalam menghadirkan keterbukaan informasi publik dan digitalisasi data statistik desa.</p>
                 
               </div>
 
-              <div class="mt-5 pt-3 border-t border-amber-100 flex items-center justify-between text-xs font-bold text-amber-700">
-                <span class="flex items-center gap-1"><i class="fa-regular fa-calendar-days text-[11px]"></i> 2025-10-24</span>
+              <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-amber-700 piagam-footer">
+                <span class="flex items-center gap-1 text-slate-400 piagam-tanggal"><i class="fa-regular fa-calendar-days text-[11px]"></i> 2025-10-24</span>
                 <span class="flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-200">
                   Buka Piagam <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </span>
               </div>
             </div>
           </div>
+
           
         </div>
       </section>
@@ -13253,19 +13277,19 @@
           <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-blue-400"></i> Hari Ini:</span>
-              <span id="count-today" class="font-bold text-white">143</span>
+              <span id="count-today" class="font-bold text-white">151</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-week text-amber-400"></i> Minggu Ini:</span>
-              <span id="count-week" class="font-bold text-white">1.160</span>
+              <span id="count-week" class="font-bold text-white">1.168</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-emerald-400"></i> Bulan Ini:</span>
-              <span id="count-month" class="font-bold text-white">4.234</span>
+              <span id="count-month" class="font-bold text-white">4.242</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-purple-400"></i> Total Kunjungan:</span>
-              <span id="count-total" class="font-black text-brand-300">28.913</span>
+              <span id="count-total" class="font-black text-brand-300">28.921</span>
             </div>
           </div>
         </div>

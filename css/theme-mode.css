@@ -399,3 +399,69 @@ html.dark .leaflet-popup-content span {
 .animate-spin-slow {
   animation: spinSlow 12s linear infinite;
 }
+
+/* ==========================================================================
+   15. PENYESUAIAN KARTU PIAGAM & PRESTASI (DARK MODE)
+   ========================================================================== */
+html.dark .card-piagam {
+  background-color: #0f172a !important;
+  background-image: none !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7) !important;
+}
+
+html.dark .card-piagam:hover {
+  border-color: rgba(245, 158, 11, 0.75) !important;
+  box-shadow: 0 16px 32px -4px rgba(245, 158, 11, 0.2) !important;
+}
+
+html.dark .card-piagam .piagam-instansi {
+  color: #fbbf24 !important; /* Gold Amber 400 */
+}
+
+html.dark .card-piagam .piagam-instansi i {
+  color: #f59e0b !important;
+}
+
+html.dark .card-piagam .piagam-judul {
+  color: #ffffff !important; /* Crisp pure white */
+}
+
+html.dark .card-piagam:hover .piagam-judul {
+  color: #fbbf24 !important;
+}
+
+html.dark .card-piagam .piagam-deskripsi {
+  color: #cbd5e1 !important; /* Slate 300, clear & high contrast */
+}
+
+html.dark .card-piagam .piagam-footer {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fbbf24 !important;
+}
+
+html.dark .card-piagam .piagam-tanggal {
+  color: #94a3b8 !important; /* Slate 400 */
+}
+
+/* Bar Ringkasan Prestasi di Mode Gelap */
+html.dark .bar-ringkasan-prestasi {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark .bar-ringkasan-prestasi .piagam-bar-label {
+  color: #fbbf24 !important;
+}
+
+html.dark .bar-ringkasan-prestasi .piagam-badge-count {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #fde68a !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+html.dark .bar-ringkasan-prestasi .piagam-badge-status {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #a7f3d0 !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
