@@ -467,61 +467,158 @@ html.dark .bar-ringkasan-prestasi .piagam-badge-status {
 
 
 /* ==========================================================================
-   16. PANEL ADMIN TERPADU - MODE GELAP ERGONOMIS & GRADASI WARNA HARMONIS
+   16. PANEL ADMIN TERPADU - MODE GELAP ERGONOMIS & GRADASI WARNA HARMONIS (V2)
+   Desain Anti-Silau, Kontras Tinggi, dan Gradasi Harmonis untuk Semua Menu Admin
    ========================================================================== */
 
-/* Latar Belakang & Header Topbar Admin */
+/* Canvas & Kontainer Utama Admin */
+html.dark body {
+  background-color: #070b14 !important;
+  color: #e2e8f0 !important;
+}
+
 html.dark header.bg-white,
 html.dark header[class*="bg-white"] {
-  background: linear-gradient(90deg, #0a0f1d 0%, #0f172a 100%) !important;
+  background: linear-gradient(90deg, #090e1c 0%, #0d1527 100%) !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.6) !important;
 }
 
-/* Sidebar Admin di Mode Gelap */
 html.dark aside.bg-slate-900 {
-  background: #070b14 !important;
+  background: #060a12 !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Kartu & Box Kontainer Admin di Mode Gelap */
+/* 1. KARTU UTAMA ADMIN (Card Containers) */
 html.dark main .bg-white,
 html.dark .admin-card {
-  background: linear-gradient(145deg, #0e172a 0%, #111e38 100%) !important;
+  background: linear-gradient(145deg, #0d1527 0%, #111e38 100%) !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.55) !important;
 }
 
-/* Tabel Admin di Mode Gelap */
-html.dark table thead,
-html.dark table thead tr,
-html.dark table thead th {
-  background-color: #090e1a !important;
-  color: #94a3b8 !important;
+/* 2. SUB-KARTU & ELEMEN NESTED (SEMUA VARIASI OPASITAS ANTI-SILAU) */
+html.dark main [class*="bg-slate-50"],
+html.dark main [class*="bg-gray-50"],
+html.dark main [class*="bg-slate-100"],
+html.dark main [class*="bg-gray-100"] {
+  background-color: #080d19 !important;
+  background-image: none !important;
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+html.dark main [class*="bg-slate-200"],
+html.dark main [class*="bg-gray-200"],
+html.dark main [class*="bg-slate-300"] {
+  background-color: #0f182d !important;
+  background-image: none !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-html.dark table tbody tr {
-  border-color: rgba(255, 255, 255, 0.06) !important;
+/* Hover States pada Sub-kartu & List Items */
+html.dark main [class*="hover:bg-white"]:hover,
+html.dark main [class*="hover:bg-slate-50"]:hover,
+html.dark main [class*="hover:bg-slate-100"]:hover {
+  background-color: #121e36 !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
 }
 
-html.dark table tbody tr:hover,
-html.dark table tbody tr.hover\:bg-slate-50:hover {
-  background-color: rgba(255, 255, 255, 0.04) !important;
+/* 3. LENCANA & BADGE STATUS DENGAN WARNA SEJUK HARMONIS (ANTI-SILAU) */
+/* Brand / Emerald (Status Aktif / Selesai / Disetujui) */
+html.dark main [class*="bg-brand-50"],
+html.dark main [class*="bg-brand-100"],
+html.dark main [class*="bg-emerald-50"],
+html.dark main [class*="bg-emerald-100"] {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  color: #6ee7b7 !important;
 }
 
-html.dark table td {
-  color: #e2e8f0 !important;
-  border-color: rgba(255, 255, 255, 0.06) !important;
+/* Amber / Orange (Status Menunggu / Pending / Berjalan) */
+html.dark main [class*="bg-amber-50"],
+html.dark main [class*="bg-amber-100"],
+html.dark main [class*="bg-amber-200"],
+html.dark main [class*="bg-orange-50"],
+html.dark main [class*="bg-orange-100"] {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+  color: #fcd34d !important;
 }
 
-/* Input, Textarea, Select pada Form Admin */
-html.dark .form-input,
-html.dark main input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+/* Sky / Blue / Cyan (Proses / Info / Verifikasi) */
+html.dark main [class*="bg-sky-50"],
+html.dark main [class*="bg-sky-100"],
+html.dark main [class*="bg-blue-50"],
+html.dark main [class*="bg-blue-100"],
+html.dark main [class*="bg-cyan-50"] {
+  background-color: rgba(14, 165, 233, 0.15) !important;
+  border-color: rgba(14, 165, 233, 0.35) !important;
+  color: #7dd3fc !important;
+}
+
+/* Rose / Red (Ditolak / Hapus / Belum Ditanggapi) */
+html.dark main [class*="bg-rose-50"],
+html.dark main [class*="bg-rose-100"],
+html.dark main [class*="bg-red-50"],
+html.dark main [class*="bg-red-100"] {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  border-color: rgba(244, 63, 94, 0.35) !important;
+  color: #fda4af !important;
+}
+
+/* Purple / Indigo (Aspirasi / Dokumen / Publikasi) */
+html.dark main [class*="bg-purple-50"],
+html.dark main [class*="bg-purple-100"],
+html.dark main [class*="bg-indigo-50"],
+html.dark main [class*="bg-indigo-100"] {
+  background-color: rgba(168, 85, 247, 0.15) !important;
+  border-color: rgba(168, 85, 247, 0.35) !important;
+  color: #d8b4fe !important;
+}
+
+/* Teal (Statistik / Wisata / Peta) */
+html.dark main [class*="bg-teal-50"],
+html.dark main [class*="bg-teal-100"] {
+  background-color: rgba(20, 184, 166, 0.15) !important;
+  border-color: rgba(20, 184, 166, 0.35) !important;
+  color: #5eead4 !important;
+}
+
+/* 4. TOMBOL AKSI ADMIN (HOVER STATES) */
+html.dark main button[class*="bg-sky-50"]:hover,
+html.dark main button[class*="bg-sky-100"]:hover,
+html.dark main a[class*="bg-sky-50"]:hover {
+  background-color: rgba(14, 165, 233, 0.28) !important;
+  color: #ffffff !important;
+}
+
+html.dark main button[class*="bg-rose-50"]:hover,
+html.dark main button[class*="bg-rose-100"]:hover,
+html.dark main a[class*="bg-rose-50"]:hover {
+  background-color: rgba(244, 63, 94, 0.28) !important;
+  color: #ffffff !important;
+}
+
+html.dark main button[class*="bg-amber-100"]:hover,
+html.dark main button[class*="bg-amber-50"]:hover,
+html.dark main a[class*="bg-amber-50"]:hover {
+  background-color: rgba(245, 158, 11, 0.28) !important;
+  color: #ffffff !important;
+}
+
+html.dark main button[class*="bg-emerald-50"]:hover,
+html.dark main button[class*="bg-emerald-100"]:hover,
+html.dark main a[class*="bg-emerald-50"]:hover {
+  background-color: rgba(16, 185, 129, 0.28) !important;
+  color: #ffffff !important;
+}
+
+/* 5. FORMULIR, INPUT, SELECT, TEXTAREA */
+html.dark main input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"]),
 html.dark main textarea,
 html.dark main select {
-  background-color: #090e1c !important;
-  border-color: #26334d !important;
+  background-color: #070c18 !important;
+  border-color: #223049 !important;
   color: #f8fafc !important;
 }
 
@@ -529,46 +626,65 @@ html.dark main input:focus,
 html.dark main textarea:focus,
 html.dark main select:focus {
   border-color: #10b981 !important;
+  background-color: #091122 !important;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
 }
 
+html.dark main input::placeholder,
+html.dark main textarea::placeholder {
+  color: #64748b !important;
+}
+
 html.dark main select option {
-  background-color: #0f172a !important;
+  background-color: #0d1527 !important;
   color: #f8fafc !important;
 }
 
-/* Modal Dialog Admin */
-html.dark [id^="modal"],
-html.dark .admin-modal-content {
-  background: linear-gradient(145deg, #0e172a 0%, #131f3b 100%) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
+html.dark main input[type="file"]::file-selector-button {
+  background-color: #164e63 !important;
+  color: #e0f2fe !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
-/* Tombol Aksi & Badge Kontras Tinggi */
-html.dark .btn-admin-secondary,
-html.dark main .bg-slate-100 {
-  background-color: #141f36 !important;
+/* 6. TABEL ADMIN */
+html.dark main table thead th {
+  background-color: #070c17 !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark main table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+html.dark main table tbody tr:hover,
+html.dark main table tbody tr.hover\:bg-slate-50:hover {
+  background-color: rgba(255, 255, 255, 0.035) !important;
+}
+
+html.dark main table tbody td {
   color: #e2e8f0 !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-html.dark main .hover\:bg-slate-200:hover {
-  background-color: #1e2d4d !important;
-  color: #ffffff !important;
+/* 7. MODAL DIALOG */
+html.dark [id^="modal"] > div {
+  background: linear-gradient(145deg, #0d1527 0%, #111e38 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85) !important;
 }
 
-/* Pastikan Teks Judul & Label Tajam, Bebas Bias */
+/* 8. TIPOGRAFI & KONTRAS BACA TINGGI */
 html.dark main h1, 
 html.dark main h2, 
 html.dark main h3, 
 html.dark main h4, 
-html.dark main h5 {
+html.dark main h5, 
+html.dark main h6 {
   color: #ffffff !important;
 }
 
-html.dark main .text-slate-800,
-html.dark main .text-slate-900 {
+html.dark main .text-slate-900,
+html.dark main .text-slate-800 {
   color: #f8fafc !important;
 }
 
@@ -582,8 +698,11 @@ html.dark main .text-slate-400 {
   color: #94a3b8 !important;
 }
 
-/* Sub-card Slate 50 dalam Mode Gelap */
-html.dark main .bg-slate-50 {
-  background-color: #0a1120 !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+/* Garis Pembatas / Dividers */
+html.dark main [class*="border-slate-100"],
+html.dark main [class*="border-slate-200"],
+html.dark main [class*="border-slate-300"],
+html.dark main [class*="border-gray-100"],
+html.dark main [class*="border-gray-200"] {
+  border-color: rgba(255, 255, 255, 0.07) !important;
 }
