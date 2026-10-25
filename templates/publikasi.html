@@ -170,9 +170,15 @@
           </a>
         </nav>
 
-        <!-- Bagian Kanan: Tombol Layanan Surat, Toggle Menu Mobile, & Mode Gelap/Terang PERSIS DI POJOK KANAN ATAS -->
+        <!-- Bagian Kanan: Toggle Menu Mobile, Tombol Layanan Surat, & Mode Gelap/Terang PERSIS DI POJOK KANAN ATAS -->
         <div class="flex items-center shrink-0 gap-2 sm:gap-2.5">
-          <!-- Tombol Kuning Layanan Surat (Desktop & Tablet) -->
+          <!-- Mobile Toggle Button (hidden di layar desktop xl+) -->
+          <button id="mobile-menu-toggle" onclick="document.getElementById('mobile-menu-dropdown').classList.toggle('hidden')" type="button" 
+                  class="xl:hidden p-2 sm:p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15" aria-label="Buka Menu Navigasi">
+            <i class="fa-solid fa-bars text-lg sm:text-xl"></i>
+          </button>
+
+          <!-- Tombol Kuning Layanan Surat (Desktop & Tablet) - Lebar w-[136px] SEJAJAR ATAS-BAWAH dengan No Kontak -->
           <div class="hidden sm:flex items-center justify-end shrink-0 w-[136px]">
             <button type="button" onclick="handleKlikLayananSurat()" 
                     class="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#ffe066] via-[#ffd43b] to-[#fcc419] hover:from-[#ffd43b] hover:to-[#fab005] text-slate-950 font-black px-3 py-2 rounded-2xl text-xs sm:text-sm shadow-lg shadow-black/20 border border-amber-200/90 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
@@ -180,12 +186,6 @@
               <span class="leading-tight text-center">Layanan<br class="hidden sm:inline">Surat</span>
             </button>
           </div>
-
-          <!-- Mobile Toggle Button (hidden di layar desktop xl+) -->
-          <button id="mobile-menu-toggle" onclick="document.getElementById('mobile-menu-dropdown').classList.toggle('hidden')" type="button" 
-                  class="xl:hidden p-2 sm:p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15" aria-label="Buka Menu Navigasi">
-            <i class="fa-solid fa-bars text-lg sm:text-xl"></i>
-          </button>
 
           <!-- Tombol Mode Pencahayaan (Terang / Gelap) - PERSIS DI POJOK KANAN ATAS -->
           <button type="button" onclick="toggleThemeMode()" id="theme-toggle-btn"
@@ -229,13 +229,17 @@
           </div>
         </div>
 
-        <!-- Right side: No Kontak Sesuai Screenshot (Green Rounded Pill) - Rata Atas Bawah dengan Layanan Surat -->
-        <div class="flex items-center justify-end shrink-0 w-[136px]">
-          <a href="https://wa.me/{{ (profil.no_telepon or profil.telepon or '0821-1991-8785').replace('-', '').replace(' ', '') }}" target="_blank" 
-             class="w-full inline-flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0d3319] hover:bg-[#124220] text-[#a7f3d0] border border-[#34d399]/60 text-[11px] font-semibold transition shadow-xs whitespace-nowrap">
-            <i class="fa-solid fa-phone text-[#34d399] text-[10px]"></i>
-            <span>{{ profil.no_telepon or profil.telepon or '0821-1991-8785' }}</span>
-          </a>
+        <!-- Right side: No Kontak Sesuai Screenshot (Green Rounded Pill) - SEJAJAR ATAS-BAWAH DENGAN LAYANAN SURAT -->
+        <div class="flex items-center shrink-0 gap-2 sm:gap-2.5">
+          <div class="hidden sm:flex items-center justify-end shrink-0 w-[136px]">
+            <a href="https://wa.me/{{ (profil.no_telepon or profil.telepon or '0821-1991-8785').replace('-', '').replace(' ', '') }}" target="_blank" 
+               class="w-full inline-flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0d3319] hover:bg-[#124220] text-[#a7f3d0] border border-[#34d399]/60 text-[11px] font-semibold transition shadow-xs whitespace-nowrap">
+              <i class="fa-solid fa-phone text-[#34d399] text-[10px]"></i>
+              <span>{{ profil.no_telepon or profil.telepon or '0821-1991-8785' }}</span>
+            </a>
+          </div>
+          <!-- Spacer Penyeimbang persis selebar theme-toggle-btn di atas agar sejajar atas-bawah -->
+          <div class="w-10 sm:w-11 shrink-0 hidden sm:block"></div>
         </div>
 
       </div>
