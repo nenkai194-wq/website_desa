@@ -379,14 +379,14 @@
       </div>
 
       <!-- PENENTUAN TITIK KOORDINAT OTOMATIS DENGAN PETA INTERAKTIF -->
-      <div class="bg-gradient-to-br from-emerald-50/80 to-teal-50/80 p-4 rounded-2xl border border-emerald-200 space-y-3">
+      <div class="bg-gradient-to-br from-emerald-50/80 to-teal-50/80 dark:from-slate-900 dark:to-slate-900/90 p-4 rounded-2xl border border-emerald-200 dark:border-slate-700/80 space-y-3">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <label class="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
-              <i class="fa-solid fa-map-location-dot text-brand-700 text-sm"></i>
+            <label class="text-xs font-bold text-emerald-950 dark:text-emerald-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-map-location-dot text-brand-700 dark:text-emerald-400 text-sm"></i>
               Penentuan Koordinat Peta (Otomatis & Presisi)
             </label>
-            <p class="text-[11px] text-emerald-800">
+            <p class="text-[11px] text-emerald-800 dark:text-slate-300">
               Cukup <strong>klik pada peta</strong> atau <strong>geser pin</strong> ke lokasi wisata. Angka koordinat otomatis terisi akurat!
             </p>
           </div>
@@ -394,7 +394,7 @@
             <button type="button" onclick="ambilLokasiGPS()" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-sm transition" title="Gunakan GPS lokasi perangkat saat ini">
               <i class="fa-solid fa-crosshairs"></i> Gunakan GPS Saya
             </button>
-            <button type="button" onclick="cariLokasiOtomatis()" class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-bold flex items-center gap-1 transition" title="Cari otomatis berdasarkan nama atau alamat">
+            <button type="button" onclick="cariLokasiOtomatis()" class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-emerald-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-slate-600 text-[11px] font-bold flex items-center gap-1 transition" title="Cari otomatis berdasarkan nama atau alamat">
               <i class="fa-solid fa-magnifying-glass"></i> Cari Otomatis
             </button>
           </div>

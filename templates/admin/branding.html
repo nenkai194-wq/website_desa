@@ -111,10 +111,10 @@
     <!-- DAFTAR KARTU BANNER SLIDER (TOTAL 5 SLIDER) -->
     <div class="space-y-4">
       {% for s in sliders %}
-      <div class="p-5 bg-slate-50/80 hover:bg-white rounded-2xl border border-slate-200 transition space-y-4 shadow-xs">
+      <div class="p-5 bg-slate-50/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-800 transition space-y-4 shadow-xs">
         
         <!-- Header Kartu: Label Urutan, Status Tayang & Tombol Kendali Aksi -->
-        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200/80 dark:border-slate-800">
           <div class="flex items-center gap-2.5">
             <span class="px-3 py-1 rounded-xl text-xs font-black bg-brand-100 text-brand-900 border border-brand-200 tracking-wide">
               BANNER SLIDER #{{ s.urutan or loop.index }}

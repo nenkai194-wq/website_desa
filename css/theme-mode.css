@@ -706,3 +706,147 @@ html.dark main [class*="border-gray-100"],
 html.dark main [class*="border-gray-200"] {
   border-color: rgba(255, 255, 255, 0.07) !important;
 }
+
+
+/* ==========================================================================
+   9. ANTI-SILAU (GLARE NEUTRALIZATION & ERGONOMIC DARK MODE)
+   Menghilangkan seluruh gradasi pastel terang, background krim/putih/mint/kuning
+   pada Mode Gelap agar tidak menyilaukan mata dan teks sangat mudah terbaca.
+   ========================================================================== */
+
+/* A. Seluruh variasi background bg-slate-50, bg-gray-50 dengan opacity (/50, /60, /70, /80, /90) */
+html.dark [class*="bg-slate-50"],
+html.dark [class*="bg-gray-50"],
+html.dark [class*="bg-slate-100"],
+html.dark [class*="bg-gray-100"] {
+  background-color: #0b1325 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Hover state pada baris tabel atau kartu */
+html.dark tr[class*="hover:bg-slate-50"]:hover,
+html.dark [class*="hover:bg-slate-50"]:hover,
+html.dark [class*="hover:bg-white"]:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* B. Netralisasi Seluruh Gradasi Pastel Terang (from-*-50, to-white, via-white) */
+html.dark main [class*="bg-gradient-"][class*="to-white"],
+html.dark main [class*="bg-gradient-"][class*="via-white"],
+html.dark main [class*="bg-gradient-"][class*="from-red-50"],
+html.dark main [class*="bg-gradient-"][class*="from-amber-50"],
+html.dark main [class*="bg-gradient-"][class*="from-orange-50"],
+html.dark main [class*="bg-gradient-"][class*="from-emerald-50"],
+html.dark main [class*="bg-gradient-"][class*="from-teal-50"],
+html.dark main [class*="bg-gradient-"][class*="from-blue-50"],
+html.dark main [class*="bg-gradient-"][class*="from-sky-50"],
+html.dark main [class*="bg-gradient-"][class*="from-cyan-50"],
+html.dark main [class*="bg-gradient-"][class*="from-purple-50"],
+html.dark main [class*="bg-gradient-"][class*="from-indigo-50"],
+html.dark main [class*="bg-gradient-"][class*="from-rose-50"],
+html.dark main [class*="bg-gradient-"][class*="from-brand-50"],
+html.dark main [class*="bg-gradient-"][class*="from-slate-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="to-white"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="via-white"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-red-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-amber-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-orange-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-emerald-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-teal-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-blue-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-sky-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-cyan-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-purple-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-indigo-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-rose-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-brand-50"],
+html.dark [id^="modal"] [class*="bg-gradient-"][class*="from-slate-50"] {
+  background-image: none !important;
+  background-color: #0b1325 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* C. Kustom Khusus: Banner Maintenance Layanan Surat di Dark Mode (Elegan, Teduh, Anti-Silau) */
+html.dark [class*="from-red-50"][class*="via-amber-50"] {
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.4) 0%, #0d1527 100%) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+html.dark [class*="from-emerald-50"][class*="via-teal-50"][class*="to-slate-50"] {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.4) 0%, #0d1527 100%) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+/* D. Kustom Khusus: Kotak Penentuan Titik Koordinat Peta & Waktu Tayang Pop-up */
+html.dark [class*="from-emerald-50/80"][class*="to-teal-50/80"],
+html.dark [class*="from-amber-50/70"][class*="to-emerald-50/40"] {
+  background: #0b1325 !important;
+  background-image: none !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* E. Tipografi Warna Gelap (Dark Text) di atas latar gelap diubah menjadi terang kontras tinggi */
+html.dark main [class*="text-emerald-950"],
+html.dark main [class*="text-emerald-900"],
+html.dark main [class*="text-teal-950"],
+html.dark main [class*="text-teal-900"],
+html.dark main [class*="text-amber-950"],
+html.dark main [class*="text-amber-900"],
+html.dark main [class*="text-blue-950"],
+html.dark main [class*="text-blue-900"],
+html.dark main [class*="text-rose-950"],
+html.dark main [class*="text-rose-900"],
+html.dark main [class*="text-red-950"],
+html.dark main [class*="text-red-900"],
+html.dark [id^="modal"] [class*="text-emerald-950"],
+html.dark [id^="modal"] [class*="text-emerald-900"],
+html.dark [id^="modal"] [class*="text-teal-950"],
+html.dark [id^="modal"] [class*="text-teal-900"],
+html.dark [id^="modal"] [class*="text-amber-950"],
+html.dark [id^="modal"] [class*="text-amber-900"],
+html.dark [id^="modal"] [class*="text-blue-950"],
+html.dark [id^="modal"] [class*="text-blue-900"],
+html.dark [id^="modal"] [class*="text-rose-950"],
+html.dark [id^="modal"] [class*="text-rose-900"],
+html.dark [id^="modal"] [class*="text-red-950"],
+html.dark [id^="modal"] [class*="text-red-900"] {
+  color: #f8fafc !important;
+}
+
+html.dark main [class*="text-emerald-800"],
+html.dark main [class*="text-teal-800"],
+html.dark [id^="modal"] [class*="text-emerald-800"],
+html.dark [id^="modal"] [class*="text-teal-800"] {
+  color: #6ee7b7 !important;
+}
+
+html.dark main [class*="text-amber-800"],
+html.dark [id^="modal"] [class*="text-amber-800"] {
+  color: #fcd34d !important;
+}
+
+html.dark main [class*="text-blue-800"],
+html.dark [id^="modal"] [class*="text-blue-800"] {
+  color: #93c5fd !important;
+}
+
+html.dark main [class*="text-rose-800"],
+html.dark main [class*="text-red-800"],
+html.dark [id^="modal"] [class*="text-rose-800"],
+html.dark [id^="modal"] [class*="text-red-800"] {
+  color: #fda4af !important;
+}
+
+/* F. Input, Textarea & Select di seluruh Dark Mode */
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"]),
+html.dark textarea,
+html.dark select {
+  background-color: #070c18 !important;
+  border-color: #223049 !important;
+  color: #f8fafc !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748b !important;
+}
