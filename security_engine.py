@@ -146,6 +146,7 @@ def init_security(app):
     # 2. Pengaturan Cookie Sesi Aman
     app.config['SESSION_COOKIE_HTTPONLY'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    app.config['SESSION_COOKIE_SECURE'] = True
 
     # Injeksi helper csrf_token ke template Jinja
     @app.context_processor
@@ -163,6 +164,22 @@ def init_security(app):
         # Lewati pemeriksaan untuk static assets agar performa maksimal
         if request.path.startswith('/static') or request.path.startswith('/assets'):
             return None
+
+                # Filter Bot Scanner / Exploit Probes (Mencegah bot scanner otomatis membebani server)
+        path_lower = request.path.lower()
+        scanner_patterns = [
+            '.env', '.git', 'wp-admin', 'wp-login', 'xmlrpc', 'phpmyadmin', 
+            'pma', 'eval-stdin', 'shell', 'actuator', 'cgi-bin', 'web-inf',
+            '.aws', '.ssh', 'config.json', 'vendor/phpunit'
+        ]
+        if any(probe in path_lower for probe in scanner_patterns):
+            record_activity_log(
+                'EXPLOIT_PROBE_BLOCKED',
+                f"Percobaan probe bot scanner terdeteksi ({request.path}) dari IP: {client_ip}",
+                ip_address=client_ip,
+                user_agent=request.user_agent.string
+            )
+            return "404 Not Found", 404
 
         # A. Proteksi Global Flooding / DDoS Mikro (Maks 200 request / menit per IP)
         is_allowed, _ = rate_limiter.is_allowed(f"global:{client_ip}", max_requests=200, window_seconds=60)

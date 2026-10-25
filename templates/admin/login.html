@@ -66,9 +66,7 @@
                 <span>{{ message }}</span>
               </div>
               {% if 'dikunci' in message or is_locked %}
-                <a href="{{ url_for('admin_buka_kunci') }}" class="mt-1 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-sm">
-                  <i class="fa-solid fa-unlock-keyhole"></i> Klik di Sini untuk Buka Kunci Akses
-                </a>
+                <span class="mt-1 text-[11px] text-rose-600 font-medium"><i class="fa-solid fa-lock text-[10px]"></i> Akses terkunci sementara demi keamanan data desa (Tunggu 15 menit).</span>
               {% endif %}
             </div>
           {% endfor %}
@@ -140,9 +138,9 @@
       <a href="{{ url_for('index') }}" class="text-brand-800 font-semibold hover:underline flex items-center gap-1.5">
         <i class="fa-solid fa-arrow-left text-[10px]"></i> Kembali ke Website
       </a>
-      <a href="{{ url_for('admin_buka_kunci') }}" title="Reset blokir sementara percobaan login" class="text-slate-400 hover:text-slate-600 text-[11px] font-medium flex items-center gap-1">
-        <i class="fa-solid fa-rotate-right text-[10px]"></i> Reset Kunci
-      </a>
+      <span class="text-slate-400 text-[11px] font-medium flex items-center gap-1">
+        <i class="fa-solid fa-shield-halved text-brand-700 text-[10px]"></i> Terproteksi SSL & Anti-Bruteforce
+      </span>
     </div>
 
   </div>

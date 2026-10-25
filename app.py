@@ -1057,14 +1057,34 @@ def admin_login():
 
 @app.route('/admin/buka-kunci', methods=['GET', 'POST'])
 def admin_buka_kunci():
-    """Membuka kunci proteksi brute-force untuk pemulihan akses administrator"""
+    """Membuka kunci proteksi brute-force untuk pemulihan akses administrator (Hanya dengan Token Rahasia atau Super Admin)"""
+    recovery_token = request.args.get('token') or request.form.get('token')
+    secret_key = os.environ.get('RECOVERY_TOKEN', 'papayan_kunci_darurat_2026')
+    is_superadmin = session.get('role') == 'superadmin'
+
+    if not is_superadmin and recovery_token != secret_key:
+        record_activity_log(
+            'SECURITY_VIOLATION',
+            f"Percobaan ilegal membuka kunci keamanan login dari IP: {request.headers.get('X-Forwarded-For', request.remote_addr)}",
+            ip_address=request.headers.get('X-Forwarded-For', request.remote_addr),
+            user_agent=request.user_agent.string
+        )
+        flash('Akses Ditolak: Diperlukan token otorisasi rahasia untuk membuka proteksi keamanan.', 'danger')
+        return redirect(url_for('admin_login'))
+
     try:
         conn = get_db()
         cursor = conn.cursor()
         cursor.execute("DELETE FROM login_attempts WHERE is_success = 0")
         conn.commit()
         conn.close()
-        flash('Kunci keamanan login berhasil dibuka kembali. Silakan pilih level dan masukkan akun Anda.', 'success')
+        record_activity_log(
+            'LOCKOUT_RESET',
+            "Kunci keamanan login direset melalui otorisasi resmi pemulihan.",
+            username=session.get('username') or 'RecoveryMaster',
+            ip_address=request.headers.get('X-Forwarded-For', request.remote_addr)
+        )
+        flash('Kunci keamanan login berhasil dipulihkan.', 'success')
     except Exception as e:
         flash(f'Gagal mereset kunci keamanan: {str(e)}', 'danger')
     return redirect(url_for('admin_login'))
@@ -8064,6 +8084,11 @@ def admin_users_reset_password(id):
 @superadmin_required
 def admin_users_hapus(id):
     """Menghapus akun admin / operator"""
+    # Proteksi Akun Master Super Admin (ID 1 / admin) dari penghapusan
+    if id == 1:
+        flash('Keamanan Sistem: Akun Master Administrator (admin) dilindungi dan tidak dapat dihapus.', 'danger')
+        return redirect(url_for('admin_users'))
+
     if id == session.get('user_id'):
         flash('Anda tidak dapat menghapus akun Anda sendiri.', 'danger')
         return redirect(url_for('admin_users'))
