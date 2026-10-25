@@ -1078,12 +1078,23 @@ def admin_login():
             session['role'] = user['role']
 
             flash(f"Selamat datang, {user['nama']}. Anda login sebagai {('Super Admin (Akses Penuh)' if user['role'] == 'superadmin' else 'Admin (Operator Pelayanan)')}.", 'success')
-            if user['role'] == 'superadmin':
-                flash(f"Berhasil Masuk! Selamat datang, {user['nama']}. Anda berada di Portal Super Admin.", 'success')
-                return redirect(url_for('admin_dashboard'))
+            # Cek level yang dipilih di dropdown form
+            selected_level = (request.form.get('level') or 'admin').strip().lower()
+
+            if selected_level == 'operator':
+                if user['role'] != 'superadmin':
+                    flash(f"Berhasil Masuk! Selamat bertugas, {user['nama']}. Anda berada di Halaman Operator Desa.", 'success')
+                    return redirect(url_for('admin_operator_dashboard'))
+                else:
+                    flash(f"Berhasil Masuk! Akun Anda terdaftar sebagai Admin Desa (Akses Penuh).", 'success')
+                    return redirect(url_for('admin_dashboard'))
             else:
-                flash(f"Berhasil Masuk! Selamat bertugas, {user['nama']}. Anda berada di Meja Kerja Operator Pelayanan.", 'success')
-                return redirect(url_for('admin_operator_dashboard'))
+                if user['role'] == 'superadmin':
+                    flash(f"Berhasil Masuk! Selamat datang, {user['nama']}. Anda berada di Halaman Admin Desa.", 'success')
+                    return redirect(url_for('admin_dashboard'))
+                else:
+                    flash(f"Berhasil Masuk! Akun Anda terdaftar sebagai Operator Desa.", 'success')
+                    return redirect(url_for('admin_operator_dashboard'))
         else:
             conn.close()
             # Catat login gagal
