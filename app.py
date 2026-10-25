@@ -3893,9 +3893,11 @@ def admin_aparatur():
     row_profil = cursor.fetchone()
     profil = dict(row_profil) if row_profil else {}
 
-    # Ambil data Sejarah Desa
-    cursor.execute("SELECT * FROM sejarah_desa ORDER BY urutan ASC, id ASC")
-    sejarah_list = [dict(row) for row in cursor.fetchall()]
+    # Ambil data Sejarah Desa (Hanya 1 inputan pokok)
+    cursor.execute("SELECT * FROM sejarah_desa ORDER BY id ASC LIMIT 1")
+    row_sejarah = cursor.fetchone()
+    sejarah_item = dict(row_sejarah) if row_sejarah else None
+    sejarah_list = [sejarah_item] if sejarah_item else []
 
     # Ambil data Kepala Desa dari Masa ke Masa (Mulai dari yang menjabat sekarang ke yang lampau)
     cursor.execute("""
@@ -3911,6 +3913,7 @@ def admin_aparatur():
         aparatur_list=aparatur_list,
         jabatan_list=jabatan_list,
         profil=profil,
+        sejarah_item=sejarah_item,
         sejarah_list=sejarah_list,
         kades_riwayat_list=kades_riwayat_list
     )
@@ -4250,6 +4253,15 @@ def admin_hapus_aparatur(id):
 @app.route('/admin/aparatur/sejarah/tambah', methods=['POST'])
 @login_required
 def admin_tambah_sejarah():
+    # Batasi agar hanya ada 1 data sejarah pokok saja (tidak boleh ada penambahan baru)
+    conn_check = get_db()
+    c_check = conn_check.cursor()
+    c_check.execute("SELECT id FROM sejarah_desa LIMIT 1")
+    existing_row = c_check.fetchone()
+    if existing_row:
+        conn_check.close()
+        return admin_edit_sejarah(existing_row['id'])
+    conn_check.close()
     judul = (request.form.get('judul') or 'Sejarah Desa').strip()
     periode_era = (request.form.get('periode_era') or '').strip()
     konten = (request.form.get('konten') or '').strip()
@@ -4344,16 +4356,7 @@ def admin_toggle_status_sejarah(id):
 @app.route('/admin/aparatur/sejarah/<int:id>/hapus', methods=['POST'])
 @login_required
 def admin_hapus_sejarah(id):
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM sejarah_desa WHERE id = ?", (id,))
-    conn.commit()
-    conn.close()
-    try:
-        record_activity_log('HAPUS_SEJARAH', f"Menghapus data sejarah ID #{id}")
-    except Exception:
-        pass
-    flash('Data Sejarah Desa berhasil dihapus.', 'info')
+    flash('Data sejarah desa merupakan informasi pokok dan tidak dapat dihapus, hanya dapat diedit.', 'warning')
     return redirect(url_for('admin_aparatur') + '#tab-sejarah')
 
 

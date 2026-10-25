@@ -22,7 +22,7 @@
             class="tab-btn-sotk px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition text-slate-600 hover:text-slate-900 hover:bg-white/60">
       <i class="fa-solid fa-scroll text-amber-600"></i>
       <span>Sejarah Desa</span>
-      <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold">{{ sejarah_list|length }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 font-bold">1 Data Pokok</span>
     </button>
     <button type="button" 
             onclick="switchTabAparatur('tab-kades')" 
@@ -286,113 +286,99 @@
   </div> <!-- /panel-tab-aparatur -->
 
   <!-- ======================================================== -->
-  <!-- TAB PANEL 2: SEJARAH DESA                                -->
+  <!-- TAB PANEL 2: SEJARAH DESA (1 INPUTAN POKOK - HANYA EDIT)   -->
   <!-- ======================================================== -->
   <div id="panel-tab-sejarah" class="tab-panel-sotk space-y-6 hidden">
     
-    <!-- Header Bar Sejarah -->
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-lg shrink-0">
+    <!-- Header Bar Sejarah (Hanya Edit, Tanpa Tambah) -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 flex items-center justify-center text-xl shrink-0 border border-amber-200/60 dark:border-amber-500/20 shadow-xs">
           <i class="fa-solid fa-scroll"></i>
         </div>
         <div>
-          <h3 class="font-bold text-slate-800 text-sm">Kelola Sejarah &amp; Asal-Usul Desa</h3>
-          <p class="text-xs text-slate-500 mt-0.5">Kelola narasi, babak sejarah, dan arsip desa yang dapat diatur status tayang di portal utama publik.</p>
+          <div class="flex items-center gap-2">
+            <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Narasi Sejarah &amp; Asal-Usul Desa</h3>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300/40">1 Data Pokok</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Satu narasi resmi sejarah desa yang tampil di portal publik website desa. Dibatasi 1 data pokok dan hanya dapat diedit.</p>
         </div>
       </div>
-      <button onclick="bukaModalTambahSejarah()" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-2 shadow-md hover:shadow-lg transition shrink-0">
-        <i class="fa-solid fa-plus"></i> Tambah Bab / Narasi Sejarah
+
+      {% if sejarah_item %}
+      <button type="button" 
+              onclick="bukaModalEditSejarah({{ sejarah_item.id }}, {{ sejarah_item|tojson|forceescape }})" 
+              class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-2 shadow-md hover:shadow-lg transition shrink-0 transform hover:-translate-y-0.5 cursor-pointer">
+        <i class="fa-solid fa-pen-to-square"></i> Edit Sejarah Desa
       </button>
+      {% endif %}
     </div>
 
-    <!-- Daftar Konten Sejarah -->
-    {% if sejarah_list %}
-    <div class="space-y-4">
-      {% for s in sejarah_list %}
-      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-amber-300 transition duration-200">
-        <div class="flex flex-col md:flex-row gap-5 items-start">
-          
-          <!-- Thumbnail Gambar Sejarah -->
-          <div class="w-full md:w-56 h-36 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 relative group">
-            {% set s_img = url_for('static', filename=s.foto.replace('static/', '')) if s.foto and s.foto.startswith('static/') else (s.foto or url_for('static', filename='images/banner1.png')) %}
-            <img src="{{ s_img }}" alt="{{ s.judul }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
-            <div class="absolute top-2 left-2">
-              <span class="text-[10px] font-bold bg-black/60 backdrop-blur-md text-amber-200 px-2.5 py-0.5 rounded-full border border-amber-400/30">
-                Urutan #{{ s.urutan }}
-              </span>
-            </div>
+    <!-- Card Tunggal Sejarah Desa -->
+    {% if sejarah_item %}
+    <div class="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden hover:border-amber-300 dark:hover:border-amber-500/40 transition duration-300">
+      
+      <!-- Banner / Hero Foto Arsip -->
+      <div class="relative w-full h-56 sm:h-72 bg-slate-900 overflow-hidden">
+        {% set s_img = url_for('static', filename=sejarah_item.foto.replace('static/', '')) if sejarah_item.foto and sejarah_item.foto.startswith('static/') else (sejarah_item.foto or url_for('static', filename='images/banner1.png')) %}
+        <img src="{{ s_img }}" alt="{{ sejarah_item.judul }}" class="w-full h-full object-cover opacity-85" onerror="this.src='{{ url_for('static', filename='images/banner1.png') }}'">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        
+        <div class="absolute top-4 left-4 right-4 flex flex-wrap items-center justify-between gap-2">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-black/60 backdrop-blur-md text-amber-300 border border-amber-400/40 shadow-sm">
+            <i class="fa-solid fa-landmark-dome"></i> {{ sejarah_item.periode_era or 'Rekam Jejak Historis & Pembentukan Desa' }}
+          </span>
+
+          <!-- Status Badge & Quick Toggle -->
+          <div class="flex items-center gap-2">
+            {% if sejarah_item.status == 'Tayang' %}
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 backdrop-blur-md text-emerald-300 border border-emerald-500/40 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              Tayang di Website Publik
+            </span>
+            {% else %}
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-800/80 backdrop-blur-md text-slate-300 border border-slate-600 shadow-sm">
+              <i class="fa-solid fa-eye-slash text-xs"></i>
+              Draf (Sembunyi)
+            </span>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('admin_toggle_status_sejarah', id=sejarah_item.id) }}" class="inline">
+              <button type="submit" class="px-3 py-1 rounded-full text-xs font-bold bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-md transition cursor-pointer" title="Ubah status tampil di website publik">
+                <i class="fa-solid fa-rotate mr-1"></i> Toggle Status
+              </button>
+            </form>
           </div>
+        </div>
 
-          <!-- Rincian Konten -->
-          <div class="flex-1 flex flex-col justify-between min-h-[144px]">
-            <div>
-              <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-                <span class="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  {{ s.periode_era or 'Era Sejarah Desa' }}
-                </span>
-                
-                <!-- Status Tayang Badge & Quick Toggle -->
-                <div class="flex items-center gap-2">
-                  {% if s.status == 'Tayang' %}
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Tayang di Website
-                  </span>
-                  {% else %}
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-300">
-                    <i class="fa-solid fa-eye-slash text-slate-400 text-[10px]"></i>
-                    Draf (Tidak Tayang)
-                  </span>
-                  {% endif %}
-
-                  <form method="POST" action="{{ url_for('admin_toggle_status_sejarah', id=s.id) }}" class="inline">
-                    <button type="submit" class="px-2.5 py-1 rounded-lg text-xs font-semibold border border-slate-200 hover:bg-slate-100 text-slate-700 transition" title="Ubah status tayang / draf">
-                      <i class="fa-solid fa-rotate text-slate-500"></i> Toggle Status
-                    </button>
-                  </form>
-                </div>
-              </div>
-
-              <h4 class="font-extrabold text-slate-900 text-base mb-2">{{ s.judul }}</h4>
-              <p class="text-xs text-slate-600 leading-relaxed line-clamp-3 sm:line-clamp-4 whitespace-pre-line">{{ s.konten }}</p>
-            </div>
-
-            <!-- Footer Card & Action Buttons -->
-            <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100 text-xs">
-              <span class="text-[11px] text-slate-400">
-                <i class="fa-regular fa-clock mr-1"></i> Terakhir diupdate: {{ s.updated_at or s.created_at }}
-              </span>
-              <div class="flex items-center gap-2">
-                <button type="button" 
-                        onclick="bukaModalEditSejarah({{ s.id }}, {{ s|tojson|forceescape }})" 
-                        class="px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 hover:bg-amber-100 font-bold text-xs flex items-center gap-1.5 transition">
-                  <i class="fa-solid fa-pen-to-square text-amber-700"></i> Edit
-                </button>
-                <form method="POST" action="{{ url_for('admin_hapus_sejarah', id=s.id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus bab sejarah ini: &quot;{{ s.judul }}&quot;?');" class="inline">
-                  <button type="submit" class="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-300 hover:bg-red-50 transition" title="Hapus Bab Sejarah">
-                    <i class="fa-solid fa-trash-can text-xs"></i>
-                  </button>
-                </form>
-              </div>
-            </div>
-
-          </div>
-
+        <div class="absolute bottom-4 left-4 right-4">
+          <h3 class="text-xl sm:text-2xl font-black text-white leading-snug drop-shadow-md">
+            {{ sejarah_item.judul }}
+          </h3>
         </div>
       </div>
-      {% endfor %}
-    </div>
-    {% else %}
-    <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center">
-      <div class="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3 text-xl">
-        <i class="fa-solid fa-book-open"></i>
+
+      <!-- Konten Narasi Sejarah -->
+      <div class="p-6 sm:p-8 space-y-6">
+        <div class="prose max-w-none text-slate-700 dark:text-slate-200 text-xs sm:text-sm leading-relaxed whitespace-pre-line font-normal bg-slate-50 dark:bg-slate-800/40 p-5 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
+          {{ sejarah_item.konten }}
+        </div>
+
+        <!-- Bar Informasi & Tombol Edit -->
+        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <i class="fa-solid fa-circle-check text-emerald-500"></i>
+            <span>Inputan sejarah desa terkunci 1 data pokok (Hanya dapat diedit, tidak dapat ditambah atau dihapus).</span>
+          </div>
+
+          <button type="button" 
+                  onclick="bukaModalEditSejarah({{ sejarah_item.id }}, {{ sejarah_item|tojson|forceescape }})" 
+                  class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-2 shadow-md hover:shadow-lg transition cursor-pointer">
+            <i class="fa-solid fa-pen-to-square"></i> Edit Narasi Sejarah
+          </button>
+        </div>
       </div>
-      <h4 class="font-bold text-slate-800 text-sm">Belum Ada Narasi Sejarah Desa</h4>
-      <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">Silakan tambahkan babak sejarah atau narasi asal-usul desa untuk ditampilkan di portal informasi publik.</p>
-      <button onclick="bukaModalTambahSejarah()" class="mt-4 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow transition">
-        <i class="fa-solid fa-plus mr-1"></i> Tambah Sejarah Sekarang
-      </button>
+
     </div>
     {% endif %}
 
@@ -719,7 +705,7 @@
   <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 max-h-[92vh] overflow-y-auto shadow-2xl animate-fade-in">
     <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
       <div>
-        <h3 id="modal-sejarah-title" class="font-bold text-base text-slate-900">Tambah Bab Sejarah Desa</h3>
+        <h3 id="modal-sejarah-title" class="font-bold text-base text-slate-900 dark:text-white">Edit Narasi Sejarah Desa</h3>
         <p class="text-[11px] text-slate-400 mt-0.5">Kelola narasi dan dokumentasi asal-usul desa</p>
       </div>
       <button type="button" onclick="tutupModalSejarah()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold transition">&times;</button>
@@ -768,10 +754,7 @@
         </div>
       </div>
 
-      <div class="w-32">
-        <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Tampil</label>
-        <input type="number" name="urutan" id="input-sejarah-urutan" value="1" min="1" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium" />
-      </div>
+      <input type="hidden" name="urutan" id="input-sejarah-urutan" value="1" />
 
       <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
         <button type="button" onclick="tutupModalSejarah()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition">Batal</button>
