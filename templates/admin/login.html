@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portal Masuk Administrator - Desa {{ profil.nama_desa or profil_global.nama_desa or 'Desa' }}</title>
+  <title>Portal Masuk Sistem Desa - Desa {{ profil.nama_desa or profil_global.nama_desa or 'Desa' }}</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -36,7 +36,7 @@
   <div class="w-full max-w-xl bg-white rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10 border border-slate-100">
     
     <!-- HEADER LOGO & NAMA PEMERINTAH DESA -->
-    <div class="text-center mb-6">
+    <div class="text-center mb-5">
       {% set current_logo = profil.logo_website or profil_global.logo_website or '' %}
       {% if current_logo.startswith('static/') %}
         {% set logo_src = url_for('static', filename=current_logo.replace('static/', '')) %}
@@ -46,11 +46,11 @@
         {% set logo_src = url_for('static', filename='images/logo_tasikmalaya.png') %}
       {% endif %}
 
-      <div class="w-14 h-14 bg-slate-50 rounded-2xl p-2 mx-auto mb-2.5 border border-slate-200/80 flex items-center justify-center shadow-sm">
+      <div class="w-14 h-14 bg-slate-50 rounded-2xl p-2 mx-auto mb-2 border border-slate-200/80 flex items-center justify-center shadow-sm">
         <img src="{{ logo_src }}" class="w-full h-full object-contain" alt="Logo Desa" onerror="this.src='{{ url_for('static', filename='images/logo_tasikmalaya.png') }}'" />
       </div>
       <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Portal Masuk Sistem Desa</h2>
-      <p class="text-xs text-slate-500 mt-0.5 font-semibold">
+      <p class="text-xs text-slate-500 font-semibold mt-0.5">
         Pemerintah Desa {{ profil.nama_desa or profil_global.nama_desa or 'Papayan' }}, Kec. {{ profil.kecamatan or profil_global.kecamatan or 'Jatiwaras' }}
       </p>
     </div>
@@ -58,7 +58,7 @@
     <!-- FLASH MESSAGES -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div class="space-y-2 mb-5">
+        <div class="space-y-2 mb-4">
           {% for category, message in messages %}
             <div class="p-3.5 rounded-2xl text-xs font-semibold text-center flex flex-col items-center justify-center gap-1.5 {% if category == 'danger' %}bg-rose-50 text-rose-800 border border-rose-200{% elif category == 'warning' %}bg-amber-50 text-amber-800 border border-amber-200{% else %}bg-emerald-50 text-emerald-800 border border-emerald-200{% endif %}">
               <div class="flex items-center gap-2">
@@ -74,67 +74,119 @@
       {% endif %}
     {% endwith %}
 
-    <!-- 2 TAB PILIHAN PERAN YANG SANGAT JELAS -->
-    <div class="mb-5">
-      <label class="block text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 text-center">PILIH PORTAL TUJUAN LOGIN ANDA:</label>
-      <div class="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 rounded-2xl border border-slate-200">
-        
-        <!-- Tab 1: Super Admin -->
-        <button type="button" id="tab-superadmin" onclick="switchLoginRole('superadmin')" class="py-3 px-3 rounded-xl font-black text-xs flex flex-col items-center justify-center gap-1 transition-all bg-slate-900 text-white shadow-md">
-          <div class="flex items-center gap-1.5 text-amber-400">
-            <i class="fa-solid fa-crown text-xs"></i>
-            <span>SUPER ADMIN</span>
-          </div>
-          <span class="text-[10px] text-slate-300 font-medium">Kepala Desa / Akses Penuh</span>
-        </button>
-
-        <!-- Tab 2: Operator Desa -->
-        <button type="button" id="tab-operator" onclick="switchLoginRole('operator')" class="py-3 px-3 rounded-xl font-black text-xs flex flex-col items-center justify-center gap-1 transition-all text-slate-600 hover:text-slate-900">
-          <div class="flex items-center gap-1.5 text-emerald-700">
-            <i class="fa-solid fa-user-gear text-xs"></i>
-            <span>OPERATOR DESA</span>
-          </div>
-          <span class="text-[10px] text-slate-500 font-medium">Staf Pelayanan & Konten</span>
-        </button>
-
-      </div>
-    </div>
-
-    <!-- KOTAK DESKRIPSI HAK AKSES PERAN -->
-    <div id="role-badge-box" class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs text-amber-950 mb-4 flex items-start gap-2.5">
-      <i id="role-badge-icon" class="fa-solid fa-shield-halved text-amber-600 text-base mt-0.5 shrink-0"></i>
-      <div>
-        <div id="role-badge-title" class="font-black text-amber-900 text-xs uppercase tracking-wide">
-          Portal Super Admin (Kepala Desa)
+    {% if active_session and active_session.is_logged_in %}
+    <!-- BANNER SESI AKTIF SAAT INI -->
+    <div class="mb-5 p-3 rounded-2xl bg-blue-50 border border-blue-200 text-xs text-blue-900 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-circle-user text-blue-600 text-base"></i>
+        <div>
+          <span class="text-[10px] text-blue-600 font-semibold block uppercase">Sesi Login Aktif:</span>
+          <span class="font-bold">{{ active_session.nama }} ({{ active_session.role }})</span>
         </div>
-        <p id="role-badge-desc" class="text-[11px] text-amber-800/90 mt-0.5 leading-relaxed">
-          Hak akses penuh mencakup Pusat Kendali, Manajemen Pengguna/Staf, Backup Database, Audit Keamanan, & Seluruh Modul Desa.
-        </p>
+      </div>
+      <a href="{{ url_for('admin_logout') }}" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] rounded-xl transition">
+        Logout / Ganti Akun
+      </a>
+    </div>
+    {% endif %}
+
+    <!-- ========================================== -->
+    <!-- BAGIAN 1: AKSES SIMULASI 1-KLIK (SANGAT MUDAH & JELAS) -->
+    <!-- ========================================== -->
+    <div class="mb-5">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+          <i class="fa-solid fa-bolt text-amber-500"></i> AKSES CEPAT SIMULASI (1-KLIK MASUK):
+        </span>
+        <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">Siap Demo Klien</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        
+        <!-- KARTU 1: MASUK KE HALAMAN ADMIN -->
+        <a href="{{ url_for('admin_quick_login', role='admin') }}" class="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white shadow-lg border border-slate-700 transition transform hover:-translate-y-0.5 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[9px] font-black uppercase tracking-wider">
+                AKSES PENUH
+              </span>
+              <i class="fa-solid fa-crown text-amber-400 text-sm group-hover:scale-110 transition"></i>
+            </div>
+            <div class="font-black text-sm text-white tracking-tight">Halaman Admin</div>
+            <p class="text-[11px] text-slate-300 mt-1 leading-snug">
+              Pusat kendali eksekutif, kelola pengguna, backup data, & audit sistem.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-700/80 flex items-center justify-between text-xs font-bold text-amber-300">
+            <span>Masuk ke Halaman Admin</span>
+            <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
+          </div>
+        </a>
+
+        <!-- KARTU 2: MASUK KE HALAMAN OPERATOR -->
+        <a href="{{ url_for('admin_quick_login', role='operator') }}" class="p-4 rounded-2xl bg-gradient-to-br from-emerald-800 to-teal-900 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg border border-emerald-600/40 transition transform hover:-translate-y-0.5 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded-md bg-emerald-400/25 text-emerald-200 border border-emerald-400/30 text-[9px] font-black uppercase tracking-wider">
+                STAF PELAYANAN
+              </span>
+              <i class="fa-solid fa-user-gear text-emerald-300 text-sm group-hover:scale-110 transition"></i>
+            </div>
+            <div class="font-black text-sm text-white tracking-tight">Halaman Operator</div>
+            <p class="text-[11px] text-emerald-100/90 mt-1 leading-snug">
+              Meja kerja permohonan surat warga, respon aduan, berita, & UMKM.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-emerald-700/80 flex items-center justify-between text-xs font-bold text-emerald-200">
+            <span>Masuk ke Halaman Operator</span>
+            <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
+          </div>
+        </a>
+
       </div>
     </div>
 
-    <!-- FORM LOGIN -->
-    <form method="POST" action="{{ url_for('admin_login') }}" class="space-y-4">
-      <input type="hidden" id="login-role" name="role" value="superadmin" />
+    <!-- PEMBATAS (ATAU MASUK MANUAL) -->
+    <div class="relative flex py-2 items-center mb-4">
+      <div class="flex-grow border-t border-slate-200"></div>
+      <span class="flex-shrink mx-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Atau Masuk dengan Kredensial Manual</span>
+      <div class="flex-grow border-t border-slate-200"></div>
+    </div>
+
+    <!-- 2 TAB PILIHAN PORTAL MANUAL -->
+    <div class="mb-4">
+      <div class="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 rounded-2xl border border-slate-200">
+        <!-- Tab Admin -->
+        <button type="button" id="tab-admin" onclick="selectRole('admin')" class="py-2.5 px-3 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-slate-900 text-white shadow-md">
+          <i class="fa-solid fa-crown text-amber-400 text-xs"></i>
+          <span>ADMIN</span>
+        </button>
+
+        <!-- Tab Operator -->
+        <button type="button" id="tab-operator" onclick="selectRole('operator')" class="py-2.5 px-3 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:text-slate-900">
+          <i class="fa-solid fa-user-gear text-emerald-700 text-xs"></i>
+          <span>OPERATOR</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- FORM LOGIN MANUAL -->
+    <form method="POST" action="{{ url_for('admin_login') }}" class="space-y-3.5">
+      <input type="hidden" id="login-role" name="role" value="admin" />
       
       <!-- 1. USERNAME -->
       <div>
-        <div class="flex items-center justify-between mb-1.5">
-          <label id="label-username" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Username Super Admin</label>
-          <button type="button" onclick="fillDemoCredentials()" class="text-[11px] font-bold text-brand-700 hover:text-brand-900 flex items-center gap-1 transition">
-            <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> <span id="btn-quick-fill-text">Isi Cepat Akun Super Admin</span>
-          </button>
-        </div>
+        <label id="label-username" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Admin</label>
         <div class="relative">
           <i class="fa-solid fa-user absolute left-4 top-3.5 text-slate-400 text-xs"></i>
-          <input type="text" id="input-username" name="username" required value="" placeholder="Masukkan username: admin" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" class="w-full text-xs pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 font-semibold text-slate-800 transition" />
+          <input type="text" id="input-username" name="username" required value="" placeholder="Masukkan: admin" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" class="w-full text-xs pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 font-semibold text-slate-800 transition" />
         </div>
       </div>
 
       <!-- 2. PASSWORD -->
       <div>
-        <div class="flex items-center justify-between mb-1.5">
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Kata Sandi (Password)</label>
+        <div class="flex items-center justify-between mb-1">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Kata Sandi</label>
           <button type="button" onclick="togglePasswordVisibility()" class="text-[11px] font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 transition">
             <i id="toggle-pw-icon" class="fa-solid fa-eye text-[10px]"></i>
             <span id="toggle-pw-text">Lihat Sandi</span>
@@ -146,100 +198,67 @@
         </div>
       </div>
 
-      <!-- 3. TOMBOL SUBMIT BESAR -->
-      <div class="pt-2">
-        <button type="submit" id="btn-submit" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+      <!-- 3. TOMBOL SUBMIT -->
+      <div class="pt-1">
+        <button type="submit" id="btn-submit" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
           <i id="btn-submit-icon" class="fa-solid fa-crown text-amber-400"></i>
-          <span id="btn-submit-text">Masuk ke Portal Super Admin (Kepala Desa)</span>
+          <span id="btn-submit-text">Masuk ke Halaman Admin</span>
         </button>
       </div>
 
     </form>
 
     <!-- FOOTER NAVIGASI -->
-    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+    <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
       <a href="{{ url_for('index') }}" class="text-brand-800 font-semibold hover:underline flex items-center gap-1.5">
         <i class="fa-solid fa-arrow-left text-[10px]"></i> Kembali ke Website
       </a>
       <span class="text-slate-400 text-[11px] font-medium flex items-center gap-1">
-        <i class="fa-solid fa-shield-halved text-brand-700 text-[10px]"></i> Terproteksi SSL & Anti-Bruteforce
+        <i class="fa-solid fa-shield-halved text-brand-700 text-[10px]"></i> Enkripsi SSL Aktif
       </span>
     </div>
 
   </div>
 
-  <!-- JAVASCRIPT SWITCHER PERAN & QUICK FILL -->
+  <!-- JAVASCRIPT SWITCHER PERAN -->
   <script>
-    let currentRole = 'superadmin';
+    let activeRole = 'admin';
 
-    function switchLoginRole(role) {
-      currentRole = role;
+    function selectRole(role) {
+      activeRole = role;
       document.getElementById('login-role').value = role;
 
-      const tabSuper = document.getElementById('tab-superadmin');
+      const tabAdmin = document.getElementById('tab-admin');
       const tabOp = document.getElementById('tab-operator');
-      const badgeBox = document.getElementById('role-badge-box');
-      const badgeIcon = document.getElementById('role-badge-icon');
-      const badgeTitle = document.getElementById('role-badge-title');
-      const badgeDesc = document.getElementById('role-badge-desc');
       const labelUser = document.getElementById('label-username');
       const inputUser = document.getElementById('input-username');
       const inputPass = document.getElementById('input-password');
       const btnSubmit = document.getElementById('btn-submit');
       const btnSubmitIcon = document.getElementById('btn-submit-icon');
       const btnSubmitText = document.getElementById('btn-submit-text');
-      const btnQuickFill = document.getElementById('btn-quick-fill-text');
 
-      if (role === 'superadmin') {
-        tabSuper.className = "py-3 px-3 rounded-xl font-black text-xs flex flex-col items-center justify-center gap-1 transition-all bg-slate-900 text-white shadow-md";
-        tabOp.className = "py-3 px-3 rounded-xl font-black text-xs flex flex-col items-center justify-center gap-1 transition-all text-slate-600 hover:text-slate-900";
+      if (role === 'admin') {
+        tabAdmin.className = "py-2.5 px-3 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-slate-900 text-white shadow-md";
+        tabOp.className = "py-2.5 px-3 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:text-slate-900";
         
-        badgeBox.className = "p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs text-amber-950 mb-4 flex items-start gap-2.5";
-        badgeIcon.className = "fa-solid fa-shield-halved text-amber-600 text-base mt-0.5 shrink-0";
-        badgeTitle.innerText = "Portal Super Admin (Kepala Desa)";
-        badgeDesc.innerText = "Hak akses penuh mencakup Pusat Kendali, Manajemen Pengguna/Staf, Backup Database, Audit Keamanan, & Seluruh Modul Desa.";
-
-        labelUser.innerText = "Username Super Admin";
-        inputUser.placeholder = "Masukkan username: admin";
+        labelUser.innerText = "Username Admin";
+        inputUser.placeholder = "Masukkan: admin";
         inputPass.placeholder = "Masukkan kata sandi: admin123";
-        inputUser.className = "w-full text-xs pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 font-semibold text-slate-800 transition";
-        inputPass.className = "w-full text-xs pl-10 pr-10 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 font-semibold text-slate-800 transition";
 
-        btnSubmit.className = "w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2";
+        btnSubmit.className = "w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2";
         btnSubmitIcon.className = "fa-solid fa-crown text-amber-400";
-        btnSubmitText.innerText = "Masuk ke Portal Super Admin (Kepala Desa)";
-        btnQuickFill.innerText = "Isi Cepat Akun Super Admin";
+        btnSubmitText.innerText = "Masuk ke Halaman Admin";
       } else {
-        tabOp.className = "py-3 px-3 rounded-xl font-black text-xs flex flex-col items-center justify-center gap-1 transition-all bg-emerald-700 text-white shadow-md shadow-emerald-700/20";
-        tabSuper.className = "py-3 px-3 rounded-xl font-black text-xs flex flex-col items-center justify-center gap-1 transition-all text-slate-600 hover:text-slate-900";
+        tabOp.className = "py-2.5 px-3 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-emerald-700 text-white shadow-md shadow-emerald-700/20";
+        tabAdmin.className = "py-2.5 px-3 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:text-slate-900";
 
-        badgeBox.className = "p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950 mb-4 flex items-start gap-2.5";
-        badgeIcon.className = "fa-solid fa-user-gear text-emerald-600 text-base mt-0.5 shrink-0";
-        badgeTitle.innerText = "Meja Kerja Operator Desa (Staf Pelayanan)";
-        badgeDesc.innerText = "Hak akses operasional harian mencakup Layanan Surat Mandiri Warga, Penanganan Pengaduan, Berita, UMKM, Wisata, & Penduduk.";
-
-        labelUser.innerText = "Username Operator Desa";
-        inputUser.placeholder = "Masukkan username: operator";
+        labelUser.innerText = "Username Operator";
+        inputUser.placeholder = "Masukkan: operator";
         inputPass.placeholder = "Masukkan kata sandi: operator123";
-        inputUser.className = "w-full text-xs pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-700 font-semibold text-slate-800 transition";
-        inputPass.className = "w-full text-xs pl-10 pr-10 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-700 font-semibold text-slate-800 transition";
 
-        btnSubmit.className = "w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs rounded-xl shadow-lg shadow-emerald-700/20 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2";
-        btnSubmitIcon.className = "fa-solid fa-right-to-bracket";
-        btnSubmitText.innerText = "Masuk ke Meja Kerja Operator Desa";
-        btnQuickFill.innerText = "Isi Cepat Akun Operator";
-      }
-    }
-
-    function fillDemoCredentials() {
-      const inputUser = document.getElementById('input-username');
-      const inputPass = document.getElementById('input-password');
-      if (currentRole === 'superadmin') {
-        inputUser.value = "admin";
-        inputPass.value = "admin123";
-      } else {
-        inputUser.value = "operator";
-        inputPass.value = "operator123";
+        btnSubmit.className = "w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs rounded-xl shadow-lg shadow-emerald-700/20 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2";
+        btnSubmitIcon.className = "fa-solid fa-user-gear";
+        btnSubmitText.innerText = "Masuk ke Halaman Operator";
       }
     }
 

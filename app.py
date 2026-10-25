@@ -959,12 +959,45 @@ def admin_peta_simpan_batas():
 # ==========================================
 
 @app.route('/admin/login', methods=['GET', 'POST'])
-def admin_login():
-    if 'user_id' in session:
-        if session.get('role') == 'superadmin':
+
+@app.route('/admin/quick-login/<role>')
+def admin_quick_login(role):
+    """Login instan 1-klik untuk simulasi & demo klien (admin -> /admin, operator -> /admin/operator)"""
+    role_clean = role.lower()
+    conn = get_db()
+    cursor = conn.cursor()
+    if role_clean in ('admin', 'superadmin'):
+        cursor.execute("SELECT * FROM users WHERE username = 'admin' OR role = 'superadmin' LIMIT 1")
+    else:
+        cursor.execute("SELECT * FROM users WHERE username = 'operator' OR role = 'admin' LIMIT 1")
+    user = cursor.fetchone()
+    conn.close()
+
+    if user:
+        session.clear()
+        session.permanent = True
+        session['user_id'] = user['id']
+        session['username'] = user['username']
+        session['nama'] = user['nama']
+        session['role'] = user['role']
+
+        if user['role'] == 'superadmin':
+            flash(f"Berhasil Masuk sebagai Admin! Anda berada di Halaman Admin Desa.", 'success')
             return redirect(url_for('admin_dashboard'))
         else:
+            flash(f"Berhasil Masuk sebagai Operator! Anda berada di Halaman Operator Desa.", 'success')
             return redirect(url_for('admin_operator_dashboard'))
+            
+    flash('Akun pengguna tidak ditemukan.', 'danger')
+    return redirect(url_for('admin_login'))
+
+def admin_login():
+    # Catat info user aktif jika ada agar halaman login bisa menampilkan opsi beralih akun
+    current_active_user = {
+        'nama': session.get('nama'),
+        'role': 'Admin (Super Admin)' if session.get('role') == 'superadmin' else 'Operator Desa',
+        'is_logged_in': 'user_id' in session
+    }
 
     ip_address = request.headers.get('X-Forwarded-For', request.remote_addr) or '127.0.0.1'
     if ',' in ip_address:
@@ -998,7 +1031,7 @@ def admin_login():
                 user_agent=request.user_agent.string
             )
             flash('Keamanan Sistem: Terlalu banyak percobaan gagal login (5 kali). Akses Anda dikunci sementara selama 15 menit demi melindungi keamanan data desa.', 'danger')
-            return render_template('admin/login.html', is_locked=True, profil=profil)
+            return render_template('admin/login.html', is_locked=True, profil=profil, active_session=current_active_user)
 
         conn = get_db()
         cursor = conn.cursor()
@@ -1019,7 +1052,7 @@ def admin_login():
                 )
                 conn.close()
                 flash('Akun ini sedang dinonaktifkan oleh Super Admin. Silakan hubungi Administrator Desa.', 'danger')
-                return render_template('admin/login.html', profil=profil)
+                return render_template('admin/login.html', profil=profil, active_session=current_active_user)
 
             # Catat login sukses & reset counter
             record_login_attempt(ip_address, username, True)
@@ -1068,7 +1101,7 @@ def admin_login():
             else:
                 flash('Batas percobaan gagal telah tercapai (5 kali). Akses dikunci sementara selama 15 menit.', 'danger')
 
-    return render_template('admin/login.html', profil=profil)
+    return render_template('admin/login.html', profil=profil, active_session=current_active_user)
 
 @app.route('/admin/buka-kunci', methods=['GET', 'POST'])
 def admin_buka_kunci():
