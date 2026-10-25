@@ -3003,15 +3003,12 @@ def admin_pembangunan():
             d['foto_list'] = []
         items.append(d)
 
-    # Fetch all for summary stats
-    cursor.execute("SELECT * FROM pembangunan_desa")
-    all_raw = [dict(r) for r in cursor.fetchall()]
-
-    total_proyek = len(all_raw)
-    sedang_dikerjakan = sum(1 for p in all_raw if p.get('status_progres') == 'Sedang Dikerjakan')
-    selesai = sum(1 for p in all_raw if p.get('status_progres') == 'Selesai')
-    rencana = sum(1 for p in all_raw if p.get('status_progres') == 'Rencana')
-    total_anggaran = sum(p.get('anggaran', 0) for p in all_raw)
+    # Hitung variabel statistik dinamis sesuai data kegiatan yang difilter (items)
+    total_proyek = len(items)
+    sedang_dikerjakan = sum(1 for p in items if p.get('status_progres') == 'Sedang Dikerjakan')
+    selesai = sum(1 for p in items if p.get('status_progres') == 'Selesai')
+    rencana = sum(1 for p in items if p.get('status_progres') == 'Rencana')
+    total_anggaran = sum((p.get('anggaran') or 0) for p in items)
 
     cursor.execute("SELECT DISTINCT tahun_anggaran FROM pembangunan_desa ORDER BY tahun_anggaran DESC")
     tahun_list = [r[0] for r in cursor.fetchall() if r[0]]

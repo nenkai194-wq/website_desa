@@ -35,7 +35,7 @@
       </div>
       <div>
         <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Total Kegiatan</span>
-        <span class="text-xl font-black text-slate-900">{{ total_proyek }}</span>
+        <span class="text-xl font-black text-slate-900" id="kpi-total-kegiatan">{{ total_proyek }}</span>
       </div>
     </div>
 
@@ -46,7 +46,7 @@
       </div>
       <div>
         <span class="text-[11px] font-bold text-amber-700 uppercase tracking-wider block">Sedang Berjalan</span>
-        <span class="text-xl font-black text-amber-700">{{ sedang_dikerjakan }}</span>
+        <span class="text-xl font-black text-amber-700" id="kpi-sedang-berjalan">{{ sedang_dikerjakan }}</span>
       </div>
     </div>
 
@@ -57,7 +57,7 @@
       </div>
       <div>
         <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block">Sudah Selesai</span>
-        <span class="text-xl font-black text-emerald-700">{{ selesai }}</span>
+        <span class="text-xl font-black text-emerald-700" id="kpi-sudah-selesai">{{ selesai }}</span>
       </div>
     </div>
 
@@ -68,7 +68,7 @@
       </div>
       <div>
         <span class="text-[11px] font-bold text-blue-700 uppercase tracking-wider block">Rencana</span>
-        <span class="text-xl font-black text-blue-700">{{ rencana }}</span>
+        <span class="text-xl font-black text-blue-700" id="kpi-rencana">{{ rencana }}</span>
       </div>
     </div>
 
@@ -79,7 +79,7 @@
       </div>
       <div class="overflow-hidden">
         <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider block">Total Realisasi</span>
-        <span class="text-sm sm:text-base font-black truncate block text-emerald-400">Rp {{ "{:,.0f}".format(total_anggaran).replace(",", ".") }}</span>
+        <span class="text-sm sm:text-base font-black truncate block text-emerald-400" id="kpi-total-realisasi">Rp {{ "{:,.0f}".format(total_anggaran).replace(",", ".") }}</span>
       </div>
     </div>
   </div>
@@ -90,7 +90,7 @@
       <!-- Search Input -->
       <div class="relative flex-1">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-        <input type="text" id="pencarianPembangunan" onkeyup="filterDaftarPembangunan()" placeholder="Cari kegiatan pembangunan, lokasi, atau dusun..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
+        <input type="text" id="pencarianPembangunan" onkeyup="filterDaftarPembangunan()" oninput="filterDaftarPembangunan()" placeholder="Cari kegiatan pembangunan, lokasi, atau dusun..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
       </div>
 
       <!-- Quick Filters Dropdowns -->
@@ -135,7 +135,9 @@
     <div class="pembangunan-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
          data-nama="{{ p.nama_kegiatan|lower }}"
          data-lokasi="{{ p.lokasi|lower }}"
-         data-dusun="{{ p.dusun|lower }}">
+         data-dusun="{{ p.dusun|lower }}"
+         data-status="{{ p.status_progres }}"
+         data-anggaran="{{ p.anggaran or 0 }}">
       
       <div>
         <!-- Foto Banner Showcase (Menampilkan perbandingan Sebelum vs Akhir / Proses) -->
@@ -1060,19 +1062,64 @@ function terapkanFilter() {
   window.location.href = `/admin/pembangunan?status=${encodeURIComponent(status)}&dusun=${encodeURIComponent(dusun)}&tahun=${encodeURIComponent(tahun)}`;
 }
 
+function formatRupiahKpi(angka) {
+  const num = Math.round(Number(angka) || 0);
+  return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function updateKpiStats() {
+  const cards = document.querySelectorAll('.pembangunan-card');
+  let total = 0;
+  let berjalan = 0;
+  let selesai = 0;
+  let rencana = 0;
+  let realisasi = 0;
+
+  cards.forEach(c => {
+    if (c.style.display !== 'none' && !c.classList.contains('hidden')) {
+      total++;
+      const status = (c.getAttribute('data-status') || '').trim();
+      const anggaran = parseFloat(c.getAttribute('data-anggaran')) || 0;
+      realisasi += anggaran;
+
+      if (status === 'Sedang Dikerjakan') {
+        berjalan++;
+      } else if (status === 'Selesai') {
+        selesai++;
+      } else if (status === 'Rencana') {
+        rencana++;
+      }
+    }
+  });
+
+  const elTotal = document.getElementById('kpi-total-kegiatan');
+  const elBerjalan = document.getElementById('kpi-sedang-berjalan');
+  const elSelesai = document.getElementById('kpi-sudah-selesai');
+  const elRencana = document.getElementById('kpi-rencana');
+  const elRealisasi = document.getElementById('kpi-total-realisasi');
+
+  if (elTotal) elTotal.textContent = total;
+  if (elBerjalan) elBerjalan.textContent = berjalan;
+  if (elSelesai) elSelesai.textContent = selesai;
+  if (elRencana) elRencana.textContent = rencana;
+  if (elRealisasi) elRealisasi.textContent = formatRupiahKpi(realisasi);
+}
+
 function filterDaftarPembangunan() {
-  const q = document.getElementById('pencarianPembangunan').value.toLowerCase();
+  const q = document.getElementById('pencarianPembangunan').value.toLowerCase().trim();
   const cards = document.querySelectorAll('.pembangunan-card');
   cards.forEach(c => {
     const nama = c.getAttribute('data-nama') || '';
     const lokasi = c.getAttribute('data-lokasi') || '';
     const dusun = c.getAttribute('data-dusun') || '';
-    if (nama.includes(q) || lokasi.includes(q) || dusun.includes(q)) {
+    const status = (c.getAttribute('data-status') || '').toLowerCase();
+    if (!q || nama.includes(q) || lokasi.includes(q) || dusun.includes(q) || status.includes(q)) {
       c.style.display = '';
     } else {
       c.style.display = 'none';
     }
   });
+  updateKpiStats();
 }
 </script>
 {% endblock %}
