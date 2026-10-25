@@ -170,22 +170,30 @@
           </a>
         </nav>
 
-        <!-- Bagian Kanan: Toggle Mobile & Tombol Kuning Layanan Surat -->
+        <!-- Bagian Kanan: Tombol Layanan Surat, Mode Gelap/Terang, & Toggle Menu Mobile -->
         <div class="flex items-center shrink-0 gap-2 sm:gap-2.5">
-          <!-- Mobile Toggle Button (hidden di layar desktop xl+) -->
-          <button id="mobile-menu-toggle" onclick="document.getElementById('mobile-menu-dropdown').classList.toggle('hidden')" type="button" 
-                  class="xl:hidden p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15 mr-1" aria-label="Buka Menu Navigasi">
-            <i class="fa-solid fa-bars text-xl"></i>
-          </button>
-
           <!-- Tombol Kuning Layanan Surat: Lebar w-[136px] agar tepat rata atas-bawah dengan nomor kontak di baris bawah -->
-          <div class="flex items-center justify-end shrink-0 w-[136px]">
+          <div class="flex items-center justify-end shrink-0 w-[120px] sm:w-[136px]">
             <button type="button" onclick="handleKlikLayananSurat()" 
                     class="w-full hidden sm:inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#ffe066] via-[#ffd43b] to-[#fcc419] hover:from-[#ffd43b] hover:to-[#fab005] text-slate-950 font-black px-3 py-2 rounded-2xl text-xs sm:text-sm shadow-lg shadow-black/20 border border-amber-200/90 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
               <i class="fa-solid fa-file-signature text-sm sm:text-base text-slate-950"></i>
               <span class="leading-tight text-center">Layanan<br class="hidden sm:inline">Surat</span>
             </button>
           </div>
+
+          <!-- Tombol Mode Pencahayaan (Terang / Gelap) di Header - Sejajar Lurus ke Atas -->
+          <button type="button" onclick="toggleThemeMode()" id="theme-toggle-btn"
+                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/10 hover:bg-white/20 active:bg-white/25 text-white transition-all duration-200 border border-white/20 shadow-md flex items-center justify-center cursor-pointer group active:scale-95 shrink-0"
+                  title="Atur Mode Pencahayaan (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
+            <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-300 text-sm sm:text-base transition-transform duration-300 group-hover:rotate-12"></i>
+            <span id="theme-toggle-text" class="sr-only">Mode Gelap</span>
+          </button>
+
+          <!-- Mobile Toggle Button (hidden di layar desktop xl+) -->
+          <button id="mobile-menu-toggle" onclick="document.getElementById('mobile-menu-dropdown').classList.toggle('hidden')" type="button" 
+                  class="xl:hidden p-2 sm:p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15" aria-label="Buka Menu Navigasi">
+            <i class="fa-solid fa-bars text-lg sm:text-xl"></i>
+          </button>
         </div>
 
       </div>
@@ -1055,14 +1063,7 @@
 
 
   <!-- Floating Theme Switcher Quick Control (Anti-Glare / Ramah Mata) -->
-  <div class="floating-theme-toggle">
-    <button type="button" onclick="toggleThemeMode()" 
-            class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-900/90 hover:bg-slate-900 dark:bg-white/95 dark:hover:bg-white text-white dark:text-slate-900 shadow-xl border border-white/20 dark:border-slate-300 text-xs font-extrabold backdrop-blur-md transition cursor-pointer"
-            title="Atur Pencahayaan Layar (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
-      <i id="theme-toggle-icon-float" class="fa-solid fa-moon text-amber-300 dark:text-amber-600"></i>
-      <span id="theme-toggle-text-float" class="hidden md:inline font-bold">Mode Gelap</span>
-    </button>
-  </div>
+  
 
   <!-- Dynamic Visitor Counter -->
   <script src="{{ url_for('static', filename='js/visitor-counter.js') }}"></script>

@@ -208,22 +208,30 @@
           </button>
         </nav>
 
-        <!-- Bagian Kanan: Toggle Mobile, Tombol Kuning Layanan Surat, & Logo Mode Pencahayaan di Sudut Kanan Atas -->
+        <!-- Bagian Kanan: Tombol Layanan Surat, Mode Gelap/Terang, & Toggle Menu Mobile -->
         <div class="flex items-center shrink-0 gap-2 sm:gap-2.5">
-          <!-- Mobile Toggle Button (hidden di layar desktop xl+) -->
-          <button id="mobile-menu-toggle" type="button" 
-                  class="xl:hidden p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15 mr-1" aria-label="Buka Menu Navigasi">
-            <i class="fa-solid fa-bars text-xl"></i>
-          </button>
-
           <!-- Tombol Kuning Layanan Surat: Lebar w-[136px] agar tepat rata atas-bawah dengan nomor kontak di baris bawah -->
-          <div class="flex items-center justify-end shrink-0 w-[136px]">
+          <div class="flex items-center justify-end shrink-0 w-[120px] sm:w-[136px]">
             <button type="button" onclick="handleKlikLayananSurat()" data-nav-view="layanan-surat" 
                     class="w-full hidden sm:inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#ffe066] via-[#ffd43b] to-[#fcc419] hover:from-[#ffd43b] hover:to-[#fab005] text-slate-950 font-black px-3 py-2 rounded-2xl text-xs sm:text-sm shadow-lg shadow-black/20 border border-amber-200/90 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
               <i class="fa-solid fa-file-signature text-sm sm:text-base text-slate-950"></i>
               <span class="leading-tight text-center">Layanan<br class="hidden sm:inline">Surat</span>
             </button>
           </div>
+
+          <!-- Tombol Mode Pencahayaan (Terang / Gelap) di Header - Sejajar Lurus ke Atas -->
+          <button type="button" onclick="toggleThemeMode()" id="theme-toggle-btn"
+                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/10 hover:bg-white/20 active:bg-white/25 text-white transition-all duration-200 border border-white/20 shadow-md flex items-center justify-center cursor-pointer group active:scale-95 shrink-0"
+                  title="Atur Mode Pencahayaan (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
+            <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-300 text-sm sm:text-base transition-transform duration-300 group-hover:rotate-12"></i>
+            <span id="theme-toggle-text" class="sr-only">Mode Gelap</span>
+          </button>
+
+          <!-- Mobile Toggle Button (hidden di layar desktop xl+) -->
+          <button id="mobile-menu-toggle" type="button" 
+                  class="xl:hidden p-2 sm:p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15" aria-label="Buka Menu Navigasi">
+            <i class="fa-solid fa-bars text-lg sm:text-xl"></i>
+          </button>
         </div>
 
       </div>
@@ -13245,19 +13253,19 @@ Seiring perkembangan zaman dan penataan tata pemerintahan desa, Desa Papayan ter
           <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-blue-400"></i> Hari Ini:</span>
-              <span id="count-today" class="font-bold text-white">185</span>
+              <span id="count-today" class="font-bold text-white">197</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-week text-amber-400"></i> Minggu Ini:</span>
-              <span id="count-week" class="font-bold text-white">1.202</span>
+              <span id="count-week" class="font-bold text-white">1.214</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-emerald-400"></i> Bulan Ini:</span>
-              <span id="count-month" class="font-bold text-white">4.276</span>
+              <span id="count-month" class="font-bold text-white">4.288</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-purple-400"></i> Total Kunjungan:</span>
-              <span id="count-total" class="font-black text-brand-300">28.955</span>
+              <span id="count-total" class="font-black text-brand-300">28.967</span>
             </div>
           </div>
         </div>
@@ -13782,16 +13790,8 @@ Seiring perkembangan zaman dan penataan tata pemerintahan desa, Desa Papayan ter
 
 </div>
 
-<!-- TOMBOL MENGAMBANG DI SUDUT KANAN BAWAH (Floating Trigger: Mode Pencahayaan & Pengaduan) -->
+<!-- TOMBOL MENGAMBANG DI SUDUT KANAN BAWAH (Floating Trigger: Pengaduan) -->
 <div class="fixed bottom-16 sm:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end gap-2.5">
-  <!-- LOGO PENCAHAYAAN (TERANG / GELAP) DISISIPKAN DI ATAS MENU PENGADUAN -->
-  <button type="button" onclick="toggleThemeMode()" id="theme-toggle-btn"
-          class="w-11 h-11 rounded-2xl bg-slate-900/85 hover:bg-slate-900 dark:bg-slate-800/90 dark:hover:bg-slate-700 text-white transition-all duration-200 border border-white/20 dark:border-slate-600/70 shadow-xl flex items-center justify-center cursor-pointer group active:scale-95"
-          title="Atur Mode Pencahayaan (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
-    <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-300 text-base transition-transform duration-300 group-hover:rotate-12"></i>
-    <span id="theme-toggle-text" class="sr-only">Mode Gelap</span>
-  </button>
-
   <!-- TOMBOL MENU PENGADUAN -->
   <button type="button" id="btn-toggle-floating-pengaduan" onclick="toggleFloatingPengaduan()" 
           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#fca5a5] hover:bg-[#f87171] text-white font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none border border-white/30"

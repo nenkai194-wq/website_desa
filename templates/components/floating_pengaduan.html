@@ -153,16 +153,8 @@
 
 </div>
 
-<!-- TOMBOL MENGAMBANG DI SUDUT KANAN BAWAH (Floating Trigger: Mode Pencahayaan & Pengaduan) -->
+<!-- TOMBOL MENGAMBANG DI SUDUT KANAN BAWAH (Floating Trigger: Pengaduan) -->
 <div class="fixed bottom-16 sm:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end gap-2.5">
-  <!-- LOGO PENCAHAYAAN (TERANG / GELAP) DISISIPKAN DI ATAS MENU PENGADUAN -->
-  <button type="button" onclick="toggleThemeMode()" id="theme-toggle-btn"
-          class="w-11 h-11 rounded-2xl bg-slate-900/85 hover:bg-slate-900 dark:bg-slate-800/90 dark:hover:bg-slate-700 text-white transition-all duration-200 border border-white/20 dark:border-slate-600/70 shadow-xl flex items-center justify-center cursor-pointer group active:scale-95"
-          title="Atur Mode Pencahayaan (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
-    <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-300 text-base transition-transform duration-300 group-hover:rotate-12"></i>
-    <span id="theme-toggle-text" class="sr-only">Mode Gelap</span>
-  </button>
-
   <!-- TOMBOL MENU PENGADUAN -->
   <button type="button" id="btn-toggle-floating-pengaduan" onclick="toggleFloatingPengaduan()" 
           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#fca5a5] hover:bg-[#f87171] text-white font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none border border-white/30"
