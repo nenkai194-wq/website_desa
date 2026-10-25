@@ -126,16 +126,16 @@
       <div class="flex items-center justify-between py-2 sm:py-2.5 min-h-[72px] gap-3">
         
         <!-- Logo & Identitas Desa: Sesuai Screenshot -->
-        <a href="javascript:void(0)" onclick="navigateToView('beranda')" class="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+        <a href="javascript:void(0)" onclick="navigateToView('beranda')" class="flex items-center gap-2.5 sm:gap-3 group shrink min-w-0">
           <img src="static/images/logo_tasikmalaya.png" 
                alt="Logo Papayan" 
                class="h-10 sm:h-12 w-auto object-contain drop-shadow" 
                onerror="this.src='static/images/logo_tasikmalaya.png'" />
           <div class="flex flex-col justify-center">
-            <h1 class="text-base sm:text-lg xl:text-xl font-black uppercase tracking-tight text-white block leading-none font-outfit">
+            <h1 class="text-base sm:text-lg xl:text-xl font-black uppercase tracking-tight text-white block leading-none font-outfit truncate">
               PEMDES PAPAYAN
             </h1>
-            <span class="text-[10px] sm:text-xs text-white/90 font-medium block mt-1 tracking-tight">
+            <span class="text-[10px] sm:text-xs text-white/90 font-medium block mt-1 tracking-tight truncate">
               Kecamatan Jatiwaras, Kabupaten Tasikmalaya
             </span>
           </div>
@@ -208,29 +208,29 @@
           </button>
         </nav>
 
-        <!-- Bagian Kanan: Tombol Layanan Surat, Mode Gelap/Terang, & Toggle Menu Mobile -->
+        <!-- Bagian Kanan: Tombol Layanan Surat, Toggle Menu Mobile, & Mode Gelap/Terang PERSIS DI POJOK KANAN ATAS -->
         <div class="flex items-center shrink-0 gap-2 sm:gap-2.5">
-          <!-- Tombol Kuning Layanan Surat: Lebar w-[136px] agar tepat rata atas-bawah dengan nomor kontak di baris bawah -->
-          <div class="flex items-center justify-end shrink-0 w-[120px] sm:w-[136px]">
+          <!-- Tombol Kuning Layanan Surat (Desktop & Tablet) -->
+          <div class="hidden sm:flex items-center justify-end shrink-0 w-[136px]">
             <button type="button" onclick="handleKlikLayananSurat()" data-nav-view="layanan-surat" 
-                    class="w-full hidden sm:inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#ffe066] via-[#ffd43b] to-[#fcc419] hover:from-[#ffd43b] hover:to-[#fab005] text-slate-950 font-black px-3 py-2 rounded-2xl text-xs sm:text-sm shadow-lg shadow-black/20 border border-amber-200/90 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
+                    class="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#ffe066] via-[#ffd43b] to-[#fcc419] hover:from-[#ffd43b] hover:to-[#fab005] text-slate-950 font-black px-3 py-2 rounded-2xl text-xs sm:text-sm shadow-lg shadow-black/20 border border-amber-200/90 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
               <i class="fa-solid fa-file-signature text-sm sm:text-base text-slate-950"></i>
               <span class="leading-tight text-center">Layanan<br class="hidden sm:inline">Surat</span>
             </button>
           </div>
 
-          <!-- Tombol Mode Pencahayaan (Terang / Gelap) di Header - Sejajar Lurus ke Atas -->
-          <button type="button" onclick="toggleThemeMode()" id="theme-toggle-btn"
-                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/10 hover:bg-white/20 active:bg-white/25 text-white transition-all duration-200 border border-white/20 shadow-md flex items-center justify-center cursor-pointer group active:scale-95 shrink-0"
-                  title="Atur Mode Pencahayaan (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
-            <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-300 text-sm sm:text-base transition-transform duration-300 group-hover:rotate-12"></i>
-            <span id="theme-toggle-text" class="sr-only">Mode Gelap</span>
-          </button>
-
           <!-- Mobile Toggle Button (hidden di layar desktop xl+) -->
           <button id="mobile-menu-toggle" type="button" 
                   class="xl:hidden p-2 sm:p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/15" aria-label="Buka Menu Navigasi">
             <i class="fa-solid fa-bars text-lg sm:text-xl"></i>
+          </button>
+
+          <!-- Tombol Mode Pencahayaan (Terang / Gelap) - PERSIS DI POJOK KANAN ATAS -->
+          <button type="button" onclick="toggleThemeMode()" id="theme-toggle-btn"
+                  class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-slate-900/90 hover:bg-slate-900 dark:bg-slate-800/90 dark:hover:bg-slate-700 text-white transition-all duration-200 border border-white/25 dark:border-slate-600/70 shadow-xl flex items-center justify-center cursor-pointer group active:scale-95 shrink-0"
+                  title="Atur Mode Pencahayaan (Terang / Gelap)" aria-label="Atur Mode Pencahayaan">
+            <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-300 text-base transition-transform duration-300 group-hover:rotate-12"></i>
+            <span id="theme-toggle-text" class="sr-only">Mode Gelap</span>
           </button>
         </div>
 
@@ -13253,19 +13253,19 @@ Seiring perkembangan zaman dan penataan tata pemerintahan desa, Desa Papayan ter
           <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-blue-400"></i> Hari Ini:</span>
-              <span id="count-today" class="font-bold text-white">197</span>
+              <span id="count-today" class="font-bold text-white">201</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-week text-amber-400"></i> Minggu Ini:</span>
-              <span id="count-week" class="font-bold text-white">1.214</span>
+              <span id="count-week" class="font-bold text-white">1.218</span>
             </div>
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-emerald-400"></i> Bulan Ini:</span>
-              <span id="count-month" class="font-bold text-white">4.288</span>
+              <span id="count-month" class="font-bold text-white">4.292</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-purple-400"></i> Total Kunjungan:</span>
-              <span id="count-total" class="font-black text-brand-300">28.967</span>
+              <span id="count-total" class="font-black text-brand-300">28.971</span>
             </div>
           </div>
         </div>
