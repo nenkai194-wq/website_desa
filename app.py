@@ -958,8 +958,6 @@ def admin_peta_simpan_batas():
 # ADMIN AUTHENTICATION
 # ==========================================
 
-@app.route('/admin/login', methods=['GET', 'POST'])
-
 @app.route('/admin/quick-login/<role>')
 def admin_quick_login(role):
     """Login instan 1-klik untuk simulasi & demo klien (admin -> /admin, operator -> /admin/operator)"""
@@ -991,6 +989,7 @@ def admin_quick_login(role):
     flash('Akun pengguna tidak ditemukan.', 'danger')
     return redirect(url_for('admin_login'))
 
+@app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     # Catat info user aktif jika ada agar halaman login bisa menampilkan opsi beralih akun
     current_active_user = {
