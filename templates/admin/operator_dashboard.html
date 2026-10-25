@@ -1,0 +1,233 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Meja Kerja Operator - Desa {{ profil_global.nama_desa or 'Papayan' }}{% endblock %}
+{% block header_title %}Meja Kerja Pelayanan Staf Operator Desa{% endblock %}
+
+{% block content %}
+<div class="space-y-8 pb-10">
+
+  <!-- TOP HERO WELCOME BANNER (Fresh Emerald Theme for Village Operator) -->
+  <div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 text-white">
+    <!-- Ambient Glow Accent -->
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+      <div>
+        <div class="flex flex-wrap items-center gap-2 mb-2.5">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/25 text-emerald-300 border border-emerald-400/30 text-[11px] font-black uppercase tracking-wider shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            MEJA KERJA OPERATOR PELAYANAN
+          </span>
+          <span class="text-slate-400 text-xs">•</span>
+          <span class="text-xs font-semibold text-slate-300">Pemerintah Desa {{ profil_global.nama_desa or 'Papayan' }}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2.5">
+          <span>Selamat Bertugas, {{ session.get('nama') or 'Staf Operator' }}!</span>
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 font-bold">Staf Pelayanan</span>
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-300 max-w-3xl mt-2 leading-relaxed">
+          Ini adalah meja kerja operasional harian Anda. Kelola permohonan surat mandiri warga, tanggapi aspirasi/aduan, publikasikan berita desa, perbarui produk UMKM, dan kelola informasi kependudukan secara cepat dan terintegrasi.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 shrink-0">
+        <a href="{{ url_for('admin_surat') }}" class="px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-900/40 transition transform hover:-translate-y-0.5">
+          <i class="fa-solid fa-file-circle-check text-sm"></i>
+          <span>Kelola Surat Warga</span>
+        </a>
+        <a href="{{ url_for('admin_pengaduan') }}" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 border border-white/20 transition transform hover:-translate-y-0.5">
+          <i class="fa-solid fa-headset text-sm text-amber-300"></i>
+          <span>Respon Pengaduan</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 KARTU OPERASIONAL UTAMA STAF OPERATOR -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    
+    <!-- 1. Permohonan Surat -->
+    <div class="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border-2 border-emerald-500/30 shadow-md flex flex-col justify-between hover:border-emerald-500 transition-all group">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-file-signature"></i> Layanan Surat
+          </span>
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-base group-hover:scale-110 transition border border-emerald-100 dark:border-emerald-500/20">
+            <i class="fa-solid fa-inbox"></i>
+          </div>
+        </div>
+        <div class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{{ total_surat }}</div>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Total Permohonan Masuk</p>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-amber-600 font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Perlu Diproses:</span>
+          <span class="font-black px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-600">{{ surat_pending }}</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-emerald-600 font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Telah Selesai:</span>
+          <span class="font-black px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600">{{ surat_selesai }}</span>
+        </div>
+        <a href="{{ url_for('admin_surat') }}" class="w-full mt-2 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 dark:text-emerald-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+          Buka Antrean Surat <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- 2. Aspirasi & Pengaduan Warga -->
+    <div class="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:border-amber-400 transition-all group">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-black text-amber-700 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-comments"></i> Aduan Warga
+          </span>
+          <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base group-hover:scale-110 transition border border-amber-100 dark:border-amber-500/20">
+            <i class="fa-solid fa-headset"></i>
+          </div>
+        </div>
+        <div class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{{ total_aduan }}</div>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Total Laporan Aspirasi</p>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-rose-600 font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Belum Ditanggapi:</span>
+          <span class="font-black px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600">{{ aduan_pending }}</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-emerald-600 font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Tuntas Ditangani:</span>
+          <span class="font-black px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600">{{ aduan_selesai }}</span>
+        </div>
+        <a href="{{ url_for('admin_pengaduan') }}" class="w-full mt-2 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:hover:bg-amber-900/50 dark:text-amber-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+          Tindak Lanjuti Aduan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3. Publikasi Berita & Galeri -->
+    <div class="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:border-blue-400 transition-all group">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-black text-blue-700 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-newspaper"></i> Berita Desa
+          </span>
+          <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-base group-hover:scale-110 transition border border-blue-100 dark:border-blue-500/20">
+            <i class="fa-solid fa-bullhorn"></i>
+          </div>
+        </div>
+        <div class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{{ total_berita }}</div>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Artikel Berita Terbit</p>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-slate-600 font-medium">Foto Galeri:</span>
+          <span class="font-bold text-slate-900 dark:text-white">{{ total_galeri }} foto</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-slate-600 font-medium">Prestasi Desa:</span>
+          <span class="font-bold text-amber-600">{{ total_prestasi }} piagam</span>
+        </div>
+        <a href="{{ url_for('admin_berita') }}" class="w-full mt-2 py-2 bg-blue-50 hover:bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+          Kelola Berita & Foto <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- 4. UMKM & Potensi Desa -->
+    <div class="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:border-purple-400 transition-all group">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-black text-purple-700 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-basket-shopping"></i> UMKM & Wisata
+          </span>
+          <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base group-hover:scale-110 transition border border-purple-100 dark:border-purple-500/20">
+            <i class="fa-solid fa-shop"></i>
+          </div>
+        </div>
+        <div class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{{ total_umkm }}</div>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Usaha Warga Terdaftar</p>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-slate-600 font-medium">Wisata Desa:</span>
+          <span class="font-bold text-slate-900 dark:text-white">{{ total_wisata }} destinasi</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-slate-600 font-medium">Buku Publikasi:</span>
+          <span class="font-bold text-slate-900 dark:text-white">{{ total_buku }} berkas</span>
+        </div>
+        <a href="{{ url_for('admin_umkm') }}" class="w-full mt-2 py-2 bg-purple-50 hover:bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:hover:bg-purple-900/50 dark:text-purple-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+          Kelola UMKM Warga <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MENU CEPAT OPERATOR (GRID AKSES LANGSUNG) -->
+  <div class="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm">
+    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+      <div>
+        <h3 class="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fa-solid fa-bolt text-amber-500"></i>
+          Pintasan Cepat Meja Kerja Pelayanan
+        </h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pilih modul tugas yang ingin Anda proses hari ini</p>
+      </div>
+      <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold text-xs border border-emerald-200">
+        Hak Akses: Operator Pelayanan
+      </span>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <a href="{{ url_for('admin_surat') }}" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-300 text-center transition flex flex-col items-center justify-center gap-2.5 group">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+          <i class="fa-solid fa-file-signature"></i>
+        </div>
+        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">Layanan Surat</span>
+      </a>
+
+      <a href="{{ url_for('admin_pengaduan') }}" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-amber-50 dark:hover:bg-amber-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-amber-300 text-center transition flex flex-col items-center justify-center gap-2.5 group">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+          <i class="fa-solid fa-comments"></i>
+        </div>
+        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-amber-700 dark:group-hover:text-amber-400">Aduan Warga</span>
+      </a>
+
+      <a href="{{ url_for('admin_berita') }}" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-blue-300 text-center transition flex flex-col items-center justify-center gap-2.5 group">
+        <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+          <i class="fa-solid fa-newspaper"></i>
+        </div>
+        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400">Tulis Berita</span>
+      </a>
+
+      <a href="{{ url_for('admin_umkm') }}" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-purple-50 dark:hover:bg-purple-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-purple-300 text-center transition flex flex-col items-center justify-center gap-2.5 group">
+        <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+          <i class="fa-solid fa-shop"></i>
+        </div>
+        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-700 dark:group-hover:text-purple-400">Produk UMKM</span>
+      </a>
+
+      <a href="{{ url_for('admin_peta') }}" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-indigo-300 text-center transition flex flex-col items-center justify-center gap-2.5 group">
+        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+          <i class="fa-solid fa-map-location-dot"></i>
+        </div>
+        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-indigo-400">Peta & SLS</span>
+      </a>
+
+      <a href="{{ url_for('admin_statistik') }}" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-rose-300 text-center transition flex flex-col items-center justify-center gap-2.5 group">
+        <div class="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-rose-700 dark:group-hover:text-rose-400">Data Penduduk</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

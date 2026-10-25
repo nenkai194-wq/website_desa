@@ -64,17 +64,34 @@
     <div class="h-20 flex items-center gap-3 px-6 bg-slate-950 border-b border-slate-800">
       <img src="{{ url_for('static', filename=profil_global.logo_website.replace('static/', '')) if profil_global.logo_website and profil_global.logo_website.startswith('static/') else (profil_global.logo_website or url_for('static', filename='images/logo_tasikmalaya.png')) }}" class="w-9 h-9 object-contain" alt="Logo" onerror="this.src='{{ url_for('static', filename='images/logo_tasikmalaya.png') }}'" />
       <div>
-        <h2 class="text-white font-bold text-sm leading-tight">Admin Desa {{ profil_global.nama_desa or 'Papayan' }}</h2>
-        <span class="text-[11px] text-brand-400 font-medium">Kabupaten {{ profil_global.kabupaten or 'Kutai Kartanegara' }}</span>
+        {% if session.get('role') == 'superadmin' %}
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/25 text-amber-300 border border-amber-500/30 text-[9px] font-black uppercase tracking-wider mb-0.5">
+          <i class="fa-solid fa-crown text-[8px]"></i> SUPER ADMIN
+        </span>
+        {% else %}
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-[9px] font-black uppercase tracking-wider mb-0.5">
+          <i class="fa-solid fa-user-gear text-[8px]"></i> OPERATOR DESA
+        </span>
+        {% endif %}
+        <h2 class="text-white font-bold text-xs leading-tight">Desa {{ profil_global.nama_desa or 'Papayan' }}</h2>
       </div>
     </div>
 
     <!-- Navigation Menu -->
     <nav class="flex-1 overflow-y-auto px-4 py-5 space-y-1 text-xs font-semibold">
       <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider px-3 mb-2">Utama</div>
-      <a href="{{ url_for('admin_dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_dashboard' %}bg-brand-700 text-white{% endif %}">
-        <i class="fa-solid fa-gauge-high w-4 text-center"></i> Dashboard
+      {% if session.get('role') == 'superadmin' %}
+      <a href="{{ url_for('admin_dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_dashboard' %}bg-amber-600 text-slate-950 font-black shadow-md{% endif %}">
+        <i class="fa-solid fa-crown text-amber-400 w-4 text-center"></i> Dashboard Super Admin
       </a>
+      <a href="{{ url_for('admin_operator_dashboard') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition text-[11px] {% if request.endpoint == 'admin_operator_dashboard' %}bg-slate-800 text-emerald-400 font-bold{% endif %}">
+        <i class="fa-solid fa-desktop text-emerald-400 w-4 text-center"></i> Meja Kerja Operator
+      </a>
+      {% else %}
+      <a href="{{ url_for('admin_operator_dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_operator_dashboard' %}bg-emerald-600 text-white font-black shadow-md shadow-emerald-900/30{% endif %}">
+        <i class="fa-solid fa-desktop text-white w-4 text-center"></i> Meja Kerja Operator
+      </a>
+      {% endif %}
       
       <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider px-3 mt-6 mb-2">Pelayanan Warga</div>
       <a href="{{ url_for('admin_surat') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition {% if request.endpoint == 'admin_surat' %}bg-brand-700 text-white{% endif %}">

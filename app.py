@@ -961,7 +961,10 @@ def admin_peta_simpan_batas():
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if 'user_id' in session:
-        return redirect(url_for('admin_dashboard'))
+        if session.get('role') == 'superadmin':
+            return redirect(url_for('admin_dashboard'))
+        else:
+            return redirect(url_for('admin_operator_dashboard'))
 
     ip_address = request.headers.get('X-Forwarded-For', request.remote_addr) or '127.0.0.1'
     if ',' in ip_address:
@@ -1043,7 +1046,12 @@ def admin_login():
             session['role'] = user['role']
 
             flash(f"Selamat datang, {user['nama']}. Anda login sebagai {('Super Admin (Akses Penuh)' if user['role'] == 'superadmin' else 'Admin (Operator Pelayanan)')}.", 'success')
-            return redirect(url_for('admin_dashboard'))
+            if user['role'] == 'superadmin':
+                flash(f"Berhasil Masuk! Selamat datang, {user['nama']}. Anda berada di Portal Super Admin.", 'success')
+                return redirect(url_for('admin_dashboard'))
+            else:
+                flash(f"Berhasil Masuk! Selamat bertugas, {user['nama']}. Anda berada di Meja Kerja Operator Pelayanan.", 'success')
+                return redirect(url_for('admin_operator_dashboard'))
         else:
             conn.close()
             # Catat login gagal
@@ -1116,9 +1124,75 @@ def admin_logout():
 # ADMIN DASHBOARD & CMS
 # ==========================================
 
+@app.route('/admin/operator')
+@login_required
+def admin_operator_dashboard():
+    """Halaman Meja Kerja Khusus Staf Operator Pelayanan Desa"""
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # 1. Permohonan Surat
+    cursor.execute("SELECT COUNT(*), SUM(CASE WHEN status='Menunggu' THEN 1 ELSE 0 END), SUM(CASE WHEN status='Diproses' THEN 1 ELSE 0 END), SUM(CASE WHEN status='Selesai' THEN 1 ELSE 0 END) FROM layanan_surat")
+    s_row = cursor.fetchone() or (0, 0, 0, 0)
+    total_surat = s_row[0] or 0
+    surat_pending = s_row[1] or 0
+    surat_proses = s_row[2] or 0
+    surat_selesai = s_row[3] or 0
+
+    # 2. Pengaduan
+    cursor.execute("SELECT COUNT(*), SUM(CASE WHEN status='Belum Ditanggapi' OR status='Menunggu' THEN 1 ELSE 0 END), SUM(CASE WHEN status='Perlu Perlakuan Khusus' THEN 1 ELSE 0 END), SUM(CASE WHEN status='Sudah Diselesaikan' OR status='Selesai' THEN 1 ELSE 0 END) FROM pengaduan")
+    p_row = cursor.fetchone() or (0, 0, 0, 0)
+    total_aduan = p_row[0] or 0
+    aduan_pending = p_row[1] or 0
+    aduan_khusus = p_row[2] or 0
+    aduan_selesai = p_row[3] or 0
+
+    # 3. Berita & Galeri
+    cursor.execute("SELECT COUNT(*) FROM berita")
+    total_berita = cursor.fetchone()[0] or 0
+
+    cursor.execute("SELECT COUNT(*), COALESCE(SUM(CASE WHEN tipe = 'penghargaan' OR kategori = 'Piagam & Penghargaan' THEN 1 ELSE 0 END), 0) FROM galeri")
+    g_row = cursor.fetchone() or (0, 0)
+    total_galeri = g_row[0] or 0
+    total_prestasi = g_row[1] or 0
+
+    # 4. UMKM, Wisata & Publikasi
+    cursor.execute("SELECT COUNT(*) FROM umkm")
+    total_umkm = cursor.fetchone()[0] or 0
+
+    cursor.execute("SELECT COUNT(*) FROM wisata")
+    total_wisata = cursor.fetchone()[0] or 0
+
+    cursor.execute("SELECT COUNT(*) FROM buku_publikasi")
+    total_buku = cursor.fetchone()[0] or 0
+
+    conn.close()
+
+    return render_template(
+        'admin/operator_dashboard.html',
+        total_surat=total_surat,
+        surat_pending=surat_pending,
+        surat_proses=surat_proses,
+        surat_selesai=surat_selesai,
+        total_aduan=total_aduan,
+        aduan_pending=aduan_pending,
+        aduan_khusus=aduan_khusus,
+        aduan_selesai=aduan_selesai,
+        total_berita=total_berita,
+        total_galeri=total_galeri,
+        total_prestasi=total_prestasi,
+        total_umkm=total_umkm,
+        total_wisata=total_wisata,
+        total_buku=total_buku
+    )
+
 @app.route('/admin')
 @login_required
 def admin_dashboard():
+    # Jika login sebagai Operator (bukan Super Admin), arahkan langsung ke Meja Kerja Operator
+    if session.get('role') != 'superadmin':
+        return redirect(url_for('admin_operator_dashboard'))
+
     conn = get_db()
     cursor = conn.cursor()
 
